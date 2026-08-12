@@ -82,5 +82,9 @@ __real@42000000,0x00498A84,00000042,0x0,Exact target float 32.0 constant used by
 ?g_ShotSlowEnabled@th07@@3EA,0x00575A8E,00,0x0,Direct target absolute reference to shot-slow option byte,literal
 ?g_FocusButtonConflictState@th07@@3GA,0x0049FE1C,0000,0x0,Direct target absolute reference to the focus conflict counter,literal
 ?g_ControllerData@th07@@3PAEA,0x0135E218,00000000,0x0,Direct target absolute reference to 128-byte controller state storage,literal
+?g_RenderOffsetX@th07@@3MA,0x0062F864,00000000,0x0,Direct target zero-initialized horizontal bullet render offset,literal
+?g_RenderOffsetY@th07@@3MA,0x0062F868,00000000,0x0,Direct target zero-initialized vertical bullet render offset,literal
+__real@3fc90fdb,0x00498A9C,db0fc93f,0x0,Exact target float pi over two used by bullet sprite rotation,literal
+__real@41200000,0x00498AB4,00002041,0x0,Exact target float 10.0 used by laser endcap scaling,literal
 ??_C@_0BK@BJPCNFPG@error?5?3?5DIERR_INPUTLOST?$AN?6?$AA@,0x00497D80,6572726f72203a2044494552525f494e5055544c4f53540d0a00,0x0,Direct target DIERR_INPUTLOST diagnostic string,literal
 ??_C@_0BN@KAGFBIKB@error?5?3?5DIERR_INPUTLOST?5?$CFd?$AN?6?$AA@,0x00497D60,6572726f72203a2044494552525f494e5055544c4f53542025640d0a00,0x0,Direct target DIERR_INPUTLOST retry diagnostic string,literal

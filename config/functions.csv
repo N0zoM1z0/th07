@@ -78,8 +78,8 @@ address,size,span_end,current_name,proposed_name,module,status,match_percent,cal
 0x0040DA80,2048,0x0040E27F,sub_40DA80,,,unclassified,0.00,unknown,,false,,,,
 0x0040E280,406,0x0040E415,sub_40E280,,,unclassified,0.00,unknown,,false,,,,
 0x0040E420,197,0x0040E4E4,sub_40E420,,,unclassified,0.00,unknown,,false,,,,
-0x0040E4F0,50,0x0040E521,sub_40E4F0,,,unclassified,0.00,unknown,,false,,,,
-0x0040E530,128,0x0040E5AF,sub_40E530,,,unclassified,0.00,unknown,,false,,,,
+0x0040E4F0,50,0x0040E521,sub_40E4F0,EclManager_unload,ecl,matching,100.00,__thiscall,void EclManager_unload(EclManager * this),false,src/EclManager.cpp,python3 scripts/build.py --unit ecl-manager --compare --json; strict VC7 no-GS G6 COFF exact 50/50 bytes with verified CRT free relocation 2026-08-12,root,Target-observed eclFile at manager offset zero
+0x0040E530,128,0x0040E5AF,sub_40E530,EclManager_call_ecl_sub,ecl,matching,100.00,__thiscall,ZunResult EclManager_call_ecl_sub(EclManager * this; EnemyEclContext * context; i16 subId),false,src/EclManager.cpp,python3 scripts/build.py --unit ecl-manager --compare --json; strict VC7 no-GS G6 COFF exact 128/128 bytes 2026-08-12,root,Target-observed context timers and signed subtable selection
 0x0040E5B0,1310,0x0040EACD,sub_40E5B0,,,unclassified,0.00,unknown,,false,,,,
 0x0040EC00,325,0x0040ED44,sub_40EC00,,,unclassified,0.00,unknown,,false,,,,
 0x0040EDF0,1178,0x0040F289,sub_40EDF0,,,unclassified,0.00,unknown,,false,,,,
@@ -191,8 +191,8 @@ address,size,span_end,current_name,proposed_name,module,status,match_percent,cal
 0x00425700,403,0x00425892,sub_425700,,,unclassified,0.00,unknown,,false,,,,
 0x004258A0,425,0x00425A48,sub_4258A0,,,unclassified,0.00,unknown,,false,,,,
 0x00425A50,4237,0x00426ADC,sub_425A50,,,unclassified,0.00,unknown,,false,,,,
-0x00426B00,289,0x00426C20,sub_426B00,,,unclassified,0.00,unknown,,false,,,,
-0x00426C40,796,0x00426F5B,sub_426C40,,,unclassified,0.00,unknown,,false,,,,
+0x00426B00,289,0x00426C20,sub_426B00,BulletManager_draw_selected_bullet_animation,bullet,matching,100.00,__fastcall,void BulletManager_draw_selected_bullet_animation(Bullet * bullet),false,src/BulletRender.cpp,python3 scripts/build.py --unit bullet-render --compare --json; strict VC7 no-GS G6 COFF exact 289/289 bytes with verified animation globals and angle helper 2026-08-12,root,Target-observed five-VM state selection and draw transform
+0x00426C40,796,0x00426F5B,sub_426C40,BulletManager_on_draw,bullet,matching,100.00,__fastcall,int BulletManager_on_draw(BulletManager * manager),false,src/BulletRender.cpp,python3 scripts/build.py --unit bullet-render --compare --json; strict VC7 no-GS G6 COFF exact 796/796 bytes with verified render globals and callees 2026-08-12,root,Target-observed 64-laser loop plus item draw and six bullet draw lists
 0x00426F60,1703,0x00427606,sub_426F60,BulletManager_added_callback,bullet,compiles,0.00,__cdecl,int BulletManager_added_callback(BulletManager * manager),false,src/BulletManager.cpp,VC7 COFF compiles; target callback semantics and 11 template records observed,root,Source shaping and relocation integration remain
 0x00427620,116,0x00427693,sub_427620,BulletManager_deleted_callback,bullet,compiles,0.00,__fastcall,i32 BulletManager_deleted_callback(BulletManager * manager),false,src/BulletManager.cpp,VC7 COFF exact target size with verified ANM relocations; strict mismatch at 0x00427628,root,Only local-slot ordering remains
 0x004276A0,192,0x0042775F,sub_4276A0,BulletManager_register_chain,bullet,matching,100.00,__fastcall,i32 BulletManager_register_chain(char * bulletAnmPath),false,src/BulletManager.cpp,python3 scripts/build.py --unit bullet-manager --compare --json; strict VC7 COFF exact 192/192 bytes with verified callback/function-pointer relocations 2026-08-12,root,ECX carries the bullet ANM path

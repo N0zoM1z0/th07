@@ -42,3 +42,7 @@ address,name,module,confidence,evidence
 0x004277A0,BulletManager_remove_all_bullets,bullet,observed,Exact-target embedded-bullet reset loop plus strict VC7 no-GS G6 COFF comparison
 0x004312C0,Controller_reset_keyboard,input,observed,Exact-target Win32 keyboard-state reset loop plus strict VC7 no-GS G6 COFF comparison
 0x004232E0,BulletManager_initialize,bullet,observed,Exact-target whole-manager reset and bullet sentinel initialization plus strict VC7 no-GS G6 COFF comparison
+0x0040E4F0,EclManager_unload,ecl,observed,Exact-target ECL allocation release plus strict VC7 no-GS G6 COFF comparison
+0x0040E530,EclManager_call_ecl_sub,ecl,observed,Exact-target ECL subroutine context switch plus strict VC7 no-GS G6 COFF comparison
+0x00426B00,BulletManager_draw_selected_bullet_animation,bullet,observed,Exact-target selected animation VM render helper plus strict VC7 no-GS G6 COFF comparison
+0x00426C40,BulletManager_on_draw,bullet,observed,Exact-target laser item and bullet draw loops plus strict VC7 no-GS G6 COFF comparison

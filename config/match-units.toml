@@ -253,6 +253,63 @@ rel32_targets = [
   "?ResetFile@CWaveFile@th07@@QAEJ_N@Z=0x0045E210",
 ]
 
+[units.ecl-manager]
+kind = "probe"
+source = "src/EclManager.cpp"
+object = "build/match-units/EclManager.obj"
+profile = "vc7-debug-od-no-gs-g6"
+notes = "Focused VC7 unoptimized no-GS G6 ECL lifecycle probe; context offsets are target-observed and TH06 is semantic corroboration only."
+
+[[units.ecl-manager.functions]]
+address = "0x0040E4F0"
+symbol_base = "?Unload@EclManager@th07@@QAEXXZ"
+rel32_targets = ["_free=0x0047D285"]
+
+[[units.ecl-manager.functions]]
+address = "0x0040E530"
+symbol_base = "?CallEclSub@EclManager@th07@@QAE?AW4ZunResult@2@PAUEnemyEclContext@2@F@Z"
+
+[units.bullet-render]
+kind = "probe"
+source = "src/BulletRender.cpp"
+object = "build/match-units/BulletRender.obj"
+profile = "vc7-debug-od-no-gs-g6"
+notes = "Focused VC7 unoptimized no-GS G6 bullet and laser renderer probe over target-observed private overlays."
+
+[[units.bullet-render.functions]]
+address = "0x00426B00"
+symbol_base = "?DrawSelectedBulletAnimation@th07@@YIXPAUBulletRenderBullet@1@@Z"
+rel32_targets = [
+  "?AddNormalizeAngle@th07@@YGMMM@Z=0x00431930",
+  "?Draw3@BulletRenderAnmManager@th07@@QAEXPAUAnmVm@2@@Z=0x0044F9A0",
+]
+dir32_targets = [
+  "?g_AnmManager@th07@@3PAUBulletRenderAnmManager@1@A=?g_AnmManager@th07@@3PAUAnmManager@1@A",
+  "?g_RenderOffsetX@th07@@3MA=?g_RenderOffsetX@th07@@3MA",
+  "?g_RenderOffsetY@th07@@3MA=?g_RenderOffsetY@th07@@3MA",
+  "__real@3fc90fdb=__real@3fc90fdb",
+]
+
+[[units.bullet-render.functions]]
+address = "0x00426C40"
+symbol_base = "?OnDraw@BulletManager@th07@@SIHPAV12@@Z"
+rel32_targets = [
+  "?CalculateSinCos@th07@@YIXPAM0M@Z=0x00417AF0",
+  "?Draw3@BulletRenderAnmManager@th07@@QAEXPAUAnmVm@2@@Z=0x0044F9A0",
+  "?OnDraw@BulletRenderItemManager@th07@@QAEXXZ=0x00433CD0",
+  "?DrawSelectedBulletAnimation@th07@@YIXPAUBulletRenderBullet@1@@Z=0x00426B00",
+]
+dir32_targets = [
+  "?g_AnmManager@th07@@3PAUBulletRenderAnmManager@1@A=?g_AnmManager@th07@@3PAUAnmManager@1@A",
+  "?g_ItemManager@th07@@3UBulletRenderItemManager@1@A=?g_ItemManager@th07@@3PAEA",
+  "?g_RenderOffsetX@th07@@3MA=?g_RenderOffsetX@th07@@3MA",
+  "?g_RenderOffsetY@th07@@3MA=?g_RenderOffsetY@th07@@3MA",
+  "__real@00000000=__real@00000000",
+  "__real@40000000=__real@40000000",
+  "__real@41200000=__real@41200000",
+  "__real@41800000=__real@41800000",
+]
+
 [units.bullet-manager]
 kind = "probe"
 source = "src/BulletManager.cpp"

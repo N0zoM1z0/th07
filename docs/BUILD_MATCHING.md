@@ -61,20 +61,22 @@ original TH07 object partitions.
 
 ## Exact code-generation results
 
-The pinned VC7 build and patched `C1XX.DLL` currently reproduce 63 functions
-across eight probes:
+The pinned VC7 build and patched `C1XX.DLL` currently reproduce 67 functions
+across ten probes:
 
 | Probe | Functions | Exact bytes |
 | --- | ---: | ---: |
 | `text-helper` | 11 | 2,992 / 2,992 |
 | `midi` | 11 | 725 / 725 |
 | `zwave` | 19 | 3,316 / 3,316 |
+| `ecl-manager` | 2 | 178 / 178 |
+| `bullet-render` | 2 | 1,085 / 1,085 |
 | `controller` | 3 | 587 / 587 |
 | `screen-effect` | 4 | 528 / 528 |
 | `bullet-manager` | 4 | 576 / 576 |
 | `player-core` | 3 | 892 / 892 |
 | `chain` | 8 | 961 / 961 |
-| **Total** | **63** | **10,577 / 10,577** |
+| **Total** | **67** | **11,840 / 11,840** |
 
 The strict comparison resolves member and CRT calls; validates GDI32, WINMM,
 and KERNEL32 IAT entries; checks global, string, and vtable target bytes; and
