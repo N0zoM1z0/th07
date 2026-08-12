@@ -31,6 +31,11 @@ case "$profile" in
   vc7-default)
     profile_flags=()
     ;;
+  vc7-debug-od)
+    # TH06/TH08 use unoptimized code generation for Midi and zwave. The
+    # explicit trailing switches override the shared probe defaults.
+    profile_flags=(/Od /Ob1 /Op /G5 /GS /Gd)
+    ;;
   *)
     echo "unknown VC7 compiler profile: $profile" >&2
     exit 2

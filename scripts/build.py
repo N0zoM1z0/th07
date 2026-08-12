@@ -61,7 +61,7 @@ def load_manifest() -> dict[str, object]:
             raise ValueError(f"unsupported unit kind for {name}: {unit.get('kind')}")
         repository_path(str(unit["source"]))
         repository_path(str(unit["object"]), output=True)
-        if unit.get("profile") not in {"vc7-text-os", "vc7-default"}:
+        if unit.get("profile") not in {"vc7-text-os", "vc7-default", "vc7-debug-od"}:
             raise ValueError(f"unknown compiler profile in unit {name}")
         functions = unit.get("functions")
         if not isinstance(functions, list) or not functions:
