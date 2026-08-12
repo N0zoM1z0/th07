@@ -47,9 +47,26 @@ inside an IDB.
 - Do not commit original executables, game data, IDA databases, toolchains,
   third-party reference clones, generated reports, or credentials.
 
+## Parallel reconstruction
+
+For two or more concurrent lanes, read `.agents/skills/th07-parallel/SKILL.md`
+together with `.agents/skills/th07-re/SKILL.md`. For compiler shaping, also
+read `.agents/skills/th07-matching/SKILL.md`.
+
+- The coordinator owns IDA writes, shared ABI/type decisions, address claims,
+  the function ledger, generated progress, Git commits, and pushes.
+- Evidence/matching workers receive non-overlapping address ranges and source
+  files. They must not rename or retype unrelated functions in IDA.
+- A worker starts from a coordinator-prepared target packet and canonical
+  `config/match-units.toml` entry, then iterates only through
+  `python3 scripts/build.py --unit NAME --compare --json`.
+- Shared headers, class layouts, compiler profiles, relocation allowlists, and
+  translation-unit partitions require coordinator review before mutation.
+- Worker reports are proposals. The coordinator reruns the strict comparison,
+  updates status/evidence, releases claims, and performs all Git integration.
+
 ## Handoff
 
-Run `python3 scripts/validate-tracking.py`,
+Run `python3 scripts/validate-tracking.py`, `python3 scripts/build.py --check`,
 `python3 scripts/progress.py --check`, and `git diff --check`. Report addresses,
 evidence, old/new status, exact comparison result, and remaining uncertainty.
-

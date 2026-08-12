@@ -1,0 +1,7 @@
+coff_symbol,address,data_hex,addends,evidence,validation
+__imp__DeleteDC@4,0x0048D018,38b30900,0x0,PE import table entry and GDI32 DeleteDC import,literal
+__imp__CreateDIBSection@24,0x0048D01C,24b30900,0x0,PE import table entry and GDI32 CreateDIBSection import,literal
+__imp__DeleteObject@4,0x0048D028,fab20900,0x0,PE import table entry and GDI32 DeleteObject import,literal
+__imp__SelectObject@8,0x0048D02C,eab20900,0x0,PE import table entry and GDI32 SelectObject import,literal
+__imp__CreateCompatibleDC@4,0x0048D030,d4b20900,0x0,PE import table entry and GDI32 CreateCompatibleDC import,literal
+_g_FormatInfoArray,0x0049ED98,16000000,0x0,Direct target table bytes and IDA xref from TextHelper GetFormatInfo,literal

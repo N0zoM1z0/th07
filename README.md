@@ -59,6 +59,7 @@ instructions, data layout, or exact comparison.
 - [Reverse-engineering workflow](docs/RE_WORKFLOW.md)
 - [IDA-first analysis](docs/IDA_MCP.md)
 - [Build and matching plan](docs/BUILD_MATCHING.md)
+- [Workflow evolution and parallel gates](docs/WORKFLOW_EVOLUTION.md)
 - [Generated progress](docs/PROGRESS.md)
 - [Agent operating rules](AGENTS.md)
 
@@ -68,10 +69,12 @@ The PE linker metadata and Rich header identify Visual C++ .NET 2002 (VC7,
 build 9466), matching the toolchain family used by the TH06 and TH08 reference
 projects. A matching full executable is not yet advertised; reconstruction
 starts with address-bounded translation units and function-level comparison.
+The first VC7 probe reconstructs all six `TextHelper` allocation methods exactly
+(813/813 function bytes); it remains a focused probe rather than an assertion
+about the original object boundary.
 
 ## License
 
 Repository-authored code and documentation are provided under the MIT License.
 This does not grant rights to the original game or its assets. Adjacent-version
 reference code retains the license of its source repository.
-

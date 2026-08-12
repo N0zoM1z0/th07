@@ -15,7 +15,8 @@ jobs:
       - name: Validate tracked reconstruction state
         run: |
           python3 -m py_compile scripts/*.py
+          bash -n scripts/*.sh
           python3 scripts/validate-tracking.py
+          python3 scripts/build.py --check
           python3 scripts/progress.py --check
           git diff --check
-

@@ -53,8 +53,9 @@ disassembly, with TH06/TH08 used as cross-version corroboration:
 - TH07 uses alpha mask `0x00008000` for `D3DFMT_A1R5G5B5`, agreeing with TH08
   and differing from the current TH06 reference source.
 
-These functions remain `implemented` until a VC7 object build and exact
-address-bounded comparison promote them to `matching`.
+All six functions are `matching`: the project-local VC7 `/Os` probe rebuilds
+813/813 bytes exactly after strict internal-call, CRT, GDI32 IAT, and target
+format-table relocation resolution.
 
 ## Planned source layout
 

@@ -50,3 +50,27 @@ Its output is a candidate map, not source truth. A candidate becomes
 Decompiler resemblance, identical adjacent-version source, and normalized
 binary clones are insufficient for `matching`.
 
+## Fast exact-match loop
+
+The canonical unit graph and comparator are machine-readable and fail closed:
+
+```bash
+python3 scripts/build.py --check
+python3 scripts/build.py --unit text-helper --compare --json
+```
+
+Only the coordinator adds units, relocation allowlists, claims, ledger status,
+or IDA mutations. Parallel workers receive non-overlapping functions after the
+coordinator has reconciled their boundaries and prepared the unit. A worker's
+source/result is reviewed and rerun by the coordinator before `matching` is
+recorded.
+
+Coordinator capture and claim commands are explicit:
+
+```bash
+python3 scripts/work-packet.py 0x00431A0F --refresh
+python3 scripts/claim.py add --owner AGENT --notes "TextHelper lane" 0x00431A0F
+
+# Workers consume the already captured packet without querying or mutating IDA.
+python3 scripts/work-packet.py 0x00431A0F --cached
+```

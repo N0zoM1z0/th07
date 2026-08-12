@@ -1,0 +1,40 @@
+schema_version = 1
+target_sha256 = "35467eaf8dc7fc85f024f16fb2037255f151cefda33cf4867bc9122aaa2e80ca"
+
+[units.text-helper]
+kind = "probe"
+source = "src/TextHelper.cpp"
+object = "build/match-units/TextHelper.obj"
+profile = "vc7-text-os"
+notes = "Focused VC7 /Os probe based on the adjacent-engine TextHelper object; not an original TH07 translation-unit claim."
+
+[[units.text-helper.functions]]
+address = "0x00431A0F"
+symbol_base = "??0TextHelper@th07@@QAE@XZ"
+
+[[units.text-helper.functions]]
+address = "0x00431A4B"
+symbol_base = "??1TextHelper@th07@@QAE@XZ"
+rel32_targets = ["?ReleaseBuffer@TextHelper@th07@@QAE_NXZ=0x00431A5C"]
+
+[[units.text-helper.functions]]
+address = "0x00431A5C"
+symbol_base = "?ReleaseBuffer@TextHelper@th07@@QAE_NXZ"
+
+[[units.text-helper.functions]]
+address = "0x00431ACE"
+symbol_base = "?AllocateBufferWithFallback@TextHelper@th07@@QAE_NHHW4_D3DFORMAT@@@Z"
+rel32_targets = ["?TryAllocateBuffer@TextHelper@th07@@QAE_NHHW4_D3DFORMAT@@@Z=0x00431B2D"]
+
+[[units.text-helper.functions]]
+address = "0x00431B2D"
+symbol_base = "?TryAllocateBuffer@TextHelper@th07@@QAE_NHHW4_D3DFORMAT@@@Z"
+rel32_targets = [
+  "?ReleaseBuffer@TextHelper@th07@@QAE_NXZ=0x00431A5C",
+  "_memset=0x0047DBF0",
+  "?GetFormatInfo@TextHelper@th07@@QAEPAUFormatInfo@2@W4_D3DFORMAT@@@Z=0x00431CEC",
+]
+
+[[units.text-helper.functions]]
+address = "0x00431CEC"
+symbol_base = "?GetFormatInfo@TextHelper@th07@@QAEPAUFormatInfo@2@W4_D3DFORMAT@@@Z"
