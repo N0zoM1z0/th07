@@ -63,29 +63,31 @@ extern void __fastcall RotatePlayerVector(D3DXVECTOR3 *out, D3DXVECTOR3 *relativ
 #define PLAYER_BOXES_OVERLAP(leftA, topA, rightA, bottomA, leftB, topB, rightB, bottomB)                              \
     ((leftA) <= (rightB) && (rightA) >= (leftB) && (topA) <= (bottomB) && (bottomA) >= (topB))
 
-#pragma var_order(bullet, i, enemyBottomRight, bulletBottomRight, enemyTopLeft, damage, bulletTopLeft)
+#pragma var_order(bullet, i, enemyBottomRightY, enemyBottomRightX, bulletBottomRight, enemyTopLeftY, enemyTopLeftX, damage, bulletTopLeft)
 i32 Player::CalcDamageToEnemy(D3DXVECTOR3 *enemyPosition, D3DXVECTOR3 *enemySize, i32 *bombHit)
 {
     D3DXVECTOR3 bulletTopLeft;
     i32 damage;
-    D3DXVECTOR3 enemyTopLeft;
+    f32 enemyTopLeftX;
+    f32 enemyTopLeftY;
+    bool isNewEnemy;
     i32 i;
     PlayerBullet *bullet;
     D3DXVECTOR3 bulletBottomRight;
-    D3DXVECTOR3 enemyBottomRight;
-    i32 *lastEnemyHit;
+    f32 enemyBottomRightX;
+    f32 enemyBottomRightY;
 
     damage = 0;
-    lastEnemyHit = &lastEnemyHitX;
-    if (lastEnemyHit[2] == lastEnemyHit[0])
+    isNewEnemy = lastEnemyHitY != lastEnemyHitX;
+    if (!isNewEnemy)
     {
         return 0;
     }
 
-    enemyTopLeft.x = enemyPosition->x - enemySize->x * 0.5f;
-    enemyTopLeft.y = enemyPosition->y - enemySize->y * 0.5f;
-    enemyBottomRight.x = enemyPosition->x + enemySize->x * 0.5f;
-    enemyBottomRight.y = enemyPosition->y + enemySize->y * 0.5f;
+    enemyTopLeftX = enemyPosition->x - enemySize->x * 0.5f;
+    enemyTopLeftY = enemyPosition->y - enemySize->y * 0.5f;
+    enemyBottomRightX = enemyPosition->x + enemySize->x * 0.5f;
+    enemyBottomRightY = enemyPosition->y + enemySize->y * 0.5f;
     bullet = &bullets[0];
     if (bombHit)
     {
@@ -103,8 +105,8 @@ i32 Player::CalcDamageToEnemy(D3DXVECTOR3 *enemyPosition, D3DXVECTOR3 *enemySize
         bulletTopLeft.y = bullet->position.y - bullet->size.y * 0.5f;
         bulletBottomRight.x = bullet->position.x + bullet->size.x * 0.5f;
         bulletBottomRight.y = bullet->position.y + bullet->size.y * 0.5f;
-        if (bulletTopLeft.y > enemyBottomRight.y || bulletTopLeft.x > enemyBottomRight.x ||
-            bulletBottomRight.y < enemyTopLeft.y || bulletBottomRight.x < enemyTopLeft.x)
+        if (bulletTopLeft.y > enemyBottomRightY || bulletTopLeft.x > enemyBottomRightX ||
+            bulletBottomRight.y < enemyTopLeftY || bulletBottomRight.x < enemyTopLeftX)
         {
             continue;
         }
@@ -120,8 +122,7 @@ i32 Player::CalcDamageToEnemy(D3DXVECTOR3 *enemyPosition, D3DXVECTOR3 *enemySize
 
         if (bombIsActive)
         {
-            i32 reducedDamage = bullet->damage / 3;
-            damage += reducedDamage ? reducedDamage : 1;
+            damage += bullet->damage / 3 ? bullet->damage / 3 : 1;
         }
         else
         {
@@ -159,8 +160,8 @@ i32 Player::CalcDamageToEnemy(D3DXVECTOR3 *enemyPosition, D3DXVECTOR3 *enemySize
         }
         regionTopLeft = damageRegions[i].position - damageRegions[i].size / 2.0f;
         regionBottomRight = damageRegions[i].position + damageRegions[i].size / 2.0f;
-        if (regionTopLeft.x > enemyBottomRight.x || regionBottomRight.x < enemyTopLeft.x ||
-            regionTopLeft.y > enemyBottomRight.y || regionBottomRight.y < enemyTopLeft.y)
+        if (regionTopLeft.x > enemyBottomRightX || regionBottomRight.x < enemyTopLeftX ||
+            regionTopLeft.y > enemyBottomRightY || regionBottomRight.y < enemyTopLeftY)
         {
             continue;
         }

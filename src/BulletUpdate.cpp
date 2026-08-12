@@ -47,7 +47,11 @@ extern BulletUpdateAnmManager *g_BulletUpdateAnmManager;
 struct BulletUpdateTimer
 {
     i32 previous;
-    i32 subFrame;
+    union
+    {
+        i32 subFrameBits;
+        f32 subFrame;
+    };
     i32 current;
 
     void Decrement(i32 amount);
@@ -104,8 +108,8 @@ struct BulletUpdateLaser
     f32 endOffset;                    // +0x4AC
     f32 maximumLength;                // +0x4B0
     f32 width;                        // +0x4B4
-    f32 speed;                        // +0x4B8
-    i32 unknown4BC;
+    f32 hitboxThickness;              // +0x4B8
+    f32 speed;                        // +0x4BC
     i32 startTime;                    // +0x4C0
     i32 hitboxStartTime;              // +0x4C4
     i32 duration;                     // +0x4C8
@@ -152,7 +156,7 @@ extern f32 __stdcall AddNormalizeAngle(f32 first, f32 second);
 static __forceinline void AdvanceTimer(BulletUpdateTimer *timer)
 {
     timer->previous = timer->current;
-    g_TimerManager.Advance(&timer->current, &timer->subFrame);
+    g_TimerManager.Advance(&timer->current, &timer->subFrameBits);
 }
 
 static __forceinline void ResetTimer(BulletUpdateTimer *timer)
@@ -164,7 +168,7 @@ static __forceinline void ResetTimer(BulletUpdateTimer *timer)
 
 static __forceinline f32 TimerAsFramesFloat(BulletUpdateTimer *timer)
 {
-    return (f32)timer->current + *reinterpret_cast<f32 *>(&timer->subFrame);
+    return (f32)timer->current + timer->subFrame;
 }
 
 #pragma var_order(collisionState, i, hitboxThickness, bulletSchedulerIndex, hitboxSize, bullet, fadeAlpha, laser,     \
@@ -466,7 +470,8 @@ int __fastcall BulletManager::OnUpdate(BulletManager *manager)
         case 0:
             if (laser->flags & 1)
             {
-                fadeAlpha = (i32)(TimerAsFramesFloat(&laser->timer) * 255.0f / laser->startTime);
+                fadeAlpha =
+                    (i32)(((f32)laser->timer.current + laser->timer.subFrame) * 255.0f / laser->startTime);
                 if (fadeAlpha > 255)
                 {
                     fadeAlpha = 255;
@@ -475,16 +480,17 @@ int __fastcall BulletManager::OnUpdate(BulletManager *manager)
             }
             else
             {
-                rampFrames = laser->startTime <= 30 ? laser->startTime : 30;
+                rampFrames = laser->startTime > 30 ? 30 : laser->startTime;
                 if (laser->startTime - rampFrames < laser->timer.current)
                 {
                     hitboxThickness =
-                        TimerAsFramesFloat(&laser->timer) * laser->width / laser->startTime;
+                        ((f32)laser->timer.current + laser->timer.subFrame) * laser->width / laser->startTime;
                 }
                 else
                 {
                     hitboxThickness = 1.2f;
                 }
+                laser->hitboxThickness = hitboxThickness;
                 laser->primaryAnimation.scaleX = hitboxThickness / 16.0f;
                 hitboxSize.x = hitboxThickness / 2.0f;
             }
@@ -509,6 +515,7 @@ int __fastcall BulletManager::OnUpdate(BulletManager *manager)
             }
             ResetTimer(&laser->timer);
             ++laser->state;
+            laser->hitboxThickness = laser->width;
             if (!laser->despawnDuration)
             {
                 laser->isInUse = 0;
@@ -518,7 +525,8 @@ int __fastcall BulletManager::OnUpdate(BulletManager *manager)
         case 2:
             if (laser->flags & 1)
             {
-                fadeAlpha = (i32)(TimerAsFramesFloat(&laser->timer) * 255.0f / laser->startTime);
+                fadeAlpha =
+                    (i32)(((f32)laser->timer.current + laser->timer.subFrame) * 255.0f / laser->startTime);
                 if (fadeAlpha > 255)
                 {
                     fadeAlpha = 255;
@@ -528,7 +536,7 @@ int __fastcall BulletManager::OnUpdate(BulletManager *manager)
             else if (laser->despawnDuration > 0)
             {
                 hitboxThickness = laser->width -
-                                  TimerAsFramesFloat(&laser->timer) * laser->width /
+                                  ((f32)laser->timer.current + laser->timer.subFrame) * laser->width /
                                       laser->despawnDuration;
                 laser->primaryAnimation.scaleX = hitboxThickness / 16.0f;
                 hitboxSize.x = hitboxThickness / 2.0f;

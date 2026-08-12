@@ -58,6 +58,16 @@ configuration, and translation-unit adapters must live outside them, and a
 source-built row still requires the same canonical strict comparison as an
 archive-replayed row.
 
+A compiler fingerprint currently prevents those sources from replacing the
+archive objects in an exact build: D3DX codec members such as `adler32.obj`,
+`inflate.obj`, `pngget.obj`, and `jutils.obj` carry COFF `@comp.id 0x1D227E`
+(compiler build 8830), whereas the target game and VC7 runtime members carry
+`0x1D24FA` (build 9466). Recompiling the same zlib source with build 9466
+changes optimized code generation. The final EXE therefore uses the
+SHA-pinned DirectX 8 SDK `d3dx8.lib` until an equally pinned build-8830 source
+toolchain route is available; upstream source remains the auditable and legal
+baseline, not a false exact replacement.
+
 ## Accepted first wave (2026-08-12)
 
 Four archive members reproduce 29 functions and 9,678 function bytes exactly:
