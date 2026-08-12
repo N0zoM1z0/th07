@@ -1,0 +1,69 @@
+schema_version = 1
+target_sha256 = "35467eaf8dc7fc85f024f16fb2037255f151cefda33cf4867bc9122aaa2e80ca"
+
+# These are compiler-shaping recommendations learned from target-confirmed
+# TH07 matches. They are hypotheses for the next probe, never acceptance
+# evidence and never automatic source rewrites.
+
+[[rules]]
+id = "vc7-movzx-explicit-narrowing"
+requires = ["movzx"]
+confidence = "observed_pattern"
+recommendation = "Use an explicit u8/u16 cast at the source boundary when VC7 must emit movzx; enum and mask expressions otherwise tend to stay 32-bit."
+evidence = "Controller 0x004302F0 and 0x00430370 exact matches"
+
+[[rules]]
+id = "vc7-movsx-signed-narrowing"
+requires = ["movsx"]
+confidence = "compiler_rule"
+recommendation = "Preserve a signed i8/i16 source type or explicit cast; replacing it with an unsigned field changes movsx to movzx."
+evidence = "x86 operand semantics and VC7 probe behavior"
+
+[[rules]]
+id = "vc7-fastcall-register-homes"
+requires = ["register_home"]
+confidence = "observed_pattern"
+recommendation = "Declare the receiver/register arguments in target order and shape locals before changing behavior; VC7 debug register homes strongly constrain the first stack slots."
+evidence = "Controller and BulletManager debug-profile probes"
+
+[[rules]]
+id = "vc7-global-this-receiver"
+requires = ["global_ecx_receiver"]
+confidence = "observed_pattern"
+recommendation = "Model the observed image address as the actual global object receiver instead of calling the member through the current this pointer."
+evidence = "Player kill/laser 0x0043E260 and 0x0043E6B0 exact matches"
+
+[[rules]]
+id = "vc7-qword-floating-constant"
+requires = ["x87_f64"]
+confidence = "instruction_fact"
+recommendation = "Use a double literal/expression for an x87 qword memory operand; a float field or 0.0f produces a four-byte relocation and different comparison code."
+evidence = "Player auxiliary collision 0x0043E0A0 exact qword-zero guard"
+
+[[rules]]
+id = "vc7-nonfolded-idiv"
+requires = ["idiv"]
+confidence = "observed_pattern"
+recommendation = "If target preserves a divisor in ESI/EDI, a literal C division may constant-fold; probe a value sourced through a real local/field while preserving semantics."
+evidence = "Player graze and spell finish target code"
+
+[[rules]]
+id = "vc7-frame-var-order"
+requires = ["frame_mismatch"]
+confidence = "observed_pattern"
+recommendation = "Hold behavior constant and tune declarations/lifetimes or #pragma var_order; the frame delta is compiler-shaping evidence, not justification for padding arrays."
+evidence = "TH07 matching workflow exact cases"
+
+[[rules]]
+id = "vc7-object-tail-short"
+requires = ["object_tail_short"]
+confidence = "workflow_rule"
+recommendation = "Inspect missing target side effects and branch forms before adding compiler-only shaping; a shorter tail usually means behavior is still absent."
+evidence = "TH07 matching workflow"
+
+[[rules]]
+id = "vc7-object-tail-long"
+requires = ["object_tail_long"]
+confidence = "workflow_rule"
+recommendation = "Look for redundant temporaries, repeated loads, or non-target cleanup before changing ABI or target-observed behavior."
+evidence = "TH07 matching workflow"

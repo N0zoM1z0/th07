@@ -14,12 +14,15 @@ Use this skill only for the target identity in `config/target.toml`.
    selector.
 3. Reconcile the ledger boundary with target instructions. IDA chunks and
    decompiler sizes are advisory.
-4. Label conclusions Observed, Inferred, or Hypothesized. TH06/TH08 source and
+4. Run `python3 scripts/typed-re.py ADDRESS --json` when the function is
+   instruction-decodable. Treat `exact_observations` as target evidence and
+   `inferences` / compiler recommendations only as source-shaping hypotheses.
+5. Label conclusions Observed, Inferred, or Hypothesized. TH06/TH08 source and
    clone signatures corroborate TH07; they do not override it.
-5. Recover ABI, object layout, side effects, callers/callees, globals, and
+6. Recover ABI, object layout, side effects, callers/callees, globals, and
    control flow before source shaping.
-6. Keep source in the smallest appropriate module. Do not add fake bodies.
-7. Use `th07-matching` for compilation and byte-match work. Update shared
+7. Keep source in the smallest appropriate module. Do not add fake bodies.
+8. Use `th07-matching` for compilation and byte-match work. Update shared
    ledger/name/claim state only when acting as coordinator.
 
 Never patch the target. Never commit copyrighted binaries, analysis databases,
