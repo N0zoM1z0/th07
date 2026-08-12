@@ -68,6 +68,7 @@ instructions, data layout, or exact comparison.
 - [Build and matching plan](docs/BUILD_MATCHING.md)
 - [Complete executable build](docs/EXECUTABLE_BUILD.md)
 - [Prebuilt D3DX8 and VC7 runtime recovery](docs/LIBRARY_RECOVERY.md)
+- [Vendored open-source codec baselines](third_party/README.md)
 - [Workflow evolution and parallel gates](docs/WORKFLOW_EVOLUTION.md)
 - [Generated progress](docs/PROGRESS.md)
 - [Agent operating rules](AGENTS.md)

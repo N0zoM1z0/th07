@@ -45,6 +45,19 @@ directly: vendor an unmodified, license-compatible official release under
 compile with VC7. Archive replay remains preferred because it preserves
 Microsoft's exact wrappers, macros, flags, and object partition automatically.
 
+The source subsets are now checked in under `third_party/zlib-1.1.3`,
+`third_party/libpng-1.0.5`, and `third_party/jpeg-6a`. Their release/archive
+identity and byte-level file manifest are verified without network access:
+
+```bash
+python3 scripts/verify-third-party.py
+```
+
+These upstream trees remain immutable baselines. Project-owned D3DX namespace,
+configuration, and translation-unit adapters must live outside them, and a
+source-built row still requires the same canonical strict comparison as an
+archive-replayed row.
+
 ## Accepted first wave (2026-08-12)
 
 Four archive members reproduce 29 functions and 9,678 function bytes exactly:
