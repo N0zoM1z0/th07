@@ -1114,6 +1114,105 @@ dir32_targets = [
   "?g_AnmManager@th07@@3PAUAnmManager@1@A=?g_AnmManager@th07@@3PAUAnmManager@1@A",
 ]
 
+[units.enemy-lifecycle]
+kind = "probe"
+source = "src/EnemyLifecycle.cpp"
+object = "build/match-units/EnemyLifecycle.obj"
+profile = "vc7-debug-od-no-gs-g6"
+notes = "Target- and TH06-corroborated EnemyManager chain lifecycle helpers."
+
+[[units.enemy-lifecycle.functions]]
+address = "0x00423050"
+symbol_base = "?CutChain@EnemyManagerLifecycle@th07@@SIXXZ"
+rel32_targets = ["?Cut@ChainOverlay@th07@@QAEXPAUChainNodeOverlay@2@@Z=0x00430140"]
+dir32_targets = [
+  "?g_Chain@th07@@3UChainOverlay@1@A=enemy_chain_manager",
+  "?g_EnemyCalcChain@th07@@3UChainNodeOverlay@1@A=enemy_calc_chain",
+  "?g_EnemyDrawHighChain@th07@@3UChainNodeOverlay@1@A=enemy_draw_high_chain",
+  "?g_EnemyDrawLowChain@th07@@3UChainNodeOverlay@1@A=enemy_draw_low_chain",
+]
+
+[[units.enemy-lifecycle.functions]]
+address = "0x00422F40"
+symbol_base = "?RegisterChain@EnemyManagerLifecycle@th07@@SIHPBD0@Z"
+rel32_targets = [
+  "?Initialize@EnemyManagerLifecycle@th07@@QAEXXZ=0x0041EA60",
+  "?AddToCalcChain@ChainOverlay@th07@@QAEHPAUChainNodeOverlay@2@H@Z=0x0042FBD0",
+  "?AddToDrawChain@ChainOverlay@th07@@QAEHPAUChainNodeOverlay@2@H@Z=0x0042FCA0",
+]
+dir32_targets = [
+  "?g_EnemyManagerLifecycle@th07@@3UEnemyManagerLifecycle@1@A=enemy_manager_global",
+  "?g_Chain@th07@@3UChainOverlay@1@A=enemy_chain_manager",
+  "?g_EnemyCalcChain@th07@@3UChainNodeOverlay@1@A=enemy_calc_chain",
+  "?g_EnemyDrawHighChain@th07@@3UChainNodeOverlay@1@A=enemy_draw_high_chain",
+  "?g_EnemyDrawLowChain@th07@@3UChainNodeOverlay@1@A=enemy_draw_low_chain",
+  "?EnemyManagerUpdateCallback@th07@@YIHPAUEnemyManagerLifecycle@1@@Z=0x00420620",
+  "?EnemyManagerAddedCallback@th07@@YIHPAUEnemyManagerLifecycle@1@@Z=0x00422CE0",
+  "?EnemyManagerDeletedCallback@th07@@YIHPAUEnemyManagerLifecycle@1@@Z=0x00422E70",
+  "?EnemyManagerDrawHighCallback@th07@@YIHPAUEnemyManagerLifecycle@1@@Z=0x00422CA0",
+  "?EnemyManagerDrawLowCallback@th07@@YIHPAUEnemyManagerLifecycle@1@@Z=0x00422CC0",
+]
+
+[[units.enemy-lifecycle.functions]]
+address = "0x00422CE0"
+symbol_base = "?AddedCallback@EnemyManagerLifecycle@th07@@QAEHXZ"
+rel32_targets = [
+  "?LoadAnm@EnemyAnmManager@th07@@QAEHHPBDH@Z=0x0044DF90",
+  "?GetRandomU16@EnemyRng@th07@@QAEGXZ=0x00431870",
+]
+dir32_targets = [
+  "?g_EnemyAnmManager@th07@@3PAUEnemyAnmManager@1@A=?g_AnmManager@th07@@3PAUAnmManager@1@A",
+  "?g_EnemyRng@th07@@3UEnemyRng@1@A=ecl_rng_49FE20",
+  "?g_EnemyBossUi@th07@@3PAUBossUiSlot@1@A=enemy_boss_ui",
+]
+
+[[units.enemy-lifecycle.functions]]
+address = "0x00422E70"
+symbol_base = "?DeletedCallback@EnemyManagerLifecycle@th07@@QAEHXZ"
+rel32_targets = ["?ReleaseAnm@EnemyAnmManager@th07@@QAEXH@Z=0x0044E4E0"]
+dir32_targets = [
+  "?g_EnemyAnmManager@th07@@3PAUEnemyAnmManager@1@A=?g_AnmManager@th07@@3PAUAnmManager@1@A",
+  "?g_EnemyBossUi@th07@@3PAUBossUiSlot@1@A=enemy_boss_ui",
+]
+
+[units.enemy-update-helpers]
+kind = "probe"
+source = "src/EnemyUpdate.cpp"
+object = "build/match-units/EnemyUpdate.obj"
+profile = "vc7-debug-od-no-gs-g6"
+notes = "Target- and TH06-corroborated Enemy helpers used directly by the TH07 EnemyManager update backbone."
+
+[[units.enemy-update-helpers.functions]]
+address = "0x004203B0"
+symbol_base = "?ClampPosition@EnemyUpdateOverlay@th07@@QAEXXZ"
+
+[[units.enemy-update-helpers.functions]]
+address = "0x0041F580"
+symbol_base = "?UpdateEffects@EnemyUpdateOverlay@th07@@QAEXXZ"
+rel32_targets = ["?AddNormalizeAngle@th07@@YGMMM@Z=0x00431930"]
+dir32_targets = ["__real@3e99999a=ecl_real_0_3"]
+
+[units.enemy-render-wrappers]
+kind = "probe"
+source = "src/EnemyRender.cpp"
+object = "build/match-units/EnemyRender.obj"
+profile = "vc7-debug-od-no-gs-g6"
+notes = "Target-confirmed EnemyManager draw-chain adapters corroborated by the unique TH08 high-priority clone."
+
+[[units.enemy-render-wrappers.functions]]
+address = "0x00422CA0"
+symbol_base = "?OnDrawHighPriority@EnemyManagerRenderOverlay@th07@@QAEHXZ"
+rel32_targets = ["?DrawImpl@EnemyManagerRenderOverlay@th07@@QAIHHH@Z=0x00422170"]
+
+[[units.enemy-render-wrappers.functions]]
+address = "0x00422CC0"
+symbol_base = "?OnDrawLowPriority@EnemyManagerRenderOverlay@th07@@QAEHXZ"
+rel32_targets = ["?DrawImpl@EnemyManagerRenderOverlay@th07@@QAIHHH@Z=0x00422170"]
+
+[[units.enemy-render-wrappers.functions]]
+address = "0x004232A0"
+symbol_base = "?HasActiveBoss@EnemyManagerRenderOverlay@th07@@QAEHXZ"
+
 [units.screen-effect]
 kind = "probe"
 source = "src/ScreenEffect.cpp"

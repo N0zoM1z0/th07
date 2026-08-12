@@ -83,7 +83,7 @@ i32 Player::CalcDamageToEnemy(D3DXVECTOR3 *enemyPosition, D3DXVECTOR3 *enemySize
 
     damage = 0;
     lastEnemyHit = &lastEnemyHitX;
-    if (lastEnemyHitZ != lastEnemyHitX)
+    if ((lastEnemyHitZ != lastEnemyHitX) ? 1 : 0)
     {
     enemyTopLeftX = enemyPosition->x - enemySize->x * 0.5f;
     enemyTopLeftY = enemyPosition->y - enemySize->y * 0.5f;

@@ -483,6 +483,12 @@ replay_literal_t7rp,0x00496AA8,5437525000,0x0,Target literal T7RP copied into th
 replay_literal_version_100b,0x00497228,30313030,0x0,Target literal 0100 copied into the replay header version string,literal
 replay_literal_version_100b_tail,0x00497228,6200,0x4,Target literal b terminator copied from the tail of the replay header version string,literal
 replay_literal_no_name,0x00496AA0,4e4f204e414d4500,0x0,Target literal NO NAME copied into the replay header exactly as in adjacent TH06 source,literal
+enemy_chain_manager,0x00626218,00000000,0x0,Target EnemyManager chain registry object address,address
+enemy_calc_chain,0x012FE210,00000000,0x0;0x4;0x8;0xc;0x1c,Target EnemyManager calculation chain node address,address
+enemy_draw_high_chain,0x009A9ADC,00000000,0x0;0x4;0x8;0xc;0x1c,Target EnemyManager high-priority draw chain node address,address
+enemy_draw_low_chain,0x012FE230,00000000,0x0;0x4;0x8;0xc;0x1c,Target EnemyManager low-priority draw chain node address,address
+enemy_manager_global,0x009A9B00,00000000,0x0;0x4,Target EnemyManager global object and filename fields,address
+enemy_boss_ui,0x0134DB5C,00000000,0x0;0x4;0x8;0x24c;0x250;0x254;0x498;0x49c;0x4a0;0x6e4;0x6e8;0x6ec,Target EnemyManager four-slot boss UI position array,address
 ecl_real_10018,0x00498D5C,00881c46,0x0,Target-observed float 10018.0 constant used by the ECL dispatcher,literal
 ecl_real_10019,0x00498D58,008c1c46,0x0,Target-observed float 10019.0 constant used by the ECL dispatcher,literal
 ecl_real_10020,0x00498D54,00901c46,0x0,Target-observed float 10020.0 constant used by the ECL dispatcher,literal
