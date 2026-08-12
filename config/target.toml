@@ -1,0 +1,28 @@
+[target]
+title = "東方妖々夢 ～ Perfect Cherry Blossom"
+version = "1.00b"
+region = "original-japanese"
+filename = "th07.exe"
+size = 650752
+sha256 = "35467eaf8dc7fc85f024f16fb2037255f151cefda33cf4867bc9122aaa2e80ca"
+md5 = "0126afce1e805370d36c3482445e98da"
+
+[pe]
+machine = "i386"
+image_base = "0x00400000"
+entry_point = "0x0047EA7D"
+timestamp_utc = "2003-10-23T20:52:17Z"
+linker_version = "7.0"
+size_of_image = 16150528
+text_start = "0x00401000"
+text_end = "0x0048CD37"
+text_virtual_size = 572728
+text_raw_size = 572928
+relocations_stripped = true
+
+[toolchain]
+family = "Microsoft Visual C++ .NET 2002 (VC7)"
+compiler_build = 9466
+rich_checksum = "0x2FAEA10C"
+evidence = "PE linker 7.0 and Rich-header product records with build 9466"
+

@@ -1,0 +1,21 @@
+name: reconstruction-ledger
+
+on:
+  push:
+  pull_request:
+
+jobs:
+  validate:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+      - name: Validate tracked reconstruction state
+        run: |
+          python3 -m py_compile scripts/*.py
+          python3 scripts/validate-tracking.py
+          python3 scripts/progress.py --check
+          git diff --check
+

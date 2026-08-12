@@ -1,0 +1,24 @@
+# Original game files are never distributed by this project.
+/resources/th07.exe
+/resources/*.dat
+/resources/*.zip
+/resources/*.rar
+
+# Local copies of adjacent-version source repositories.
+/_references/
+
+# Generated and local reverse-engineering state.
+/.analysis/
+/.tools/
+/build/
+/local/
+/.venv/
+/reccmp-user.yml
+/compile_commands.json
+*.gpr
+*.rep/
+*.idb
+*.i64
+*.pyc
+__pycache__/
+
