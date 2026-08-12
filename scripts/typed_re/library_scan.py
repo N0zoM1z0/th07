@@ -29,6 +29,7 @@ FUNCTIONS = ROOT / "config" / "functions.csv"
 BUILD = ROOT / "build" / "library-scan"
 IMAGE_REL_I386_DIR32 = 0x0006
 IMAGE_REL_I386_REL32 = 0x0014
+IMAGE_SCN_CNT_UNINITIALIZED_DATA = 0x00000080
 IMAGE_SCN_LNK_NRELOC_OVFL = 0x01000000
 
 
@@ -115,6 +116,33 @@ class CoffObject:
             return self.data[start:end].decode("ascii", errors="replace")
         return raw.rstrip(b"\0").decode("ascii", errors="replace")
 
+    def initialized_sample(self, symbol: dict[str, Any], raw_addend: int) -> bytes | None:
+        section_number = int(symbol["section"])
+        if not 0 < section_number <= len(self.sections):
+            return None
+        section = self.sections[section_number - 1]
+        if bytes(section["name"]).startswith(b".text") or (
+            int(section["characteristics"]) & IMAGE_SCN_CNT_UNINITIALIZED_DATA
+        ):
+            return None
+        addend = signed32(raw_addend)
+        value = int(symbol["value"])
+        sample_offset = value + addend
+        following = [
+            int(item["value"])
+            for item in self.symbols.values()
+            if int(item["section"]) == section_number and int(item["value"]) > value
+        ]
+        boundary = min(following) if following else int(section["raw_size"])
+        length = min(16, boundary - sample_offset)
+        if sample_offset < 0 or length < 4 or sample_offset + length > int(section["raw_size"]):
+            return None
+        start = int(section["raw_pointer"]) + sample_offset
+        sample = self.data[start : start + length]
+        # Zero-initialized mutable storage is intentionally not inferred from
+        # a common byte pattern. Only initialized constants/tables are proposed.
+        return sample if any(sample) else None
+
     def functions(self, minimum_size: int) -> list[dict[str, Any]]:
         by_location: dict[tuple[int, int], list[dict[str, Any]]] = defaultdict(list)
         for symbol in self.symbols.values():
@@ -173,8 +201,12 @@ class CoffObject:
                         "type": relocation_type,
                         "target_name": str(target["name"]),
                         "target_section": int(target["section"]),
+                        "target_value": int(target["value"]),
                         "raw_addend": struct.unpack_from("<I", code, field)[0],
                     }
+                )
+                relocations[-1]["object_literal"] = self.initialized_sample(
+                    target, int(relocations[-1]["raw_addend"])
                 )
             result.append(
                 {
@@ -203,11 +235,18 @@ def normalized(code: bytes, relocations: list[dict[str, Any]]) -> bytes:
 
 
 def solve_relocations(
-    function: dict[str, Any], address: int, target: bytes, ledger: dict[str, dict[str, str]]
-) -> tuple[list[str], list[str], list[str]]:
+    function: dict[str, Any],
+    address: int,
+    target: bytes,
+    ledger: dict[str, dict[str, str]],
+    image: Any,
+    library_name: str,
+    member: str,
+) -> tuple[list[str], list[str], list[str], list[dict[str, str]]]:
     rel32: dict[str, str] = {}
     dir32: dict[str, str] = {}
     blockers: list[str] = []
+    proposals: list[dict[str, str]] = []
     allowlist = comparator.load_relocations()
     code = function["code"]
     section_number = int(function["section"])
@@ -260,6 +299,29 @@ def solve_relocations(
                 blockers.append(
                     f"DIR32 {name}+0x{raw_addend:X} needs allowlist base {canonical(base)}"
                 )
+                literal = relocation.get("object_literal")
+                if isinstance(literal, bytes):
+                    try:
+                        target_literal = image.read(target_value, len(literal))
+                    except ValueError:
+                        target_literal = b""
+                    if literal == target_literal:
+                        key = f"vc7_auto_{base:08X}_{raw_addend:08X}"
+                        proposals.append(
+                            {
+                                "coff_symbol": key,
+                                "address": canonical(base),
+                                "data_hex": literal.hex(),
+                                "addends": f"0x{raw_addend:X}",
+                                "evidence": (
+                                    f"SHA-pinned {library_name}/{member} initialized symbol "
+                                    f"{name}+0x{raw_addend:X} equals exact target bytes at "
+                                    f"{canonical(target_value)}"
+                                ),
+                                "validation": "literal",
+                                "source_symbol": name,
+                            }
+                        )
         if mapped is not None:
             mapping_name = f"{name}+0x{raw_addend:X}" if raw_addend else name
             previous = dir32.setdefault(mapping_name, mapped)
@@ -269,6 +331,7 @@ def solve_relocations(
         [f"{name}={mapped}" for name, mapped in sorted(rel32.items())],
         [f"{name}={mapped}" for name, mapped in sorted(dir32.items())],
         blockers,
+        proposals,
     )
 
 
@@ -320,7 +383,9 @@ def scan(library_name: str, minimum_size: int, include_tracked: bool, address_fi
             if len(matches) != 1:
                 continue
             address, target = matches[0]
-            rel32, dir32, blockers = solve_relocations(function, address, target, ledger)
+            rel32, dir32, blockers, proposals = solve_relocations(
+                function, address, target, ledger, image, library_name, member
+            )
             pairs.append(
                 {
                     "library": library_name,
@@ -331,6 +396,7 @@ def scan(library_name: str, minimum_size: int, include_tracked: bool, address_fi
                     "rel32_targets": rel32,
                     "dir32_targets": dir32,
                     "blockers": blockers,
+                    "relocation_proposals": proposals,
                     "body": body,
                     "target": target,
                 }
@@ -342,6 +408,7 @@ def scan(library_name: str, minimum_size: int, include_tracked: bool, address_fi
     exact = []
     blocked = []
     ambiguous = []
+    relocation_proposals: dict[tuple[str, str], dict[str, str]] = {}
     for address, choices in sorted(by_target.items()):
         unique_locations = {
             (item["member"].lower(), item["symbol"], item["size"]) for item in choices
@@ -359,6 +426,11 @@ def scan(library_name: str, minimum_size: int, include_tracked: bool, address_fi
             continue
         item = choices[0]
         if item["blockers"]:
+            for proposal in item["relocation_proposals"]:
+                key = (proposal["address"], proposal["addends"])
+                previous = relocation_proposals.get(key)
+                if previous is None or len(proposal["data_hex"]) > len(previous["data_hex"]):
+                    relocation_proposals[key] = proposal
             blocked.append({key: value for key, value in item.items() if key not in {"body", "target"}})
             continue
         body = item["body"]
@@ -409,11 +481,15 @@ def scan(library_name: str, minimum_size: int, include_tracked: bool, address_fi
         "exact_candidates": exact,
         "blocked_candidates": blocked,
         "ambiguous_candidates": ambiguous,
+        "relocation_proposals": [
+            relocation_proposals[key] for key in sorted(relocation_proposals)
+        ],
         "summary": {
             "exact_functions": len(exact),
             "exact_bytes": sum(item["size"] for item in exact),
             "blocked_functions": len(blocked),
             "ambiguous_functions": len(ambiguous),
+            "relocation_proposals": len(relocation_proposals),
         },
     }
 
@@ -449,7 +525,19 @@ def main() -> int:
                 or expected_rel32 not in exact[0]["rel32_targets"]
             ):
                 raise ValueError("scanner regression did not recover relocated CD3DXBlt::BltSame")
-            print("VC7 library scanner OK: relocated CD3DXBlt::BltSame strict exact")
+            proposal_report = scan(library, args.min_size, True, "0x004637A6")
+            if not any(
+                item["address"] == "0x004637A6"
+                and any(
+                    "=vc7_auto_00498B58_00000000" in mapping
+                    for mapping in item["dir32_targets"]
+                )
+                for item in proposal_report["exact_candidates"]
+            ):
+                raise ValueError("scanner regression did not replay BltTriangle3D initialized data")
+            print(
+                "VC7 library scanner OK: relocated code and initialized data strict exact"
+            )
         elif args.json:
             print(json.dumps(report, indent=2))
         else:

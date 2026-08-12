@@ -108,5 +108,17 @@ SHA-pinned archive member and replays all solved relocations through the strict
 comparator. The LIBCMT provenance also agrees with the reconstruction compiler
 profile's explicit `/MT` selection.
 
+The scanner also proposes initialized-data relocations when the COFF symbol is
+in an initialized non-code section, the target address is mapped, and up to 16
+bytes at the exact symbol-plus-addend location agree with the target. These are
+coordinator-reviewed proposals, never automatic allowlist writes. The first
+accepted initialized-data wave unlocks another 89 D3DX8 functions / 30,004
+bytes. All 23 affected match units were rebuilt and all 162 functions in those
+units remained strict exact after the new allowlist entries were applied.
+
+Across the raw and relocation-aware D3DX8 waves, 380 functions / 92,045 bytes
+are now reproducibly exact. Together with 123 LIBCMT functions / 10,403 bytes,
+the library total is 503 functions / 102,448 bytes.
+
 Normalized identity is only a candidate filter. It cannot promote a row unless
 the final relocation-applied target bytes are independently 100% exact.

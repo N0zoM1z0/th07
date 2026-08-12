@@ -105,12 +105,12 @@ struct BulletUpdateLaser
     f32 maximumLength;                // +0x4B0
     f32 width;                        // +0x4B4
     f32 speed;                        // +0x4B8
-    i32 startTime;                    // +0x4BC
-    i32 hitboxStartTime;              // +0x4C0
-    i32 duration;                     // +0x4C4
-    i32 despawnDuration;              // +0x4C8
-    i32 hitboxEndDelay;               // +0x4CC
-    u8 unknown4D0[4];
+    i32 unknown4BC;
+    i32 startTime;                    // +0x4C0
+    i32 hitboxStartTime;              // +0x4C4
+    i32 duration;                     // +0x4C8
+    i32 despawnDuration;              // +0x4CC
+    i32 hitboxEndDelay;               // +0x4D0
     i32 isInUse;                      // +0x4D4
     BulletUpdateTimer timer;          // +0x4D8
     u16 flags;                        // +0x4E4
@@ -488,12 +488,12 @@ int __fastcall BulletManager::OnUpdate(BulletManager *manager)
                 laser->primaryAnimation.scaleX = hitboxThickness / 16.0f;
                 hitboxSize.x = hitboxThickness / 2.0f;
             }
-            if (laser->timer.current >= laser->hitboxStartTime)
+            if ((laser->timer.current >= laser->hitboxStartTime) != 0)
             {
                 g_Player.CalcLaserHitbox(&hitboxCenter, &hitboxSize, &laser->position, laser->angle,
                                          laser->timer.current % 12 == 0);
             }
-            if (laser->timer.current < laser->startTime)
+            if ((laser->timer.current < laser->startTime) != 0)
             {
                 break;
             }
@@ -503,7 +503,7 @@ int __fastcall BulletManager::OnUpdate(BulletManager *manager)
         case 1:
             g_Player.CalcLaserHitbox(&hitboxCenter, &hitboxSize, &laser->position, laser->angle,
                                      laser->timer.current % 12 == 0);
-            if (laser->timer.current < laser->duration)
+            if ((laser->timer.current < laser->duration) != 0)
             {
                 break;
             }
@@ -533,12 +533,16 @@ int __fastcall BulletManager::OnUpdate(BulletManager *manager)
                 laser->primaryAnimation.scaleX = hitboxThickness / 16.0f;
                 hitboxSize.x = hitboxThickness / 2.0f;
             }
-            if (laser->timer.current < laser->hitboxEndDelay)
+            if ((laser->timer.current < laser->hitboxEndDelay) != 0)
             {
                 g_Player.CalcLaserHitbox(&hitboxCenter, &hitboxSize, &laser->position, laser->angle,
                                          laser->timer.current % 12 == 0);
             }
-            if (laser->timer.current >= laser->despawnDuration)
+            if ((laser->timer.current < laser->despawnDuration) != 0)
+            {
+                break;
+            }
+            else
             {
                 laser->isInUse = 0;
                 continue;
