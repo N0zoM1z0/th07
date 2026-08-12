@@ -5,3 +5,17 @@ address,name,module,confidence,evidence
 0x00431ACE,TextHelper_allocate_buffer_with_fallback,text,observed,IDA decompile plus exact TH06/TH08 bytes
 0x00431B2D,TextHelper_try_allocate_buffer,text,observed,IDA decompile and GDI/memset callees plus unique TH06/TH08 instruction identity
 0x00431CEC,TextHelper_get_format_info,text,observed,IDA decompile and exact xref from 0x00431B2D to target format table 0x0049ED98
+0x0045CF50,CSound_ctor,sound,observed,Exact-target disassembly and strict VC7 COFF comparison
+0x0045D060,CStreamingSound_init_sound_buffers,sound,observed,Exact-target DirectSound calls and strict VC7 COFF comparison
+0x0045D2C0,CSound_dtor,sound,observed,Exact-target vptr and delete calls plus strict VC7 COFF comparison
+0x0045D860,CSound_stop,sound,observed,Exact-target DirectSound vtable calls and strict VC7 COFF comparison
+0x0045D910,CSound_pause,sound,observed,Exact-target DirectSound vtable call and strict VC7 COFF comparison
+0x0045D960,CSound_unpause,sound,observed,Exact-target DirectSound vtable call and strict VC7 COFF comparison
+0x0045DA20,CStreamingSound_ctor,sound,observed,Exact-target base constructor call and strict VC7 COFF comparison
+0x0045DAD0,CStreamingSound_update_fade_out,sound,observed,Exact-target fade control flow and strict VC7 COFF comparison
+0x0045DF50,CStreamingSound_reset,sound,observed,Exact-target restore and stream-reset calls plus strict VC7 COFF comparison
+0x00430290,Controller_get_joystick_caps,input,observed,Exact-target WINMM calls and strict VC7 COFF comparison
+0x0044A460,ScreenEffect_clear,ui,observed,Exact-target D3D calls and strict VC7 COFF comparison
+0x0044A520,ScreenEffect_set_viewport,ui,observed,Exact-target viewport writes and strict VC7 COFF comparison
+0x0044ADF0,ScreenEffect_draw_full_fade,ui,observed,Exact-target fade rectangle and strict VC7 COFF comparison
+0x0044AF30,ScreenEffect_draw_arcade_fade,ui,observed,Exact-target arcade rectangle and strict VC7 COFF comparison

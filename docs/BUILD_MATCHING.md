@@ -9,8 +9,10 @@ SDK. TH07 will reuse the toolchain design while keeping its own source list,
 link order, addresses, globals, and comparison manifests.
 
 The project wrapper pins the audited TH08 tooling commit, installs the VC7 and
-DirectX 8 environment below ignored `.tools/`, and applies its
-`#pragma var_order` compiler shim:
+DirectX 8 environment below ignored `.tools/`, keeps the Wine prefix in the
+workspace's sibling `.th07-wine-vc7` directory, and applies its
+`#pragma var_order` compiler shim. Keeping Wine outside the workspace prevents
+forced symlink-following file searches from escaping through Wine's `z:` drive:
 
 ```bash
 scripts/bootstrap-tools.sh
@@ -53,21 +55,23 @@ It records the source, manifest, compiler runner, `cl.exe`, patched `C1XX.DLL`,
 and object hashes. The JSON comparator has stable `exact`, `mismatch`,
 `blocked`, and `error` outcomes and reports the first differing byte.
 
-The `text-helper`, `midi`, and `zwave` units are explicitly focused probes.
+The match units are explicitly focused probes.
 Their success can prove function code generation but does not claim the
 original TH07 object partitions.
 
 ## Exact code-generation results
 
-The pinned VC7 build and patched `C1XX.DLL` currently reproduce 30 functions
-across three probes:
+The pinned VC7 build and patched `C1XX.DLL` currently reproduce 44 functions
+across five probes:
 
 | Probe | Functions | Exact bytes |
 | --- | ---: | ---: |
 | `text-helper` | 11 | 2,992 / 2,992 |
 | `midi` | 11 | 725 / 725 |
-| `zwave` | 8 | 745 / 745 |
-| **Total** | **30** | **4,462 / 4,462** |
+| `zwave` | 17 | 2,567 / 2,567 |
+| `controller` | 1 | 85 / 85 |
+| `screen-effect` | 4 | 528 / 528 |
+| **Total** | **44** | **6,897 / 6,897** |
 
 The strict comparison resolves member and CRT calls; validates GDI32, WINMM,
 and KERNEL32 IAT entries; checks global, string, and vtable target bytes; and
@@ -79,7 +83,13 @@ relocations. Accepted commands include:
 python3 scripts/build.py --unit text-helper --compare --json
 python3 scripts/build.py --unit midi --compare --json
 python3 scripts/build.py --unit zwave --compare --json
+python3 scripts/build.py --unit screen-effect --compare --json
 ```
+
+The `vc7-debug-od-no-gs` profile is an evidence-controlled variant for target
+functions whose prologues lack VC7 security-cookie frames. VC7 does not accept
+`/GS-`; the profile omits `/GS` while holding the remaining `/Od /Ob1 /Op /G5`
+switches constant.
 
 ## Guardrails
 

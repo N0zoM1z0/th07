@@ -193,11 +193,11 @@ address,size,span_end,current_name,proposed_name,module,status,match_percent,cal
 0x00425A50,4237,0x00426ADC,sub_425A50,,,unclassified,0.00,unknown,,false,,,,
 0x00426B00,289,0x00426C20,sub_426B00,,,unclassified,0.00,unknown,,false,,,,
 0x00426C40,796,0x00426F5B,sub_426C40,,,unclassified,0.00,unknown,,false,,,,
-0x00426F60,1703,0x00427606,sub_426F60,,,unclassified,0.00,unknown,,false,,,,
-0x00427620,116,0x00427693,sub_427620,,,unclassified,0.00,unknown,,false,,,,
-0x004276A0,192,0x0042775F,sub_4276A0,,,unclassified,0.00,unknown,,false,,,,
-0x00427760,51,0x00427792,sub_427760,,,unclassified,0.00,unknown,,false,,,,
-0x004277A0,266,0x004278A9,sub_4277A0,,,unclassified,0.00,unknown,,false,,,,
+0x00426F60,1703,0x00427606,sub_426F60,BulletManager_added_callback,bullet,compiles,0.00,__cdecl,int BulletManager_added_callback(BulletManager * manager),false,src/BulletManager.cpp,VC7 COFF compiles; target callback semantics and 11 template records observed,root,Source shaping and relocation integration remain
+0x00427620,116,0x00427693,sub_427620,BulletManager_deleted_callback,bullet,compiles,0.00,__cdecl,int BulletManager_deleted_callback(BulletManager * manager),false,src/BulletManager.cpp,VC7 COFF compiles; target state guard and four ANM releases observed,root,Source shaping and relocation integration remain
+0x004276A0,192,0x0042775F,sub_4276A0,BulletManager_register_chain,bullet,compiles,0.00,__cdecl,int BulletManager_register_chain(void),false,src/BulletManager.cpp,VC7 COFF compiles; target callbacks and chain priorities observed,root,Static ABI remains evidence-qualified
+0x00427760,51,0x00427792,sub_427760,BulletManager_cut_chain,bullet,compiles,0.00,__cdecl,void BulletManager_cut_chain(void),false,src/BulletManager.cpp,VC7 COFF compiles; target chain globals and manager clear observed,root,Source shaping and relocation integration remain
+0x004277A0,266,0x004278A9,sub_4277A0,BulletManager_remove_all_bullets,bullet,compiles,0.00,__thiscall,void BulletManager_remove_all_bullets(BulletManager * this; int turn_into_item),false,src/BulletManager.cpp,VC7 COFF compiles; target 1024-record traversal observed,root,Argument is target-observed unused in this body
 0x004278B0,91,0x0042790A,sub_4278B0,,,unclassified,0.00,unknown,,false,,,,
 0x00427910,73,0x00427958,sub_427910,,,unclassified,0.00,unknown,,false,,,,
 0x00427960,62,0x0042799D,sub_427960,,,unclassified,0.00,unknown,,false,,,,
@@ -278,13 +278,13 @@ address,size,span_end,current_name,proposed_name,module,status,match_percent,cal
 0x00430060,38,0x00430085,sub_430060,,,unclassified,0.00,unknown,,false,,,,
 0x00430090,161,0x00430130,sub_430090,,,unclassified,0.00,unknown,,false,,,,
 0x00430140,325,0x00430284,sub_430140,,,unclassified,0.00,unknown,,false,,,,
-0x00430290,85,0x004302E4,sub_430290,,,unclassified,0.00,unknown,,false,,,,
-0x004302F0,122,0x00430369,sub_4302F0,,,unclassified,0.00,unknown,,false,,,,
-0x00430370,115,0x004303E2,sub_430370,,,unclassified,0.00,unknown,,false,,,,
-0x004303F0,1488,0x004309BF,sub_4303F0,,,unclassified,0.00,unknown,,false,,,,
-0x004309C0,392,0x00430B47,sub_4309C0,,,unclassified,0.00,unknown,,false,,,,
-0x00430B50,1904,0x004312BF,sub_430B50,,,unclassified,0.00,unknown,,false,,,,
-0x004312C0,110,0x0043132D,sub_4312C0,,,unclassified,0.00,unknown,,false,,,,
+0x00430290,85,0x004302E4,sub_430290,Controller_get_joystick_caps,input,matching,100.00,__fastcall,u16 Controller_get_joystick_caps(void),false,src/Controller.cpp,strict VC7 COFF exact 85/85 bytes 2026-08-12,root,WINMM IAT and controller globals verified
+0x004302F0,122,0x00430369,sub_4302F0,Controller_set_direct_input_button,input,compiles,0.00,__fastcall,u32 Controller_set_direct_input_button(u16 * out; i16 mapping; TouhouButton button; u8 * state),false,src/Controller.cpp,VC7 COFF compiles; strict mismatch at 0x00430308,root,Control-flow shaping remains
+0x00430370,115,0x004303E2,sub_430370,Controller_set_legacy_button,input,compiles,0.00,__fastcall,u32 Controller_set_legacy_button(u16 * out; i16 mapping; TouhouButton button; u32 state),false,src/Controller.cpp,VC7 COFF compiles; strict mismatch at 0x00430388,root,Control-flow shaping remains
+0x004303F0,1488,0x004309BF,sub_4303F0,Controller_get_controller_input,input,compiles,0.00,__fastcall,u16 Controller_get_controller_input(u16 buttons),false,src/Controller.cpp,VC7 COFF compiles with target-confirmed no-GS profile,root,Relocations and source shaping remain
+0x004309C0,392,0x00430B47,sub_4309C0,Controller_get_controller_state,input,compiles,0.00,__fastcall,u8 * Controller_get_controller_state(void),false,src/Controller.cpp,VC7 COFF compiles with target-confirmed no-GS profile,root,Preserves target GetDeviceState status bug
+0x00430B50,1904,0x004312BF,sub_430B50,Controller_get_input,input,compiles,0.00,__fastcall,u16 Controller_get_input(void),false,src/Controller.cpp,VC7 COFF compiles with target-confirmed no-GS profile,root,Keyboard control-flow shaping remains
+0x004312C0,110,0x0043132D,sub_4312C0,Controller_reset_keyboard,input,compiles,0.00,__fastcall,void Controller_reset_keyboard(void),false,src/Controller.cpp,VC7 COFF compiles; strict mismatch at 0x004312FC,root,Object is one byte longer than target
 0x00431330,434,0x004314E1,sub_431330,,,unclassified,0.00,unknown,,false,,,,
 0x004314F0,69,0x00431534,sub_4314F0,,,unclassified,0.00,unknown,,false,,,,
 0x00431540,172,0x004315EB,sub_431540,,,unclassified,0.00,unknown,,false,,,,
@@ -431,14 +431,14 @@ address,size,span_end,current_name,proposed_name,module,status,match_percent,cal
 0x0043D790,229,0x0043D874,sub_43D790,,,unclassified,0.00,unknown,,false,,,,
 0x0043D880,264,0x0043D987,sub_43D880,,,unclassified,0.00,unknown,,false,,,,
 0x0043D990,72,0x0043D9D7,sub_43D990,,,unclassified,0.00,unknown,,false,,,,
-0x0043D9E0,1724,0x0043E09B,sub_43D9E0,,,unclassified,0.00,unknown,,false,,,,
-0x0043E0A0,442,0x0043E259,sub_43E0A0,,,unclassified,0.00,unknown,,false,,,,
-0x0043E260,324,0x0043E3A3,sub_43E260,,,unclassified,0.00,unknown,,false,,,,
-0x0043E3B0,293,0x0043E4D4,sub_43E3B0,,,unclassified,0.00,unknown,,false,,,,
-0x0043E4E0,456,0x0043E6A7,sub_43E4E0,,,unclassified,0.00,unknown,,false,,,,
-0x0043E6B0,1247,0x0043EB8E,sub_43E6B0,,,unclassified,0.00,unknown,,false,,,,
-0x0043EB90,549,0x0043EDB4,sub_43EB90,,,unclassified,0.00,unknown,,false,,,,
-0x0043EDC0,143,0x0043EE4E,sub_43EDC0,,,unclassified,0.00,unknown,,false,,,,
+0x0043D9E0,1724,0x0043E09B,sub_43D9E0,Player_calc_damage_to_enemy,player,compiles,0.00,__thiscall,i32 Player_calc_damage_to_enemy(Player * this; D3DXVECTOR3 * position; D3DXVECTOR3 * size; i32 * bomb_hit),false,src/Player.cpp,VC7 COFF compiles; target bullet and damage-region walks observed,root,Relocations and source shaping remain
+0x0043E0A0,442,0x0043E259,sub_43E0A0,Player_check_aux_projectile_collision,player,compiles,0.00,__thiscall,i32 Player_check_aux_projectile_collision(Player * this; D3DXVECTOR3 * center; D3DXVECTOR3 * size),false,src/Player.cpp,VC7 COFF compiles; target AABB and circle pool scan observed,root,Original source name remains hypothesis-qualified
+0x0043E260,324,0x0043E3A3,sub_43E260,Player_calc_kill_box_collision,player,compiles,0.00,__thiscall,i32 Player_calc_kill_box_collision(Player * this; D3DXVECTOR3 * center; D3DXVECTOR3 * size),false,src/Player.cpp,VC7 COFF compiles; target death collision flow observed,root,Relocations and source shaping remain
+0x0043E3B0,293,0x0043E4D4,sub_43E3B0,Player_check_graze,player,compiles,0.00,__thiscall,i32 Player_check_graze(Player * this; D3DXVECTOR3 * center; D3DXVECTOR3 * size),false,src/Player.cpp,VC7 COFF compiles; target graze expansion and scoring call observed,root,Relocations and source shaping remain
+0x0043E4E0,456,0x0043E6A7,sub_43E4E0,Player_calc_item_box_collision,player,compiles,0.00,__thiscall,i32 Player_calc_item_box_collision(Player * this; D3DXVECTOR3 * center; D3DXVECTOR3 * size),false,src/Player.cpp,VC7 COFF compiles; target item-box state gate observed,root,Relocations and source shaping remain
+0x0043E6B0,1247,0x0043EB8E,sub_43E6B0,Player_calc_laser_hitbox,player,compiles,0.00,__thiscall,i32 Player_calc_laser_hitbox(Player * this; D3DXVECTOR3 * center; D3DXVECTOR3 * size; D3DXVECTOR3 * rotation; f32 angle; i32 can_graze),false,src/Player.cpp,VC7 COFF compiles; target rotated hitbox and graze flow observed,root,Rotation helper representation remains under comparison
+0x0043EB90,549,0x0043EDB4,sub_43EB90,Player_score_graze,player,compiles,0.00,__thiscall,i32 Player_score_graze(Player * this; D3DXVECTOR3 * center),false,src/Player.cpp,VC7 COFF compiles; target counters effects rank and sound flow observed,root,Relocations and source shaping remain
+0x0043EDC0,143,0x0043EE4E,sub_43EDC0,Player_die,player,compiles,0.00,__thiscall,i32 Player_die(Player * this),false,src/Player.cpp,VC7 COFF compiles; target death-state calls observed,root,Relocations and source shaping remain
 0x0043EE50,6790,0x004408D5,sub_43EE50,,,unclassified,0.00,unknown,,false,,,,
 0x00440940,169,0x004409E8,sub_440940,,,unclassified,0.00,unknown,,false,,,,
 0x004409F0,760,0x00440CE7,sub_4409F0,,,unclassified,0.00,unknown,,false,,,,
@@ -500,14 +500,14 @@ address,size,span_end,current_name,proposed_name,module,status,match_percent,cal
 0x00449B05,1780,0x0044A1F8,sub_449B05,,,unclassified,0.00,unknown,,false,,,,
 0x0044A1F9,265,0x0044A301,sub_44A1F9,,,unclassified,0.00,unknown,,false,,,,
 0x0044A302,339,0x0044A454,sub_44A302,,,unclassified,0.00,unknown,,false,,,,
-0x0044A460,190,0x0044A51D,sub_44A460,,,unclassified,0.00,unknown,,false,,,,
-0x0044A520,124,0x0044A59B,sub_44A520,,,unclassified,0.00,unknown,,false,,,,
+0x0044A460,190,0x0044A51D,sub_44A460,ScreenEffect_clear,ui,matching,100.00,__fastcall,void ScreenEffect_clear(DWORD color),false,src/ScreenEffect.cpp,strict VC7 COFF exact 190/190 bytes 2026-08-12,root,Two Clear and Present cycles with reset fallback
+0x0044A520,124,0x0044A59B,sub_44A520,ScreenEffect_set_viewport,ui,matching,100.00,__fastcall,void ScreenEffect_set_viewport(DWORD clear_color),false,src/ScreenEffect.cpp,strict VC7 COFF exact 124/124 bytes 2026-08-12,root,Viewport and no-argument render-state helper ABI verified
 0x0044A5A0,165,0x0044A644,sub_44A5A0,,,unclassified,0.00,unknown,,false,,,,
 0x0044A650,969,0x0044AA18,sub_44A650,,,unclassified,0.00,unknown,,false,,,,
 0x0044AA20,971,0x0044ADEA,sub_44AA20,,,unclassified,0.00,unknown,,false,,,,
-0x0044ADF0,145,0x0044AE80,sub_44ADF0,,,unclassified,0.00,unknown,,false,,,,
+0x0044ADF0,145,0x0044AE80,sub_44ADF0,ScreenEffect_draw_full_fade,ui,matching,100.00,__fastcall,i32 ScreenEffect_draw_full_fade(ScreenEffect * effect),false,src/ScreenEffect.cpp,strict VC7 COFF exact 145/145 bytes 2026-08-12,root,Full-screen rectangle and fade color verified
 0x0044AE90,159,0x0044AF2E,sub_44AE90,,,unclassified,0.00,unknown,,false,,,,
-0x0044AF30,69,0x0044AF74,sub_44AF30,,,unclassified,0.00,unknown,,false,,,,
+0x0044AF30,69,0x0044AF74,sub_44AF30,ScreenEffect_draw_arcade_fade,ui,matching,100.00,__fastcall,i32 ScreenEffect_draw_arcade_fade(ScreenEffect * effect),false,src/ScreenEffect.cpp,strict VC7 COFF exact 69/69 bytes 2026-08-12,root,Arcade rectangle 32 16 416 464 and fade color verified
 0x0044AF80,267,0x0044B08A,sub_44AF80,,,unclassified,0.00,unknown,,false,,,,
 0x0044B090,76,0x0044B0DB,sub_44B090,,,unclassified,0.00,unknown,,false,,,,
 0x0044B0E0,409,0x0044B278,sub_44B0E0,,,unclassified,0.00,unknown,,false,,,,
@@ -607,28 +607,28 @@ address,size,span_end,current_name,proposed_name,module,status,match_percent,cal
 0x0045C6F0,23,0x0045C706,unknown_libname_4,CSoundManager_ctor,sound,matching,100.00,__thiscall,CSoundManager * CSoundManager_ctor(CSoundManager * this),false,src/zwave.cpp,strict VC7 COFF exact 23/23 bytes 2026-08-12,root,Initializes DirectSound interface pointer
 0x0045C710,44,0x0045C73B,sub_45C710,CSoundManager_dtor,sound,matching,100.00,__thiscall,void CSoundManager_dtor(CSoundManager * this),false,src/zwave.cpp,strict VC7 COFF exact 44/44 bytes 2026-08-12,root,Releases DirectSound interface
 0x0045C740,142,0x0045C7CD,sub_45C740,CSoundManager_initialize,sound,matching,100.00,__thiscall,HRESULT CSoundManager_initialize(CSoundManager * this; HWND window; DWORD coop; DWORD channels; DWORD frequency; DWORD bitrate),false,src/zwave.cpp,strict VC7 COFF exact 142/142 bytes 2026-08-12,root,DirectSoundCreate8 and primary format call targets verified
-0x0045C7D0,265,0x0045C8D8,sub_45C7D0,,,unclassified,0.00,unknown,,false,,,,
+0x0045C7D0,265,0x0045C8D8,sub_45C7D0,CSoundManager_set_primary_buffer_format,sound,compiles,0.00,__thiscall,HRESULT CSoundManager_set_primary_buffer_format(CSoundManager * this; DWORD channels; DWORD frequency; DWORD bitrate),false,src/zwave.cpp,VC7 COFF compiles with target-confirmed no-GS profile; strict mismatch at 0x0045C7EF,root,Object remains 14 bytes longer than target
 0x0045C8E0,844,0x0045CC2B,sub_45C8E0,,,unclassified,0.00,unknown,,false,,,,
 0x0045CC30,795,0x0045CF4A,sub_45CC30,,,unclassified,0.00,unknown,,false,,,,
-0x0045CF50,221,0x0045D02C,sub_45CF50,,,unclassified,0.00,unknown,,false,,,,
+0x0045CF50,221,0x0045D02C,sub_45CF50,CSound_ctor,sound,matching,100.00,__thiscall,CSound * CSound_ctor(CSound * this; IDirectSoundBuffer ** buffers; DWORD buffer_size; DWORD buffer_count; CWaveFile * wave),false,src/zwave.cpp,strict VC7 COFF exact 221/221 bytes 2026-08-12,root,CSound constructor; copies buffer pointers and primes playback
 0x0045D030,46,0x0045D05D,sub_45D030,,,unclassified,0.00,unknown,,false,,,,
-0x0045D060,599,0x0045D2B6,sub_45D060,,,unclassified,0.00,unknown,,false,,,,
-0x0045D2C0,241,0x0045D3B0,sub_45D2C0,,,unclassified,0.00,unknown,,false,,,,
-0x0045D3C0,484,0x0045D5A3,sub_45D3C0,,,unclassified,0.00,unknown,,false,,,,
+0x0045D060,599,0x0045D2B6,sub_45D060,CStreamingSound_init_sound_buffers,sound,matching,100.00,__thiscall,HRESULT CStreamingSound_init_sound_buffers(CStreamingSound * this),false,src/zwave.cpp,strict VC7 COFF exact 599/599 bytes 2026-08-12,root,Recreates DirectSound buffers and installs 16 notification positions
+0x0045D2C0,241,0x0045D3B0,sub_45D2C0,CSound_dtor,sound,matching,100.00,__thiscall,void CSound_dtor(CSound * this),false,src/zwave.cpp,strict VC7 COFF exact 241/241 bytes 2026-08-12,root,Releases buffers and owned CWaveFile
+0x0045D3C0,484,0x0045D5A3,sub_45D3C0,CSound_fill_buffer_with_sound,sound,compiles,0.00,__thiscall,HRESULT CSound_fill_buffer_with_sound(CSound * this; IDirectSoundBuffer * buffer; BOOL repeat),false,src/zwave.cpp,VC7 COFF compiles; strict mismatch at 0x0045D3EC,root,Object remains 9 bytes longer than target
 0x0045D5B0,163,0x0045D652,sub_45D5B0,CSound_restore_buffer,sound,matching,100.00,__thiscall,HRESULT CSound_restore_buffer(CSound * this; IDirectSoundBuffer * buffer; BOOL * restored),false,src/zwave.cpp,strict VC7 COFF exact 163/163 bytes with verified Sleep IAT relocation 2026-08-12,root,Lost-buffer restore loop verified
 0x0045D660,182,0x0045D715,sub_45D660,CSound_get_free_buffer,sound,matching,100.00,__thiscall,IDirectSoundBuffer * CSound_get_free_buffer(CSound * this),false,src/zwave.cpp,strict VC7 COFF exact 182/182 bytes 2026-08-12,root,Chooses stopped buffer or randomized fallback
 0x0045D720,53,0x0045D754,sub_45D720,CSound_get_buffer,sound,matching,100.00,__thiscall,IDirectSoundBuffer * CSound_get_buffer(CSound * this; DWORD index),false,src/zwave.cpp,strict VC7 COFF exact 53/53 bytes 2026-08-12,root,Bounds-checked buffer accessor
 0x0045D760,250,0x0045D859,sub_45D760,,,unclassified,0.00,unknown,,false,,,,
-0x0045D860,171,0x0045D90A,sub_45D860,,,unclassified,0.00,unknown,,false,,,,
-0x0045D910,79,0x0045D95E,sub_45D910,,,unclassified,0.00,unknown,,false,,,,
-0x0045D960,78,0x0045D9AD,sub_45D960,,,unclassified,0.00,unknown,,false,,,,
+0x0045D860,171,0x0045D90A,sub_45D860,CSound_stop,sound,matching,100.00,__thiscall,HRESULT CSound_stop(CSound * this),false,src/zwave.cpp,strict VC7 COFF exact 171/171 bytes 2026-08-12,root,Stops and rewinds every sound buffer
+0x0045D910,79,0x0045D95E,sub_45D910,CSound_pause,sound,matching,100.00,__thiscall,HRESULT CSound_pause(CSound * this),false,src/zwave.cpp,strict VC7 COFF exact 79/79 bytes 2026-08-12,root,Stops first buffer without rewinding
+0x0045D960,78,0x0045D9AD,sub_45D960,CSound_unpause,sound,matching,100.00,__thiscall,HRESULT CSound_unpause(CSound * this),false,src/zwave.cpp,strict VC7 COFF exact 78/78 bytes 2026-08-12,root,Restarts first buffer using stored priority and flags
 0x0045D9B0,110,0x0045DA1D,sub_45D9B0,CSound_reset,sound,matching,100.00,__thiscall,HRESULT CSound_reset(CSound * this),false,src/zwave.cpp,strict VC7 COFF exact 110/110 bytes 2026-08-12,root,Resets every duplicated sound buffer cursor
-0x0045DA20,96,0x0045DA7F,sub_45DA20,,,unclassified,0.00,unknown,,false,,,,
+0x0045DA20,96,0x0045DA7F,sub_45DA20,CStreamingSound_ctor,sound,matching,100.00,__thiscall,CStreamingSound * CStreamingSound_ctor(CStreamingSound * this; IDirectSoundBuffer * buffer; DWORD size; CWaveFile * wave; DWORD notify_size),false,src/zwave.cpp,strict VC7 COFF exact 96/96 bytes 2026-08-12,root,Initializes streaming playback offsets
 0x0045DA80,46,0x0045DAAD,sub_45DA80,,,unclassified,0.00,unknown,,false,,,,
 0x0045DAB0,28,0x0045DACB,sub_45DAB0,CStreamingSound_dtor,sound,matching,100.00,__thiscall,void CStreamingSound_dtor(CStreamingSound * this),false,src/zwave.cpp,strict VC7 COFF exact 28/28 bytes with verified vtable relocation 2026-08-12,root,Derived vptr reset precedes CSound destructor
-0x0045DAD0,143,0x0045DB5E,sub_45DAD0,,,unclassified,0.00,unknown,,false,,,,
+0x0045DAD0,143,0x0045DB5E,sub_45DAD0,CStreamingSound_update_fade_out,sound,matching,100.00,__thiscall,HRESULT CStreamingSound_update_fade_out(CStreamingSound * this),false,src/zwave.cpp,strict VC7 COFF exact 143/143 bytes 2026-08-12,root,Advances fade and stops at completion
 0x0045DB60,1000,0x0045DF47,sub_45DB60,,,unclassified,0.00,unknown,,false,,,,
-0x0045DF50,194,0x0045E011,sub_45DF50,,,unclassified,0.00,unknown,,false,,,,
+0x0045DF50,194,0x0045E011,sub_45DF50,CStreamingSound_reset,sound,matching,100.00,__thiscall,HRESULT CStreamingSound_reset(CStreamingSound * this),false,src/zwave.cpp,strict VC7 COFF exact 194/194 bytes 2026-08-12,root,Restores buffer and resets stream position
 0x0045E020,56,0x0045E057,sub_45E020,,,unclassified,0.00,unknown,,false,,,,
 0x0045E060,19,0x0045E072,sub_45E060,,,unclassified,0.00,unknown,,false,,,,
 0x0045E080,163,0x0045E122,sub_45E080,,,unclassified,0.00,unknown,,false,,,,

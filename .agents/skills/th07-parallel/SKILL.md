@@ -40,6 +40,11 @@ Every brief states:
 Use one coordinator plus up to three `gpt-5.6-terra` workers at `high`
 reasoning in the current four-slot environment. Prefer reusing a worker for a
 follow-up in the same class/module so recovered layout context is retained.
+If the user requests low CPU usage, keep parallel work analysis-heavy and
+serialize compiler/comparator invocations through the coordinator. Workspace
+search must exclude `_references`, `.tools`, and `build`, and must not follow
+symlinks. Keep the Wine prefix outside the workspace because it exposes `/`
+through `dosdevices/z:`.
 
 The coordinator reviews diffs, reruns every comparison, applies durable IDA
 and ledger changes, releases claims, validates progress, commits, and pushes.

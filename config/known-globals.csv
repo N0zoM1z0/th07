@@ -1,2 +1,9 @@
 address,name,module,confidence,evidence
 0x0049ED98,g_FormatInfoArray,text,observed,Exact target data at 0x0049ED98 and IDA xref from 0x00431CEC; seven 24-byte D3D format records
+0x004903F8,IID_IDirectSoundNotify,sound,observed,Exact target GUID operand in CStreamingSound InitSoundBuffers
+0x00495290,CSound_vtable,sound,observed,Exact target vptr assignments in CSound constructor and destructor
+0x0049FC88,g_JoystickCaps,input,observed,Exact target operand in Controller GetJoystickCaps
+0x004B9E44,g_RenderStateOwner,render,observed,Exact target operand in ScreenEffect viewport and full-fade functions
+0x00575958,g_D3dDevice,render,observed,Exact target operand in TextHelper and ScreenEffect functions
+0x00575A18,g_Viewport,render,observed,Exact target viewport field operands in ScreenEffect functions
+0x00575A30,g_PresentParameters,render,observed,Exact target reset parameter operand in ScreenEffect Clear

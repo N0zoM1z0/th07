@@ -1,27 +1,22 @@
 address,owner,started_utc,branch,notes
-0x0043D9E0,terra-player-core,2026-08-12T11:18:00Z,main,Player damage and collision lane; src/Player.cpp and src/Player.hpp only
-0x0043E0A0,terra-player-core,2026-08-12T11:18:00Z,main,Player damage and collision lane; src/Player.cpp and src/Player.hpp only
-0x0043E260,terra-player-core,2026-08-12T11:18:00Z,main,Player damage and collision lane; src/Player.cpp and src/Player.hpp only
-0x0043E3B0,terra-player-core,2026-08-12T11:18:00Z,main,Player damage and collision lane; src/Player.cpp and src/Player.hpp only
-0x0043E4E0,terra-player-core,2026-08-12T11:18:00Z,main,Player damage and collision lane; src/Player.cpp and src/Player.hpp only
-0x0043E6B0,terra-player-core,2026-08-12T11:18:00Z,main,Player damage and collision lane; src/Player.cpp and src/Player.hpp only
-0x0043EB90,terra-player-core,2026-08-12T11:18:00Z,main,Player damage and collision lane; src/Player.cpp and src/Player.hpp only
-0x0043EDC0,terra-player-core,2026-08-12T11:18:00Z,main,Player damage and collision lane; src/Player.cpp and src/Player.hpp only
-0x00430290,terra-controller,2026-08-12T11:18:00Z,main,Controller input lane; src/Controller.cpp and src/Controller.hpp only
-0x004302F0,terra-controller,2026-08-12T11:18:00Z,main,Controller input lane; src/Controller.cpp and src/Controller.hpp only
-0x00430370,terra-controller,2026-08-12T11:18:00Z,main,Controller input lane; src/Controller.cpp and src/Controller.hpp only
-0x004303F0,terra-controller,2026-08-12T11:18:00Z,main,Controller input lane; src/Controller.cpp and src/Controller.hpp only
-0x004309C0,terra-controller,2026-08-12T11:18:00Z,main,Controller input lane; src/Controller.cpp and src/Controller.hpp only
-0x00430B50,terra-controller,2026-08-12T11:18:00Z,main,Controller input lane; src/Controller.cpp and src/Controller.hpp only
-0x004312C0,terra-controller,2026-08-12T11:18:00Z,main,Controller input lane; src/Controller.cpp and src/Controller.hpp only
-0x0045C7D0,terra-sound2,2026-08-12T11:18:00Z,main,DirectSound continuation lane; src/zwave.cpp and src/zwave.hpp only
-0x0045CF50,terra-sound2,2026-08-12T11:18:00Z,main,DirectSound continuation lane; src/zwave.cpp and src/zwave.hpp only
-0x0045D060,terra-sound2,2026-08-12T11:18:00Z,main,DirectSound continuation lane; src/zwave.cpp and src/zwave.hpp only
-0x0045D2C0,terra-sound2,2026-08-12T11:18:00Z,main,DirectSound continuation lane; src/zwave.cpp and src/zwave.hpp only
-0x0045D3C0,terra-sound2,2026-08-12T11:18:00Z,main,DirectSound continuation lane; src/zwave.cpp and src/zwave.hpp only
-0x0045D860,terra-sound2,2026-08-12T11:18:00Z,main,DirectSound continuation lane; src/zwave.cpp and src/zwave.hpp only
-0x0045D910,terra-sound2,2026-08-12T11:18:00Z,main,DirectSound continuation lane; src/zwave.cpp and src/zwave.hpp only
-0x0045D960,terra-sound2,2026-08-12T11:18:00Z,main,DirectSound continuation lane; src/zwave.cpp and src/zwave.hpp only
-0x0045DA20,terra-sound2,2026-08-12T11:18:00Z,main,DirectSound continuation lane; src/zwave.cpp and src/zwave.hpp only
-0x0045DAD0,terra-sound2,2026-08-12T11:18:00Z,main,DirectSound continuation lane; src/zwave.cpp and src/zwave.hpp only
-0x0045DF50,terra-sound2,2026-08-12T11:18:00Z,main,DirectSound continuation lane; src/zwave.cpp and src/zwave.hpp only
+0x00426F60,root-integration,2026-08-12T11:25:00Z,main,BulletManager relocation and source-shaping follow-up
+0x00427620,root-integration,2026-08-12T11:25:00Z,main,BulletManager relocation and source-shaping follow-up
+0x004276A0,root-integration,2026-08-12T11:25:00Z,main,BulletManager relocation and source-shaping follow-up
+0x00427760,root-integration,2026-08-12T11:25:00Z,main,BulletManager relocation and source-shaping follow-up
+0x004277A0,root-integration,2026-08-12T11:25:00Z,main,BulletManager relocation and source-shaping follow-up
+0x004302F0,root-integration,2026-08-12T11:18:00Z,main,Controller byte-shaping follow-up
+0x00430370,root-integration,2026-08-12T11:18:00Z,main,Controller byte-shaping follow-up
+0x004303F0,root-integration,2026-08-12T11:18:00Z,main,Controller relocation and source-shaping follow-up
+0x004309C0,root-integration,2026-08-12T11:18:00Z,main,Controller relocation and source-shaping follow-up
+0x00430B50,root-integration,2026-08-12T11:18:00Z,main,Controller relocation and source-shaping follow-up
+0x004312C0,root-integration,2026-08-12T11:18:00Z,main,Controller byte-shaping follow-up
+0x0043D9E0,root-integration,2026-08-12T11:18:00Z,main,Player damage and collision relocation follow-up
+0x0043E0A0,root-integration,2026-08-12T11:18:00Z,main,Player damage and collision relocation follow-up
+0x0043E260,root-integration,2026-08-12T11:18:00Z,main,Player damage and collision relocation follow-up
+0x0043E3B0,root-integration,2026-08-12T11:18:00Z,main,Player damage and collision relocation follow-up
+0x0043E4E0,root-integration,2026-08-12T11:18:00Z,main,Player damage and collision relocation follow-up
+0x0043E6B0,root-integration,2026-08-12T11:18:00Z,main,Player damage and collision relocation follow-up
+0x0043EB90,root-integration,2026-08-12T11:18:00Z,main,Player damage and collision relocation follow-up
+0x0043EDC0,root-integration,2026-08-12T11:18:00Z,main,Player damage and collision relocation follow-up
+0x0045C7D0,root-integration,2026-08-12T11:18:00Z,main,DirectSound source-shaping follow-up
+0x0045D3C0,root-integration,2026-08-12T11:18:00Z,main,DirectSound source-shaping follow-up

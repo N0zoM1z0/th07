@@ -1,0 +1,18 @@
+{
+  "search.followSymlinks": false,
+  "search.exclude": {
+    "**/_references/**": true,
+    "**/.tools/**": true,
+    "**/build/**": true
+  },
+  "files.exclude": {
+    "**/_references/**": true,
+    "**/.tools/**": true,
+    "**/build/**": true
+  },
+  "files.watcherExclude": {
+    "**/_references/**": true,
+    "**/.tools/**": true,
+    "**/build/**": true
+  }
+}

@@ -27,3 +27,16 @@ midi_output_dtor_eh_handler,0x0048C486,b864a84900e9d62fffff,0x0,Direct target EH
 ?g_TextFontName@th07@@3QBDB,0x00497CBC,826c827220835383568362834e00,0x0,Direct target Shift-JIS font-name literal referenced by TextHelper rendering,literal
 texthelper_render_eh_handler,0x0048C558,b84ca94900e9042fffff,0x0,Direct target EH handler thunk referenced by TextHelper rendering,address
 ??_7CStreamingSound@th07@@6B@,0x0049528C,80da450030d04500,0x0,Direct target vptr assignment in CStreamingSound destructor,address
+??_7CSound@th07@@6B@,0x00495290,30d04500,0x0,Direct target vptr assignments in CSound constructor and destructor,address
+_IID_IDirectSoundNotify,0x004903F8,830721b0cd89d011af0800a0c925cd16,0x0,Direct target GUID operand in CStreamingSound InitSoundBuffers,literal
+__imp__joyGetPosEx@8,0x0048D220,eaad0900,0x0,PE WINMM import table entry for joyGetPosEx,literal
+__imp__joyGetDevCapsA@12,0x0048D254,d8ad0900,0x0,PE WINMM import table entry for joyGetDevCapsA,literal
+__imp__GetKeyboardState@4,0x0048D1B0,d2b00900,0x0,PE USER32 import table entry for GetKeyboardState,literal
+__imp__SetKeyboardState@4,0x0048D1B4,e6b00900,0x0,PE USER32 import table entry for SetKeyboardState,literal
+?g_NoPadFoundError@th07@@3QBDB,0x00497D9C,8e6782a682e983708362836882aa91b68ddd82b582c882a282e682a482c582b781418e63944f0d0a00,0x0,Direct target Shift-JIS no-controller error literal,literal
+?g_GameErrorContext@th07@@3EA,0x00624210,00000000,0x0,Direct target absolute reference to zero-initialized error context storage,literal
+?g_JoystickCaps@th07@@3UtagJOYCAPSA@@A,0x0049FC88,00000000,0x0,Direct target absolute reference to zero-initialized JOYCAPSA storage,literal
+?g_ScreenEffectDevice@th07@@3PAUIDirect3DDevice8@@A,0x00575958,00000000,0x0,Direct target absolute reference to shared Direct3D device storage,literal
+?g_ScreenEffectViewport@th07@@3U_D3DVIEWPORT8@@A,0x00575A18,00000000,0x0;0x4;0x8;0xC;0x10;0x14,Direct target absolute references to shared viewport fields,literal
+?g_ScreenEffectPresentParameters@th07@@3U_D3DPRESENT_PARAMETERS_@@A,0x00575A30,00000000,0x0,Direct target absolute reference to shared presentation parameters,literal
+?g_ScreenEffectRenderState@th07@@3PAUScreenEffectRenderState@1@A,0x004B9E44,00000000,0x0,Direct target absolute reference to render-state owner pointer,literal

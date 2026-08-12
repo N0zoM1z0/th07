@@ -141,7 +141,7 @@ symbol_base = "?SetFadeOut@MidiOutput@th07@@QAE?AW4ZunResult@2@I@Z"
 kind = "probe"
 source = "src/zwave.cpp"
 object = "build/match-units/zwave.obj"
-profile = "vc7-debug-od"
+profile = "vc7-debug-od-no-gs"
 notes = "Focused VC7 unoptimized probe aligned with the adjacent-engine DirectSound translation units."
 
 [[units.zwave.functions]]
@@ -181,3 +181,220 @@ symbol_base = "?Reset@CSound@th07@@QAEJXZ"
 address = "0x0045DAB0"
 symbol_base = "??1CStreamingSound@th07@@UAE@XZ"
 rel32_targets = ["??1CSound@th07@@UAE@XZ=0x0045D2C0"]
+
+[[units.zwave.functions]]
+address = "0x0045CF50"
+symbol_base = "??0CSound@th07@@QAE@PAPAUIDirectSoundBuffer@@KKPAVCWaveFile@1@@Z"
+rel32_targets = [
+  "??2@YAPAXI@Z=0x0047D441",
+  "?FillBufferWithSound@CSound@th07@@QAEJPAUIDirectSoundBuffer@@H@Z=0x0045D3C0",
+]
+dir32_targets = ["??_7CSound@th07@@6B@=??_7CSound@th07@@6B@"]
+
+[[units.zwave.functions]]
+address = "0x0045D060"
+symbol_base = "?InitSoundBuffers@CStreamingSound@th07@@QAEJXZ"
+rel32_targets = [
+  "??3@YAXPAX@Z=0x0047D43C",
+  "??2@YAPAXI@Z=0x0047D441",
+]
+dir32_targets = ["_IID_IDirectSoundNotify=_IID_IDirectSoundNotify"]
+
+[[units.zwave.functions]]
+address = "0x0045D2C0"
+symbol_base = "??1CSound@th07@@UAE@XZ"
+rel32_targets = [
+  "??3@YAXPAX@Z=0x0047D43C",
+  "??1CWaveFile@th07@@QAE@XZ=0x0045E060",
+]
+dir32_targets = ["??_7CSound@th07@@6B@=??_7CSound@th07@@6B@"]
+
+[[units.zwave.functions]]
+address = "0x0045D860"
+symbol_base = "?Stop@CSound@th07@@QAEJXZ"
+
+[[units.zwave.functions]]
+address = "0x0045D910"
+symbol_base = "?Pause@CSound@th07@@QAEJXZ"
+
+[[units.zwave.functions]]
+address = "0x0045D960"
+symbol_base = "?Unpause@CSound@th07@@QAEJXZ"
+
+[[units.zwave.functions]]
+address = "0x0045DA20"
+symbol_base = "??0CStreamingSound@th07@@QAE@PAUIDirectSoundBuffer@@KPAVCWaveFile@1@K@Z"
+rel32_targets = ["??0CSound@th07@@QAE@PAPAUIDirectSoundBuffer@@KKPAVCWaveFile@1@@Z=0x0045CF50"]
+dir32_targets = ["??_7CStreamingSound@th07@@6B@=??_7CStreamingSound@th07@@6B@"]
+
+[[units.zwave.functions]]
+address = "0x0045DAD0"
+symbol_base = "?UpdateFadeOut@CStreamingSound@th07@@QAEJXZ"
+
+[[units.zwave.functions]]
+address = "0x0045DF50"
+symbol_base = "?Reset@CStreamingSound@th07@@QAEJXZ"
+rel32_targets = [
+  "?RestoreBuffer@CSound@th07@@QAEJPAUIDirectSoundBuffer@@PAH@Z=0x0045D5B0",
+  "?FillBufferWithSound@CSound@th07@@QAEJPAUIDirectSoundBuffer@@H@Z=0x0045D3C0",
+  "?ResetFile@CWaveFile@th07@@QAEJ_N@Z=0x0045E210",
+]
+
+[units.bullet-manager]
+kind = "probe"
+source = "src/BulletManager.cpp"
+object = "build/match-units/BulletManager.obj"
+profile = "vc7-debug-od"
+notes = "Focused VC7 unoptimized BulletManager probe, bounded to target-confirmed callback and cleanup functions."
+
+[[units.bullet-manager.functions]]
+address = "0x00426F60"
+symbol_base = "?AddedCallback@BulletManager@th07@@SAHPAV12@@Z"
+
+[[units.bullet-manager.functions]]
+address = "0x00427620"
+symbol_base = "?DeletedCallback@BulletManager@th07@@SAHPAV12@@Z"
+
+[[units.bullet-manager.functions]]
+address = "0x004276A0"
+symbol_base = "?RegisterChain@BulletManager@th07@@SAHXZ"
+
+[[units.bullet-manager.functions]]
+address = "0x00427760"
+symbol_base = "?CutChain@BulletManager@th07@@SAXXZ"
+
+[[units.bullet-manager.functions]]
+address = "0x004277A0"
+symbol_base = "?RemoveAllBullets@BulletManager@th07@@QAEXH@Z"
+
+[units.screen-effect]
+kind = "probe"
+source = "src/ScreenEffect.cpp"
+object = "build/match-units/ScreenEffect.obj"
+profile = "vc7-debug-od"
+notes = "Focused VC7 unoptimized ScreenEffect rendering probe, bounded to four target-confirmed UI functions."
+
+[[units.screen-effect.functions]]
+address = "0x0044A460"
+symbol_base = "?Clear@ScreenEffect@th07@@SIXK@Z"
+dir32_targets = [
+  "?g_ScreenEffectDevice@th07@@3PAUIDirect3DDevice8@@A=?g_ScreenEffectDevice@th07@@3PAUIDirect3DDevice8@@A",
+  "?g_ScreenEffectPresentParameters@th07@@3U_D3DPRESENT_PARAMETERS_@@A=?g_ScreenEffectPresentParameters@th07@@3U_D3DPRESENT_PARAMETERS_@@A",
+]
+
+[[units.screen-effect.functions]]
+address = "0x0044A520"
+symbol_base = "?SetViewport@ScreenEffect@th07@@SIXK@Z"
+rel32_targets = [
+  "?PrepareScreenEffect@ScreenEffectRenderState@th07@@QAIXXZ=0x0044F5C0",
+  "?Clear@ScreenEffect@th07@@SIXK@Z=0x0044A460",
+]
+dir32_targets = [
+  "?g_ScreenEffectRenderState@th07@@3PAUScreenEffectRenderState@1@A=?g_ScreenEffectRenderState@th07@@3PAUScreenEffectRenderState@1@A",
+  "?g_ScreenEffectViewport@th07@@3U_D3DVIEWPORT8@@A=?g_ScreenEffectViewport@th07@@3U_D3DVIEWPORT8@@A",
+  "?g_ScreenEffectDevice@th07@@3PAUIDirect3DDevice8@@A=?g_ScreenEffectDevice@th07@@3PAUIDirect3DDevice8@@A",
+]
+
+[[units.screen-effect.functions]]
+address = "0x0044ADF0"
+symbol_base = "?DrawFullFade@ScreenEffect@th07@@SIHPAV12@@Z"
+rel32_targets = [
+  "?PrepareScreenEffect@ScreenEffectRenderState@th07@@QAIXXZ=0x0044F5C0",
+  "?DrawSquare@ScreenEffect@th07@@SIXPAUZunRect@2@K@Z=0x0044A650",
+]
+dir32_targets = [
+  "?g_ScreenEffectRenderState@th07@@3PAUScreenEffectRenderState@1@A=?g_ScreenEffectRenderState@th07@@3PAUScreenEffectRenderState@1@A",
+  "?g_ScreenEffectViewport@th07@@3U_D3DVIEWPORT8@@A=?g_ScreenEffectViewport@th07@@3U_D3DVIEWPORT8@@A",
+  "?g_ScreenEffectDevice@th07@@3PAUIDirect3DDevice8@@A=?g_ScreenEffectDevice@th07@@3PAUIDirect3DDevice8@@A",
+]
+
+[[units.screen-effect.functions]]
+address = "0x0044AF30"
+symbol_base = "?DrawArcadeFade@ScreenEffect@th07@@SIHPAV12@@Z"
+rel32_targets = ["?DrawSquare@ScreenEffect@th07@@SIXPAUZunRect@2@K@Z=0x0044A650"]
+
+[units.controller]
+kind = "probe"
+source = "src/Controller.cpp"
+object = "build/match-units/Controller.obj"
+profile = "vc7-debug-od-no-gs"
+notes = "Focused VC7 unoptimized input probe; target prologues establish that this translation unit omits /GS cookies."
+
+[[units.controller.functions]]
+address = "0x00430290"
+symbol_base = "?GetJoystickCaps@Controller@th07@@YIGXZ"
+rel32_targets = ["?LogGameError@th07@@YAXPAXPBD@Z=0x004315F0"]
+dir32_targets = [
+  "__imp__joyGetPosEx@8=__imp__joyGetPosEx@8",
+  "__imp__joyGetDevCapsA@12=__imp__joyGetDevCapsA@12",
+  "?g_NoPadFoundError@th07@@3QBDB=?g_NoPadFoundError@th07@@3QBDB",
+  "?g_GameErrorContext@th07@@3EA=?g_GameErrorContext@th07@@3EA",
+  "?g_JoystickCaps@th07@@3UtagJOYCAPSA@@A=?g_JoystickCaps@th07@@3UtagJOYCAPSA@@A",
+]
+
+[[units.controller.functions]]
+address = "0x004302F0"
+symbol_base = "?SetButtonFromDirectInputJoystate@Controller@th07@@YIIPAGFW4TouhouButton@2@PAE@Z"
+
+[[units.controller.functions]]
+address = "0x00430370"
+symbol_base = "?SetButtonFromControllerInputs@Controller@th07@@YIIPAGFW4TouhouButton@2@I@Z"
+
+[[units.controller.functions]]
+address = "0x004303F0"
+symbol_base = "?GetControllerInput@Controller@th07@@YIGG@Z"
+
+[[units.controller.functions]]
+address = "0x004309C0"
+symbol_base = "?GetControllerState@Controller@th07@@YIPAEXZ"
+
+[[units.controller.functions]]
+address = "0x00430B50"
+symbol_base = "?GetInput@Controller@th07@@YIGXZ"
+
+[[units.controller.functions]]
+address = "0x004312C0"
+symbol_base = "?ResetKeyboard@Controller@th07@@YIXXZ"
+dir32_targets = [
+  "__imp__GetKeyboardState@4=__imp__GetKeyboardState@4",
+  "__imp__SetKeyboardState@4=__imp__SetKeyboardState@4",
+]
+
+[units.player-core]
+kind = "probe"
+source = "src/Player.cpp"
+object = "build/match-units/Player.obj"
+profile = "vc7-debug-od"
+notes = "Focused VC7 unoptimized player damage, collision, graze, and death probe."
+
+[[units.player-core.functions]]
+address = "0x0043D9E0"
+symbol_base = "?CalcDamageToEnemy@Player@th07@@QAEHPAUD3DXVECTOR3@@0PAH@Z"
+
+[[units.player-core.functions]]
+address = "0x0043E0A0"
+symbol_base = "?CheckAuxProjectileCollision@Player@th07@@QAEHPAUD3DXVECTOR3@@0@Z"
+
+[[units.player-core.functions]]
+address = "0x0043E260"
+symbol_base = "?CalcKillBoxCollision@Player@th07@@QAEHPAUD3DXVECTOR3@@0@Z"
+
+[[units.player-core.functions]]
+address = "0x0043E3B0"
+symbol_base = "?CheckGraze@Player@th07@@QAEHPAUD3DXVECTOR3@@0@Z"
+
+[[units.player-core.functions]]
+address = "0x0043E4E0"
+symbol_base = "?CalcItemBoxCollision@Player@th07@@QAEHPAUD3DXVECTOR3@@0@Z"
+
+[[units.player-core.functions]]
+address = "0x0043E6B0"
+symbol_base = "?CalcLaserHitbox@Player@th07@@QAEHPAUD3DXVECTOR3@@00MH@Z"
+
+[[units.player-core.functions]]
+address = "0x0043EB90"
+symbol_base = "?ScoreGraze@Player@th07@@QAEHPAUD3DXVECTOR3@@@Z"
+
+[[units.player-core.functions]]
+address = "0x0043EDC0"
+symbol_base = "?Die@Player@th07@@QAEHXZ"

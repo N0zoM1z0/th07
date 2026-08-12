@@ -6,7 +6,7 @@ tools_root="$repo_root/.tools"
 tooling_checkout="$tools_root/th08-tooling"
 downloads="$tools_root/downloads"
 vc7_root="$tools_root/vc7"
-wine_prefix="$tools_root/wine-vc7"
+wine_prefix="${TH07_WINEPREFIX:-$(dirname "$repo_root")/.th07-wine-vc7}"
 th08_commit=7ad379297baf4ff07f117747ea4edf8c7ed739d4
 
 for command in git msiextract wine winepath python3; do

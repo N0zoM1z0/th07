@@ -12,7 +12,10 @@ output_path="$(realpath -m "$2")"
 pdb_path="$output_path.pdb"
 profile="$3"
 vc7_root="${TH07_VC7_ROOT:-$repo_root/.tools/vc7}"
-wine_prefix="${TH07_WINEPREFIX:-$repo_root/.tools/wine-vc7}"
+# Keep Wine's prefix outside the workspace. Wine creates `dosdevices/z:` as a
+# symlink to `/`; file finders that force `--follow --no-ignore` must never see
+# that link while walking this repository.
+wine_prefix="${TH07_WINEPREFIX:-$(dirname "$repo_root")/.th07-wine-vc7}"
 cl="$vc7_root/PROGRAM FILES/MICROSOFT VISUAL STUDIO .NET/VC7/BIN/CL.EXE"
 
 if [[ ! -f "$cl" ]]; then
@@ -36,6 +39,14 @@ case "$profile" in
     # explicit trailing switches override the shared optimization defaults;
     # keep the common /Gr used by the adjacent-engine build configuration.
     profile_flags=(/Od /Ob1 /Op /G5 /GS)
+    ;;
+  vc7-debug-od-no-gs)
+    # Some TH07 unoptimized translation units were built without buffer
+    # security checks. Keep every other debug/Od shaping switch identical so
+    # the presence of a compiler-generated cookie is the only A/B variable.
+    # VC7 enables this feature only when /GS is present; the later /GS-
+    # spelling is not accepted by this compiler generation.
+    profile_flags=(/Od /Ob1 /Op /G5)
     ;;
   *)
     echo "unknown VC7 compiler profile: $profile" >&2
