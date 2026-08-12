@@ -1114,6 +1114,43 @@ dir32_targets = [
   "?g_AnmManager@th07@@3PAUAnmManager@1@A=?g_AnmManager@th07@@3PAUAnmManager@1@A",
 ]
 
+[units.enemy-collision]
+kind = "probe"
+source = "src/EnemyCollision.cpp"
+object = "build/match-units/EnemyCollision.obj"
+profile = "vc7-debug-od-no-gs-g6"
+notes = "Target- and TH06-corroborated Enemy collision bridge into exact Player graze and kill-box helpers."
+
+[[units.enemy-collision.functions]]
+address = "0x00420490"
+symbol_base = "?CheckPlayerCollision@EnemyCollisionOverlay@th07@@QAEXPAUD3DXVECTOR3@@0@Z"
+rel32_targets = [
+  "?CheckGraze@Player@th07@@QAEHPAUD3DXVECTOR3@@0@Z=0x0043E3B0",
+  "?CalcKillBoxCollision@Player@th07@@QAEHPAUD3DXVECTOR3@@0@Z=0x0043E260",
+]
+dir32_targets = [
+  "?g_Player@th07@@3VPlayer@1@A=bullet_update_player",
+  "__real@3f800000=__real@3f800000",
+  "__real@3f333333=enemy_collision_real_0_7",
+  "__real@3fc00000=enemy_collision_real_1_5",
+]
+
+[units.enemy-spawn]
+kind = "probe"
+source = "src/EnemySpawn.cpp"
+object = "build/match-units/EnemySpawn.obj"
+profile = "vc7-debug-od-no-gs-g6"
+notes = "Target- and TH06-corroborated fixed-pool Enemy spawn primitive used by the timeline dispatcher."
+
+[[units.enemy-spawn.functions]]
+address = "0x0041F2E0"
+symbol_base = "?SpawnEnemy@EnemyManagerSpawnOverlay@th07@@QAEPAUEnemySpawnOverlay@2@FPAUEnemySpawnVec3@2@HDHD@Z"
+rel32_targets = [
+  "?CallEclSub@EclManagerSpawnOverlay@th07@@QAEXPAXF@Z=0x0040E530",
+  "?RunEcl@EclManagerSpawnOverlay@th07@@QAEHPAUEnemySpawnOverlay@2@@Z=0x00410520",
+]
+dir32_targets = ["?g_EclManagerSpawn@th07@@3UEclManagerSpawnOverlay@1@A=ecl_manager_1347938"]
+
 [units.enemy-lifecycle]
 kind = "probe"
 source = "src/EnemyLifecycle.cpp"
@@ -1183,6 +1220,16 @@ profile = "vc7-debug-od-no-gs-g6"
 notes = "Target- and TH06-corroborated Enemy helpers used directly by the TH07 EnemyManager update backbone."
 
 [[units.enemy-update-helpers.functions]]
+address = "0x004202D0"
+symbol_base = "?Despawn@EnemyUpdateOverlay@th07@@QAEXXZ"
+rel32_targets = ["?ReleaseEffects@EnemyUpdateOverlay@th07@@QAEXXZ=0x0041F670"]
+dir32_targets = [
+  "?g_TargetBossPresent49FC14@th07@@3EA=ecl_boss_present_49FC14",
+  "?g_TargetSpellBosses12FE098@th07@@3PAPAUEnemyUpdateOverlay@1@A=spell_bosses_12FE098",
+  "?g_PlayerCollisionFlags@th07@@3HA=?g_PlayerCollisionFlags@th07@@3HA",
+]
+
+[[units.enemy-update-helpers.functions]]
 address = "0x004203B0"
 symbol_base = "?ClampPosition@EnemyUpdateOverlay@th07@@QAEXXZ"
 
@@ -1191,6 +1238,10 @@ address = "0x0041F580"
 symbol_base = "?UpdateEffects@EnemyUpdateOverlay@th07@@QAEXXZ"
 rel32_targets = ["?AddNormalizeAngle@th07@@YGMMM@Z=0x00431930"]
 dir32_targets = ["__real@3e99999a=ecl_real_0_3"]
+
+[[units.enemy-update-helpers.functions]]
+address = "0x0041F670"
+symbol_base = "?ReleaseEffects@EnemyUpdateOverlay@th07@@QAEXXZ"
 
 [units.enemy-render-wrappers]
 kind = "probe"
@@ -1212,6 +1263,11 @@ rel32_targets = ["?DrawImpl@EnemyManagerRenderOverlay@th07@@QAIHHH@Z=0x00422170"
 [[units.enemy-render-wrappers.functions]]
 address = "0x004232A0"
 symbol_base = "?HasActiveBoss@EnemyManagerRenderOverlay@th07@@QAEHXZ"
+
+[[units.enemy-render-wrappers.functions]]
+address = "0x004220F0"
+symbol_base = "?InterpolateWrappedAngle@th07@@YGMMMM@Z"
+dir32_targets = ["__real@40c90fdb=ecl_real_40c90fdb"]
 
 [units.screen-effect]
 kind = "probe"

@@ -16,6 +16,29 @@ struct EnemyManagerRenderOverlay
     i32 HasActiveBoss();
 };
 
+#pragma var_order(wrappedDistance, directDistance)
+f32 __stdcall InterpolateWrappedAngle(f32 start, f32 end, f32 fraction)
+{
+    f32 directDistance;
+    f32 wrappedDistance;
+
+    if (start < end)
+    {
+        directDistance = end - start;
+        wrappedDistance = start + 6.2831855f - end;
+    }
+    else
+    {
+        directDistance = start - end;
+        wrappedDistance = end + 6.2831855f - start;
+        start = end;
+    }
+
+    if (directDistance < wrappedDistance)
+        return directDistance * fraction + start;
+    return wrappedDistance * fraction + start;
+}
+
 i32 EnemyManagerRenderOverlay::OnDrawHighPriority()
 {
     return DrawImpl(0, 2);
