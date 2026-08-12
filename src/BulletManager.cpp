@@ -122,9 +122,7 @@ int __fastcall BulletManager::AddedCallback(BulletManager *manager)
         }
         else if (manager->templates[i].bullet.sprite->heightPx <= 16.0f)
         {
-            int scriptForSmallBullet;
-            scriptForSmallBullet = reinterpret_cast<BulletTemplateScriptIds *>(g_BulletTemplateScriptIds)[i].bullet;
-            switch (scriptForSmallBullet)
+            switch (reinterpret_cast<BulletTemplateScriptIds *>(g_BulletTemplateScriptIds)[i].bullet)
             {
             case 514:
                 manager->templates[i].grazeWidth = 4.0f;
@@ -151,28 +149,23 @@ int __fastcall BulletManager::AddedCallback(BulletManager *manager)
         }
         else if (manager->templates[i].bullet.sprite->heightPx <= 32.0f)
         {
-            int scriptForLargeBullet;
-
-            scriptForLargeBullet = reinterpret_cast<BulletTemplateScriptIds *>(g_BulletTemplateScriptIds)[i].bullet;
-            if (scriptForLargeBullet == 520)
+            switch (reinterpret_cast<BulletTemplateScriptIds *>(g_BulletTemplateScriptIds)[i].bullet)
             {
+            case 520:
                 manager->templates[i].grazeWidth = 5.0f;
                 manager->templates[i].grazeHeight = 5.0f;
                 manager->templates[i].grazeKind = 1;
-            }
-            else
-            {
-                if (scriptForLargeBullet == 521)
-                {
-                    manager->templates[i].grazeWidth = 8.0f;
-                    manager->templates[i].grazeHeight = 8.0f;
-                }
-                else
-                {
-                    manager->templates[i].grazeWidth = 10.0f;
-                    manager->templates[i].grazeHeight = 10.0f;
-                }
+                break;
+            case 521:
+                manager->templates[i].grazeWidth = 8.0f;
+                manager->templates[i].grazeHeight = 8.0f;
                 manager->templates[i].grazeKind = 2;
+                break;
+            default:
+                manager->templates[i].grazeWidth = 10.0f;
+                manager->templates[i].grazeHeight = 10.0f;
+                manager->templates[i].grazeKind = 2;
+                break;
             }
         }
         else

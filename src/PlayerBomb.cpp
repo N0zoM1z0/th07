@@ -1,6 +1,10 @@
 #include "inttypes.hpp"
 
+#include <d3dx8math.h>
+#include <math.h>
 #include <string.h>
+
+#pragma intrinsic(sin, cos)
 
 namespace th07 {
 
@@ -217,10 +221,59 @@ struct PlayerBombGrazeState {
 
 struct PlayerBombGuiState {
     i32 IsBombInputBlocked();
+    void StartDeathBombTransition(i32 first, i32 second);
 };
 
 struct PlayerBombDrawState {
     void SetDrawColor(i32 color);
+};
+
+/* The death-bomb paths only access these target-observed effect offsets. */
+struct PlayerBombEffect {
+    u8 unknown00[0x14];
+    f32 positionZ;
+    u8 unknown18[0x48];
+    PlayerBombTimer timer60;
+    u8 unknown6C[0x0C];
+    PlayerBombTimer timer78;
+    u8 unknown84[0x18];
+    PlayerBombTimer timer9C;
+    u8 unknownA8[0x0C];
+    PlayerBombTimer timerB4;
+    u8 unknownC0[2];
+    u8 enabledC2;
+    u8 unknownC3;
+    u8 enabledC4;
+    u8 unknownC5[3];
+    i32 timerC8;
+    u8 unknownCC[0xEF];
+    u8 inheritedByte1BB;
+    u8 unknown1BC[0x5C];
+    f32 scaleX;
+    f32 scaleY;
+    f32 speedX;
+    f32 speedY;
+    u8 unknown228[3];
+    u8 inheritedByte22B;
+    u8 unknown22C[3];
+    u8 state22F;
+    u8 unknown230[0x64];
+    f32 radialCos;
+    f32 radialSin;
+};
+
+struct EffectManager {
+    void *SpawnParticles(i32 effect, D3DXVECTOR3 *position, i32 count, i32 color);
+    void *SpawnParticlesColored(i32 effect, D3DXVECTOR3 *position, i32 count, i32 blendMode, i32 color);
+};
+
+struct GameManager {
+    u8 unknown00[0x88];
+    i32 bombScore;
+};
+
+struct SoundPlayer {
+    i32 PlaySoundByIdx(i32 sound, i32 param);
 };
 
 extern PlayerBombScreenState *g_PlayerBombScreen;
@@ -242,6 +295,9 @@ extern i32 g_BombEffectState0;
 extern i32 g_BombEffectState1;
 extern i32 g_BombEffectState2;
 extern i32 g_BombEffectState3;
+extern EffectManager g_EffectManager;
+extern GameManager *g_GameManager;
+extern SoundPlayer g_SoundPlayer;
 
 #pragma var_order(pointCount, pointStride, point, pointEnd, spriteBegin, spriteCount, spriteStride, sprite, workTimer)
 PlayerBombWorkItem *PlayerBombWorkItem::Initialize()
@@ -503,6 +559,162 @@ i32 PlayerBombOverlay::RegisterBombCallbacks()
         FinishDeathBomb();
     }
     return 0;
+}
+
+#pragma var_order(effect, lastEnemyTimer, effectTimerA, lastEnemyZ, effectTimerB, secondLastEnemyZ)
+void PlayerBombOverlay::FinishDeathBomb()
+{
+    i32 secondLastEnemyZ;
+    PlayerBombTimer *effectTimerB;
+    i32 lastEnemyZ;
+    PlayerBombTimer *effectTimerA;
+    PlayerBombTimer *lastEnemyTimer;
+    PlayerBombEffect *effect;
+
+    if (*reinterpret_cast<i32 *>(reinterpret_cast<u8 *>(this) + 0x16A20)
+        || g_PlayerBombGuiState49FBF0.IsBombInputBlocked()) {
+        *reinterpret_cast<i8 *>(reinterpret_cast<u8 *>(this) + 0x240D) = 2;
+        return;
+    }
+
+    {
+        switch (*reinterpret_cast<i8 *>(reinterpret_cast<u8 *>(this) + 0x2408)) {
+        case 1:
+        case 3:
+            *reinterpret_cast<i8 *>(reinterpret_cast<u8 *>(this) + 0x240D) = 2;
+            return;
+        case 2:
+            if (*reinterpret_cast<i32 *>(reinterpret_cast<u8 *>(this) + 0x23F8)) {
+                StartDeathBomb(0);
+                return;
+            } else {
+                *reinterpret_cast<i8 *>(reinterpret_cast<u8 *>(this) + 0x240D) = 2;
+                return;
+            }
+        default:
+            break;
+        }
+    }
+
+    lastEnemyTimer = reinterpret_cast<PlayerBombTimer *>(reinterpret_cast<u8 *>(this) + 0x16A00);
+    lastEnemyTimer->current = 540;
+    lastEnemyTimer->fraction = 0.0f;
+    lastEnemyTimer->previous = -999;
+    *reinterpret_cast<PlayerBombTimer *>(reinterpret_cast<u8 *>(this) + 0x16A0C)
+        = *reinterpret_cast<PlayerBombTimer *>(reinterpret_cast<u8 *>(this) + 0x16A00);
+    *reinterpret_cast<i8 *>(reinterpret_cast<u8 *>(this) + 0x240D) = 1;
+    *reinterpret_cast<i8 *>(reinterpret_cast<u8 *>(this) + 0x2408) = 4;
+
+    if (bombVisual1) {
+        reinterpret_cast<u8 *>(bombVisual1)[0x2CC] = 0;
+    }
+    if (bombVisual0) {
+        reinterpret_cast<u8 *>(bombVisual0)[0x2CC] = 0;
+        bombVisual0 = 0;
+    }
+
+    effect = reinterpret_cast<PlayerBombEffect *>(g_EffectManager.SpawnParticlesColored(
+        28, reinterpret_cast<D3DXVECTOR3 *>(reinterpret_cast<u8 *>(this) + 0x930), 4, 1, -1));
+    effectTimerA = &effect->timer78;
+    effectTimerA->current = 0;
+    effectTimerA->fraction = 0.0f;
+    effectTimerA->previous = -999;
+    lastEnemyZ = *reinterpret_cast<i32 *>(reinterpret_cast<u8 *>(this) + 0x16A08);
+    effectTimerB = &effect->timerB4;
+    effectTimerB->current = lastEnemyZ;
+    effectTimerB->fraction = 0.0f;
+    effectTimerB->previous = -999;
+    effect->enabledC4 = 0;
+    effect->scaleY = 1.0f;
+    effect->scaleX = 1.0f;
+    effect->speedX = 0.25f;
+    effect->speedY = 0.25f;
+    secondLastEnemyZ = *reinterpret_cast<i32 *>(reinterpret_cast<u8 *>(this) + 0x16A08);
+    effect->timerC8 = secondLastEnemyZ;
+    effect->positionZ *= -1.0f;
+    bombVisual1 = effect;
+
+    g_PlayerBombGuiState49FBF0.StartDeathBombTransition(0, 2);
+    g_SoundPlayer.PlaySoundByIdx(32, 0);
+    g_SoundPlayer.PlaySoundByIdx(36, 0);
+    reinterpret_cast<PlayerBombInputState *>(g_PlayerCollisionFlags)->flags |= 8;
+}
+
+#pragma var_order(playerTimer, effectTimer9C, effectTimer60, effectTimerB, effectTimer78, angle, index, effect)
+void PlayerBombOverlay::StartDeathBomb(i32)
+{
+    PlayerBombTimer *playerTimer;
+    PlayerBombTimer *effectTimer9C;
+    PlayerBombTimer *effectTimer60;
+    PlayerBombTimer *effectTimerB;
+    PlayerBombTimer *effectTimer78;
+    f32 angle;
+    i32 index;
+    PlayerBombEffect *effect;
+
+    if (bombVisual1) {
+        reinterpret_cast<u8 *>(bombVisual1)[0x2CC] = 0;
+        bombVisual1 = 0;
+    }
+
+    effect = reinterpret_cast<PlayerBombEffect *>(g_EffectManager.SpawnParticlesColored(
+        28, reinterpret_cast<D3DXVECTOR3 *>(reinterpret_cast<u8 *>(this) + 0x930), 4, 1, -1));
+    effectTimer78 = &effect->timer78;
+    effectTimer78->current = 0;
+    effectTimer78->fraction = 0.0f;
+    effectTimer78->previous = -999;
+    effectTimerB = &effect->timerB4;
+    effectTimerB->current = 30;
+    effectTimerB->fraction = 0.0f;
+    effectTimerB->previous = -999;
+    effect->enabledC4 = 0;
+    effect->speedX = 0.0625f;
+    effect->speedY = 0.0625f;
+    effect->scaleX = 1.3f;
+    effect->scaleY = 1.3f;
+    effectTimer60 = &effect->timer60;
+    effectTimer60->current = 0;
+    effectTimer60->fraction = 0.0f;
+    effectTimer60->previous = -999;
+    effectTimer9C = &effect->timer9C;
+    effectTimer9C->current = 30;
+    effectTimer9C->fraction = 0.0f;
+    effectTimer9C->previous = -999;
+    effect->enabledC2 = 1;
+    effect->inheritedByte22B = effect->inheritedByte1BB;
+    effect->state22F = 0;
+    effect->timerC8 = 30;
+    bombVisual1 = effect;
+
+    g_BombEffectState0 = 0;
+    g_BombEffectState1 = 0;
+    *reinterpret_cast<i8 *>(reinterpret_cast<u8 *>(this) + 0x240D) = 0;
+    *reinterpret_cast<i8 *>(reinterpret_cast<u8 *>(this) + 0x2408) = 3;
+    playerTimer = reinterpret_cast<PlayerBombTimer *>(reinterpret_cast<u8 *>(this) + 0x16A00);
+    playerTimer->current = 40;
+    playerTimer->fraction = 0.0f;
+    playerTimer->previous = -999;
+    *reinterpret_cast<i32 *>(reinterpret_cast<u8 *>(this) + 0x23FC) = 40;
+    g_BombScore = g_GameManager->bombScore;
+
+    AddBombProjectileCircle(reinterpret_cast<PlayerBombPoint *>(reinterpret_cast<u8 *>(this) + 0x930), 32.0f, 16.0f,
+                            50, 8);
+    angle = -3.14159274f;
+    for (index = 0; index < 32; ++index, angle += 0.196349546f) {
+        f32 radialCos;
+        f32 radialSin;
+
+        effect = reinterpret_cast<PlayerBombEffect *>(g_EffectManager.SpawnParticles(
+            29, reinterpret_cast<D3DXVECTOR3 *>(reinterpret_cast<u8 *>(this) + 0x930), 1, -1));
+        radialCos = (f32)cos(angle);
+        effect->radialCos = radialCos;
+        radialSin = (f32)sin(angle);
+        effect->radialSin = radialSin;
+    }
+
+    g_SoundPlayer.PlaySoundByIdx(7, 0);
+    g_SoundPlayer.PlaySoundByIdx(33, 0);
+    reinterpret_cast<PlayerBombInputState *>(g_PlayerCollisionFlags)->flags |= 16;
 }
 
 PlayerBombProjectile *PlayerBombOverlay::AddBombProjectileRectangle(const PlayerBombPoint *center, f32 sizeX,

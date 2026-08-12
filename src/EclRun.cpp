@@ -11,6 +11,16 @@ namespace th07
 extern u8 g_TargetDifficultyMask626284;
 extern EclManager g_TargetEclManager1347938;
 extern i32 g_TargetSpellActive12FE0C8;
+extern i32 g_TargetCaptureEligible12FE0C4;
+extern i32 g_TargetSpellBaseScore12FE0CC;
+extern i32 g_TargetSpellPerTick12FE0D4;
+extern i32 g_TargetSpellId12FE0D8;
+extern i32 g_TargetSpellTimerPrevious12FE0E0;
+extern i32 g_TargetSpellTimerCurrent12FE0E4;
+extern i32 g_TargetSpellTimerSubframe12FE0E8;
+extern i32 g_TargetSpellScores49F1B8[];
+extern i32 g_TargetDifficulty62F85C;
+extern i32 g_TargetControl4D44F8;
 // Target-observed ECL spell-control word at 0x00413CEF (opcode 0x93).
 extern i32 g_TargetSpellControl12FE0F0;
 // Target-observed opcode 0x8C float control words at 0x00416106--0x004161BC.
@@ -32,6 +42,11 @@ extern f32 g_TargetBossHealth49FC18;
 extern i16 g_TargetBossUi134DB5A[];
 extern i32 g_TargetRank62F8A4;
 extern u8 g_TargetBulletManager62F958[];
+struct EclTailTimerManager
+{
+    void Advance(i32 *current, i32 *subFrame);
+};
+extern EclTailTimerManager g_EclTailTimerManager;
 struct EffectManager
 {
     void *SpawnParticles(i32 effect, D3DXVECTOR3 *position, i32 count, i32 color);
@@ -1311,6 +1326,129 @@ ZunResult EclManager::RunEcl(Enemy *enemy)
                                       *(void **)(SpellLifecycle::g_TargetAnmManager4B9E44 +
                                                  0x28EF0 + 4 * scriptId));
             ByteAt(rawEnemy, 0x2E2E) = (u8)pose;
+        }
+    }
+
+    // Observed at 0x004172B0--0x004172C8: the post-pose enemy callback uses
+    // ECX for the enemy and EDX for the adjacent callback argument.
+    if (IntAt(rawEnemy, 0x6F4))
+    {
+        ((void(__fastcall *)(EclOperands::EnemyOverlay *, i32))IntAt(rawEnemy, 0x6F4))(
+            rawEnemy, IntAt(rawEnemy, 0x6F8));
+    }
+
+    // Observed at 0x004172CE--0x004175EC.  Eight independently configured
+    // interpolation entries start at Enemy+0x770; each is 0x30 bytes and
+    // delegates frame advancement to the shared timer manager.  The target
+    // preserves the position when an entry uses one of the three position
+    // interpolation callbacks, then derives the resulting movement angle.
+    i32 usedPositionInterpolation = 0;
+    const f32 positionX = FloatAt(rawEnemy, 0x2B0C);
+    const f32 positionY = FloatAt(rawEnemy, 0x2B10);
+    const f32 positionZ = FloatAt(rawEnemy, 0x2B14);
+    for (i32 entryIndex = 0; entryIndex < 8; ++entryIndex)
+    {
+        u8 *const entry = rawEnemy->bytes + 0x770 + 0x30 * entryIndex;
+        if (*(i32 *)(entry + 0))
+        {
+            *(f32 *)(entry + 4) = *(f32 *)(entry + 12);
+            g_EclTailTimerManager.Advance((i32 *)(entry + 12), (i32 *)(entry + 8));
+            if (*(i32 *)(entry + 12) >= *(i32 *)(entry + 16))
+            {
+                *(i32 *)(entry + 12) = *(i32 *)(entry + 16);
+                *(f32 *)(entry + 8) = 0.0f;
+                *(i32 *)(entry + 4) = 0xFFC00000;
+            }
+
+            f32 fraction = ((f32)*(i32 *)(entry + 12) + *(f32 *)(entry + 8)) / *(i32 *)(entry + 16);
+            switch (*(i32 *)(entry + 24))
+            {
+            case 1:
+                fraction = fraction * fraction;
+                break;
+            case 2:
+                fraction = fraction * fraction * fraction;
+                break;
+            case 3:
+                fraction = fraction * fraction * fraction * fraction;
+                break;
+            case 4:
+                fraction = 1.0f - (1.0f - fraction) * (1.0f - fraction);
+                break;
+            case 5:
+                fraction = 1.0f - (1.0f - fraction) * (1.0f - fraction) * (1.0f - fraction);
+                break;
+            case 6:
+                fraction = 1.0f - (1.0f - fraction) * (1.0f - fraction) * (1.0f - fraction) *
+                                      (1.0f - fraction);
+                break;
+            }
+
+            ((void(__fastcall *)(EclOperands::EnemyOverlay *, u8 *, f32)) * (i32 *)(entry + 0))(
+                rawEnemy, entry, fraction);
+            if (*(i32 *)(entry + 12) >= *(i32 *)(entry + 16))
+                *(i32 *)(entry + 0) = 0;
+
+            if (*(f32 *)(entry + 44) == 10018.0f || *(f32 *)(entry + 44) == 10019.0f ||
+                *(f32 *)(entry + 44) == 10020.0f)
+            {
+                usedPositionInterpolation = 1;
+            }
+        }
+    }
+
+    if (usedPositionInterpolation)
+    {
+        FloatAt(rawEnemy, 0x2B18) = FloatAt(rawEnemy, 0x2B0C) - positionX;
+        FloatAt(rawEnemy, 0x2B1C) = FloatAt(rawEnemy, 0x2B10) - positionY;
+        FloatAt(rawEnemy, 0x2B54) = (f32)atan2(FloatAt(rawEnemy, 0x2B1C), FloatAt(rawEnemy, 0x2B18));
+        FloatAt(rawEnemy, 0x2B0C) = positionX;
+        FloatAt(rawEnemy, 0x2B10) = positionY;
+        FloatAt(rawEnemy, 0x2B14) = positionZ;
+    }
+
+    // Common tail at 0x00417688--0x004176C7.  The instruction pointer is
+    // committed before the per-enemy script timer advances.
+    CurrentInstruction(rawEnemy) = instruction;
+    IntAt(rawEnemy, 0x6E8) = IntAt(rawEnemy, 0x6F0);
+    g_EclTailTimerManager.Advance((i32 *)(rawEnemy->bytes + 0x6F0),
+                                  (i32 *)(rawEnemy->bytes + 0x6EC));
+
+    // Target-observed spell bonus clock at 0x00417700--0x0041778E.  The
+    // subframe word at +0x12FE0E4 is deliberately reinterpreted as a float;
+    // its adjacent whole-frame word is the first argument to Advance.
+    if ((ByteAt(rawEnemy, 0x2E29) & 0x40) != 0 && !ByteAt(rawEnemy, 0x2E17) &&
+        g_TargetSpellActive12FE0C8 && g_TargetCaptureEligible12FE0C4)
+    {
+        if ((ByteAt(rawEnemy, 0x2E2A) & 0x40) == 0)
+        {
+            g_TargetSpellBaseScore12FE0CC = (i32)((f32)g_TargetSpellScores49F1B8[g_TargetSpellId12FE0D8] -
+                                                   (f32)g_TargetSpellPerTick12FE0D4 *
+                                                       ((f32)g_TargetSpellTimerSubframe12FE0E8 +
+                                                        *(f32 *)&g_TargetSpellTimerCurrent12FE0E4) /
+                                                       60.0f);
+            g_TargetSpellBaseScore12FE0CC -= g_TargetSpellBaseScore12FE0CC % 10;
+        }
+        g_TargetSpellTimerPrevious12FE0E0 = g_TargetSpellTimerSubframe12FE0E8;
+        g_EclTailTimerManager.Advance(&g_TargetSpellTimerSubframe12FE0E8,
+                                      &g_TargetSpellTimerCurrent12FE0E4);
+    }
+
+    // Final presentation-control tail, 0x00417793--0x0041782E.
+    if ((ByteAt(rawEnemy, 0x2E29) & 0x40) != 0 && g_TargetDifficulty62F85C >= 7)
+    {
+        if (g_TargetControl4D44F8 && g_TargetSpellActive12FE0C8 && g_TargetSpellId12FE0D8 >= 118)
+        {
+            ByteAt(rawEnemy, 0x2E2B) |= 4;
+            *(u16 *)(rawEnemy->bytes + 0x2E2C) = 1;
+        }
+        else if (*(u16 *)(rawEnemy->bytes + 0x2E2C) > 0)
+        {
+            --*(u16 *)(rawEnemy->bytes + 0x2E2C);
+        }
+        else
+        {
+            ByteAt(rawEnemy, 0x2E2B) &= 0xFB;
         }
     }
 

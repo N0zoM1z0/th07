@@ -183,6 +183,38 @@ spell_timer_current_12FE0E4,0x012FE0E4,00000000,0x0,Target-observed zero-initial
 spell_timer_subframe_12FE0E8,0x012FE0E8,00000000,0x0,Target-observed zero-initialized spell timer subframe value,literal
 spell_bosses_12FE098,0x012FE098,00000000,0x0,Target-observed zero-initialized eight-entry spell boss array base,literal
 spell_scores_49F1B8,0x0049F1B8,80841e00,0x0,Target-observed non-uniform spell base-score table,address
+ecl_difficulty_62F85C,0x0062F85C,00000000,0x0,Target-observed zero-initialized difficulty selector used by the ECL spell-score tail,literal
+player_lifecycle_player,0x004BDAD8,00000000,0x0;0x16A00;0x2409;0xB7E5C;0xB7E60;0xB7E64,Target-observed Player storage and lifecycle-owned timer byte and chain-element fields,address
+player_lifecycle_chain_elems,0x00575934,00000000,0x0;0x4;0x8,Target-observed zero-initialized Player calc and draw chain element pointers,literal
+player_lifecycle_resources,0x00575948,00000000,0x0;0x4,Target-observed zero-initialized Player lifecycle resource pointers,literal
+replay_input_snapshot,0x0049FE20,0000,0x0,Target-observed zero-initialized input snapshot copied into replay input state,literal
+replay_input_counter,0x0049FE24,00000000,0x0,Target-observed zero-initialized input transition counter,literal
+replay_input_pending,0x0062F640,00000000,0x0,Target-observed zero-initialized pending replay input flag,literal
+replay_input_mode,0x0062F64F,00,0x0,Target-observed zero-initialized replay input mode byte,literal
+replay_raw_input,0x004B9E4C,0000,0x0,Target-observed zero-initialized raw per-frame input word,literal
+replay_previous_input,0x004B9E58,0000,0x0,Target-observed zero-initialized previous-frame input word,literal
+replay_repeat_pulse,0x004B9E5C,0000,0x0,Target-observed zero-initialized held-input repeat pulse,literal
+replay_repeat_frames,0x004B9E60,0000,0x0,Target-observed zero-initialized held-input frame counter,literal
+replay_game_manager,0x00626274,00000000,0x0,Target-observed zero-initialized GameManager pointer used by replay callbacks,literal
+replay_supervisor_flags,0x00575ADC,00000000,0x0,Target-observed zero-initialized supervisor flags used to gate recording,literal
+replay_input_value,0x00575AD8,0000,0x0,Target-observed zero-initialized input value recorded and restored by replay callbacks,literal
+replay_input_extra_record,0x00575BF4,00000000,0x0,Target-observed zero-initialized high-bit source stored with replay input,literal
+replay_input_extra_playback,0x00575BF8,00000000,0x0,Target-observed zero-initialized sign-extended replay input high-bit destination,literal
+replay_rng0,0x00575C14,00000000,0x0,Target-observed zero-initialized replay header RNG field source,literal
+replay_rng1,0x00575C10,00000000,0x0,Target-observed zero-initialized replay header RNG field source,literal
+replay_game_state,0x00626278,00000000,0x0,Target-observed zero-initialized gameplay state pointer used to initialize replay stage data,literal
+replay_game_config,0x00626280,00000000,0x0,Target-observed zero-initialized gameplay configuration word used by replay headers,literal
+replay_rank,0x0062F8A4,00000000,0x0,Target-observed zero-initialized rank copied into replay stage data,literal
+replay_point_items,0x0062F854,0000,0x0,Target-observed zero-initialized point-item count copied into replay stage data,literal
+replay_power_items,0x0062F644,00,0x0,Target-observed zero-initialized power-item count copied into replay stage data,literal
+replay_score0,0x0062F88C,00000000,0x0,Target-observed zero-initialized score component copied relative to replay stage base score,literal
+replay_score1,0x0062F888,00000000,0x0,Target-observed zero-initialized score component copied relative to replay stage base score,literal
+replay_score2,0x0062F890,00000000,0x0,Target-observed zero-initialized score component copied relative to replay stage base score,literal
+player_sht_callbacks0,0x0049ECB0,00000000c0bd430010be430050bf4300,0x0,Target-observed Player SHT callback table for field 0x24,address
+player_sht_callbacks1,0x0049ECC8,0000000050c2430080c44300b0c64300,0x0,Target-observed Player SHT callback table for field 0x28,address
+player_sht_callbacks2,0x0049ECE0,00000000b0cc430000000000e0cd4300,0x0,Target-observed Player SHT callback table for field 0x2C,address
+player_sht_callbacks3,0x0049ECE8,00000000e0cd4300e0d0430001000000,0x0,Target-observed Player SHT callback table for field 0x30,address
+replay_manager,0x004B9E48,00000000,0x0,Target-observed zero-initialized ReplayManager pointer storage,literal
 spell_records_626288,0x00626288,00000000,0x0,Target-observed zero-initialized persistent spell record array base,literal
 spell_character_62F647,0x0062F647,00,0x0,Target-observed zero-initialized character index used by spell records,literal
 spell_replay_62F648,0x0062F648,00000000,0x0,Target-observed zero-initialized replay flags used by spell record gating,literal
@@ -217,6 +249,8 @@ player_bomb_hud_active,0x0134D476,0000,0x0,Target-observed HUD state word set du
 player_bomb_hud_timer,0x013542EC,00000000,0x0,Target-observed HUD timer set during Player bomb setup,literal
 player_update_tail_real_160,0x00498AC0,00002043,0x0,Exact target float 160 used by Player update UI transition boundary,literal
 player_update_tail_real_400,0x00498AFC,0000c843,0x0,Exact target float 400 used by Player update UI transition boundary,literal
+player_deathbomb_real_neg_1,0x00498B5C,000080bf,0x0,Exact target float negative one used by deathbomb finish effect direction,literal
+player_deathbomb_real_pi_over_16,0x00498CFC,db0f493e,0x0,Exact target float pi over sixteen used by deathbomb radial effect stepping,literal
 player_bomb_real_64,0x00498B08,00008042,0x0,Exact target float 64.0 used by initial Player Y positioning,literal
 ??_C@_0BK@BJPCNFPG@error?5?3?5DIERR_INPUTLOST?$AN?6?$AA@,0x00497D80,6572726f72203a2044494552525f494e5055544c4f53540d0a00,0x0,Direct target DIERR_INPUTLOST diagnostic string,literal
 ??_C@_0BN@KAGFBIKB@error?5?3?5DIERR_INPUTLOST?5?$CFd?$AN?6?$AA@,0x00497D60,6572726f72203a2044494552525f494e5055544c4f53542025640d0a00,0x0,Direct target DIERR_INPUTLOST retry diagnostic string,literal
@@ -445,3 +479,7 @@ vc7_auto_0049C750_00000000,0x0049C750,09000000,0x0,SHA-pinned d3dx8/obj/i386/inf
 vc7_auto_0049C754_00000000,0x0049C754,05000000,0x0,SHA-pinned d3dx8/obj/i386/inftrees.obj initialized symbol _fixed_bd+0x0 equals exact target bytes at 0x0049C754,literal
 vc7_auto_0049C758_00000000,0x0049C758,60070000000100000008000050000000,0x0,SHA-pinned d3dx8/obj/i386/inftrees.obj initialized symbol _fixed_tl+0x0 equals exact target bytes at 0x0049C758,literal
 vc7_auto_0049D758_00000000,0x0049D758,50050000010000005705000001010000,0x0,SHA-pinned d3dx8/obj/i386/inftrees.obj initialized symbol _fixed_td+0x0 equals exact target bytes at 0x0049D758,literal
+replay_literal_t7rp,0x00496AA8,5437525000,0x0,Target literal T7RP copied into the replay header exactly as in adjacent TH06 source,literal
+replay_literal_version_100b,0x00497228,30313030,0x0,Target literal 0100 copied into the replay header version string,literal
+replay_literal_version_100b_tail,0x00497228,6200,0x4,Target literal b terminator copied from the tail of the replay header version string,literal
+replay_literal_no_name,0x00496AA0,4e4f204e414d4500,0x0,Target literal NO NAME copied into the replay header exactly as in adjacent TH06 source,literal

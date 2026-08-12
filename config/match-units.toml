@@ -549,6 +549,8 @@ rel32_targets = [
   "?Spawn@BulletUpdateItemManager@th07@@QAEXPAUBulletUpdateVec3@2@HH@Z=0x004326F0",
   "?UnregisterBoss@EnemyOverlay@SpellLifecycle@th07@@QAEXXZ=0x0041F670",
   "?ConfigureBoss@AnmManagerOverlay@SpellLifecycle@th07@@QAEXPAUEnemyOverlay@23@PAXH@Z=0x00455170",
+  "?Advance@EclTailTimerManager@th07@@QAEXPAH0@Z=0x0043958D",
+  "__CIatan2=0x0048BCAA",
   "__ftol2=0x0048B8A0",
   "_fmod=0x0048BB0A",
   "_sin=0x0048BB40",
@@ -558,6 +560,16 @@ dir32_targets = [
   "?g_TargetDifficultyMask626284@th07@@3EA=ecl_difficulty_mask",
   "?g_TargetEclManager1347938@th07@@3UEclManager@1@A=ecl_manager_1347938",
   "?g_TargetSpellActive12FE0C8@th07@@3HA=spell_active_12FE0C8",
+  "?g_TargetCaptureEligible12FE0C4@th07@@3HA=spell_capture_12FE0C4",
+  "?g_TargetSpellBaseScore12FE0CC@th07@@3HA=spell_base_score_12FE0CC",
+  "?g_TargetSpellPerTick12FE0D4@th07@@3HA=spell_per_tick_12FE0D4",
+  "?g_TargetSpellId12FE0D8@th07@@3HA=spell_id_12FE0D8",
+  "?g_TargetSpellTimerPrevious12FE0E0@th07@@3HA=spell_timer_previous_12FE0E0",
+  "?g_TargetSpellTimerCurrent12FE0E4@th07@@3HA=spell_timer_current_12FE0E4",
+  "?g_TargetSpellTimerSubframe12FE0E8@th07@@3HA=spell_timer_subframe_12FE0E8",
+  "?g_TargetSpellScores49F1B8@th07@@3PAHA=spell_scores_49F1B8",
+  "?g_TargetDifficulty62F85C@th07@@3HA=ecl_difficulty_62F85C",
+  "?g_TargetControl4D44F8@th07@@3HA=?g_HideGrazeCounter@th07@@3HA",
   "?g_TargetSpellControl12FE0F0@th07@@3HA=spell_control_12FE0F0",
   "?g_TargetSpellFloat12FE25C@th07@@3MA=spell_float_12FE25C",
   "?g_TargetSpellFloat12FE260@th07@@3MA=spell_float_12FE260",
@@ -583,6 +595,7 @@ dir32_targets = [
   "?g_EffectsColor@th07@@3PAPAXA=?g_EffectsColor@th07@@3PAXA",
   "?g_EffectManager@th07@@3UEffectManager@1@A=?g_EffectManager@th07@@3UEffectManager@1@A",
   "?g_ItemManager@th07@@3UBulletUpdateItemManager@1@A=?g_ItemManager@th07@@3PAEA",
+  "?g_EclTailTimerManager@th07@@3UEclTailTimerManager@1@A=bullet_update_timer_manager",
   "__real@3e99999a=ecl_real_0_3",
   "__real@3fc90fdb=__real@3fc90fdb",
   "__real@3f490fdb=ecl_real_pi_over_4",
@@ -725,6 +738,39 @@ dir32_targets = ["__real@00000000=__real@00000000"]
 address = "0x004418B0"
 symbol_base = "?AddBombProjectileCircle@PlayerBombOverlay@th07@@QAEPAUPlayerBombProjectile@2@PBUPlayerBombPoint@2@MMII@Z"
 dir32_targets = ["__real@00000000=__real@00000000"]
+
+[[units.player-bomb.functions]]
+address = "0x00441960"
+symbol_base = "?FinishDeathBomb@PlayerBombOverlay@th07@@QAEXXZ"
+rel32_targets = [
+  "?IsBombInputBlocked@PlayerBombGuiState@th07@@QAEHXZ=0x0042AD66",
+  "?StartDeathBomb@PlayerBombOverlay@th07@@QAEXH@Z=0x00441BD0",
+  "?StartDeathBombTransition@PlayerBombGuiState@th07@@QAEXHH@Z=0x00427C81",
+  "?SpawnParticlesColored@EffectManager@th07@@QAEPAXHPAUD3DXVECTOR3@@HHH@Z=0x0041C610",
+  "?PlaySoundByIdx@SoundPlayer@th07@@QAEHHH@Z=0x0044C930",
+]
+dir32_targets = [
+  "?g_PlayerBombGuiState49FBF0@th07@@3UPlayerBombGuiState@1@A=player_bomb_gui_state",
+  "__real@bf800000=player_deathbomb_real_neg_1",
+]
+
+[[units.player-bomb.functions]]
+address = "0x00441BD0"
+symbol_base = "?StartDeathBomb@PlayerBombOverlay@th07@@QAEXH@Z"
+rel32_targets = [
+  "?SpawnParticlesColored@EffectManager@th07@@QAEPAXHPAUD3DXVECTOR3@@HHH@Z=0x0041C610",
+  "?AddBombProjectileCircle@PlayerBombOverlay@th07@@QAEPAUPlayerBombProjectile@2@PBUPlayerBombPoint@2@MMII@Z=0x004418B0",
+  "?SpawnParticles@EffectManager@th07@@QAEPAXHPAUD3DXVECTOR3@@HH@Z=0x0041C1C0",
+  "__CIcos=0x0048BBF0",
+  "__CIsin=0x0048BB40",
+  "?PlaySoundByIdx@SoundPlayer@th07@@QAEHHH@Z=0x0044C930",
+]
+dir32_targets = [
+  "?g_BombEffectState0@th07@@3HA=player_bomb_effect_0",
+  "?g_BombEffectState1@th07@@3HA=player_bomb_effect_1",
+  "?g_BombScore@th07@@3HA=player_bomb_score_register",
+  "__real@3e490fdb=player_deathbomb_real_pi_over_16",
+]
 
 [[units.player-bomb.functions]]
 address = "0x004423E0"
@@ -1484,6 +1530,252 @@ rel32_targets = [
 dir32_targets = [
   "?g_PlayerUpdateDisabled@th07@@3DA=bullet_update_paused",
   "?g_PlayerUpdateAnmManager@th07@@3PAUPlayerUpdateTailAnmManager@1@A=bullet_update_anm_manager",
+]
+
+[units.player-aim]
+kind = "probe"
+source = "src/PlayerAim.cpp"
+object = "build/match-units/PlayerAim.obj"
+profile = "vc7-debug-od-no-gs-g6"
+notes = "Focused target-observed Player secondary-bullet draw callback and point-angle helper."
+
+[[units.player-aim.functions]]
+address = "0x00442350"
+symbol_base = "?OnDrawSecondaryBullets@PlayerAimOverlay@th07@@QAEHXZ"
+rel32_targets = ["?DrawSecondaryBullets@PlayerAimOverlay@th07@@QAEXXZ=0x0043D790"]
+
+[[units.player-aim.functions]]
+address = "0x00442370"
+symbol_base = "?AngleToPoint@PlayerAimOverlay@th07@@QAEMPBUPlayerAimVec3@2@@Z"
+rel32_targets = ["__CIatan2=0x0048BCAA"]
+dir32_targets = [
+  "__real@00000000=__real@00000000",
+  "__real@3fc90fdb=__real@3fc90fdb",
+  "_kPlayerAimPiOverTwo=__real@3fc90fdb",
+]
+
+[units.replay-delete]
+kind = "probe"
+source = "src/ReplayDelete.cpp"
+object = "build/match-units/ReplayDelete.obj"
+profile = "vc7-debug-od-no-gs-g6"
+notes = "Target-observed ReplayManager chain and buffer teardown callback."
+
+[[units.replay-delete.functions]]
+address = "0x004439B0"
+symbol_base = "?DeletedCallback@ReplayDelete@th07@@QAEHXZ"
+rel32_targets = [
+  "?Cut@Chain@th07@@QAEXPAUChainElem@2@@Z=0x00430140",
+  "_free=0x0047D285",
+  "??3@YAXPAX@Z=0x0047D43C",
+]
+dir32_targets = [
+  "?g_Chain@th07@@3UChain@1@A=?g_Chain@th07@@3UChain@1@A",
+  "?g_ReplayDeleteManager@th07@@3PAUReplayDeleteOverlay@1@A=replay_manager",
+]
+
+[units.replay-stop]
+kind = "probe"
+source = "src/ReplayStop.cpp"
+object = "build/match-units/ReplayStop.obj"
+profile = "vc7-debug-od-no-gs-g6"
+notes = "TH06-corroborated TH07-target-attested replay recording terminal sentinel and stage bookmark."
+
+[[units.replay-stop.functions]]
+address = "0x00443D30"
+symbol_base = "?StopRecording@ReplayStop@th07@@SIXXZ"
+dir32_targets = [
+  "?g_ReplayStopManager@th07@@3PAUReplayStopOverlay@1@A=replay_manager",
+  "?g_ReplayStopStage@th07@@3HA=ecl_difficulty_62F85C",
+]
+
+[units.player-sht]
+kind = "probe"
+source = "src/PlayerSht.cpp"
+object = "build/match-units/PlayerSht.obj"
+profile = "vc7-debug-od-no-gs-g6"
+notes = "Target-observed Player SHT file loader and embedded callback relocation pass."
+
+[[units.player-sht.functions]]
+address = "0x00442B70"
+symbol_base = "?LoadShtFile@PlayerSht@th07@@SIHPAPAUPlayerShtHeader@2@PBD@Z"
+rel32_targets = ["?OpenPath@PlayerShtFileSystem@th07@@SIPAXPBDH@Z=0x00431330"]
+dir32_targets = [
+  "?g_PlayerShtCallbacks0@th07@@3PAPAXA=player_sht_callbacks0",
+  "?g_PlayerShtCallbacks1@th07@@3PAPAXA=player_sht_callbacks1",
+  "?g_PlayerShtCallbacks2@th07@@3PAPAXA=player_sht_callbacks2",
+  "?g_PlayerShtCallbacks3@th07@@3PAPAXA=player_sht_callbacks3",
+]
+
+[units.replay-added]
+kind = "probe"
+source = "src/ReplayAdded.cpp"
+object = "build/match-units/ReplayAdded.obj"
+profile = "vc7-debug-od-no-gs-g6"
+notes = "TH06-corroborated TH07-target-attested replay recording setup callback."
+
+[[units.replay-added.functions]]
+address = "0x00443040"
+symbol_base = "?AddedCallback@ReplayAdded@th07@@QAEHXZ"
+rel32_targets = [
+  "??2@YAPAXI@Z=0x0047D441",
+  "_free=0x0047D285",
+  "_malloc=0x0047D39D",
+  "__ftol2=0x0048B8A0",
+]
+dir32_targets = [
+  "??_C@_04EMDBAGHL@T7RP?$AA@=replay_literal_t7rp",
+  "??_C@_05FFINNMND@0100b?$AA@=replay_literal_version_100b",
+  "??_C@_05FFINNMND@0100b?$AA@+0x4=replay_literal_version_100b_tail",
+  "??_C@_07CCACIMEM@NO?5NAME?$AA@=replay_literal_no_name",
+  "?g_ReplayAddedCharacter@th07@@3EA=spell_character_62F647",
+  "?g_ReplayAddedRng0@th07@@3HA=replay_rng0",
+  "?g_ReplayAddedRng1@th07@@3HA=replay_rng1",
+  "?g_ReplayAddedConfig@th07@@3HA=replay_game_config",
+  "?g_ReplayAddedGameManager@th07@@3PAXA=replay_game_manager",
+  "?g_ReplayAddedStage@th07@@3HA=ecl_difficulty_62F85C",
+  "?g_ReplayAddedGameState@th07@@3PAXA=replay_game_state",
+  "?g_ReplayAddedRank@th07@@3HA=replay_rank",
+  "?g_ReplayAddedPointItems@th07@@3GA=replay_point_items",
+  "?g_ReplayAddedPowerItems@th07@@3EA=replay_power_items",
+  "?g_ReplayAddedScore0@th07@@3HA=replay_score0",
+  "?g_ReplayAddedScore1@th07@@3HA=replay_score1",
+  "?g_ReplayAddedScore2@th07@@3HA=replay_score2",
+]
+
+[units.replay-record]
+kind = "probe"
+source = "src/ReplayRecord.cpp"
+object = "build/match-units/ReplayRecord.obj"
+profile = "vc7-debug-od-no-gs-g6"
+notes = "TH06-corroborated TH07-target-attested replay recording callback."
+
+[[units.replay-record.functions]]
+address = "0x00442CD0"
+symbol_base = "?OnUpdate@ReplayRecord@th07@@QAEHXZ"
+dir32_targets = [
+  "?g_ReplayRecordFlags@th07@@3IA=spell_replay_62F648",
+  "?g_ReplayRecordPreviousInput@th07@@3GA=replay_previous_input",
+  "?g_ReplayRecordCurrentInput@th07@@3GA=player_bomb_input",
+  "?g_ReplayRecordRawInput@th07@@3GA=replay_raw_input",
+  "?g_ReplayRecordGameManager@th07@@3PAXA=replay_game_manager",
+  "?g_ReplayRecordSupervisorFlags@th07@@3HA=replay_supervisor_flags",
+  "?g_ReplayRecordStage@th07@@3HA=ecl_difficulty_62F85C",
+  "?g_ReplayRecordInputValue@th07@@3GA=replay_input_value",
+  "?g_ReplayRecordExtra@th07@@3HA=replay_input_extra_record",
+]
+
+[units.replay-playback]
+kind = "probe"
+source = "src/ReplayPlayback.cpp"
+object = "build/match-units/ReplayPlayback.obj"
+profile = "vc7-debug-od-no-gs-g6"
+notes = "TH06-corroborated TH07-target-attested replay playback callback."
+
+[[units.replay-playback.functions]]
+address = "0x00442EE0"
+symbol_base = "?OnUpdate@ReplayPlayback@th07@@QAEHXZ"
+dir32_targets = [
+  "?g_ReplayPlaybackFlags@th07@@3IA=spell_replay_62F648",
+  "?g_ReplayPlaybackGameManager@th07@@3PAXA=replay_game_manager",
+  "?g_ReplayPlaybackPreviousInput@th07@@3GA=replay_previous_input",
+  "?g_ReplayPlaybackCurrentInput@th07@@3GA=player_bomb_input",
+  "?g_ReplayPlaybackRepeatPulse@th07@@3GA=replay_repeat_pulse",
+  "?g_ReplayPlaybackRepeatFrames@th07@@3GA=replay_repeat_frames",
+  "?g_ReplayPlaybackInputValue@th07@@3GA=replay_input_value",
+  "?g_ReplayPlaybackExtra@th07@@3HA=replay_input_extra_playback",
+]
+
+[units.replay-input]
+kind = "probe"
+source = "src/ReplayInput.cpp"
+object = "build/match-units/ReplayInput.obj"
+profile = "vc7-debug-od-no-gs-g6"
+notes = "Target-observed replay input state initialization callback."
+
+[[units.replay-input.functions]]
+address = "0x00442C60"
+symbol_base = "?InitializeInputState@ReplayInput@th07@@QAEHXZ"
+dir32_targets = [
+  "?g_ReplayInputSnapshot@th07@@3GA=replay_input_snapshot",
+  "?g_ReplayInputCounter@th07@@3HA=replay_input_counter",
+  "?g_ReplayInputPending@th07@@3HA=replay_input_pending",
+]
+
+[[units.replay-input.functions]]
+address = "0x00442E50"
+symbol_base = "?UpdateControl@ReplayInput@th07@@QAEHXZ"
+rel32_targets = [
+  "?IsBombInputBlocked@ReplayInputGui@th07@@QAEHXZ=0x0042AD66",
+  "?IsRestartReady@ReplayInputGui@th07@@QAEHXZ=0x00427BE2",
+  "?IsBusy@ReplayInputUi@th07@@QAEHXZ=0x004232A0",
+]
+dir32_targets = [
+  "?g_ReplayInputFlags@th07@@3IA=spell_replay_62F648",
+  "?g_ReplayInputGui@th07@@3UReplayInputGui@1@A=spell_gui_49FBF0",
+  "?g_ReplayInputMode@th07@@3EA=replay_input_mode",
+  "?g_ReplayInputUi@th07@@3UReplayInputUi@1@A=spell_ui_9A9B00",
+]
+
+[units.player-lifecycle-callbacks]
+kind = "probe"
+source = "src/PlayerLifecycleCallbacks.cpp"
+object = "build/match-units/PlayerLifecycleCallbacks.obj"
+profile = "vc7-debug-od-no-gs-g6"
+notes = "Focused TH06-corroborated and TH07-target-attested Player teardown and chain-cut callbacks."
+
+[[units.player-lifecycle-callbacks.functions]]
+address = "0x004428E0"
+symbol_base = "?DeletedCallback@PlayerLifecycle@th07@@SIHPAUPlayerLifecycleOverlay@2@@Z"
+rel32_targets = [
+  "?ReleaseAnm@PlayerLifecycleAnmManager@th07@@QAEXH@Z=0x0044E4E0",
+  "_free=0x0047D285",
+]
+dir32_targets = [
+  "?g_PlayerLifecycleSupervisorState@th07@@3HA=?g_SupervisorState@th07@@3HA",
+  "?g_PlayerLifecycleAnmManager@th07@@3PAUPlayerLifecycleAnmManager@1@A=?g_AnmManager@th07@@3PAUAnmManager@1@A",
+  "?g_PlayerLifecycleHudActive@th07@@3FA=player_bomb_hud_active",
+  "?g_PlayerLifecycleHudTimer@th07@@3HA=player_bomb_hud_timer",
+  "?g_PlayerLifecycleBossUi@th07@@3PAUPlayerLifecycleBossUi@1@A=ecl_boss_ui_134DB5A",
+  "?g_PlayerLifecycleResources@th07@@3PAPAXA=player_lifecycle_resources",
+]
+
+[[units.player-lifecycle-callbacks.functions]]
+address = "0x00442B10"
+symbol_base = "?CutChain@PlayerLifecycle@th07@@SAXXZ"
+rel32_targets = [
+  "?Cut@Chain@th07@@QAEXPAVChainElem@2@@Z=0x00430140",
+  "?Cut@Chain@th07@@QAEXPAUChainElem@2@@Z=0x00430140",
+]
+dir32_targets = [
+  "?g_Chain@th07@@3UChain@1@A=?g_Chain@th07@@3UChain@1@A",
+  "?g_PlayerLifecycleChainElems@th07@@3PAPAVChainElem@1@A=player_lifecycle_chain_elems",
+  "?g_PlayerLifecycleChainElems@th07@@3PAPAUChainElem@1@A=player_lifecycle_chain_elems",
+]
+
+[units.player-lifecycle-register]
+kind = "probe"
+source = "src/PlayerLifecycleRegister.cpp"
+object = "build/match-units/PlayerLifecycleRegister.obj"
+profile = "vc7-debug-od-no-gs-g6"
+notes = "TH06-corroborated Player chain setup checked against the complete TH07 target body."
+
+[[units.player-lifecycle-register.functions]]
+address = "0x004429D0"
+symbol_base = "?RegisterChain@PlayerLifecycle@th07@@SIHH@Z"
+rel32_targets = [
+  "?CreateElem@Chain@th07@@QAEPAVChainElem@2@P6I?AW4ChainCallbackResult@2@PAX@Z@Z=0x00430090",
+  "?AddToCalcChain@Chain@th07@@QAEHPAVChainElem@2@H@Z=0x0042FBD0",
+  "?AddToDrawChain@Chain@th07@@QAEHPAVChainElem@2@H@Z=0x0042FCA0",
+]
+dir32_targets = [
+  "?g_Chain@th07@@3UChain@1@A=?g_Chain@th07@@3UChain@1@A",
+  "?g_PlayerLifecyclePlayer@th07@@3PAUPlayerLifecycleOverlay@1@A=player_lifecycle_player",
+  "?OnUpdate@PlayerLifecycle@th07@@SI?AW4ChainCallbackResult@2@PAX@Z=0x00441FB0",
+  "?OnDrawBomb@PlayerLifecycle@th07@@SI?AW4ChainCallbackResult@2@PAX@Z=0x004420B0",
+  "?OnDrawSecondaryBullets@PlayerLifecycle@th07@@SI?AW4ChainCallbackResult@2@PAX@Z=0x00442350",
+  "?AddedCallback@PlayerLifecycle@th07@@SIHPAX@Z=0x004423E0",
+  "?DeletedCallback@PlayerLifecycle@th07@@SIHPAX@Z=0x004428E0",
 ]
 
 [units.chain]
