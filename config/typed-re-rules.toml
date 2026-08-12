@@ -34,6 +34,13 @@ recommendation = "Model the observed image address as the actual global object r
 evidence = "Player kill/laser 0x0043E260 and 0x0043E6B0 exact matches"
 
 [[rules]]
+id = "vc7-global-member-call-abi"
+requires = ["global_ecx_receiver", "call_cleanup_mismatch"]
+confidence = "instruction_fact"
+recommendation = "When target loads a fixed global address into ECX before a call and performs no caller stack cleanup, declare the callee as a member of that global overlay; do not preserve a convenient cdecl/free-function prototype merely because its destination address is known."
+evidence = "Player::ScoreGraze 0x0043EB90 calls 0x0042F4AA, 0x0042F789, and 0x0042F736 with ECX=0x00626270 and callee cleanup; correcting the three GrazeState member ABIs advanced strict comparison from +0x152 to +0x1D0"
+
+[[rules]]
 id = "vc7-qword-floating-constant"
 requires = ["x87_f64"]
 confidence = "instruction_fact"

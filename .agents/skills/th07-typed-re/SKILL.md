@@ -37,6 +37,10 @@ the coordinator to create the canonical entry before matching iterations.
   locals, or side effects; do not add inert padding or fake behavior.
 - Diagnose frame mismatches by declaration order and lifetime before changing
   semantics. Diagnose tail mismatches by missing or redundant behavior first.
+- If target loads a fixed global address into ECX before a call and performs no
+  caller cleanup, model the callee as a member of that global overlay. A known
+  destination address does not justify a cdecl/free-function prototype that
+  changes the target call shape.
 - Treat adjacent-version `#pragma optimize` regions as source evidence. Probe
   them in the smallest bounded region before adding a new translation-unit
   profile, and retain them only when strict target comparison proves the shape.

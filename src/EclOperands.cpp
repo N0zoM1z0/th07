@@ -33,6 +33,11 @@ struct TargetRngOverlay
 {
     u32 RandomU32();
     f32 RandomF32();
+
+    f32 RandomF32InRange(f32 range)
+    {
+        return RandomF32() * range;
+    }
 };
 
 static __forceinline i32 *IntField(EnemyOverlay *enemy, i32 offset)
@@ -67,13 +72,14 @@ extern TargetRngOverlay g_TargetRng49FE20;
 // Observed: target 0x0040E5B0 receives Enemy in ECX and the raw i32 operand
 // in EDX, then resolves the ECL variable IDs 0x2710..0x2759.  Meanings of
 // individual offsets remain intentionally unnamed pending their owner lanes.
-#pragma var_order(lengthVector, range, delta, position)
+#pragma var_order(lengthVector, range, delta, position, remainder)
 i32 __fastcall ResolveInt(EnemyOverlay *enemy, i32 operand)
 {
     Vector3 lengthVector;
     u32 range;
     Vector3 delta;
     Vector3 *position;
+    u32 remainder;
 
     switch (operand)
     {
@@ -142,7 +148,11 @@ i32 __fastcall ResolveInt(EnemyOverlay *enemy, i32 operand)
     case 0x2747: return g_TargetRng49FE20.RandomU32();
     case 0x2748:
         range = *IntField(enemy, 0x744);
-        return *IntField(enemy, 0x748) + (range ? g_TargetRng49FE20.RandomU32() % range : 0);
+        if (range)
+            remainder = g_TargetRng49FE20.RandomU32() % range;
+        else
+            remainder = 0;
+        return *IntField(enemy, 0x748) + remainder;
     case 0x274D: return *IntField(enemy, 0x2E4C);
     case 0x274E: return *(u8 *)(enemy->bytes + 0x2E17);
     case 0x2756: return *IntField(enemy, 0x2E10);
@@ -196,8 +206,11 @@ i32 *__fastcall ResolveIntLValue(EnemyOverlay *enemy, i32 *operand, u16 flags, i
 
 // Observed: target 0x0040EDF0 receives Enemy in ECX and a raw float operand
 // on the stack.  TH06 supports the interpretation as the float rvalue path.
+#pragma var_order(lengthVector, randomRange, delta, position)
 f32 EnemyOverlay::ResolveFloat(f32 operand)
 {
+    Vector3 lengthVector;
+    f32 randomRange;
     Vector3 delta;
     Vector3 *position;
 
@@ -272,7 +285,9 @@ f32 EnemyOverlay::ResolveFloat(f32 operand)
     case 0x2745: return *FloatField(this, 0x2B5C);
     case 0x2746: return *FloatField(this, 0x2B60);
     case 0x2747: return g_TargetRng49FE20.RandomF32();
-    case 0x2748: return g_TargetRng49FE20.RandomF32() * *FloatField(this, 0x754) + *FloatField(this, 0x758);
+    case 0x2748:
+        randomRange = *FloatField(this, 0x754);
+        return g_TargetRng49FE20.RandomF32InRange(randomRange) + *FloatField(this, 0x758);
     case 0x274C: return g_TargetRng49FE20.RandomF32() * 6.2831855f - 3.1415927f;
     case 0x274E: return (f32)*(u8 *)(bytes + 0x2E17);
     case 0x274D: return (f32)*(i32 *)(bytes + 0x2E4C);
@@ -281,7 +296,8 @@ f32 EnemyOverlay::ResolveFloat(f32 operand)
         delta.z = g_TargetFloat4BE410 - position->z;
         delta.y = g_TargetFloat4BE40C - position->y;
         delta.x = g_TargetFloat4BE408 - position->x;
-        return delta.Length();
+        lengthVector = delta;
+        return lengthVector.Length();
     default: return operand;
     }
 }

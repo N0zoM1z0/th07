@@ -22,7 +22,7 @@ struct GameManager
     u8 unknown08[0xC];
     i32 grazeInStage;
     i32 grazeInTotal;
-    u8 unknown1C[0x74];
+    u8 unknown1C[0x6C];
     i32 rankBaseline;
 };
 
@@ -30,6 +30,9 @@ struct GrazeState
 {
     void BeginPlayerDeath();
     void CancelCapture();
+    void IncreaseSubrank(i32 amount);
+    i32 AdvanceGrazeDisplay(i32 amount);
+    i32 FinishGrazeDisplay(i32 amount);
 };
 
 struct SoundPlayer
@@ -55,9 +58,6 @@ extern i32 g_RankValue;
 extern i32 *g_PlayerAnimationData;
 extern Player g_Player;
 
-extern void __cdecl IncreaseSubrank(i32 amount);
-extern i32 __cdecl AdvanceGrazeDisplay(i32 amount);
-extern i32 __cdecl FinishGrazeDisplay(i32 amount);
 extern void __fastcall RotatePlayerVector(D3DXVECTOR3 *out, D3DXVECTOR3 *relative, f32 angle);
 
 #define PLAYER_BOXES_OVERLAP(leftA, topA, rightA, bottomA, leftB, topB, rightB, bottomB)                              \
@@ -68,9 +68,10 @@ i32 Player::CalcDamageToEnemy(D3DXVECTOR3 *enemyPosition, D3DXVECTOR3 *enemySize
 {
     D3DXVECTOR3 bulletTopLeft;
     i32 damage;
+    i32 damageToAdd;
+    i32 animationIndex;
     f32 enemyTopLeftX;
     f32 enemyTopLeftY;
-    bool isNewEnemy;
     i32 i;
     PlayerBullet *bullet;
     D3DXVECTOR3 bulletBottomRight;
@@ -78,8 +79,7 @@ i32 Player::CalcDamageToEnemy(D3DXVECTOR3 *enemyPosition, D3DXVECTOR3 *enemySize
     f32 enemyBottomRightY;
 
     damage = 0;
-    isNewEnemy = lastEnemyHitY != lastEnemyHitX;
-    if (!isNewEnemy)
+    if (lastEnemyHitY == lastEnemyHitX)
     {
         return 0;
     }
@@ -122,7 +122,12 @@ i32 Player::CalcDamageToEnemy(D3DXVECTOR3 *enemyPosition, D3DXVECTOR3 *enemySize
 
         if (bombIsActive)
         {
-            damage += bullet->damage / 3 ? bullet->damage / 3 : 1;
+            damageToAdd = bullet->damage / 3;
+            if (damageToAdd == 0)
+            {
+                damageToAdd = 1;
+            }
+            damage += damageToAdd;
         }
         else
         {
@@ -133,9 +138,10 @@ i32 Player::CalcDamageToEnemy(D3DXVECTOR3 *enemyPosition, D3DXVECTOR3 *enemySize
         {
             if (bullet->state == 1)
             {
-                bullet->animationIndex += 32;
+                animationIndex = bullet->animationIndex + 32;
+                bullet->animationIndex = animationIndex;
                 reinterpret_cast<PlayerBulletAnimation *>(bullet)->SetAndExecuteScript(
-                    g_PlayerAnimationData[bullet->animationIndex + 41916]);
+                    g_PlayerAnimationData[animationIndex + 41916]);
                 g_EffectManager.SpawnParticles(5, &bullet->position, 1, -1);
                 bullet->position.z = 0.1f;
             }
@@ -409,20 +415,30 @@ i32 Player::ScoreGraze(D3DXVECTOR3 *center)
     {
         g_EffectManager.SpawnParticles(8, &particlePosition, 1, -1);
     }
-    IncreaseSubrank(6);
+    g_GrazeState.IncreaseSubrank(6);
     g_GuiFlags = (g_GuiFlags & 0xFFFFFF3F) | 0x80;
     g_SoundPlayer.PlaySoundByIdx(30, 0);
     g_StageScore += 20 * ((g_RankValue - g_GameManager->rankBaseline) / 1500) + 2500;
-    g_GameManager->scoreRelated += 2000 / 10;
+    __asm
+    {
+        mov ecx, DWORD PTR[g_GameManager]
+        mov eax, 2000
+        cdq
+        mov esi, 10
+        idiv esi
+        add eax, DWORD PTR[ecx + 4]
+        mov edx, DWORD PTR[g_GameManager]
+        mov DWORD PTR[edx + 4], eax
+    }
     if (static_cast<i8>(grazeSoundVariant) == 1)
     {
         if (static_cast<i8>(grazeVariant))
         {
-            AdvanceGrazeDisplay(30);
-            return FinishGrazeDisplay(30);
+            g_GrazeState.AdvanceGrazeDisplay(30);
+            return g_GrazeState.FinishGrazeDisplay(30);
         }
-        AdvanceGrazeDisplay(80);
-        return FinishGrazeDisplay(80);
+        g_GrazeState.AdvanceGrazeDisplay(80);
+        return g_GrazeState.FinishGrazeDisplay(80);
     }
     return reinterpret_cast<i32>(this);
 }

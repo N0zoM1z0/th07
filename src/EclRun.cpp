@@ -12,7 +12,6 @@ extern EclManager g_TargetEclManager1347938;
 extern i32 g_TargetSpellActive12FE0C8;
 extern i32 g_TargetRank62F8A4;
 extern u8 g_TargetBulletManager62F958[];
-extern f32 g_TargetPlayerPosition4BE408;
 
 namespace EclOperands
 {
@@ -27,6 +26,26 @@ struct EnemyOverlay
     f32 ResolveFloat(f32 operand);
 };
 
+struct Vector3
+{
+    f32 x;
+    f32 y;
+    f32 z;
+};
+
+struct TargetPlayerOverlay
+{
+    f32 AngleToPlayer(const Vector3 *position);
+};
+
+struct TargetRngOverlay
+{
+    u32 RandomU32();
+};
+
+extern TargetPlayerOverlay g_TargetPlayer4BDAD8;
+extern TargetRngOverlay g_TargetRng49FE20;
+
 i32 __fastcall ResolveInt(EnemyOverlay *enemy, i32 operand);
 i32 *__fastcall ResolveIntLValue(EnemyOverlay *enemy, i32 *operand, u16 flags, i32 flagIndex);
 f32 *__fastcall ResolveFloatLValue(EnemyOverlay *enemy, f32 *operand, u16 flags, i32 flagIndex);
@@ -38,6 +57,11 @@ void __cdecl TargetSpawnBullet(void *manager, void *request);
 void *__cdecl TargetSpawnLaser(void *manager, void *request);
 void __cdecl TargetClearBullets(void *manager, i32 mode);
 f32 __stdcall TargetAddNormalizeAngle(f32 angle, f32 delta);
+void __cdecl TargetEffect423090(i32 effectId, i32 parameter);
+void __cdecl Target44C930(i32 soundId, i32 parameter);
+void __cdecl Target439401(i32 value);
+void __cdecl Target424C00(f32 *position, f32 value);
+void __cdecl Target42F5A2(i32 value);
 
 namespace SpellLifecycle
 {
@@ -147,6 +171,13 @@ static __forceinline i32 *WriteInt(EclOperands::EnemyOverlay *enemy, RunEclInstr
 static __forceinline f32 *WriteFloat(EclOperands::EnemyOverlay *enemy, RunEclInstruction *instruction)
 {
     return EclOperands::ResolveFloatLValue(enemy, (f32 *)&instruction->operand[0], instruction->operandFlags, 0);
+}
+
+static __forceinline f32 *WriteFloatAt(EclOperands::EnemyOverlay *enemy, RunEclInstruction *instruction,
+                                       i32 operandIndex)
+{
+    return EclOperands::ResolveFloatLValue(enemy, (f32 *)&instruction->operand[operandIndex],
+                                           instruction->operandFlags, operandIndex);
 }
 
 static __forceinline void Advance(RunEclInstruction *&instruction)
@@ -296,6 +327,7 @@ ZunResult EclManager::RunEcl(Enemy *enemy)
     EclOperands::EnemyOverlay *const rawEnemy = (EclOperands::EnemyOverlay *)enemy;
     EnterInterrupt(rawEnemy);
     RunEclInstruction *instruction = CurrentInstruction(rawEnemy);
+    void *laser;
 
     for (;;)
     {
@@ -570,6 +602,20 @@ ZunResult EclManager::RunEcl(Enemy *enemy)
             }
             break;
 
+        case 74:
+            IntAt(rawEnemy, 4 * 2858) = ReadInt(rawEnemy, instruction, 0);
+            if (IntAt(rawEnemy, 4 * 2858))
+            {
+                IntAt(rawEnemy, 4 * 2858) += IntAt(rawEnemy, 4 * 2858) / 5 +
+                                               g_TargetRank62F8A4 * (-IntAt(rawEnemy, 4 * 2858) / 5 -
+                                                                      IntAt(rawEnemy, 4 * 2858) / 5) / 32;
+                IntAt(rawEnemy, 4 * 2861) = EclOperands::g_TargetRng49FE20.RandomU32() %
+                                             IntAt(rawEnemy, 4 * 2858);
+                IntAt(rawEnemy, 4 * 2860) = 0;
+                IntAt(rawEnemy, 4 * 2859) = -999;
+            }
+            break;
+
         case 75:
             ByteAt(rawEnemy, ENEMY_MOVEMENT_FLAGS) |= 0x20;
             break;
@@ -614,15 +660,24 @@ ZunResult EclManager::RunEcl(Enemy *enemy)
             break;
         case 85:
         {
-            void *laser = LaserSlot(rawEnemy, ReadInt(rawEnemy, instruction, 0));
+            laser = LaserSlot(rawEnemy, ReadInt(rawEnemy, instruction, 0));
             if (laser)
                 *(f32 *)((u8 *)laser + 1188) = TargetAddNormalizeAngle(*(f32 *)((u8 *)laser + 1188),
                                                                           ReadFloat(rawEnemy, instruction, 1));
             break;
         }
+        case 86:
+        {
+            laser = LaserSlot(rawEnemy, ReadInt(rawEnemy, instruction, 0));
+            if (laser)
+                *(f32 *)((u8 *)laser + 1188) =
+                    EclOperands::g_TargetPlayer4BDAD8.AngleToPlayer((const EclOperands::Vector3 *)((u8 *)laser + 1176)) +
+                    ReadFloat(rawEnemy, instruction, 1);
+            break;
+        }
         case 87:
         {
-            void *laser = LaserSlot(rawEnemy, ReadInt(rawEnemy, instruction, 0));
+            laser = LaserSlot(rawEnemy, ReadInt(rawEnemy, instruction, 0));
             if (laser)
             {
                 *(f32 *)((u8 *)laser + 1176) = ReadFloat(rawEnemy, instruction, 1) + FloatAt(rawEnemy, 4 * 2755);
@@ -633,13 +688,13 @@ ZunResult EclManager::RunEcl(Enemy *enemy)
         }
         case 88:
         {
-            void *laser = LaserSlot(rawEnemy, ReadInt(rawEnemy, instruction, 0));
+            laser = LaserSlot(rawEnemy, ReadInt(rawEnemy, instruction, 0));
             IntAt(rawEnemy, 4 * 572) = !laser || !*(i32 *)((u8 *)laser + 1236);
             break;
         }
         case 89:
         {
-            void *laser = LaserSlot(rawEnemy, ReadInt(rawEnemy, instruction, 0));
+            laser = LaserSlot(rawEnemy, ReadInt(rawEnemy, instruction, 0));
             if (laser && *(i32 *)((u8 *)laser + 1236) && *(u8 *)((u8 *)laser + 1256) < 2)
             {
                 *(u8 *)((u8 *)laser + 1256) = 2;
@@ -660,6 +715,232 @@ ZunResult EclManager::RunEcl(Enemy *enemy)
             break;
         case 91:
             SpellLifecycle::FinishSpellcard((SpellLifecycle::EnemyOverlay *)rawEnemy, instruction);
+            break;
+
+        // 0x5e--0x70 are target-observed state and presentation controls.
+        // Cases which create ANM instances or touch the shared stage slots
+        // remain below until their owning layouts are attested.
+        case 94:
+            TargetEffect423090(8000, 0);
+            break;
+        case 96:
+            *(i16 *)(rawEnemy->bytes + 2 * 5912) = *(const i16 *)((const u8 *)instruction + 12);
+            *(i16 *)(rawEnemy->bytes + 2 * 5913) = *(const i16 *)((const u8 *)instruction + 14);
+            *(i16 *)(rawEnemy->bytes + 2 * 5914) = *(const i16 *)((const u8 *)instruction + 16);
+            *(i16 *)(rawEnemy->bytes + 2 * 5915) = *(const i16 *)((const u8 *)instruction + 18);
+            *(i16 *)(rawEnemy->bytes + 2 * 5916) = *(const i16 *)((const u8 *)instruction + 20);
+            ByteAt(rawEnemy, 11822) = 0xFF;
+            break;
+        case 98:
+            ByteAt(rawEnemy, 11796) = *((const u8 *)instruction + 12);
+            ByteAt(rawEnemy, 11797) = *((const u8 *)instruction + 13);
+            ByteAt(rawEnemy, 11798) = *((const u8 *)instruction + 14);
+            break;
+        case 101:
+            FloatAt(rawEnemy, 4 * 2767) = ReadFloat(rawEnemy, instruction, 0);
+            FloatAt(rawEnemy, 4 * 2768) = ReadFloat(rawEnemy, instruction, 1);
+            FloatAt(rawEnemy, 4 * 2769) = ReadFloat(rawEnemy, instruction, 2);
+            break;
+        case 102:
+            ByteAt(rawEnemy, 11817) = (ByteAt(rawEnemy, 11817) & 0xFD) |
+                                      (2 * (*((const u8 *)instruction + 12) & 1));
+            break;
+        case 103:
+            ByteAt(rawEnemy, 11817) = (ByteAt(rawEnemy, 11817) & 0xFB) |
+                                      (4 * (*((const u8 *)instruction + 12) & 1));
+            break;
+        case 104:
+            ByteAt(rawEnemy, 11817) = (ByteAt(rawEnemy, 11817) & 0xEF) |
+                                      (16 * (*((const u8 *)instruction + 12) & 1));
+            break;
+        case 105:
+            Target44C930(ReadInt(rawEnemy, instruction, 0), 0);
+            break;
+        case 106:
+            ByteAt(rawEnemy, 11818) = (ByteAt(rawEnemy, 11818) & 0xF8) |
+                                      (*((const u8 *)instruction + 12) & 7);
+            break;
+        case 107:
+            IntAt(rawEnemy, 4 * 2721) = *((const u8 *)instruction + 12);
+            break;
+        case 108:
+            IntAt(rawEnemy, 4 * 2722 + ReadInt(rawEnemy, instruction, 1)) =
+                ReadInt(rawEnemy, instruction, 0);
+            break;
+        case 109:
+            IntAt(rawEnemy, 4 * 2754) = ReadInt(rawEnemy, instruction, 0);
+            break;
+        case 111:
+            IntAt(rawEnemy, 4 * 2803) = ReadInt(rawEnemy, instruction, 0);
+            IntAt(rawEnemy, 4 * 2802) = 0;
+            IntAt(rawEnemy, 4 * 2801) = -999;
+            break;
+        case 112:
+            IntAt(rawEnemy, 4 * 2991) = ReadInt(rawEnemy, instruction, 0);
+            break;
+        case 113:
+            IntAt(rawEnemy, 4 * 2995) = ReadInt(rawEnemy, instruction, 0);
+            break;
+        case 114:
+            IntAt(rawEnemy, 4 * 2999) = ReadInt(rawEnemy, instruction, 0);
+            IntAt(rawEnemy, 4 * 2803) = 0;
+            IntAt(rawEnemy, 4 * 2802) = 0;
+            IntAt(rawEnemy, 4 * 2801) = -999;
+            break;
+        case 115:
+            IntAt(rawEnemy, 4 * 3000) = ReadInt(rawEnemy, instruction, 0);
+            break;
+        case 116:
+            ByteAt(rawEnemy, 11817) = (ByteAt(rawEnemy, 11817) & 0xFE) |
+                                      (*((const u8 *)instruction + 12) & 1);
+            break;
+        case 120:
+            ByteAt(rawEnemy, 11818) = (ByteAt(rawEnemy, 11818) & 0xEF) |
+                                      (16 * (*((const u8 *)instruction + 12) & 1));
+            break;
+        case 128:
+            *(i16 *)(rawEnemy->bytes + 2 * 227) =
+                (i16)ReadInt(rawEnemy, instruction, 0);
+            break;
+        case 129:
+            *(i16 *)(rawEnemy->bytes + 4 * (147 * RawI32(instruction, 12) + 260) + 2) =
+                *(const i16 *)((const u8 *)instruction + 16);
+            break;
+        case 130:
+            ByteAt(rawEnemy, 11818) = (ByteAt(rawEnemy, 11818) & 0xDF) |
+                                      (32 * (*((const u8 *)instruction + 12) & 1));
+            break;
+        case 131:
+            FloatAt(rawEnemy, 4 * 2794) = ReadFloat(rawEnemy, instruction, 0);
+            FloatAt(rawEnemy, 4 * 2795) = ReadFloat(rawEnemy, instruction, 1);
+            *(i16 *)(rawEnemy->bytes + 2 * 5592) = ReadShortInt(rawEnemy, instruction, 20, 2);
+            *(i16 *)(rawEnemy->bytes + 2 * 5593) = ReadShortInt(rawEnemy, instruction, 24, 3);
+            *(i16 *)(rawEnemy->bytes + 2 * 5594) = ReadShortInt(rawEnemy, instruction, 28, 4);
+            *(i16 *)(rawEnemy->bytes + 2 * 5595) = ReadShortInt(rawEnemy, instruction, 32, 5);
+            break;
+        case 132:
+            ByteAt(rawEnemy, 11817) = (ByteAt(rawEnemy, 11817) & 0xF7) |
+                                      (8 * (*((const u8 *)instruction + 12) & 1));
+            break;
+        case 133:
+            IntAt(rawEnemy, 4 * 3000) = IntAt(rawEnemy, 4 * 2721);
+            IntAt(rawEnemy, 4 * 2803) = 0;
+            IntAt(rawEnemy, 4 * 2802) = 0;
+            IntAt(rawEnemy, 4 * 2801) = -999;
+            break;
+        case 134:
+            for (i32 slot = 0; slot < 32; ++slot)
+                IntAt(rawEnemy, 4 * (2915 + slot)) = 0;
+            break;
+        case 135:
+            ByteAt(rawEnemy, 11818) = (ByteAt(rawEnemy, 11818) & 0xBF) |
+                                      ((*((const u8 *)instruction + 12) & 1) << 6);
+            break;
+        case 136:
+            ByteAt(rawEnemy, 11817) = (ByteAt(rawEnemy, 11817) & 0xDF) |
+                                      (32 * (*((const u8 *)instruction + 12) & 1));
+            ByteAt(rawEnemy, 11823) = 2;
+            break;
+        case 137:
+            ByteAt(rawEnemy, 11818) = (ByteAt(rawEnemy, 11818) & 0x7F) |
+                                      ((*((const u8 *)instruction + 12) & 1) << 7);
+            break;
+        case 123:
+            Target439401(ReadInt(rawEnemy, instruction, 0));
+            break;
+        case 142:
+            IntAt(rawEnemy, 4 * 5072) = ReadInt(rawEnemy, instruction, 0);
+            IntAt(rawEnemy, 4 * 5071) = 0;
+            IntAt(rawEnemy, 4 * 5070) = -999;
+            break;
+        case 143:
+            Target424C00((f32 *)(rawEnemy->bytes + 4 * 2755), ReadFloat(rawEnemy, instruction, 0));
+            break;
+        case 144:
+            IntAt(rawEnemy, 4 * 3030) = ReadInt(rawEnemy, instruction, 0);
+            IntAt(rawEnemy, 4 * 3029) = 0;
+            IntAt(rawEnemy, 4 * 3028) = -999;
+            IntAt(rawEnemy, 4 * 3001) = ReadInt(rawEnemy, instruction, 1);
+            IntAt(rawEnemy, 4 * 3033) = 0;
+            IntAt(rawEnemy, 4 * 3032) = 0;
+            IntAt(rawEnemy, 4 * 3031) = -999;
+            memcpy(rawEnemy->bytes + 4 * 3002, rawEnemy->bytes + 4 * 447, 0x68);
+            break;
+        case 146:
+            TargetClearBullets(g_TargetBulletManager62F958, 0);
+            break;
+        case 148:
+            IntAt(rawEnemy, 4 * (2991 + ReadInt(rawEnemy, instruction, 0))) =
+                ReadInt(rawEnemy, instruction, 1);
+            IntAt(rawEnemy, 4 * (2995 + ReadInt(rawEnemy, instruction, 0))) =
+                ReadInt(rawEnemy, instruction, 2);
+            break;
+        case 149:
+        {
+            const i32 enabled = ReadInt(rawEnemy, instruction, 0) & 1;
+            ByteAt(rawEnemy, 11819) = (ByteAt(rawEnemy, 11819) & 0xFD) | (2 * enabled);
+            if (!(ByteAt(rawEnemy, 11819) & 2))
+            {
+                u8 *target = (u8 *)IntAt(rawEnemy, 4 * 2988);
+                *(f32 *)(target + 588) = ReadFloat(rawEnemy, instruction, 1);
+                *(f32 *)(target + 592) = ReadFloat(rawEnemy, instruction, 2);
+                *(f32 *)(target + 596) = ReadFloat(rawEnemy, instruction, 3);
+            }
+            break;
+        }
+        case 150:
+            FloatAt(rawEnemy, 8) = ReadFloat(rawEnemy, instruction, 0);
+            break;
+        case 151:
+        {
+            const f32 angle = ReadFloat(rawEnemy, instruction, 2);
+            const f32 magnitude = ReadFloat(rawEnemy, instruction, 3);
+            *WriteFloatAt(rawEnemy, instruction, 1) = (f32)(sin(angle) * magnitude);
+            *WriteFloat(rawEnemy, instruction) = (f32)(cos(angle) * magnitude);
+            break;
+        }
+        case 152:
+        {
+            laser = LaserSlot(rawEnemy, ReadInt(rawEnemy, instruction, 0));
+            if (laser)
+                *(f32 *)((u8 *)laser + 1188) = ReadFloat(rawEnemy, instruction, 1);
+            break;
+        }
+        case 153:
+            FloatAt(rawEnemy, 4 * 2770) = ReadFloat(rawEnemy, instruction, 0);
+            FloatAt(rawEnemy, 4 * 2771) = ReadFloat(rawEnemy, instruction, 1);
+            FloatAt(rawEnemy, 4 * 2772) = ReadFloat(rawEnemy, instruction, 2);
+            break;
+        case 156:
+        {
+            laser = LaserSlot(rawEnemy, ReadInt(rawEnemy, instruction, 0));
+            if (laser)
+                *((u8 *)laser + 1257) = (u8)ReadInt(rawEnemy, instruction, 1);
+            break;
+        }
+        case 157:
+        {
+            laser = LaserSlot(rawEnemy, ReadInt(rawEnemy, instruction, 0));
+            if (laser)
+                *(f32 *)((u8 *)laser + 1200) = ReadFloat(rawEnemy, instruction, 1);
+            break;
+        }
+        case 158:
+        {
+            laser = LaserSlot(rawEnemy, ReadInt(rawEnemy, instruction, 0));
+            if (laser)
+            {
+                *(f32 *)((u8 *)laser + 1192) = ReadFloat(rawEnemy, instruction, 1);
+                *(f32 *)((u8 *)laser + 1196) = ReadFloat(rawEnemy, instruction, 2);
+            }
+            break;
+        }
+        case 161:
+            ByteAt(rawEnemy, 11819) = (ByteAt(rawEnemy, 11819) & 0xF7) |
+                                      (8 * (ReadInt(rawEnemy, instruction, 0) & 1));
+            break;
+        case 160:
+            Target42F5A2(ReadInt(rawEnemy, instruction, 0));
             break;
 
         default:

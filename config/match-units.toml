@@ -530,6 +530,16 @@ rel32_targets = [
   "?StartSpellcard@SpellLifecycle@th07@@YIIPAUEnemyOverlay@12@PBUSpellStartInstruction@12@@Z=0x0040FC90",
   "?FinishSpellcard@SpellLifecycle@th07@@YIXPAUEnemyOverlay@12@PBX@Z=0x004101A0",
   "?TargetSpawnBullet@th07@@YAXPAX0@Z=0x00424D20",
+  "?TargetClearBullets@th07@@YAXPAXH@Z=0x00424740",
+  "?TargetSpawnLaser@th07@@YAPAXPAX0@Z=0x00424E00",
+  "?TargetAddNormalizeAngle@th07@@YGMMM@Z=0x00431930",
+  "?TargetEffect423090@th07@@YAXHH@Z=0x00423090",
+  "?Target44C930@th07@@YAXHH@Z=0x0044C930",
+  "?Target439401@th07@@YAXH@Z=0x00439401",
+  "?Target424C00@th07@@YAXPAMM@Z=0x00424C00",
+  "?Target42F5A2@th07@@YAXH@Z=0x0042F5A2",
+  "?RandomU32@TargetRngOverlay@EclOperands@th07@@QAEIXZ=0x004318D0",
+  "?AngleToPlayer@TargetPlayerOverlay@EclOperands@th07@@QAEMPBUVector3@23@@Z=0x00442370",
   "_fmod=0x0048BB0A",
   "_sin=0x0048BB40",
   "_cos=0x0048BBF0",
@@ -540,6 +550,8 @@ dir32_targets = [
   "?g_TargetSpellActive12FE0C8@th07@@3HA=spell_active_12FE0C8",
   "?g_TargetRank62F8A4@th07@@3HA=ecl_global_62F8A4",
   "?g_TargetBulletManager62F958@th07@@3PAEA=spell_bullet_manager_62F958",
+  "?g_TargetRng49FE20@EclOperands@th07@@3UTargetRngOverlay@12@A=ecl_rng_49FE20",
+  "?g_TargetPlayer4BDAD8@EclOperands@th07@@3UTargetPlayerOverlay@12@A=ecl_player_4BDAD8",
   "__real@3e99999a=ecl_real_0_3",
 ]
 
@@ -696,7 +708,7 @@ dir32_targets = [
 kind = "probe"
 source = "src/EclOperands.cpp"
 object = "build/match-units/EclOperands.obj"
-profile = "vc7-debug-od-no-gs-g6"
+profile = "vc7-debug-od-no-gs-g6-no-op"
 notes = "Target-observed ECL integer/float rvalue and lvalue resolver switches over private Enemy offset overlays."
 
 [[units.ecl-operands.functions]]
@@ -872,7 +884,7 @@ dir32_targets = [
 kind = "probe"
 source = "src/BulletUpdate.cpp"
 object = "build/match-units/BulletUpdate.obj"
-profile = "vc7-debug-od-no-gs-g6"
+profile = "vc7-debug-od-no-gs-g6-no-op"
 notes = "High-leverage target-observed BulletManager main update skeleton covering 1024 bullets and 64 lasers; canonical comparison tracks structural convergence."
 
 [[units.bullet-update.functions]]
@@ -1326,10 +1338,10 @@ address = "0x0043EB90"
 symbol_base = "?ScoreGraze@Player@th07@@QAEHPAUD3DXVECTOR3@@@Z"
 rel32_targets = [
   "?SpawnParticles@EffectManager@th07@@QAEXHPAUD3DXVECTOR3@@HH@Z=0x0041C1C0",
-  "?IncreaseSubrank@th07@@YAXH@Z=0x0042F4AA",
+  "?IncreaseSubrank@GrazeState@th07@@QAEXH@Z=0x0042F4AA",
   "?PlaySoundByIdx@SoundPlayer@th07@@QAEHHH@Z=0x0044C930",
-  "?AdvanceGrazeDisplay@th07@@YAHH@Z=0x0042F789",
-  "?FinishGrazeDisplay@th07@@YAHH@Z=0x0042F736",
+  "?AdvanceGrazeDisplay@GrazeState@th07@@QAEHH@Z=0x0042F789",
+  "?FinishGrazeDisplay@GrazeState@th07@@QAEHH@Z=0x0042F736",
 ]
 dir32_targets = [
   "?g_HideGrazeCounter@th07@@3HA=?g_HideGrazeCounter@th07@@3HA",
