@@ -12,12 +12,8 @@ class Player;
 // not yet been assigned engine names.
 struct PlayerDamageRegion
 {
-    f32 centerX;
-    f32 centerY;
-    f32 unknown08;
-    f32 sizeX;
-    f32 sizeY;
-    f32 unknown14;
+    D3DXVECTOR3 position;
+    D3DXVECTOR3 size;
     i32 damage;
     i32 accumulatedDamage;
 };
@@ -78,6 +74,7 @@ class Player
     i32 CalcItemBoxCollision(D3DXVECTOR3 *itemCenter, D3DXVECTOR3 *itemSize);
     i32 CalcLaserHitbox(D3DXVECTOR3 *laserCenter, D3DXVECTOR3 *laserSize, D3DXVECTOR3 *rotation, f32 angle,
                         i32 canGraze);
+    i32 HandleCollisionDuringBomb(i32 collisionKind);
     i32 ScoreGraze(D3DXVECTOR3 *center);
     i32 Die();
 

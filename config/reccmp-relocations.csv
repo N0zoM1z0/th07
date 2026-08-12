@@ -56,12 +56,19 @@ chain_ctor_dtor_eh_handler,0x0048C418,b8f0a74900e94430ffff,0x0,Direct target EH 
 chain_release_single_eh_handler,0x0048C58E,b880a94900e9ce2effff,0x0,Direct target EH handler thunk referenced by Chain ReleaseSingleChain,address
 chain_create_elem_eh_handler,0x0048C4BB,b8c8a94900e9a12fffff,0x0,Direct target EH handler thunk referenced by Chain CreateElem,address
 __real@00000000,0x00498A4C,00000000,0x0,Exact target float 0.0 constant used by Player collision code,literal
+__real@3f000000,0x00498A50,0000003f,0x0,Exact target float 0.5 constant used by Player damage collision code,literal
 __real@3f800000,0x00498A54,0000803f,0x0,Exact target float 1.0 constant used by Player vector division,literal
 __real@40000000,0x00498A70,00000040,0x0,Exact target float 2.0 divisor used by Player collision code,literal
 __real@41000000,0x00498A7C,00000041,0x0,Exact target float 8.0 divisor used by Player damage code,literal
 __real@41a00000,0x00498B84,0000a041,0x0,Exact target float 20.0 graze expansion constant,literal
 __real@42400000,0x00498B34,00004042,0x0,Exact target float 48.0 laser graze expansion constant,literal
 ?g_PlayerCollisionFlags@th07@@3HA,0x004B9E48,00000000,0x0,Direct target pointer storage referenced by Player collision flag updates,literal
+?g_PlayerAnimationData@th07@@3PAHA,0x004B9E44,00000000,0x0,Direct target animation-manager pointer storage used to resolve player bullet scripts,literal
+?g_HideGrazeCounter@th07@@3HA,0x004D44F8,00000000,0x0,Direct target zero-initialized flag suppressing graze counter updates,literal
+?g_GameManager@th07@@3PAUGameManager@1@A,0x00626278,00000000,0x0,Direct target game-manager pointer storage used by Player ScoreGraze,literal
+?g_GuiFlags@th07@@3HA,0x0049FBF4,00000000,0x0,Direct target zero-initialized GUI dirty flags,literal
+?g_RankValue@th07@@3HA,0x0062F88C,00000000,0x0,Direct target zero-initialized current rank value,literal
+?g_StageScore@th07@@3HA,0x012FE0D0,00000000,0x0,Direct target zero-initialized stage score accumulator,literal
 ?g_BulletTemplateScriptIds@th07@@3PAIA,0x00495160,00020000,0x0;0x4;0x8;0xC;0x10,Direct target script-id table references used by BulletManager AddedCallback,address
 ?g_ItemManager@th07@@3PAEA,0x00575C70,00000000,0x0,Direct target destination of BulletManager AddedCallback item-manager clear,literal
 ??_C@_0P@ONBKABHC@data?1etama?4anm?$AA@,0x00498524,646174612f6574616d612e616e6d00,0x0,Direct target bullet animation archive path,literal

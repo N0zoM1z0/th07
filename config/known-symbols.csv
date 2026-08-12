@@ -40,3 +40,5 @@ address,name,module,confidence,evidence
 0x004309C0,Controller_get_controller_state,input,observed,Exact-target joystick and DirectInput state acquisition plus strict VC7 COFF comparison
 0x0043E3B0,Player_check_graze,player,observed,Exact-target graze expansion and collision control flow plus strict VC7 COFF comparison
 0x004277A0,BulletManager_remove_all_bullets,bullet,observed,Exact-target embedded-bullet reset loop plus strict VC7 no-GS G6 COFF comparison
+0x004312C0,Controller_reset_keyboard,input,observed,Exact-target Win32 keyboard-state reset loop plus strict VC7 no-GS G6 COFF comparison
+0x004232E0,BulletManager_initialize,bullet,observed,Exact-target whole-manager reset and bullet sentinel initialization plus strict VC7 no-GS G6 COFF comparison

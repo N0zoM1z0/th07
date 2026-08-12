@@ -1,4 +1,11 @@
 address,owner,started_utc,branch,notes
-0x0043D9E0,root-integration,2026-08-12T11:18:00Z,main,Player damage and collision relocation follow-up
-0x0043E6B0,root-integration,2026-08-12T11:18:00Z,main,Player damage and collision relocation follow-up
-0x0043EB90,root-integration,2026-08-12T11:18:00Z,main,Player damage and collision relocation follow-up
+0x0040E4F0,terra-ecl-core-1,2026-08-12T12:37:26.899558Z,main,ECL lifecycle and subroutine context source/header lane
+0x0040E530,terra-ecl-core-1,2026-08-12T12:37:26.899558Z,main,ECL lifecycle and subroutine context source/header lane
+0x00426B00,terra-bullet-render-1,2026-08-12T12:37:26.805098Z,main,Bullet selected-VM renderer and manager draw loop source-only lane
+0x00426C40,terra-bullet-render-1,2026-08-12T12:37:26.805098Z,main,Bullet selected-VM renderer and manager draw loop source-only lane
+0x0043B7F0,terra-player-bomb-1,2026-08-12T12:37:26.994465Z,main,Player bomb pool construction registration and dispatch source-only lane
+0x0043BAA0,terra-player-bomb-1,2026-08-12T12:37:26.994465Z,main,Player bomb pool construction registration and dispatch source-only lane
+0x0043BB10,terra-player-bomb-1,2026-08-12T12:37:26.994465Z,main,Player bomb pool construction registration and dispatch source-only lane
+0x004409F0,terra-player-bomb-1,2026-08-12T12:37:26.994465Z,main,Player bomb pool construction registration and dispatch source-only lane
+0x004420B0,terra-player-bomb-1,2026-08-12T12:37:26.994465Z,main,Player bomb pool construction registration and dispatch source-only lane
+0x004423E0,terra-player-bomb-1,2026-08-12T12:37:26.994465Z,main,Player bomb pool construction registration and dispatch source-only lane

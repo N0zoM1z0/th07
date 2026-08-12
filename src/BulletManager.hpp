@@ -5,6 +5,13 @@
 namespace th07
 {
 
+struct BulletVector3
+{
+    f32 x;
+    f32 y;
+    f32 z;
+};
+
 struct AnmSprite
 {
     u8 unknown[44];
@@ -48,20 +55,43 @@ struct BulletClearGroup
 
 struct Bullet
 {
-    u8 unknown0[0x1D6];
-    i16 spriteIndex;
-    u8 unknown1[0xB98 - 0x1D8];
-    BulletClearGroup unknownB98ToBA0;
-    BulletClearGroup unknownBA4ToBAC;
+    AnmVm animations[5];
+    u8 unknownB7C[0x10];
+    BulletVector3 position;
+    union
+    {
+        BulletVector3 velocity;
+        BulletClearGroup unknownB98ToBA0;
+    };
+    union
+    {
+        BulletVector3 acceleration;
+        BulletClearGroup unknownBA4ToBAC;
+    };
     i32 unknownBB0;
     i32 unknownBB4;
     i32 unknownBB8;
-    u8 unknown2[0xBF8 - 0xBBC];
+    f32 angle;
+    u8 unknownBC0[0x34];
+    u16 movementFlags;
+    u16 spawnFlags;
     i16 despawnState;
-    u8 unknown3[2];
-    u16 isInUse;
-    u8 unknown4[0xD68 - 0xBFE];
+    u16 unknownBFA;
+    u16 state;
+    u8 unknownBFE[2];
+    u8 grazeState;
+    u8 grazeKind;
+    u8 unknownC02[2];
+    Bullet *nextInDrawGroup;
+    u8 unknownC08[0x160];
 };
+typedef char BulletSizeCheck[sizeof(Bullet) == 0xD68 ? 1 : -1];
+
+struct Laser
+{
+    u8 unknown00[0x4EC];
+};
+typedef char LaserSizeCheck[sizeof(Laser) == 0x4EC ? 1 : -1];
 
 struct ChainElem
 {
@@ -90,11 +120,18 @@ class BulletManager
     static int __fastcall OnUpdate(BulletManager *manager);
     static int __fastcall OnDraw(BulletManager *manager);
 
-    BulletTypeSprites templates[11];
-    u8 unknownAfterTemplates[0x39BC];
-    Bullet bullets[1024];
-    u8 unknownAfterBullets[0x14880];
+    BulletTypeSprites templates[16];
+    Bullet bullets[1025];
+    Laser lasers[64];
+    i32 activeBulletCount;
+    i32 clearCountdown;
+    u32 timers[3];
+    u32 unknown37A13C;
     char *bulletAnmPath;
+    Bullet *drawGroupHeads[6];
+    Bullet *nextBullet;
+    u32 nextBulletState;
 };
+typedef char BulletManagerSizeCheck[sizeof(BulletManager) == 0x37A164 ? 1 : -1];
 
 } // namespace th07

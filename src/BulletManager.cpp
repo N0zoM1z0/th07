@@ -227,7 +227,7 @@ void BulletManager::RemoveAllBullets()
         BulletClearGroup firstClearGroup;
         BulletClearGroup secondClearGroup;
 
-        if (!bullet->isInUse)
+        if (!bullet->state)
         {
             continue;
         }
@@ -245,8 +245,17 @@ void BulletManager::RemoveAllBullets()
         bullet->unknownBB4 = 0;
         bullet->unknownBB0 = 0;
         bullet->despawnState = 0;
-        g_AnmManager->ResetBulletAnimation(bullet, bullet->spriteIndex + bullet->despawnState);
+        g_AnmManager->ResetBulletAnimation(
+            bullet, (i16)bullet->animations[0].baseSpriteIndex + bullet->despawnState);
     }
+}
+
+void BulletManager::Initialize()
+{
+    memset(this, 0, sizeof(*this));
+    nextBullet = bullets;
+    bullets[1024].state = 6;
+    nextBulletState = 6;
 }
 
 } // namespace th07

@@ -71,23 +71,36 @@ src_win="$(winepath -w "$repo_root/src")"
 runner_win="$(winepath -w "$repo_root/scripts/vc7run.bat")"
 export DEVENV_PREFIX
 DEVENV_PREFIX="$(winepath -w "$vc7_root")"
-compile_lock="${TH07_COMPILE_LOCK:-$(dirname "$repo_root")/.th07-vc7-compile.lock}"
+compile_lock="${TH07_COMPILE_LOCK:-$(dirname "$repo_root")/.th07-vc7-compile}"
 compile_nice="${TH07_COMPILE_NICE:-10}"
 
-flock --exclusive "$compile_lock" nice -n "$compile_nice" wine "$runner_win" cl.exe \
-  /nologo \
-  /c \
-  /MT \
-  /EHsc \
-  /Gs \
-  /DNDEBUG \
-  /Zi \
-  /Gy \
-  /GF \
-  /Oi \
-  /Gr \
-  "${profile_flags[@]}" \
-  "/I$src_win" \
+# VC7 itself is single-threaded. Two independent lock slots keep parallel agent
+# work moving while bounding the default compiler load to roughly two cores.
+exec 8>"${compile_lock}.0.lock"
+exec 9>"${compile_lock}.1.lock"
+if flock --nonblock 8; then
+  compile_lock_fd=8
+else
+  flock --exclusive 9
+  compile_lock_fd=9
+fi
+
+nice -n "$compile_nice" wine "$runner_win" cl.exe \
+    /nologo \
+    /c \
+    /MT \
+    /EHsc \
+    /Gs \
+    /DNDEBUG \
+    /Zi \
+    /Gy \
+    /GF \
+    /Oi \
+    /Gr \
+    "${profile_flags[@]}" \
+    "/I$src_win" \
   "/Fd$pdb_win" \
   "/Fo$output_win" \
   "$source_win"
+
+flock --unlock "$compile_lock_fd"

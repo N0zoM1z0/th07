@@ -261,6 +261,10 @@ profile = "vc7-debug-od-no-gs-g6"
 notes = "Focused VC7 unoptimized no-GS G6 BulletManager probe; target word loads select the G6 scheduler."
 
 [[units.bullet-manager.functions]]
+address = "0x004232E0"
+symbol_base = "?Initialize@BulletManager@th07@@QAEXXZ"
+
+[[units.bullet-manager.functions]]
 address = "0x00426F60"
 symbol_base = "?AddedCallback@BulletManager@th07@@SIHPAV12@@Z"
 rel32_targets = [
@@ -379,8 +383,8 @@ rel32_targets = ["?DrawSquare@ScreenEffect@th07@@SIXPAUZunRect@2@K@Z=0x0044A650"
 kind = "probe"
 source = "src/Controller.cpp"
 object = "build/match-units/Controller.obj"
-profile = "vc7-debug-od-no-gs"
-notes = "Focused VC7 unoptimized input probe; target prologues establish that this translation unit omits /GS cookies."
+profile = "vc7-debug-od-no-gs-g6"
+notes = "Focused VC7 unoptimized no-GS G6 input probe; target prologues omit /GS cookies and ResetKeyboard's byte load selects G6."
 
 [[units.controller.functions]]
 address = "0x00430290"
@@ -462,6 +466,18 @@ notes = "Focused VC7 unoptimized no-GS G6 player damage, collision, graze, and d
 [[units.player-core.functions]]
 address = "0x0043D9E0"
 symbol_base = "?CalcDamageToEnemy@Player@th07@@QAEHPAUD3DXVECTOR3@@0PAH@Z"
+rel32_targets = [
+  "?SetAndExecuteScript@PlayerBulletAnimation@th07@@QAEXH@Z=0x0044EA20",
+  "?SpawnParticles@EffectManager@th07@@QAEXHPAUD3DXVECTOR3@@HH@Z=0x0041C1C0",
+]
+dir32_targets = [
+  "?g_PlayerAnimationData@th07@@3PAHA=?g_PlayerAnimationData@th07@@3PAHA",
+  "?g_EffectManager@th07@@3UEffectManager@1@A=?g_EffectManager@th07@@3UEffectManager@1@A",
+  "__real@00000000=__real@00000000",
+  "__real@3f000000=__real@3f000000",
+  "__real@40000000=__real@40000000",
+  "__real@41000000=__real@41000000",
+]
 
 [[units.player-core.functions]]
 address = "0x0043E0A0"
@@ -476,7 +492,7 @@ address = "0x0043E260"
 symbol_base = "?CalcKillBoxCollision@Player@th07@@QAEHPAUD3DXVECTOR3@@0@Z"
 rel32_targets = [
   "?CheckAuxProjectileCollision@Player@th07@@QAEHPAUD3DXVECTOR3@@0@Z=0x0043E0A0",
-  "?AdvanceGrazeDisplay@th07@@YAHH@Z=0x00441BD0",
+  "?HandleCollisionDuringBomb@Player@th07@@QAEHH@Z=0x00441BD0",
   "?BeginPlayerDeath@GrazeState@th07@@QAEXXZ=0x0043B5C0",
   "?Die@Player@th07@@QAEHXZ=0x0043EDC0",
 ]
@@ -509,10 +525,40 @@ dir32_targets = [
 [[units.player-core.functions]]
 address = "0x0043E6B0"
 symbol_base = "?CalcLaserHitbox@Player@th07@@QAEHPAUD3DXVECTOR3@@00MH@Z"
+rel32_targets = [
+  "?RotatePlayerVector@th07@@YIXPAUD3DXVECTOR3@@0M@Z=0x004319B0",
+  "?HandleCollisionDuringBomb@Player@th07@@QAEHH@Z=0x00441BD0",
+  "?BeginPlayerDeath@GrazeState@th07@@QAEXXZ=0x0043B5C0",
+  "?Die@Player@th07@@QAEHXZ=0x0043EDC0",
+  "?ScoreGraze@Player@th07@@QAEHPAUD3DXVECTOR3@@@Z=0x0043EB90",
+]
+dir32_targets = [
+  "?g_PlayerCollisionFlags@th07@@3HA=?g_PlayerCollisionFlags@th07@@3HA",
+  "?g_GrazeState@th07@@3UGrazeState@1@A=?g_GrazeState@th07@@3UGrazeState@1@A",
+  "__real@40000000=__real@40000000",
+  "__real@42400000=__real@42400000",
+]
 
 [[units.player-core.functions]]
 address = "0x0043EB90"
 symbol_base = "?ScoreGraze@Player@th07@@QAEHPAUD3DXVECTOR3@@@Z"
+rel32_targets = [
+  "?SpawnParticles@EffectManager@th07@@QAEXHPAUD3DXVECTOR3@@HH@Z=0x0041C1C0",
+  "?IncreaseSubrank@th07@@YAXH@Z=0x0042F4AA",
+  "?PlaySoundByIdx@SoundPlayer@th07@@QAEHHH@Z=0x0044C930",
+  "?AdvanceGrazeDisplay@th07@@YAHH@Z=0x0042F789",
+  "?FinishGrazeDisplay@th07@@YAHH@Z=0x0042F736",
+]
+dir32_targets = [
+  "?g_HideGrazeCounter@th07@@3HA=?g_HideGrazeCounter@th07@@3HA",
+  "?g_GameManager@th07@@3PAUGameManager@1@A=?g_GameManager@th07@@3PAUGameManager@1@A",
+  "?g_EffectManager@th07@@3UEffectManager@1@A=?g_EffectManager@th07@@3UEffectManager@1@A",
+  "?g_GuiFlags@th07@@3HA=?g_GuiFlags@th07@@3HA",
+  "?g_SoundPlayer@th07@@3USoundPlayer@1@A=?g_SoundPlayer@th07@@3USoundPlayer@1@A",
+  "?g_RankValue@th07@@3HA=?g_RankValue@th07@@3HA",
+  "?g_StageScore@th07@@3HA=?g_StageScore@th07@@3HA",
+  "__real@40000000=__real@40000000",
+]
 
 [[units.player-core.functions]]
 address = "0x0043EDC0"

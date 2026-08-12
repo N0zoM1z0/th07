@@ -170,7 +170,7 @@ address,size,span_end,current_name,proposed_name,module,status,match_percent,cal
 0x00423050,50,0x00423081,sub_423050,,,unclassified,0.00,unknown,,false,,,,
 0x00423090,522,0x00423299,sub_423090,,,unclassified,0.00,unknown,,false,,,,
 0x004232A0,64,0x004232DF,sub_4232A0,,,unclassified,0.00,unknown,,false,,,,
-0x004232E0,67,0x00423322,sub_4232E0,,,unclassified,0.00,unknown,,false,,,,
+0x004232E0,67,0x00423322,sub_4232E0,BulletManager_initialize,bullet,matching,100.00,__thiscall,void BulletManager_initialize(BulletManager * this),false,src/BulletManager.cpp,python3 scripts/build.py --unit bullet-manager --compare --json; strict VC7 no-GS G6 COFF exact 67/67 bytes with target-observed manager layout 2026-08-12,root,16 templates plus 1025 bullets and 64 lasers reproduce the target sentinel initialization
 0x00423330,236,0x0042341B,sub_423330,,,unclassified,0.00,unknown,,false,,,,
 0x00423420,225,0x00423500,sub_423420,,,unclassified,0.00,unknown,,false,,,,
 0x00423510,186,0x004235C9,sub_423510,,,unclassified,0.00,unknown,,false,,,,
@@ -284,7 +284,7 @@ address,size,span_end,current_name,proposed_name,module,status,match_percent,cal
 0x004303F0,1488,0x004309BF,sub_4303F0,Controller_get_controller_input,input,compiles,0.00,__fastcall,u16 Controller_get_controller_input(u16 buttons),false,src/Controller.cpp,VC7 COFF compiles with target-confirmed no-GS profile,root,Relocations and source shaping remain
 0x004309C0,392,0x00430B47,sub_4309C0,Controller_get_controller_state,input,matching,100.00,__fastcall,u8 * Controller_get_controller_state(void),false,src/Controller.cpp,python3 scripts/build.py --unit controller --compare --json; strict VC7 no-GS COFF exact 392/392 bytes with verified input globals/imports/strings 2026-08-12,root,Original var_order preserves the target stale Poll result after GetDeviceState
 0x00430B50,1904,0x004312BF,sub_430B50,Controller_get_input,input,compiles,0.00,__fastcall,u16 Controller_get_input(void),false,src/Controller.cpp,VC7 COFF compiles with target-confirmed no-GS profile,root,Keyboard control-flow shaping remains
-0x004312C0,110,0x0043132D,sub_4312C0,Controller_reset_keyboard,input,compiles,0.00,__fastcall,void Controller_reset_keyboard(void),false,src/Controller.cpp,VC7 COFF compiles; strict mismatch at 0x004312FC,root,Object is one byte longer than target
+0x004312C0,110,0x0043132D,sub_4312C0,Controller_reset_keyboard,input,matching,100.00,__fastcall,void Controller_reset_keyboard(void),false,src/Controller.cpp,python3 scripts/build.py --unit controller --compare --json; strict VC7 no-GS G6 COFF exact 110/110 bytes with verified USER32 imports 2026-08-12,root,TH06-corroborated loop and G6 byte load reproduce the target exactly
 0x00431330,434,0x004314E1,sub_431330,,,unclassified,0.00,unknown,,false,,,,
 0x004314F0,69,0x00431534,sub_4314F0,,,unclassified,0.00,unknown,,false,,,,
 0x00431540,172,0x004315EB,sub_431540,,,unclassified,0.00,unknown,,false,,,,
