@@ -266,19 +266,53 @@ symbol_base = "?AddedCallback@BulletManager@th07@@SAHPAV12@@Z"
 
 [[units.bullet-manager.functions]]
 address = "0x00427620"
-symbol_base = "?DeletedCallback@BulletManager@th07@@SAHPAV12@@Z"
+symbol_base = "?DeletedCallback@BulletManager@th07@@SIHPAV12@@Z"
+rel32_targets = ["?ReleaseAnm@AnmManager@th07@@QAEXH@Z=0x0044E4E0"]
+dir32_targets = [
+  "?g_SupervisorState@th07@@3HA=?g_SupervisorState@th07@@3HA",
+  "?g_AnmManager@th07@@3PAUAnmManager@1@A=?g_AnmManager@th07@@3PAUAnmManager@1@A",
+]
 
 [[units.bullet-manager.functions]]
 address = "0x004276A0"
-symbol_base = "?RegisterChain@BulletManager@th07@@SAHXZ"
+symbol_base = "?RegisterChain@BulletManager@th07@@SIHPAD@Z"
+rel32_targets = [
+  "?Initialize@BulletManager@th07@@QAEXXZ=0x004232E0",
+  "?AddToCalcChain@Chain@th07@@QAEHPAUChainElem@2@H@Z=0x0042FBD0",
+  "?AddToDrawChain@Chain@th07@@QAEXPAUChainElem@2@H@Z=0x0042FCA0",
+]
+dir32_targets = [
+  "?g_BulletManager@th07@@3VBulletManager@1@A=?g_BulletManager@th07@@3VBulletManager@1@A",
+  "?g_EffectsColor@th07@@3PAXA=?g_EffectsColor@th07@@3PAXA",
+  "?g_EffectsColorTable@th07@@3PAEA=?g_EffectsColorTable@th07@@3PAEA",
+  "?g_BulletManagerCalcChain@th07@@3UChainElem@1@A=?g_BulletManagerCalcChain@th07@@3UChainElem@1@A",
+  "?OnUpdate@BulletManager@th07@@SAHPAV12@@Z=0x00425A50",
+  "?AddedCallback@BulletManager@th07@@SAHPAV12@@Z=0x00426F60",
+  "?DeletedCallback@BulletManager@th07@@SIHPAV12@@Z=0x00427620",
+  "?g_Chain@th07@@3UChain@1@A=?g_Chain@th07@@3UChain@1@A",
+  "?g_BulletManagerDrawChain@th07@@3UChainElem@1@A=?g_BulletManagerDrawChain@th07@@3UChainElem@1@A",
+  "?OnDraw@BulletManager@th07@@SAHPAV12@@Z=0x00426C40",
+]
 
 [[units.bullet-manager.functions]]
 address = "0x00427760"
 symbol_base = "?CutChain@BulletManager@th07@@SAXXZ"
+rel32_targets = ["?Cut@Chain@th07@@QAEXPAUChainElem@2@@Z=0x00430140"]
+dir32_targets = [
+  "?g_BulletManagerCalcChain@th07@@3UChainElem@1@A=?g_BulletManagerCalcChain@th07@@3UChainElem@1@A",
+  "?g_BulletManagerDrawChain@th07@@3UChainElem@1@A=?g_BulletManagerDrawChain@th07@@3UChainElem@1@A",
+  "?g_Chain@th07@@3UChain@1@A=?g_Chain@th07@@3UChain@1@A",
+  "?g_BulletManagerStorage@th07@@3PAEA=?g_BulletManagerStorage@th07@@3PAEA",
+]
 
 [[units.bullet-manager.functions]]
 address = "0x004277A0"
-symbol_base = "?RemoveAllBullets@BulletManager@th07@@QAEXH@Z"
+symbol_base = "?RemoveAllBullets@BulletManager@th07@@QAEXXZ"
+rel32_targets = ["?ResetBulletAnimation@AnmManager@th07@@QAEXPAUBullet@2@H@Z=0x0044E8E0"]
+dir32_targets = [
+  "?g_BulletManager@th07@@3VBulletManager@1@A=?g_BulletManager@th07@@3VBulletManager@1@A",
+  "?g_AnmManager@th07@@3PAUAnmManager@1@A=?g_AnmManager@th07@@3PAUAnmManager@1@A",
+]
 
 [units.screen-effect]
 kind = "probe"
@@ -411,3 +445,93 @@ symbol_base = "?ScoreGraze@Player@th07@@QAEHPAUD3DXVECTOR3@@@Z"
 [[units.player-core.functions]]
 address = "0x0043EDC0"
 symbol_base = "?Die@Player@th07@@QAEHXZ"
+rel32_targets = [
+  "?CancelCapture@GrazeState@th07@@QAEXXZ=0x004012B0",
+  "?SpawnParticlesColored@EffectManager@th07@@QAEXHPAUD3DXVECTOR3@@HHH@Z=0x0041C610",
+  "?SpawnParticles@EffectManager@th07@@QAEXHPAUD3DXVECTOR3@@HH@Z=0x0041C1C0",
+  "?PlaySoundByIdx@SoundPlayer@th07@@QAEHHH@Z=0x0044C930",
+]
+dir32_targets = [
+  "?g_GrazeState@th07@@3UGrazeState@1@A=?g_GrazeState@th07@@3UGrazeState@1@A",
+  "?g_EffectManager@th07@@3UEffectManager@1@A=?g_EffectManager@th07@@3UEffectManager@1@A",
+  "?g_SoundPlayer@th07@@3USoundPlayer@1@A=?g_SoundPlayer@th07@@3USoundPlayer@1@A",
+]
+
+[units.chain]
+kind = "probe"
+source = "src/Chain.cpp"
+object = "build/match-units/Chain.obj"
+profile = "vc7-debug-od"
+notes = "Focused VC7 unoptimized callback-chain scheduler probe, bounded to the complete 0x0042FA60--0x00430284 cluster."
+
+[[units.chain.functions]]
+address = "0x0042FA60"
+symbol_base = "??1Chain@th07@@QAE@XZ"
+rel32_targets = ["??1ChainElem@th07@@QAE@XZ=0x0042FB20"]
+dir32_targets = ["$L54774=chain_ctor_dtor_eh_handler"]
+
+[[units.chain.functions]]
+address = "0x0042FAB0"
+symbol_base = "??0ChainElem@th07@@QAE@XZ"
+
+[[units.chain.functions]]
+address = "0x0042FB20"
+symbol_base = "??1ChainElem@th07@@QAE@XZ"
+
+[[units.chain.functions]]
+address = "0x0042FB80"
+symbol_base = "??0Chain@th07@@QAE@XZ"
+rel32_targets = ["??0ChainElem@th07@@QAE@XZ=0x0042FAB0"]
+dir32_targets = ["$L54790=chain_ctor_dtor_eh_handler"]
+
+[[units.chain.functions]]
+address = "0x0042FBD0"
+symbol_base = "?AddToCalcChain@Chain@th07@@QAEHPAVChainElem@2@H@Z"
+
+[[units.chain.functions]]
+address = "0x0042FCA0"
+symbol_base = "?AddToDrawChain@Chain@th07@@QAEHPAVChainElem@2@H@Z"
+
+[[units.chain.functions]]
+address = "0x0042FD60"
+symbol_base = "?RunCalcChain@Chain@th07@@QAEHXZ"
+rel32_targets = ["?Cut@Chain@th07@@QAEXPAVChainElem@2@@Z=0x00430140"]
+
+[[units.chain.functions]]
+address = "0x0042FE20"
+symbol_base = "?RunDrawChain@Chain@th07@@QAEHXZ"
+rel32_targets = ["?Cut@Chain@th07@@QAEXPAVChainElem@2@@Z=0x00430140"]
+
+[[units.chain.functions]]
+address = "0x0042FEE0"
+symbol_base = "?ReleaseSingleChain@Chain@th07@@AAEXPAVChainElem@2@@Z"
+rel32_targets = [
+  "??0ChainElem@th07@@QAE@XZ=0x0042FAB0",
+  "??1ChainElem@th07@@QAE@XZ=0x0042FB20",
+  "?Cut@Chain@th07@@QAEXPAVChainElem@2@@Z=0x00430140",
+  "??2@YAPAXI@Z=0x0047D441",
+  "??3@YAXPAX@Z=0x0047D43C",
+]
+dir32_targets = ["$L54829=chain_release_single_eh_handler"]
+
+[[units.chain.functions]]
+address = "0x00430060"
+symbol_base = "?Release@Chain@th07@@QAEXXZ"
+rel32_targets = ["?ReleaseSingleChain@Chain@th07@@AAEXPAVChainElem@2@@Z=0x0042FEE0"]
+
+[[units.chain.functions]]
+address = "0x00430090"
+symbol_base = "?CreateElem@Chain@th07@@QAEPAVChainElem@2@P6I?AW4ChainCallbackResult@2@PAX@Z@Z"
+rel32_targets = [
+  "??2@YAPAXI@Z=0x0047D441",
+  "??0ChainElem@th07@@QAE@XZ=0x0042FAB0",
+]
+dir32_targets = ["$L54844=chain_create_elem_eh_handler"]
+
+[[units.chain.functions]]
+address = "0x00430140"
+symbol_base = "?Cut@Chain@th07@@QAEXPAVChainElem@2@@Z"
+rel32_targets = [
+  "??1ChainElem@th07@@QAE@XZ=0x0042FB20",
+  "??3@YAXPAX@Z=0x0047D43C",
+]

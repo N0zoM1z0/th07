@@ -9,6 +9,16 @@ struct AnmManager
 {
     u8 unknown[0x28EF0];
     void *scripts[1];
+
+    void ReleaseAnm(int fileIndex);
+    void ResetBulletAnimation(Bullet *bullet, int spriteIndex);
+};
+
+struct Chain
+{
+    int AddToCalcChain(ChainElem *chain, int priority);
+    void AddToDrawChain(ChainElem *chain, int priority);
+    void Cut(ChainElem *chain);
 };
 
 extern int g_SupervisorState;
@@ -19,20 +29,14 @@ extern u8 g_ItemManager[0xAE57C];
 extern BulletManager g_BulletManager;
 extern ChainElem g_BulletManagerCalcChain;
 extern ChainElem g_BulletManagerDrawChain;
+extern Chain g_Chain;
 extern u8 g_BulletManagerStorage[0x37A164];
-extern Bullet g_Bullets[1024];
 
 extern void *g_EffectsColor;
 extern u8 g_EffectsColorTable[];
 
-extern void __cdecl InitializeBulletManager(BulletManager *manager);
-extern int __cdecl AddToCalcChain(ChainElem *chain, int priority);
-extern void __cdecl AddToDrawChain(ChainElem *chain, int priority);
-extern void __cdecl CutChainElement(ChainElem *chain);
 extern int __cdecl LoadAnm(int fileIndex, const char *path, int spriteIndexOffset);
-extern void __cdecl ReleaseAnm(int fileIndex);
 extern void __cdecl SetAndExecuteScript(AnmVm *vm, void *script);
-extern void __cdecl ResetBulletAnimation(Bullet *bullet, int spriteIndex);
 
 int __cdecl BulletManager::AddedCallback(BulletManager *manager)
 {
@@ -153,29 +157,45 @@ int __cdecl BulletManager::AddedCallback(BulletManager *manager)
     return 0;
 }
 
-int __cdecl BulletManager::DeletedCallback(BulletManager *manager)
+int __fastcall BulletManager::DeletedCallback(BulletManager *manager)
 {
+    int shouldReleaseAnm;
+
     if (g_SupervisorState != 3 && g_SupervisorState != 11 && g_SupervisorState != 12)
     {
-        ReleaseAnm(11);
-        ReleaseAnm(12);
-        ReleaseAnm(13);
-        ReleaseAnm(14);
+        shouldReleaseAnm = 1;
+    }
+    else
+    {
+        shouldReleaseAnm = 0;
+    }
+    if (shouldReleaseAnm)
+    {
+        g_AnmManager->ReleaseAnm(11);
+        g_AnmManager->ReleaseAnm(12);
+        g_AnmManager->ReleaseAnm(13);
+        g_AnmManager->ReleaseAnm(14);
     }
 
     return 0;
 }
 
-int __cdecl BulletManager::RegisterChain()
+int __fastcall BulletManager::RegisterChain(char *bulletAnmPath)
 {
+    BulletManager *manager;
+
+    manager = &g_BulletManager;
     g_EffectsColor = g_EffectsColorTable;
-    InitializeBulletManager(&g_BulletManager);
+    manager->Initialize();
+    manager->bulletAnmPath = bulletAnmPath;
 
     g_BulletManagerCalcChain.callback = (int (__cdecl *)(void *))OnUpdate;
+    g_BulletManagerCalcChain.addedCallback = 0;
+    g_BulletManagerCalcChain.deletedCallback = 0;
     g_BulletManagerCalcChain.addedCallback = (int (__cdecl *)(void *))AddedCallback;
     g_BulletManagerCalcChain.deletedCallback = (int (__cdecl *)(void *))DeletedCallback;
-    g_BulletManagerCalcChain.argument = &g_BulletManager;
-    if (AddToCalcChain(&g_BulletManagerCalcChain, 12))
+    g_BulletManagerCalcChain.argument = manager;
+    if (g_Chain.AddToCalcChain(&g_BulletManagerCalcChain, 12))
     {
         return -1;
     }
@@ -183,39 +203,47 @@ int __cdecl BulletManager::RegisterChain()
     g_BulletManagerDrawChain.callback = (int (__cdecl *)(void *))OnDraw;
     g_BulletManagerDrawChain.addedCallback = 0;
     g_BulletManagerDrawChain.deletedCallback = 0;
-    g_BulletManagerDrawChain.argument = &g_BulletManager;
-    AddToDrawChain(&g_BulletManagerDrawChain, 10);
+    g_BulletManagerDrawChain.argument = manager;
+    g_Chain.AddToDrawChain(&g_BulletManagerDrawChain, 10);
     return 0;
 }
 
 void __cdecl BulletManager::CutChain()
 {
-    CutChainElement(&g_BulletManagerCalcChain);
-    CutChainElement(&g_BulletManagerDrawChain);
+    g_Chain.Cut(&g_BulletManagerCalcChain);
+    g_Chain.Cut(&g_BulletManagerDrawChain);
     memset(g_BulletManagerStorage, 0, sizeof(g_BulletManagerStorage));
 }
 
-void BulletManager::RemoveAllBullets(int turnIntoItem)
+void BulletManager::RemoveAllBullets()
 {
     Bullet *bullet;
     int i;
 
-    for (bullet = g_Bullets, i = 0; i < 1024; i++, bullet++)
+    for (bullet = g_BulletManager.bullets, i = 0; i < 1024; i++, bullet++)
     {
-        if (bullet->isInUse)
+        BulletClearGroup firstClearGroup;
+        BulletClearGroup secondClearGroup;
+
+        if (!bullet->isInUse)
         {
-            bullet->unknownB98 = 0;
-            bullet->unknownB9C = 0;
-            bullet->unknownBA0 = 0;
-            bullet->unknownBA4 = 0;
-            bullet->unknownBA8 = 0;
-            bullet->unknownBAC = 0;
-            bullet->unknownBB8 = 0;
-            bullet->unknownBB4 = 0;
-            bullet->unknownBB0 = 0;
-            bullet->despawnState = 0;
-            ResetBulletAnimation(bullet, bullet->despawnState + bullet->spriteIndex);
+            continue;
         }
+
+        firstClearGroup.first = 0;
+        firstClearGroup.second = 0;
+        firstClearGroup.third = 0;
+        bullet->unknownB98ToBA0 = firstClearGroup;
+
+        secondClearGroup.first = 0;
+        secondClearGroup.second = 0;
+        secondClearGroup.third = 0;
+        bullet->unknownBA4ToBAC = secondClearGroup;
+        bullet->unknownBB8 = 0;
+        bullet->unknownBB4 = 0;
+        bullet->unknownBB0 = 0;
+        bullet->despawnState = 0;
+        g_AnmManager->ResetBulletAnimation(bullet, bullet->spriteIndex + bullet->despawnState);
     }
 }
 

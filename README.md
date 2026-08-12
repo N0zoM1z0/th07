@@ -69,10 +69,10 @@ The PE linker metadata and Rich header identify Visual C++ .NET 2002 (VC7,
 build 9466), matching the toolchain family used by the TH06 and TH08 reference
 projects. A matching full executable is not yet advertised; reconstruction
 starts with address-bounded translation units and function-level comparison.
-The current VC7 probes reconstruct 46 `TextHelper`, MIDI, DirectSound,
-Controller, and ScreenEffect functions exactly (7,646/7,646 compared bytes).
-They remain focused probes rather than assertions about the original object
-boundaries.
+The current VC7 probes reconstruct 55 `TextHelper`, MIDI, DirectSound,
+Controller, ScreenEffect, BulletManager, Player, and Chain functions exactly
+(8,686/8,686 compared bytes). They remain focused probes rather than
+assertions about the original object boundaries.
 
 ## License
 

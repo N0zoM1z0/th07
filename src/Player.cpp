@@ -168,33 +168,50 @@ i32 Player::CalcDamageToEnemy(D3DXVECTOR3 *enemyPosition, D3DXVECTOR3 *enemySize
 
 i32 Player::CheckAuxProjectileCollision(D3DXVECTOR3 *center, D3DXVECTOR3 *size)
 {
+    D3DXVECTOR3 projectileTopLeft;
+    D3DXVECTOR3 projectileBottomRight;
+    D3DXVECTOR3 collisionTopLeft;
+    D3DXVECTOR3 collisionBottomRight;
+    PlayerAuxCollision *collision;
     i32 i;
 
-    for (i = 0; i < 96; ++i)
+    projectileTopLeft.x = center->x - size->x * 0.5f;
+    projectileTopLeft.y = center->y - size->y * 0.5f;
+    projectileBottomRight.x = center->x + size->x * 0.5f;
+    projectileBottomRight.y = center->y + size->y * 0.5f;
+    collision = &auxCollisions[0];
+    for (i = 0; i < 96; ++i, ++collision)
     {
-        PlayerAuxCollision *collision = &auxCollisions[i];
         if (collision->sizeX == 0.0f)
         {
             if (collision->radius != 0.0f)
             {
                 f32 x = center->x - collision->centerX;
                 f32 y = center->y - collision->centerY;
-                if (collision->radius * collision->radius > x * x + y * y)
+                if (x * x + y * y >= collision->radius * collision->radius)
+                {
+                    continue;
+                }
+                else
                 {
                     collisionCountdown = collision->collisionValue;
                     return 2;
                 }
             }
         }
-        else if (PLAYER_BOXES_OVERLAP(collision->centerX - collision->sizeX * 0.5f,
-                                      collision->centerY - collision->sizeY * 0.5f,
-                                      collision->centerX + collision->sizeX * 0.5f,
-                                      collision->centerY + collision->sizeY * 0.5f, center->x - size->x * 0.5f,
-                                      center->y - size->y * 0.5f, center->x + size->x * 0.5f,
-                                      center->y + size->y * 0.5f))
+        else
         {
-            collisionCountdown = collision->collisionValue;
-            return 2;
+            collisionTopLeft.x = collision->centerX - collision->sizeX * 0.5f;
+            collisionTopLeft.y = collision->centerY - collision->sizeY * 0.5f;
+            collisionBottomRight.x = collision->centerX + collision->sizeX * 0.5f;
+            collisionBottomRight.y = collision->centerY + collision->sizeY * 0.5f;
+            if (PLAYER_BOXES_OVERLAP(collisionTopLeft.x, collisionTopLeft.y, collisionBottomRight.x,
+                                     collisionBottomRight.y, projectileTopLeft.x, projectileTopLeft.y,
+                                     projectileBottomRight.x, projectileBottomRight.y))
+            {
+                collisionCountdown = collision->collisionValue;
+                return 2;
+            }
         }
     }
     return 0;
@@ -202,62 +219,57 @@ i32 Player::CheckAuxProjectileCollision(D3DXVECTOR3 *center, D3DXVECTOR3 *size)
 
 i32 Player::CalcKillBoxCollision(D3DXVECTOR3 *bulletCenter, D3DXVECTOR3 *bulletSize)
 {
-    f32 bulletLeft;
-    f32 bulletTop;
-    f32 bulletRight;
-    f32 bulletBottom;
+    D3DXVECTOR3 bulletTopLeft;
+    D3DXVECTOR3 bulletBottomRight;
 
     collisionCountdown = 6;
     if (CheckAuxProjectileCollision(bulletCenter, bulletSize))
     {
         return 2;
     }
-    bulletLeft = bulletCenter->x - bulletSize->x * 0.5f;
-    bulletTop = bulletCenter->y - bulletSize->y * 0.5f;
-    bulletRight = bulletCenter->x + bulletSize->x * 0.5f;
-    bulletBottom = bulletCenter->y + bulletSize->y * 0.5f;
-    if (!PLAYER_BOXES_OVERLAP(killBoxTopLeft.x, killBoxTopLeft.y, killBoxBottomRight.x, killBoxBottomRight.y, bulletLeft,
-                              bulletTop, bulletRight, bulletBottom))
+    bulletTopLeft.x = bulletCenter->x - bulletSize->x * 0.5f;
+    bulletTopLeft.y = bulletCenter->y - bulletSize->y * 0.5f;
+    bulletBottomRight.x = bulletCenter->x + bulletSize->x * 0.5f;
+    bulletBottomRight.y = bulletCenter->y + bulletSize->y * 0.5f;
+    if (killBoxTopLeft.x <= bulletBottomRight.x && killBoxTopLeft.y <= bulletBottomRight.y &&
+        killBoxBottomRight.x >= bulletTopLeft.x && killBoxBottomRight.y >= bulletTopLeft.y)
     {
-        return 0;
-    }
-
-    g_PlayerCollisionFlags |= 2;
-    if (playerState == 4)
-    {
-        AdvanceGrazeDisplay(0);
+        g_PlayerCollisionFlags |= 2;
+        if (playerState == 4)
+        {
+            AdvanceGrazeDisplay(0);
+            return 1;
+        }
+        if (playerState == 0)
+        {
+            g_GrazeState.BeginPlayerDeath();
+            Die();
+        }
         return 1;
     }
-    if (playerState == 0)
-    {
-        g_GrazeState.BeginPlayerDeath();
-        Die();
-    }
-    return 1;
+    return 0;
 }
 
 i32 Player::CheckGraze(D3DXVECTOR3 *center, D3DXVECTOR3 *size)
 {
-    f32 bulletLeft;
-    f32 bulletTop;
-    f32 bulletRight;
-    f32 bulletBottom;
+    D3DXVECTOR3 bulletTopLeft;
+    D3DXVECTOR3 bulletBottomRight;
 
     collisionCountdown = 6;
     if (CheckAuxProjectileCollision(center, size))
     {
         return 2;
     }
+    bulletTopLeft.x = center->x - size->x * 0.5f - 20.0f;
+    bulletTopLeft.y = center->y - size->y * 0.5f - 20.0f;
+    bulletBottomRight.x = center->x + size->x * 0.5f + 20.0f;
+    bulletBottomRight.y = center->y + size->y * 0.5f + 20.0f;
     if (playerState == 2 || playerState == 1)
     {
         return 0;
     }
-    bulletLeft = center->x - size->x * 0.5f - 20.0f;
-    bulletTop = center->y - size->y * 0.5f - 20.0f;
-    bulletRight = center->x + size->x * 0.5f + 20.0f;
-    bulletBottom = center->y + size->y * 0.5f + 20.0f;
     if (!PLAYER_BOXES_OVERLAP(grazeBoxTopLeft.x, grazeBoxTopLeft.y, grazeBoxBottomRight.x, grazeBoxBottomRight.y,
-                              bulletLeft, bulletTop, bulletRight, bulletBottom))
+                              bulletTopLeft.x, bulletTopLeft.y, bulletBottomRight.x, bulletBottomRight.y))
     {
         return 0;
     }
@@ -267,21 +279,21 @@ i32 Player::CheckGraze(D3DXVECTOR3 *center, D3DXVECTOR3 *size)
 
 i32 Player::CalcItemBoxCollision(D3DXVECTOR3 *center, D3DXVECTOR3 *size)
 {
-    f32 itemLeft;
-    f32 itemTop;
-    f32 itemRight;
-    f32 itemBottom;
+    D3DXVECTOR3 itemTopLeft;
+    D3DXVECTOR3 itemBottomRight;
 
     if (playerState != 0 && playerState != 3 && playerState != 4)
     {
         return 0;
     }
-    itemLeft = center->x - size->x * 0.5f;
-    itemTop = center->y - size->y * 0.5f;
-    itemRight = center->x + size->x * 0.5f;
-    itemBottom = center->y + size->y * 0.5f;
-    return PLAYER_BOXES_OVERLAP(itemBoxTopLeft.x, itemBoxTopLeft.y, itemBoxBottomRight.x, itemBoxBottomRight.y, itemLeft,
-                                itemTop, itemRight, itemBottom);
+    itemTopLeft = *center - *size * 0.5f;
+    itemBottomRight = *center + *size * 0.5f;
+    if (itemBoxTopLeft.x > itemBottomRight.x || itemBoxBottomRight.x < itemTopLeft.x ||
+        itemBoxTopLeft.y > itemBottomRight.y || itemBoxBottomRight.y < itemTopLeft.y)
+    {
+        return 0;
+    }
+    return 1;
 }
 
 i32 Player::CalcLaserHitbox(D3DXVECTOR3 *laserCenter, D3DXVECTOR3 *laserSize, D3DXVECTOR3 *rotation, f32 angle,
@@ -376,13 +388,16 @@ i32 Player::ScoreGraze(D3DXVECTOR3 *center)
 
 i32 Player::Die()
 {
+    i32 *lastEnemyHit;
+
     g_GrazeState.CancelCapture();
     g_EffectManager.SpawnParticlesColored(12, &positionCenter, 3, 1, -12566273);
     g_EffectManager.SpawnParticles(6, &positionCenter, 16, -1);
     playerState = 2;
-    lastEnemyHitZ = 0;
-    lastEnemyHitY = 0;
-    lastEnemyHitX = -999;
+    lastEnemyHit = &lastEnemyHitX;
+    lastEnemyHit[2] = 0;
+    lastEnemyHit[1] = 0;
+    lastEnemyHit[0] = -999;
     return g_SoundPlayer.PlaySoundByIdx(4, 0);
 }
 #undef PLAYER_BOXES_OVERLAP

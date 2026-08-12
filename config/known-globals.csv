@@ -7,3 +7,12 @@ address,name,module,confidence,evidence
 0x00575958,g_D3dDevice,render,observed,Exact target operand in TextHelper and ScreenEffect functions
 0x00575A18,g_Viewport,render,observed,Exact target viewport field operands in ScreenEffect functions
 0x00575A30,g_PresentParameters,render,observed,Exact target reset parameter operand in ScreenEffect Clear
+0x0049EEC8,g_EffectsColorTable,bullet,observed,Exact target table address assigned by BulletManager RegisterChain
+0x0049EF38,g_EffectsColor,bullet,observed,Exact target pointer storage written by BulletManager RegisterChain
+0x00626218,g_Chain,chain,observed,Exact target this pointer used by Chain methods from BulletManager
+0x0062F934,g_BulletManagerDrawChain,bullet,observed,Exact target callback-chain fields written by BulletManager RegisterChain
+0x0062F958,g_BulletManager,bullet,observed,Exact target zero-initialized manager storage and embedded bullet base
+0x009A9ABC,g_BulletManagerCalcChain,bullet,observed,Exact target callback-chain fields written by BulletManager RegisterChain
+0x00626270,g_GrazeState,player,observed,Exact target this pointer used by Player death-state call
+0x012FE250,g_EffectManager,player,observed,Exact target this pointer used by Player particle calls
+0x004BA0D8,g_SoundPlayer,sound,observed,Exact target this pointer used by Player death sound call

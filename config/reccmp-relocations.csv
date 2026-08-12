@@ -40,3 +40,18 @@ __imp__SetKeyboardState@4,0x0048D1B4,e6b00900,0x0,PE USER32 import table entry f
 ?g_ScreenEffectViewport@th07@@3U_D3DVIEWPORT8@@A,0x00575A18,00000000,0x0;0x4;0x8;0xC;0x10;0x14,Direct target absolute references to shared viewport fields,literal
 ?g_ScreenEffectPresentParameters@th07@@3U_D3DPRESENT_PARAMETERS_@@A,0x00575A30,00000000,0x0,Direct target absolute reference to shared presentation parameters,literal
 ?g_ScreenEffectRenderState@th07@@3PAUScreenEffectRenderState@1@A,0x004B9E44,00000000,0x0,Direct target absolute reference to render-state owner pointer,literal
+?g_SupervisorState@th07@@3HA,0x00575AA8,00000000,0x0,Direct target absolute references from BulletManager callbacks and zero-initialized target storage,literal
+?g_AnmManager@th07@@3PAUAnmManager@1@A,0x004B9E44,00000000,0x0,Direct target pointer loaded by BulletManager animation calls and zero-initialized target storage,literal
+?g_BulletManager@th07@@3VBulletManager@1@A,0x0062F958,00000000,0x0;0xB2C0,Direct target absolute references to zero-initialized BulletManager storage and its first embedded bullet,literal
+?g_EffectsColor@th07@@3PAXA,0x0049EF38,58ee4900,0x0,Direct target pointer assignment in BulletManager RegisterChain and target initialized storage,literal
+?g_EffectsColorTable@th07@@3PAEA,0x0049EEC8,f0f0f0ff,0x0,Direct target immediate assigned by BulletManager RegisterChain and target table prefix,literal
+?g_BulletManagerCalcChain@th07@@3UChainElem@1@A,0x009A9ABC,00000000,0x0;0x4;0x8;0xC;0x1C,Direct target callback-chain field references and zero-initialized target storage,literal
+?g_BulletManagerDrawChain@th07@@3UChainElem@1@A,0x0062F934,00000000,0x0;0x4;0x8;0xC;0x1C,Direct target callback-chain field references and zero-initialized target storage,literal
+?g_Chain@th07@@3UChain@1@A,0x00626218,00000000,0x0,Direct target this pointer used by callback-chain methods and zero-initialized target storage,literal
+?g_BulletManagerStorage@th07@@3PAEA,0x0062F958,00000000,0x0,Direct target destination used by BulletManager CutChain bulk clear,literal
+?g_GrazeState@th07@@3UGrazeState@1@A,0x00626270,00000000,0x0,Direct target this pointer used by Player death and graze-state calls and zero-initialized target storage,literal
+?g_EffectManager@th07@@3UEffectManager@1@A,0x012FE250,00000000,0x0,Direct target this pointer used by Player effect calls and zero-initialized target storage,literal
+?g_SoundPlayer@th07@@3USoundPlayer@1@A,0x004BA0D8,00000000,0x0,Direct target this pointer used by Player sound calls and zero-initialized target storage,literal
+chain_ctor_dtor_eh_handler,0x0048C418,b8f0a74900e94430ffff,0x0,Direct target EH handler thunk shared by Chain constructor and destructor,address
+chain_release_single_eh_handler,0x0048C58E,b880a94900e9ce2effff,0x0,Direct target EH handler thunk referenced by Chain ReleaseSingleChain,address
+chain_create_elem_eh_handler,0x0048C4BB,b8c8a94900e9a12fffff,0x0,Direct target EH handler thunk referenced by Chain CreateElem,address

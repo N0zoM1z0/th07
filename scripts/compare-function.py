@@ -209,6 +209,11 @@ def coff_symbol_bytes(
     raw_size = int(section["raw_size"])
     code = bytearray(data[raw_pointer + value : raw_pointer + raw_size])
     allowlist = load_relocations()
+    with FUNCTIONS.open(newline="", encoding="utf-8") as stream:
+        function_starts = {
+            row["address"]: int(row["size"])
+            for row in csv.DictReader(stream)
+        }
     reloc_pointer = int(section["reloc_pointer"])
     for reloc_index in range(int(section["reloc_count"])):
         offset = reloc_pointer + reloc_index * 10
@@ -259,6 +264,18 @@ def coff_symbol_bytes(
             continue
 
         key = dir32_overrides.get(f"{target_name}+0x{raw_addend:X}", dir32_overrides.get(target_name, target_name))
+        if re.fullmatch(r"0[xX][0-9A-Fa-f]+", key):
+            if raw_addend != 0:
+                raise ValueError(f"function-address DIR32 mapping has nonzero addend: {target_name}")
+            mapped_address = int(key, 0)
+            mapped_key = canonical(key)
+            if mapped_key not in function_starts:
+                raise ValueError(f"DIR32 function target is absent from the ledger: {mapped_key}")
+            # Force a mapped-image read under the already verified target hash;
+            # the ledger supplies the exact accepted function boundary.
+            target_bytes(mapped_address, min(function_starts[mapped_key], 4))
+            struct.pack_into("<I", code, field_offset, mapped_address)
+            continue
         if key not in allowlist:
             raise ValueError(f"unknown DIR32 target: {target_name}")
         destination, literal, allowed_addends, validation = allowlist[key]
@@ -305,7 +322,12 @@ def main() -> int:
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument("--symbol-base", required=True, help="exact decorated COFF function symbol")
     parser.add_argument("--rel32-target", action="append", default=[], metavar="SYMBOL=ADDRESS")
-    parser.add_argument("--dir32-target", action="append", default=[], metavar="SYMBOL=ALLOWLIST_KEY")
+    parser.add_argument(
+        "--dir32-target",
+        action="append",
+        default=[],
+        metavar="SYMBOL=ALLOWLIST_KEY_OR_FUNCTION_ADDRESS",
+    )
     parser.add_argument("--json", action="store_true")
     parser.add_argument("address")
     parser.add_argument("object")

@@ -61,8 +61,8 @@ original TH07 object partitions.
 
 ## Exact code-generation results
 
-The pinned VC7 build and patched `C1XX.DLL` currently reproduce 44 functions
-across five probes:
+The pinned VC7 build and patched `C1XX.DLL` currently reproduce 55 functions
+across eight probes:
 
 | Probe | Functions | Exact bytes |
 | --- | ---: | ---: |
@@ -71,19 +71,28 @@ across five probes:
 | `zwave` | 19 | 3,316 / 3,316 |
 | `controller` | 1 | 85 / 85 |
 | `screen-effect` | 4 | 528 / 528 |
-| **Total** | **46** | **7,646 / 7,646** |
+| `bullet-manager` | 2 | 243 / 243 |
+| `player-core` | 1 | 143 / 143 |
+| `chain` | 6 | 654 / 654 |
+| **Total** | **55** | **8,686 / 8,686** |
 
 The strict comparison resolves member and CRT calls; validates GDI32, WINMM,
 and KERNEL32 IAT entries; checks global, string, and vtable target bytes; and
 recognizes VC7's compiler-generated `FS:[0]` SEH-chain operands. Local EH thunk
 addresses remain explicit allowlisted evidence rather than wildcard
-relocations. Accepted commands include:
+relocations. Zero-addend function pointers may map directly to an address only
+when that address is a canonical function start in the target-attested ledger;
+globals and literals still require an explicit relocation allowlist entry.
+Accepted commands include:
 
 ```bash
 python3 scripts/build.py --unit text-helper --compare --json
 python3 scripts/build.py --unit midi --compare --json
 python3 scripts/build.py --unit zwave --compare --json
 python3 scripts/build.py --unit screen-effect --compare --json
+python3 scripts/build.py --unit bullet-manager --compare --json
+python3 scripts/build.py --unit player-core --compare --json
+python3 scripts/build.py --unit chain --compare --json
 ```
 
 The `vc7-debug-od-no-gs` profile is an evidence-controlled variant for target

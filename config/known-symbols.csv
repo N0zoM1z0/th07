@@ -21,3 +21,18 @@ address,name,module,confidence,evidence
 0x0044AF30,ScreenEffect_draw_arcade_fade,ui,observed,Exact-target arcade rectangle and strict VC7 COFF comparison
 0x0045C7D0,CSoundManager_set_primary_buffer_format,sound,observed,Exact-target DirectSound calls and strict VC7 no-GS G6 COFF comparison
 0x0045D3C0,CSound_fill_buffer_with_sound,sound,observed,Exact-target wave calls and strict VC7 no-GS G6 COFF comparison
+0x004276A0,BulletManager_register_chain,bullet,observed,Exact-target callback wiring and strict VC7 COFF comparison
+0x00427760,BulletManager_cut_chain,bullet,observed,Exact-target chain cuts and strict VC7 COFF comparison
+0x0042FA60,Chain_dtor,chain,observed,Exact-target member destruction and strict VC7 COFF comparison
+0x0042FAB0,ChainElem_ctor,chain,observed,Exact-target field initialization order and TH06 corroboration
+0x0042FB20,ChainElem_dtor,chain,observed,Exact-target deleted callback behavior and strict VC7 COFF comparison
+0x0042FB80,Chain_ctor,chain,observed,Exact-target member construction and strict VC7 COFF comparison
+0x0042FBD0,Chain_add_to_calc_chain,chain,observed,Exact-target sorted insertion and strict VC7 COFF comparison
+0x0042FCA0,Chain_add_to_draw_chain,chain,observed,Exact-target sorted insertion and strict VC7 COFF comparison
+0x0042FD60,Chain_run_calc_chain,chain,observed,Exact-target callback result switch and restart behavior
+0x0042FE20,Chain_run_draw_chain,chain,observed,Exact-target callback result switch behavior
+0x0042FEE0,Chain_release_single_chain,chain,observed,Exact-target release walk and allocator calls
+0x00430060,Chain_release,chain,observed,Exact-target dual-list release and strict VC7 COFF comparison
+0x00430090,Chain_create_elem,chain,observed,Exact-target allocation and heap flag setup
+0x00430140,Chain_cut,chain,observed,Exact-target calc/draw search and unlink behavior
+0x0043EDC0,Player_die,player,observed,Exact-target death state effect and sound calls plus strict VC7 COFF comparison

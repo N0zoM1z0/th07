@@ -39,17 +39,20 @@ struct BulletTypeSprites
     u8 unknown1;
 };
 
+struct BulletClearGroup
+{
+    i32 first;
+    i32 second;
+    i32 third;
+};
+
 struct Bullet
 {
     u8 unknown0[0x1D6];
     i16 spriteIndex;
     u8 unknown1[0xB98 - 0x1D8];
-    i32 unknownB98;
-    i32 unknownB9C;
-    i32 unknownBA0;
-    i32 unknownBA4;
-    i32 unknownBA8;
-    i32 unknownBAC;
+    BulletClearGroup unknownB98ToBA0;
+    BulletClearGroup unknownBA4ToBAC;
     i32 unknownBB0;
     i32 unknownBB4;
     i32 unknownBB8;
@@ -77,16 +80,21 @@ class BulletManager
 {
   public:
     static int __cdecl AddedCallback(BulletManager *manager);
-    static int __cdecl DeletedCallback(BulletManager *manager);
-    static int __cdecl RegisterChain();
+    static int __fastcall DeletedCallback(BulletManager *manager);
+    static int __fastcall RegisterChain(char *bulletAnmPath);
     static void __cdecl CutChain();
 
-    void RemoveAllBullets(int turnIntoItem);
+    void RemoveAllBullets();
+    void Initialize();
 
     static int __cdecl OnUpdate(BulletManager *manager);
     static int __cdecl OnDraw(BulletManager *manager);
 
     BulletTypeSprites templates[11];
+    u8 unknownAfterTemplates[0x33BC];
+    Bullet bullets[1024];
+    u8 unknownAfterBullets[0x14E80];
+    char *bulletAnmPath;
 };
 
 } // namespace th07

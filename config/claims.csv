@@ -1,15 +1,16 @@
 address,owner,started_utc,branch,notes
 0x00426F60,root-integration,2026-08-12T11:25:00Z,main,BulletManager relocation and source-shaping follow-up
 0x00427620,terra-bullet-refine,2026-08-12T11:25:00Z,main,BulletManager small-function byte-shaping follow-up
-0x004276A0,terra-bullet-refine,2026-08-12T11:25:00Z,main,BulletManager small-function byte-shaping follow-up
-0x00427760,terra-bullet-refine,2026-08-12T11:25:00Z,main,BulletManager small-function byte-shaping follow-up
 0x004277A0,terra-bullet-refine,2026-08-12T11:25:00Z,main,BulletManager small-function byte-shaping follow-up
-0x004302F0,terra-controller-refine,2026-08-12T11:18:00Z,main,Controller helper byte-shaping follow-up
-0x00430370,terra-controller-refine,2026-08-12T11:18:00Z,main,Controller helper byte-shaping follow-up
+0x0042FAB0,terra-chain-refine,2026-08-12T11:59:04.875530Z,main,Chain remaining byte-shaping follow-up
+0x0042FD60,terra-chain-refine,2026-08-12T11:59:04.875530Z,main,Chain remaining byte-shaping follow-up
+0x0042FE20,terra-chain-refine,2026-08-12T11:59:04.875530Z,main,Chain remaining byte-shaping follow-up
+0x0042FEE0,terra-chain-refine,2026-08-12T11:59:04.875530Z,main,Chain remaining byte-shaping follow-up
+0x00430090,terra-chain-refine,2026-08-12T11:59:04.875530Z,main,Chain remaining byte-shaping follow-up
+0x00430140,terra-chain-refine,2026-08-12T11:59:04.875530Z,main,Chain remaining byte-shaping follow-up
 0x004303F0,root-integration,2026-08-12T11:18:00Z,main,Controller relocation and source-shaping follow-up
 0x004309C0,root-integration,2026-08-12T11:18:00Z,main,Controller relocation and source-shaping follow-up
 0x00430B50,root-integration,2026-08-12T11:18:00Z,main,Controller relocation and source-shaping follow-up
-0x004312C0,terra-controller-refine,2026-08-12T11:18:00Z,main,Controller helper byte-shaping follow-up
 0x0043D9E0,root-integration,2026-08-12T11:18:00Z,main,Player damage and collision relocation follow-up
 0x0043E0A0,terra-player-refine,2026-08-12T11:18:00Z,main,Player small collision byte-shaping follow-up
 0x0043E260,terra-player-refine,2026-08-12T11:18:00Z,main,Player small collision byte-shaping follow-up
@@ -17,4 +18,3 @@ address,owner,started_utc,branch,notes
 0x0043E4E0,terra-player-refine,2026-08-12T11:18:00Z,main,Player small collision byte-shaping follow-up
 0x0043E6B0,root-integration,2026-08-12T11:18:00Z,main,Player damage and collision relocation follow-up
 0x0043EB90,root-integration,2026-08-12T11:18:00Z,main,Player damage and collision relocation follow-up
-0x0043EDC0,terra-player-refine,2026-08-12T11:18:00Z,main,Player death byte-shaping follow-up

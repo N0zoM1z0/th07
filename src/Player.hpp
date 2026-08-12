@@ -97,7 +97,7 @@ class Player
     PlayerAuxCollision auxCollisions[96];   // +0x17DC
     u8 unknown23DC[0x28];
     i32 collisionCountdown;                 // +0x2404
-    u8 playerState;                         // +0x2408
+    i8 playerState;                         // +0x2408
     u8 unknown2409[2];
     u8 grazeVariant;                        // +0x240B
     u8 collisionParticleCounter;            // +0x240C
