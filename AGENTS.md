@@ -62,6 +62,10 @@ read `.agents/skills/th07-matching/SKILL.md`.
   `python3 scripts/build.py --unit NAME --compare --json`.
 - Shared headers, class layouts, compiler profiles, relocation allowlists, and
   translation-unit partitions require coordinator review before mutation.
+- The typed-RE automation (`scripts/typed-re.py`, `scripts/typed_re/`,
+  `scripts/scan-vc7-library.py`, `config/typed-re-rules.toml`, and its skill)
+  is coordinator-owned. Workers may execute it and submit feedback or proposed
+  rules, but must not modify it.
 - Worker reports are proposals. The coordinator reruns the strict comparison,
   updates status/evidence, releases claims, and performs all Git integration.
 

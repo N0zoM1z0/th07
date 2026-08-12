@@ -197,34 +197,34 @@ i32 Chain::RunDrawChain()
 
 void Chain::ReleaseSingleChain(ChainElem *root)
 {
-    ChainElem temporaryRoot;
+    ChainElem a0;
     ChainElem *current;
-    ChainElem *temporary;
-    ChainElem *next;
+    ChainElem *tmp;
+    ChainElem *wasNext;
 
-    temporary = new ChainElem();
-    temporaryRoot.next = temporary;
+    tmp = new ChainElem();
+    a0.next = tmp;
     current = root;
     while (current != NULL)
     {
-        temporary->unknown = current;
-        temporary->next = new ChainElem();
-        temporary = temporary->next;
+        tmp->unknown = current;
+        tmp->next = new ChainElem();
+        tmp = tmp->next;
         current = current->next;
     }
-    current = &temporaryRoot;
+    current = &a0;
     while (current != NULL)
     {
         Cut(current->unknown);
         current = current->next;
     }
-    temporary = temporaryRoot.next;
-    while (temporary != NULL)
+    tmp = a0.next;
+    while (tmp != NULL)
     {
-        next = temporary->next;
-        delete temporary;
-        temporary = NULL;
-        temporary = next;
+        wasNext = tmp->next;
+        delete tmp;
+        tmp = NULL;
+        tmp = wasNext;
     }
 }
 
@@ -246,6 +246,7 @@ ChainElem *Chain::CreateElem(ChainCallback callback)
     return element;
 }
 
+#pragma var_order(isDrawChain, current)
 void Chain::Cut(ChainElem *element)
 {
     i32 isDrawChain;

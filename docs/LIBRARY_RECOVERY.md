@@ -81,6 +81,32 @@ for unit in $(python3 scripts/build.py --list | awk -F: '/vc7-d3dx8-raw/{print $
 done
 ```
 
-Together, the accepted D3DX8 archive waves account for 150 exact functions and
-28,388 bytes. Relocated archive functions remain the next audit frontier; a
-raw body or cross-version identity alone does not promote them.
+Together, these first D3DX8 archive waves account for 150 exact functions and
+28,388 bytes.
+
+## Relocation-aware archive scan (2026-08-12)
+
+`scripts/scan-vc7-library.py` performs a second fail-closed pass. It requires a
+unique target function with identical bytes outside COFF relocation fields,
+solves each REL32 destination from the target ledger and each DIR32 destination
+from the audited relocation allowlist, then invokes the canonical comparator.
+It never edits tracking state; blocked and ambiguous candidates remain separate
+in its generated JSON report.
+
+```bash
+python3 scripts/scan-vc7-library.py --check
+python3 scripts/scan-vc7-library.py --library d3dx8 --json \
+  > build/library-scan-d3dx8.json
+python3 scripts/scan-vc7-library.py --library libcmt --json \
+  > build/library-scan-libcmt.json
+```
+
+The accepted manifest is `config/vc7-relocated-library.csv`. Thirty-four
+D3DX8 members add 141 functions / 33,653 bytes; sixty-six VC7 LIBCMT members
+add 123 functions / 10,403 bytes. Every generated match unit re-extracts the
+SHA-pinned archive member and replays all solved relocations through the strict
+comparator. The LIBCMT provenance also agrees with the reconstruction compiler
+profile's explicit `/MT` selection.
+
+Normalized identity is only a candidate filter. It cannot promote a row unless
+the final relocation-applied target bytes are independently 100% exact.

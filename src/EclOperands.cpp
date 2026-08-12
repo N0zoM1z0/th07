@@ -67,11 +67,13 @@ extern TargetRngOverlay g_TargetRng49FE20;
 // Observed: target 0x0040E5B0 receives Enemy in ECX and the raw i32 operand
 // in EDX, then resolves the ECL variable IDs 0x2710..0x2759.  Meanings of
 // individual offsets remain intentionally unnamed pending their owner lanes.
+#pragma var_order(lengthVector, range, delta, position)
 i32 __fastcall ResolveInt(EnemyOverlay *enemy, i32 operand)
 {
+    Vector3 lengthVector;
+    u32 range;
     Vector3 delta;
     Vector3 *position;
-    u32 range;
 
     switch (operand)
     {
@@ -151,7 +153,8 @@ i32 __fastcall ResolveInt(EnemyOverlay *enemy, i32 operand)
         delta.z = g_TargetFloat4BE410 - position->z;
         delta.y = g_TargetFloat4BE40C - position->y;
         delta.x = g_TargetFloat4BE408 - position->x;
-        return (i32)delta.Length();
+        lengthVector = delta;
+        return (i32)lengthVector.Length();
     default: return operand;
     }
 }

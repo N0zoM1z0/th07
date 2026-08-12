@@ -88,6 +88,62 @@ def load_manifest() -> dict[str, object]:
                 functions = unit["functions"]
                 assert isinstance(functions, list)
                 functions.append({"address": row["address"], "symbol_base": row["symbol"]})
+    prebuilt_relocated_index = manifest.get("prebuilt_relocated_index")
+    if prebuilt_relocated_index:
+        index_path = repository_path(str(prebuilt_relocated_index))
+        with index_path.open(newline="", encoding="utf-8") as stream:
+            reader = csv.DictReader(stream)
+            expected = [
+                "unit",
+                "library",
+                "member",
+                "address",
+                "symbol",
+                "rel32_targets",
+                "dir32_targets",
+            ]
+            if reader.fieldnames != expected:
+                raise ValueError(f"invalid relocated prebuilt index header: {reader.fieldnames}")
+            for row in reader:
+                name = row["unit"]
+                library = row["library"]
+                member = row["member"]
+                if (
+                    not name
+                    or library not in VC7_PREBUILT_SHA256
+                    or not member
+                    or not row["symbol"]
+                ):
+                    raise ValueError("relocated prebuilt index has an invalid required field")
+                unit = units.setdefault(
+                    name,
+                    {
+                        "kind": "vc7_prebuilt",
+                        "source": "docs/LIBRARY_RECOVERY.md",
+                        "object": f"build/match-units/{name.replace('-', '_')}.obj",
+                        "profile": "vc7-prebuilt",
+                        "toolchain_library": library,
+                        "toolchain_object": member,
+                        "toolchain_archive_sha256": VC7_PREBUILT_SHA256[library],
+                        "prebuilt_index": str(prebuilt_relocated_index),
+                        "notes": "Unique relocation-aware strict replay from a SHA-pinned VC7 archive.",
+                        "functions": [],
+                    },
+                )
+                if (
+                    unit.get("kind") != "vc7_prebuilt"
+                    or unit.get("toolchain_library") != library
+                    or unit.get("toolchain_object") != member
+                ):
+                    raise ValueError(f"relocated prebuilt unit {name} mixes archives or members")
+                function = {"address": row["address"], "symbol_base": row["symbol"]}
+                for field in ("rel32_targets", "dir32_targets"):
+                    mappings = [value for value in row[field].split(";") if value]
+                    if mappings:
+                        function[field] = mappings
+                functions = unit["functions"]
+                assert isinstance(functions, list)
+                functions.append(function)
     with FUNCTIONS.open(newline="", encoding="utf-8") as stream:
         ledger = {row["address"] for row in csv.DictReader(stream)}
     claimed: set[str] = set()

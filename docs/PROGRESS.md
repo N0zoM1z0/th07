@@ -2,21 +2,21 @@
 
 Generated from `config/functions.csv`. Only verified 100% comparisons count as reconstructed.
 
-- Matching authored functions: **79 / 1377 (5.74%)**
-- Matching authored bytes: **17,818 / 517,619 (3.44%)**
-- Exact library functions: **150 / 150; 28,388 / 28,388 bytes**
-- Combined exact bytes: **46,206 / 546,007 (8.46%)**
+- Matching authored functions: **80 / 1113 (7.19%)**
+- Matching authored bytes: **18,201 / 473,563 (3.84%)**
+- Exact library functions: **414 / 414; 72,444 / 72,444 bytes**
+- Combined exact bytes: **90,645 / 546,007 (16.60%)**
 - IDA seed inventory: **1,527 functions / 546,007 function bytes**
 
 | Status | Functions |
 | --- | ---: |
-| `unclassified` | 1,281 |
+| `unclassified` | 1,017 |
 | `identified` | 0 |
 | `decompiled` | 0 |
 | `implemented` | 0 |
-| `compiles` | 17 |
-| `matching` | 79 |
-| `library` | 150 |
+| `compiles` | 16 |
+| `matching` | 80 |
+| `library` | 414 |
 | `blocked` | 0 |
 
 IDA extents are seed boundaries and are reconciled before exact comparison.

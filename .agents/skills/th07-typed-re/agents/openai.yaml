@@ -1,0 +1,4 @@
+interface:
+  display_name: "TH07 Typed Reconstruction"
+  short_description: "Extract and evolve compiler-aware TH07 reconstruction facts"
+  default_prompt: "Use $th07-typed-re to generate a target-pinned typed packet, interpret its evidence layers, and propose the next strict VC7 reconstruction probe."

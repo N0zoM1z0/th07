@@ -11,8 +11,10 @@ Use together with `th07-re` for two or more bounded lanes.
 
 The coordinator alone writes IDA names/types/comments, claims, ledgers,
 known-symbol/global manifests, shared headers/layouts, compiler profiles,
-relocation allowlists, generated progress, commits, and pushes. Workers never
-commit or push.
+relocation allowlists, typed-RE helper code/rules/regressions, generated
+progress, commits, and pushes. Workers never commit or push. They may execute
+typed-RE helpers and propose improvements, but never edit `scripts/typed_re/`,
+its CLI wrappers, `config/typed-re-rules.toml`, or `th07-typed-re`.
 
 Before dispatch, the coordinator:
 

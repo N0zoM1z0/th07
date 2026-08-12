@@ -1,6 +1,7 @@
 schema_version = 1
 target_sha256 = "35467eaf8dc7fc85f024f16fb2037255f151cefda33cf4867bc9122aaa2e80ca"
 prebuilt_index = "config/vc7-prebuilt-library.csv"
+prebuilt_relocated_index = "config/vc7-relocated-library.csv"
 
 [units.vc7-d3dx8-d3dxmath]
 kind = "vc7_prebuilt"
@@ -792,6 +793,7 @@ rel32_targets = [
   "?UpdateBounce@BulletUpdateBullet@th07@@QAEXXZ=0x004258A0",
   "?Clear@BulletUpdateBullet@th07@@QAEXXZ=0x00417B20",
   "?BulletIsInBounds@th07@@YGHMMMM@Z=0x0042D6D8",
+  "?AddNormalizeAngle@th07@@YGMMM@Z=0x00431930",
   "?Advance@BulletUpdateTimerManager@th07@@QAEXPAH0@Z=0x0043958D",
   "__ftol2=0x0048B8A0",
 ]

@@ -147,6 +147,7 @@ extern f32 g_FrameMultiplier;
 extern i32 g_BulletPointItem;
 
 extern i32 __stdcall BulletIsInBounds(f32 x, f32 y, f32 width, f32 height);
+extern f32 __stdcall AddNormalizeAngle(f32 first, f32 second);
 
 static __forceinline void AdvanceTimer(BulletUpdateTimer *timer)
 {
@@ -432,6 +433,7 @@ int __fastcall BulletManager::OnUpdate(BulletManager *manager)
     for (i = 0; i < 64; i++, laser++)
     {
         i32 rampFrames;
+        f32 normalizedAngle;
 
         if (!laser->isInUse)
         {
@@ -455,7 +457,8 @@ int __fastcall BulletManager::OnUpdate(BulletManager *manager)
         laser->primaryAnimation.scaleX = laser->width / laser->primaryAnimation.sprite->width;
         laser->primaryAnimation.scaleY =
             (laser->endOffset - laser->startOffset) / laser->primaryAnimation.sprite->height;
-        laser->primaryAnimation.rotationZ = laser->angle + 1.5707964f;
+        normalizedAngle = AddNormalizeAngle(laser->angle + 1.5707964f, 0.0f);
+        laser->primaryAnimation.rotationZ = normalizedAngle;
         laser->primaryAnimation.flags |= 4;
 
         switch (laser->state)
@@ -551,7 +554,12 @@ int __fastcall BulletManager::OnUpdate(BulletManager *manager)
         g_BulletUpdateAnmManager->ExecuteScript(&laser->primaryAnimation);
     }
 
-    AdvanceTimer(reinterpret_cast<BulletUpdateTimer *>(reinterpret_cast<u8 *>(manager) + 0x37A134));
+    if (*reinterpret_cast<i32 *>(reinterpret_cast<u8 *>(manager) + 0x37A12C))
+    {
+        --*reinterpret_cast<i32 *>(reinterpret_cast<u8 *>(manager) + 0x37A12C);
+    }
+    AdvanceTimer(reinterpret_cast<BulletUpdateTimer *>(reinterpret_cast<u8 *>(manager) + 0x37A130));
+    ++*reinterpret_cast<i32 *>(reinterpret_cast<u8 *>(manager) + 0x37A13C);
     return 1;
 }
 
