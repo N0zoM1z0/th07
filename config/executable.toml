@@ -1,0 +1,143 @@
+schema_version = 1
+target_sha256 = "35467eaf8dc7fc85f024f16fb2037255f151cefda33cf4867bc9122aaa2e80ca"
+
+[toolchain]
+compiler = "Microsoft Visual C++ .NET 2002 build 9466"
+linker_major = 7
+linker_minor = 0
+crt = "static LIBCMT (/MT)"
+d3dx = "static DirectX 8 d3dx8.lib"
+entry_symbol = "unknown"
+
+[pe]
+machine = 0x014C
+characteristics = 0x010F
+timestamp = 0x3F983F81
+image_base = 0x00400000
+entry_rva = 0x0007EA7D
+section_alignment = 0x1000
+file_alignment = 0x0200
+size_of_headers = 0x0400
+size_of_image = 0x00F67000
+subsystem = 2
+subsystem_major = 4
+subsystem_minor = 0
+dll_characteristics = 0
+stack_reserve = 0x100000
+stack_commit = 0x1000
+heap_reserve = 0x100000
+heap_commit = 0x1000
+
+[[sections]]
+name = ".text"
+rva = 0x00001000
+virtual_size = 0x0008BD38
+raw_offset = 0x00000400
+raw_size = 0x0008BE00
+characteristics = 0x60000020
+
+[[sections]]
+name = ".rdata"
+rva = 0x0008D000
+virtual_size = 0x0000E820
+raw_offset = 0x0008C200
+raw_size = 0x0000EA00
+characteristics = 0x40000040
+
+[[sections]]
+name = ".data"
+rva = 0x0009C000
+virtual_size = 0x00EC9258
+raw_offset = 0x0009AC00
+raw_size = 0x00003800
+characteristics = 0xC0000040
+
+[[sections]]
+name = ".rsrc"
+rva = 0x00F66000
+virtual_size = 0x00000960
+raw_offset = 0x0009E400
+raw_size = 0x00000A00
+characteristics = 0x40000040
+
+[imports]
+descriptors = [
+  { name = "DINPUT8.dll", count = 1 },
+  { name = "DSOUND.dll", count = 1 },
+  { name = "d3d8.dll", count = 1 },
+  { name = "WINMM.dll", count = 15 },
+  { name = "KERNEL32.dll", count = 91 },
+  { name = "USER32.dll", count = 27 },
+  { name = "GDI32.dll", count = 10 },
+  { name = "ole32.dll", count = 3 },
+]
+
+[resources]
+icon_id = 1
+group_icon_id = 105
+language = 0x0411
+icon_size = 0x08A8
+group_icon_size = 0x14
+script = "resources/th07.rc"
+
+[build]
+# These are independently verified source probes, not yet claims about the
+# original translation-unit partition. They provide the first source-to-object
+# edge of the eventual complete executable graph.
+source_units = [
+  "text-helper",
+  "midi",
+  "zwave",
+  "ecl-manager",
+  "ecl-operands",
+  "bullet-render",
+  "bullet-update",
+  "bullet-manager",
+  "player-bomb",
+  "player-core",
+  "spellcard-gui",
+  "spell-lifecycle",
+  "screen-effect",
+  "controller",
+  "chain",
+]
+link_enabled = false
+final_objects = []
+output = "build/exe/th07.exe"
+resource_output = "build/exe/th07.res"
+
+[link]
+# These flags produce a functionally shaped fixed-base PE. Exact /OPT choices,
+# object order, entry symbol, static initialization order, and timestamp
+# reproduction remain evidence-gated below.
+flags = [
+  "/MACHINE:X86",
+  "/SUBSYSTEM:WINDOWS,4.0",
+  "/BASE:0x400000",
+  "/FIXED",
+  "/FILEALIGN:0x200",
+  "/ALIGN:0x1000",
+  "/STACK:0x100000,0x1000",
+  "/HEAP:0x100000,0x1000",
+  "/INCREMENTAL:NO",
+]
+libraries = [
+  "dxguid.lib",
+  "d3dx8.lib",
+  "d3d8.lib",
+  "dsound.lib",
+  "winmm.lib",
+  "kernel32.lib",
+  "user32.lib",
+  "dinput8.lib",
+  "gdi32.lib",
+  "ole32.lib",
+]
+unknown_exact_inputs = [
+  "original translation-unit and object partition",
+  "complete globals and static initialization order",
+  "object and archive-member link order",
+  "CRT entry symbol selection",
+  "LINK /OPT:REF and /OPT:ICF choices",
+  "PE timestamp reproduction mechanism",
+]

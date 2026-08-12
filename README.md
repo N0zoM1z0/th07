@@ -66,6 +66,7 @@ instructions, data layout, or exact comparison.
 - [Reverse-engineering workflow](docs/RE_WORKFLOW.md)
 - [IDA-first analysis](docs/IDA_MCP.md)
 - [Build and matching plan](docs/BUILD_MATCHING.md)
+- [Complete executable build](docs/EXECUTABLE_BUILD.md)
 - [Prebuilt D3DX8 and VC7 runtime recovery](docs/LIBRARY_RECOVERY.md)
 - [Workflow evolution and parallel gates](docs/WORKFLOW_EVOLUTION.md)
 - [Generated progress](docs/PROGRESS.md)
@@ -75,8 +76,11 @@ instructions, data layout, or exact comparison.
 
 The PE linker metadata and Rich header identify Visual C++ .NET 2002 (VC7,
 build 9466), matching the toolchain family used by the TH06 and TH08 reference
-projects. A matching full executable is not yet advertised; reconstruction
-starts with address-bounded translation units and function-level comparison.
+projects. The checked-in executable manifest and fail-closed build driver now
+compile the accepted source graph and reproduce the local icon resource, while
+the final link remains gated on complete function/global/TU ownership. A
+matching full executable is not yet advertised; reconstruction starts with
+address-bounded translation units and function-level comparison.
 Focused VC7 probes cover `TextHelper`, MIDI, DirectSound, Controller,
 ScreenEffect, BulletManager, Player, spell, and Chain code. SHA-pinned D3DX8
 archive replay separately recovers original third-party objects without
