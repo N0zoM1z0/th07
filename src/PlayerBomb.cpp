@@ -36,6 +36,22 @@ struct PlayerBombDamageRegion {
     }
 };
 
+/*
+ * Target 0x441800/0x4418B0 populate this 96-entry pool.  A nonzero sizeX
+ * selects the rectangular collision path; otherwise radius selects the
+ * circular path in Player::CheckAuxProjectileCollision.
+ */
+struct PlayerBombProjectile {
+    f32 centerX;
+    f32 centerY;
+    f32 sizeX;
+    f32 sizeY;
+    f32 radius;
+    f32 unknown14;
+    u32 unknown18;
+    u32 collisionValue;
+};
+
 struct PlayerBombAnmVm {
     u8 unknown00[0x1D4];
     i16 scriptId;
@@ -72,7 +88,9 @@ struct PlayerBombState {
 };
 
 struct PlayerBombOverlay {
-    u8 unknown0000[0x16A20];
+    u8 unknown0000[0x17DC];
+    PlayerBombProjectile bombProjectiles[96];
+    u8 unknown23DC[0x14644];
     u8 bombStorage[0xA142C];
     u8 unknownB7E4C[0x0C];
     f32 rotationAngle;
@@ -97,6 +115,10 @@ struct PlayerBombOverlay {
     void BeginBomb();
     void UpdateBomb();
     i32 DrawBomb();
+    PlayerBombProjectile *AddBombProjectileRectangle(const PlayerBombPoint *center, f32 sizeX, f32 sizeY,
+                                                      u32 collisionValue);
+    PlayerBombProjectile *AddBombProjectileCircle(const PlayerBombPoint *center, f32 radius, f32 unknown14,
+                                                   u32 unknown18, u32 collisionValue);
 
     /* Target calls resolved by the Player/ANM integration unit. */
     void StartDeathBomb(i32 deathBomb);
@@ -114,6 +136,7 @@ typedef char PlayerBombWorkItemSizeMustMatch[(sizeof(PlayerBombWorkItem) == 0x14
 typedef char PlayerBombStateSizeMustMatch[(sizeof(PlayerBombState) == 0xA142C) ? 1 : -1];
 typedef char PlayerBombOverlaySizeMustMatch[(sizeof(PlayerBombOverlay) == 0xB7E78) ? 1 : -1];
 typedef char PlayerBombCallbackSizeMustMatch[(sizeof(PlayerBombCallback) == 4) ? 1 : -1];
+typedef char PlayerBombProjectileSizeMustMatch[(sizeof(PlayerBombProjectile) == 0x20) ? 1 : -1];
 
 /*
  * 0x4011B0 and 0x401170 are target constructors called before the following
@@ -480,6 +503,47 @@ i32 PlayerBombOverlay::RegisterBombCallbacks()
         FinishDeathBomb();
     }
     return 0;
+}
+
+PlayerBombProjectile *PlayerBombOverlay::AddBombProjectileRectangle(const PlayerBombPoint *center, f32 sizeX,
+                                                                    f32 sizeY, u32 collisionValue)
+{
+    PlayerBombProjectile *projectile = bombProjectiles;
+    i32 index;
+
+    for (index = 0; index < 95; ++index, ++projectile) {
+        if (projectile->sizeX == 0.0f && projectile->radius == 0.0f) {
+            break;
+        }
+    }
+    projectile->centerX = center->x;
+    projectile->centerY = center->y;
+    projectile->sizeX = sizeX;
+    projectile->sizeY = sizeY;
+    projectile->unknown18 = 0;
+    projectile->collisionValue = collisionValue;
+    return projectile;
+}
+
+PlayerBombProjectile *PlayerBombOverlay::AddBombProjectileCircle(const PlayerBombPoint *center, f32 radius,
+                                                                 f32 unknown14, u32 unknown18,
+                                                                 u32 collisionValue)
+{
+    PlayerBombProjectile *projectile = bombProjectiles;
+    i32 index;
+
+    for (index = 0; index < 95; ++index, ++projectile) {
+        if (projectile->sizeX == 0.0f && projectile->radius == 0.0f) {
+            break;
+        }
+    }
+    projectile->centerX = center->x;
+    projectile->centerY = center->y;
+    projectile->radius = radius;
+    projectile->unknown14 = unknown14;
+    projectile->unknown18 = unknown18;
+    projectile->collisionValue = collisionValue;
+    return projectile;
 }
 
 #pragma var_order(startingBombTimer, scoreCost, activeBombTimer)

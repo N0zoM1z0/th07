@@ -133,6 +133,8 @@ ecl_real_96,0x00498C54,0000c042,0x0,Exact target float 96 used by ECL constraine
 ecl_real_288,0x00498C78,00009043,0x0,Exact target float 288 used by ECL constrained random heading,literal
 ecl_real_pi_over_4,0x00498CD0,db0f493f,0x0,Exact target float pi over four used by ECL constrained random heading,literal
 ecl_real_three_pi_over_4,0x00498D18,e4cb1640,0x0,Exact target float three pi over four used by ECL constrained random heading,literal
+ecl_real_pos_0_01,0x00498B68,0ad7233c,0x0,Exact target float positive 0.01 used by ECL ANM layer visibility threshold,literal
+ecl_real_neg_0_01,0x00498D60,0ad723bc,0x0,Exact target float negative 0.01 used by ECL ANM layer visibility threshold,literal
 ecl_string_sub_anim_overflow,0x004986C8,6572726f72203a2073756220616e696d206f766572666c6f770d0a00,0x0,Exact target ECL sub-animation overflow diagnostic string,literal
 player_update_real_5,0x00498B3C,0000a040,0x0,Exact target float 5 used by Player state motion,literal
 player_update_real_pi_over_100,0x00498BE8,fdad003d,0x0,Exact target player rotation settling threshold,literal
@@ -213,6 +215,8 @@ player_bomb_initial_x,0x0062F86C,00000000,0x0,Target-observed initial Player X p
 player_bomb_initial_y,0x0062F870,00000000,0x0,Target-observed initial Player Y position storage,literal
 player_bomb_hud_active,0x0134D476,0000,0x0,Target-observed HUD state word set during Player bomb setup,literal
 player_bomb_hud_timer,0x013542EC,00000000,0x0,Target-observed HUD timer set during Player bomb setup,literal
+player_update_tail_real_160,0x00498AC0,00002043,0x0,Exact target float 160 used by Player update UI transition boundary,literal
+player_update_tail_real_400,0x00498AFC,0000c843,0x0,Exact target float 400 used by Player update UI transition boundary,literal
 player_bomb_real_64,0x00498B08,00008042,0x0,Exact target float 64.0 used by initial Player Y positioning,literal
 ??_C@_0BK@BJPCNFPG@error?5?3?5DIERR_INPUTLOST?$AN?6?$AA@,0x00497D80,6572726f72203a2044494552525f494e5055544c4f53540d0a00,0x0,Direct target DIERR_INPUTLOST diagnostic string,literal
 ??_C@_0BN@KAGFBIKB@error?5?3?5DIERR_INPUTLOST?5?$CFd?$AN?6?$AA@,0x00497D60,6572726f72203a2044494552525f494e5055544c4f53542025640d0a00,0x0,Direct target DIERR_INPUTLOST retry diagnostic string,literal

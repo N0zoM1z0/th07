@@ -592,6 +592,8 @@ dir32_targets = [
   "__real@43900000=ecl_real_288",
   "__real@43000000=vc7_auto_00498B24_00000000",
   "__real@42800000=player_bomb_real_64",
+  "__real@bc23d70a=ecl_real_neg_0_01",
+  "__real@3c23d70a=ecl_real_pos_0_01",
   "??_C@_0BM@BHMNFKCI@error?5?3?5sub?5anim?5overflow?$AN?6?$AA@=ecl_string_sub_anim_overflow",
 ]
 
@@ -713,6 +715,16 @@ dir32_targets = [
   "?g_PlayerBombAnmManager@th07@@3PAUPlayerBombAnmManager@1@A=player_bomb_anm_manager",
   "?g_PlayerBombDrawState1347B00@th07@@3UPlayerBombDrawState@1@A=player_bomb_draw_state",
 ]
+
+[[units.player-bomb.functions]]
+address = "0x00441800"
+symbol_base = "?AddBombProjectileRectangle@PlayerBombOverlay@th07@@QAEPAUPlayerBombProjectile@2@PBUPlayerBombPoint@2@MMI@Z"
+dir32_targets = ["__real@00000000=__real@00000000"]
+
+[[units.player-bomb.functions]]
+address = "0x004418B0"
+symbol_base = "?AddBombProjectileCircle@PlayerBombOverlay@th07@@QAEPAUPlayerBombProjectile@2@PBUPlayerBombPoint@2@MMII@Z"
+dir32_targets = ["__real@00000000=__real@00000000"]
 
 [[units.player-bomb.functions]]
 address = "0x004423E0"
@@ -1435,6 +1447,43 @@ dir32_targets = [
   "?g_GrazeState@th07@@3UGrazeState@1@A=?g_GrazeState@th07@@3UGrazeState@1@A",
   "?g_EffectManager@th07@@3UEffectManager@1@A=?g_EffectManager@th07@@3UEffectManager@1@A",
   "?g_SoundPlayer@th07@@3USoundPlayer@1@A=?g_SoundPlayer@th07@@3USoundPlayer@1@A",
+]
+
+[units.player-update-tail]
+kind = "probe"
+source = "src/PlayerUpdateTail.cpp"
+object = "build/match-units/PlayerUpdateTail.obj"
+profile = "vc7-debug-od-no-gs-g6"
+notes = "Focused target-observed Player UI-state reset and top-level update orchestration tail."
+
+[[units.player-update-tail.functions]]
+address = "0x00441E80"
+symbol_base = "?UpdateUiState@PlayerUpdateTailOverlay@th07@@QAEXXZ"
+dir32_targets = [
+  "__real@43c80000=player_update_tail_real_400",
+  "__real@43200000=player_update_tail_real_160",
+  "?g_PlayerUiState@th07@@3HA=player_bomb_hud_timer",
+  "?g_PlayerUiTransition@th07@@3FA=player_bomb_hud_active",
+]
+
+[[units.player-update-tail.functions]]
+address = "0x00441FB0"
+symbol_base = "?OnUpdate@PlayerUpdateTailOverlay@th07@@QAEHXZ"
+rel32_targets = [
+  "?ResetAuxiliaryState@PlayerUpdateTailOverlay@th07@@QAEXXZ=0x00440940",
+  "?BeginBomb@PlayerUpdateTailOverlay@th07@@QAEXXZ=0x004409F0",
+  "?UpdateStateTwo@PlayerUpdateTailOverlay@th07@@QAEHXZ=0x00440CF0",
+  "?UpdateStateVisual@PlayerUpdateTailOverlay@th07@@QAEXXZ=0x004411C0",
+  "?UpdateShotAndCollisionState@PlayerUpdateTailOverlay@th07@@QAEXXZ=0x00441330",
+  "?RunPlayerMovement@th07@@YIHPAUPlayerUpdateTailOverlay@1@@Z=0x0043EE50",
+  "?ExecuteScript@PlayerUpdateTailAnmManager@th07@@QAEHPAX@Z=0x00450D60",
+  "?UpdatePlayerBullets@PlayerUpdateTailOverlay@th07@@QAEXXZ=0x0043D2F0",
+  "?UpdatePlayerEffects@PlayerUpdateTailOverlay@th07@@QAEXXZ=0x0043D880",
+  "?UpdateUiState@PlayerUpdateTailOverlay@th07@@QAEXXZ=0x00441E80",
+]
+dir32_targets = [
+  "?g_PlayerUpdateDisabled@th07@@3DA=bullet_update_paused",
+  "?g_PlayerUpdateAnmManager@th07@@3PAUPlayerUpdateTailAnmManager@1@A=bullet_update_anm_manager",
 ]
 
 [units.chain]

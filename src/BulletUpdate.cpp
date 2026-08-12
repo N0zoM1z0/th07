@@ -178,7 +178,7 @@ static __forceinline f32 TimerAsFramesFloat(BulletUpdateTimer *timer)
                   spawnNormalScale, spawnNormalProduct, spawnNormalVelocity, spawnNormalPosition,                    \
                   spawnSlowScale, spawnSlowProduct, spawnSlowVelocity, spawnSlowPosition,                            \
                   despawnScale, despawnProduct, despawnVelocity, despawnPosition,                                    \
-                  animation, rampFrames, normalizedAngle, startFadeTimer, rampTimerCurrent, rampTimer,               \
+                  animation, bulletSpeed, rampFrames, normalizedAngle, startFadeTimer, rampTimerCurrent, rampTimer,  \
                   startHitboxTimerCurrent, startResetTimer, activeHitboxTimerCurrent, activeResetTimer,              \
                   despawnFadeTimer, despawnTimer, despawnHitboxTimerCurrent, laserTimer, managerTimer)
 int __fastcall BulletManager::OnUpdate(BulletManager *manager)
@@ -212,6 +212,7 @@ int __fastcall BulletManager::OnUpdate(BulletManager *manager)
     f32 spawnSlowScale;
     f32 despawnScale;
     f32 hitboxThickness;
+    f32 bulletSpeed;
     i32 fadeAlpha;
     i32 bulletSchedulerIndex;
     i32 i;

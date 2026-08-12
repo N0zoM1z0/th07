@@ -384,7 +384,7 @@ static __forceinline void SpawnLaserVariant(EclOperands::EnemyOverlay *enemy, Ru
 // not guessed until their owning Enemy/manager layouts are recovered.
 ZunResult EclManager::RunEcl(Enemy *enemy)
 {
-    EclOperands::EnemyOverlay *const rawEnemy = (EclOperands::EnemyOverlay *)enemy;
+#define rawEnemy ((EclOperands::EnemyOverlay *)enemy)
     EnterInterrupt(rawEnemy);
     RunEclInstruction *instruction = CurrentInstruction(rawEnemy);
     void *laser;
@@ -407,7 +407,7 @@ ZunResult EclManager::RunEcl(Enemy *enemy)
         if (instruction->time != ScriptTime(rawEnemy))
         {
             CurrentInstruction(rawEnemy) = instruction;
-            return ZUN_SUCCESS;
+            break;
         }
 
         switch (instruction->opcode)
@@ -1259,6 +1259,63 @@ ZunResult EclManager::RunEcl(Enemy *enemy)
         Advance(instruction);
         CurrentInstruction(rawEnemy) = instruction;
     }
+
+    // Observed at 0x00416FC3--0x004172A7.  Living enemies with a configured
+    // pose set select the primary ANM script from horizontal movement.  The
+    // target stores the selected +0x900 script index at +0x1d8 and invokes
+    // the manager-owned 0x0044EA20 member ABI for each of the five choices.
+    if (IntAt(rawEnemy, 0x2BB8) > 0 && *(i16 *)(rawEnemy->bytes + 0x2E36) >= 0)
+    {
+        i32 pose = 0;
+        if (ByteAt(rawEnemy, ENEMY_MOVEMENT_FLAGS) & 0x40)
+        {
+            if (FloatAt(rawEnemy, 0x2B18) < -0.01f)
+                pose = 1;
+            else if (FloatAt(rawEnemy, 0x2B18) > 0.01f)
+                pose = 2;
+        }
+        else if (FloatAt(rawEnemy, 0x2B18) < -0.01f)
+        {
+            pose = 2;
+        }
+        else if (FloatAt(rawEnemy, 0x2B18) > 0.01f)
+        {
+            pose = 1;
+        }
+
+        if (ByteAt(rawEnemy, 0x2E2E) != pose)
+        {
+            i16 script;
+            if (pose == 0)
+            {
+                if (ByteAt(rawEnemy, 0x2E2E) == 0xFF)
+                    script = *(i16 *)(rawEnemy->bytes + 0x2E30);
+                else if (ByteAt(rawEnemy, 0x2E2E) == 1)
+                    script = *(i16 *)(rawEnemy->bytes + 0x2E32);
+                else
+                    script = *(i16 *)(rawEnemy->bytes + 0x2E34);
+            }
+            else if (pose == 1)
+            {
+                script = *(i16 *)(rawEnemy->bytes + 0x2E36);
+            }
+            else
+            {
+                script = *(i16 *)(rawEnemy->bytes + 0x2E38);
+            }
+
+            const i32 scriptId = script + 2304;
+            *(i16 *)(rawEnemy->bytes + 472) = (i16)scriptId;
+            ((SpellLifecycle::AnmManagerOverlay *)SpellLifecycle::g_TargetAnmManager4B9E44)
+                ->SetAndExecuteScript(rawEnemy,
+                                      *(void **)(SpellLifecycle::g_TargetAnmManager4B9E44 +
+                                                 0x28EF0 + 4 * scriptId));
+            ByteAt(rawEnemy, 0x2E2E) = (u8)pose;
+        }
+    }
+
+    return ZUN_SUCCESS;
 }
+#undef rawEnemy
 
 } // namespace th07

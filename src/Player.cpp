@@ -64,6 +64,7 @@ i32 Player::CalcDamageToEnemy(D3DXVECTOR3 *enemyPosition, D3DXVECTOR3 *enemySize
 {
     D3DXVECTOR3 bulletTopLeft;
     i32 damage;
+    i32 *lastEnemyHit;
     i32 damageToAdd;
     i32 animationIndex;
     AnmManager *anmManager;
@@ -76,7 +77,8 @@ i32 Player::CalcDamageToEnemy(D3DXVECTOR3 *enemyPosition, D3DXVECTOR3 *enemySize
     f32 enemyBottomRightY;
 
     damage = 0;
-    if (lastEnemyHitY == lastEnemyHitX)
+    lastEnemyHit = &lastEnemyHitX;
+    if (lastEnemyHit[2] == lastEnemyHit[0])
     {
         return 0;
     }
