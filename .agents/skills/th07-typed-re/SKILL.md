@@ -37,6 +37,15 @@ the coordinator to create the canonical entry before matching iterations.
   locals, or side effects; do not add inert padding or fake behavior.
 - Diagnose frame mismatches by declaration order and lifetime before changing
   semantics. Diagnose tail mismatches by missing or redundant behavior first.
+- Read `exact_observations.unaccessed_frame_slots` before shaping a receiver
+  home. These are target frame dwords with no decoded memory access; they can
+  corroborate a legacy reserved local, but do not by themselves justify adding
+  a source local. Require an exact or adjacent-source-supported A/B.
+- If target materializes a condition as 0/1 (with `setcc` or a branch diamond)
+  and then tests it while a named source flag shifts the receiver home, probe
+  the direct compound condition or explicit `condition ? 1 : 0` form. This is
+  a controlled VC7 source-shaping A/B, not permission to change branch
+  semantics or accept a non-exact result.
 - A target frame hole may represent a legacy ZUN source local, but retain one
   only when exact stack evidence and adjacent source identify its semantic role.
   Use a named scalar and the smallest `var_order` probe; anonymous filler,

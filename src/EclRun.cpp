@@ -116,13 +116,12 @@ struct EnemyOverlay
 struct SpellVmOverlay
 {
     u8 bytes[1];
-
-    void SetAndExecuteScript(void *script);
 };
 struct AnmManagerOverlay
 {
     u8 bytes[1];
 
+    void SetAndExecuteScript(void *vm, void *script);
     void ConfigureBoss(EnemyOverlay *enemy, void *source, i32 value);
 };
 struct SpellStartInstruction;
@@ -829,8 +828,10 @@ ZunResult EclManager::RunEcl(Enemy *enemy)
         {
             const i32 scriptId = ReadInt(rawEnemy, instruction, 0) + 2304;
             *(i16 *)(rawEnemy->bytes + 472) = (i16)scriptId;
-            ((SpellLifecycle::SpellVmOverlay *)rawEnemy)->SetAndExecuteScript(
-                *(void **)(SpellLifecycle::g_TargetAnmManager4B9E44 + 0x28EF0 + 4 * scriptId));
+            ((SpellLifecycle::AnmManagerOverlay *)SpellLifecycle::g_TargetAnmManager4B9E44)
+                ->SetAndExecuteScript(rawEnemy,
+                                     *(void **)(SpellLifecycle::g_TargetAnmManager4B9E44 +
+                                                0x28EF0 + 4 * scriptId));
             break;
         }
         case 96:
@@ -856,9 +857,10 @@ ZunResult EclManager::RunEcl(Enemy *enemy)
             {
                 const i32 targetScript = scriptId + 2304;
                 *(i16 *)(rawEnemy->bytes + 4 * (147 * slot + 265)) = (i16)targetScript;
-                ((SpellLifecycle::SpellVmOverlay *)(rawEnemy->bytes + 4 * (147 * slot + 147)))
-                    ->SetAndExecuteScript(*(void **)(SpellLifecycle::g_TargetAnmManager4B9E44 +
-                                                      0x28EF0 + 4 * targetScript));
+                ((SpellLifecycle::AnmManagerOverlay *)SpellLifecycle::g_TargetAnmManager4B9E44)
+                    ->SetAndExecuteScript(rawEnemy->bytes + 4 * (147 * slot + 147),
+                                         *(void **)(SpellLifecycle::g_TargetAnmManager4B9E44 +
+                                                    0x28EF0 + 4 * targetScript));
             }
             break;
         }

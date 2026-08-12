@@ -11,6 +11,7 @@ struct AnmManager
     void *scripts[1];
 
     void ReleaseAnm(int fileIndex);
+    int LoadAnm(int fileIndex, const char *path, int spriteIndexOffset);
     void ResetBulletAnimation(Bullet *bullet, int spriteIndex);
     void SetAndExecuteScript(AnmVm *vm, void *script);
 };
@@ -35,8 +36,6 @@ extern u8 g_BulletManagerStorage[0x37A164];
 
 extern void *g_EffectsColor;
 extern u8 g_EffectsColorTable[];
-
-extern int __cdecl LoadAnm(int fileIndex, const char *path, int spriteIndexOffset);
 
 struct BulletTemplateScriptIds
 {
@@ -71,7 +70,7 @@ int __fastcall BulletManager::AddedCallback(BulletManager *manager)
 
     if ((int)(g_SupervisorState != 3 && g_SupervisorState != 11 && g_SupervisorState != 12))
     {
-        if (LoadAnm(11, "data/etama.anm", 512))
+        if (g_AnmManager->LoadAnm(11, "data/etama.anm", 512))
         {
             return -1;
         }
@@ -123,12 +122,22 @@ int __fastcall BulletManager::AddedCallback(BulletManager *manager)
         }
         else if (manager->templates[i].bullet.sprite->heightPx <= 16.0f)
         {
-            switch (reinterpret_cast<BulletTemplateScriptIds *>(g_BulletTemplateScriptIds)[i].bullet)
+            int scriptForSmallBullet;
+            scriptForSmallBullet = reinterpret_cast<BulletTemplateScriptIds *>(g_BulletTemplateScriptIds)[i].bullet;
+            switch (scriptForSmallBullet)
             {
             case 514:
+                manager->templates[i].grazeWidth = 4.0f;
+                manager->templates[i].grazeHeight = 4.0f;
+                manager->templates[i].grazeKind = 4;
+                break;
             case 516:
-            case 517:
             case 518:
+                manager->templates[i].grazeWidth = 4.0f;
+                manager->templates[i].grazeHeight = 4.0f;
+                manager->templates[i].grazeKind = 4;
+                break;
+            case 517:
                 manager->templates[i].grazeWidth = 4.0f;
                 manager->templates[i].grazeHeight = 4.0f;
                 manager->templates[i].grazeKind = 4;
@@ -180,17 +189,7 @@ int __fastcall BulletManager::AddedCallback(BulletManager *manager)
 
 int __fastcall BulletManager::DeletedCallback(BulletManager *manager)
 {
-    int shouldReleaseAnm;
-
-    if (g_SupervisorState != 3 && g_SupervisorState != 11 && g_SupervisorState != 12)
-    {
-        shouldReleaseAnm = 1;
-    }
-    else
-    {
-        shouldReleaseAnm = 0;
-    }
-    if (shouldReleaseAnm)
+    if ((int)(g_SupervisorState != 3 && g_SupervisorState != 11 && g_SupervisorState != 12))
     {
         g_AnmManager->ReleaseAnm(11);
         g_AnmManager->ReleaseAnm(12);

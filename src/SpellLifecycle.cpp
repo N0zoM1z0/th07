@@ -31,8 +31,14 @@ struct EffectOverlay
 struct SpellVmOverlay
 {
     u8 bytes[1];
+};
 
-    void SetAndExecuteScript(void *script);
+struct AnmManagerOverlay
+{
+    u8 unknown00[0x28EF0];
+    void *scripts[1];
+
+    void SetAndExecuteScript(void *vm, void *script);
 };
 
 struct GuiOverlay
@@ -176,7 +182,7 @@ u32 __fastcall StartSpellcard(EnemyOverlay *enemy, const SpellStartInstruction *
     i32 checksum;
     i32 scriptId;
     SpellVmOverlay *vm;
-    u8 *anm;
+    AnmManagerOverlay *anm;
     u8 *recordName;
 
     memcpy(name, instruction->encryptedName, sizeof(name));
@@ -192,10 +198,10 @@ u32 __fastcall StartSpellcard(EnemyOverlay *enemy, const SpellStartInstruction *
     {
         scriptId = (i32)i + g_TargetStartVmBase1348024 + 732;
         vm = (SpellVmOverlay *)(g_TargetStartVms1348028 + 588 * i);
-        anm = g_TargetAnmManager4B9E44;
+        anm = reinterpret_cast<AnmManagerOverlay *>(g_TargetAnmManager4B9E44);
 
         U16_AT(vm->bytes, 472) = scriptId;
-        vm->SetAndExecuteScript(*(void **)(anm + 0x28EF0 + 4 * scriptId));
+        anm->SetAndExecuteScript(vm, anm->scripts[scriptId]);
     }
 
     g_TargetSpellActive12FE0C8 = 1;

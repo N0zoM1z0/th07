@@ -128,6 +128,14 @@ extern PlayerBombCallback g_PlayerBombCallbacks[6][4];
 
 /* Source-private global views used by the high-level bomb update and draw path. */
 extern u16 g_PlayerInputButtons;
+
+struct PlayerBombInputState {
+    u8 unknown00[0xD6];
+    u16 flags;
+};
+
+/* The shared collision-state global is a target pointer; this module needs its input flag tail. */
+extern i32 g_PlayerCollisionFlags;
 extern i32 g_PlayerFlags;
 extern i32 g_BombScore;
 extern i32 g_BombDrawTimer;
@@ -160,10 +168,13 @@ struct PlayerBombDrawColor {
 };
 
 struct PlayerBombShtSlot {
-    i32 Load(const char *name);
+    i32 __fastcall Load(const char *name);
 };
 
 struct PlayerBombAnmManager {
+    u8 unknown00[0x28EF0];
+    void *scripts[];
+
     i32 LoadFile(i32 slot, const char *name, i32 scriptBase);
     void SetAndExecute(void *vm, void *script);
     void DrawPlayer(void *player);
@@ -201,7 +212,7 @@ extern f32 g_PlayerInitialX;
 extern f32 g_PlayerInitialY;
 extern const char *g_PlayerUnfocusedShtFiles[6];
 extern const char *g_PlayerFocusedShtFiles[6];
-extern void *g_PlayerAnmScripts[];
+extern i16 g_TargetBossUi134DB5A[];
 extern i16 g_PlayerBombHudActive;
 extern i32 g_PlayerBombHudTimer;
 extern i32 g_BombEffectState0;
@@ -347,6 +358,7 @@ PlayerBombOverlay *PlayerBombOverlay::Initialize()
     return this;
 }
 
+#pragma var_order(index, bullet, anmManager, playerTimer, firstSecondaryVm, firstSecondaryAnmManager, secondSecondaryVm, secondSecondaryAnmManager, bombCooldown)
 i32 PlayerBombOverlay::RegisterBombCallbacks()
 {
     if (reinterpret_cast<PlayerBombShtSlot *>(reinterpret_cast<u8 *>(this) + 0xB7E70)
@@ -358,53 +370,52 @@ i32 PlayerBombOverlay::RegisterBombCallbacks()
         return -1;
     }
 
-    i32 loadPlayerAnm;
-    if (g_PlayerGameMode != 3 && g_PlayerGameMode != 11 && g_PlayerGameMode != 12) {
-        loadPlayerAnm = 1;
-    } else {
-        loadPlayerAnm = 0;
-    }
-    if (loadPlayerAnm) {
-        u8 selectedShot = g_PlayerShotType;
+    {
+        i32 loadPlayerAnm;
+        if (g_PlayerGameMode != 3 && g_PlayerGameMode != 11 && g_PlayerGameMode != 12) {
+            loadPlayerAnm = 1;
+        } else {
+            loadPlayerAnm = 0;
+        }
+        if (loadPlayerAnm) {
+            u8 selectedShot = g_PlayerShotType;
 
-        if (selectedShot == 0) {
-            if (g_PlayerBombAnmManager->LoadFile(10, "data/player00.anm", 1024)) {
-                return -1;
-            }
-        } else if (selectedShot == 1) {
-            if (g_PlayerBombAnmManager->LoadFile(10, "data/player01.anm", 1024)) {
-                return -1;
-            }
-        } else if (selectedShot == 2) {
-            if (g_PlayerBombAnmManager->LoadFile(10, "data/player02.anm", 1024)) {
-                return -1;
+            if (selectedShot == 0) {
+                if (g_PlayerBombAnmManager->LoadFile(10, "data/player00.anm", 1024)) {
+                    return -1;
+                }
+            } else if (selectedShot == 1) {
+                if (g_PlayerBombAnmManager->LoadFile(10, "data/player01.anm", 1024)) {
+                    return -1;
+                }
+            } else if (selectedShot == 2) {
+                if (g_PlayerBombAnmManager->LoadFile(10, "data/player02.anm", 1024)) {
+                    return -1;
+                }
             }
         }
     }
 
     PlayerBombAnmManager *anmManager = g_PlayerBombAnmManager;
     *reinterpret_cast<i16 *>(reinterpret_cast<u8 *>(this) + 0x1D8) = 1024;
-    anmManager->SetAndExecute(this, g_PlayerAnmScripts[1024]);
+    anmManager->SetAndExecute(this, anmManager->scripts[1024]);
 
     *reinterpret_cast<f32 *>(reinterpret_cast<u8 *>(this) + 0x930) = g_PlayerInitialX / 2.0f;
     *reinterpret_cast<f32 *>(reinterpret_cast<u8 *>(this) + 0x934) = g_PlayerInitialY - 64.0f;
-    *reinterpret_cast<f32 *>(reinterpret_cast<u8 *>(this) + 0x938) = 0.5f;
-    *reinterpret_cast<f32 *>(reinterpret_cast<u8 *>(this) + 0x9BC) = 0.5f;
-    *reinterpret_cast<f32 *>(reinterpret_cast<u8 *>(this) + 0x9C8) = 0.5f;
+    *reinterpret_cast<f32 *>(reinterpret_cast<u8 *>(this) + 0x938) = 0.49f;
+    *reinterpret_cast<f32 *>(reinterpret_cast<u8 *>(this) + 0x9BC) = 0.49f;
+    *reinterpret_cast<f32 *>(reinterpret_cast<u8 *>(this) + 0x9C8) = 0.49f;
 
-    {
-        i32 damageRegionIndex = 0;
-        while (damageRegionIndex < 128) {
-            *reinterpret_cast<i32 *>(reinterpret_cast<u8 *>(this) + 0x9E8 + damageRegionIndex * 0x20) = 0;
-            ++damageRegionIndex;
-        }
+    i32 index;
+    for (index = 0; index < 128; ++index) {
+        *reinterpret_cast<i32 *>(reinterpret_cast<u8 *>(this) + 0x9E8 + index * 0x20) = 0;
     }
 
-    *reinterpret_cast<f32 *>(reinterpret_cast<u8 *>(this) + 0x990) = g_PlayerBombScreen->width / 2.0f;
-    *reinterpret_cast<f32 *>(reinterpret_cast<u8 *>(this) + 0x994) = *reinterpret_cast<f32 *>(reinterpret_cast<u8 *>(this) + 0x990);
+    *reinterpret_cast<f32 *>(reinterpret_cast<u8 *>(this) + 0x994) = g_PlayerBombScreen->width / 2.0f;
+    *reinterpret_cast<f32 *>(reinterpret_cast<u8 *>(this) + 0x990) = *reinterpret_cast<f32 *>(reinterpret_cast<u8 *>(this) + 0x994);
     *reinterpret_cast<f32 *>(reinterpret_cast<u8 *>(this) + 0x998) = 5.0f;
-    *reinterpret_cast<f32 *>(reinterpret_cast<u8 *>(this) + 0x99C) = g_PlayerBombScreen->height / 2.0f;
-    *reinterpret_cast<f32 *>(reinterpret_cast<u8 *>(this) + 0x9A0) = *reinterpret_cast<f32 *>(reinterpret_cast<u8 *>(this) + 0x99C);
+    *reinterpret_cast<f32 *>(reinterpret_cast<u8 *>(this) + 0x9A0) = g_PlayerBombScreen->height / 2.0f;
+    *reinterpret_cast<f32 *>(reinterpret_cast<u8 *>(this) + 0x99C) = *reinterpret_cast<f32 *>(reinterpret_cast<u8 *>(this) + 0x9A0);
     *reinterpret_cast<f32 *>(reinterpret_cast<u8 *>(this) + 0x9A4) = 5.0f;
     *reinterpret_cast<f32 *>(reinterpret_cast<u8 *>(this) + 0x9A8) = 12.0f;
     *reinterpret_cast<f32 *>(reinterpret_cast<u8 *>(this) + 0x9AC) = 12.0f;
@@ -418,23 +429,18 @@ i32 PlayerBombOverlay::RegisterBombCallbacks()
     playerTimer->previous = -999;
     *reinterpret_cast<i8 *>(reinterpret_cast<u8 *>(this) + 0x240A) = 1;
 
-    PlayerBombAnmVm *firstSecondaryVm = reinterpret_cast<PlayerBombAnmVm *>(reinterpret_cast<u8 *>(this) + 0x24C);
+    u8 *firstSecondaryVm = reinterpret_cast<u8 *>(this) + 0x24C;
     PlayerBombAnmManager *firstSecondaryAnmManager = g_PlayerBombAnmManager;
-    firstSecondaryVm->scriptId = 1152;
-    firstSecondaryAnmManager->SetAndExecute(firstSecondaryVm, g_PlayerAnmScripts[1152]);
-    PlayerBombAnmVm *secondSecondaryVm = reinterpret_cast<PlayerBombAnmVm *>(reinterpret_cast<u8 *>(this) + 0x498);
+    *reinterpret_cast<i16 *>(firstSecondaryVm + 0x1D8) = 1152;
+    firstSecondaryAnmManager->SetAndExecute(firstSecondaryVm, firstSecondaryAnmManager->scripts[1152]);
+    u8 *secondSecondaryVm = reinterpret_cast<u8 *>(this) + 0x498;
     PlayerBombAnmManager *secondSecondaryAnmManager = g_PlayerBombAnmManager;
-    secondSecondaryVm->scriptId = 1153;
-    secondSecondaryAnmManager->SetAndExecute(secondSecondaryVm, g_PlayerAnmScripts[1153]);
+    *reinterpret_cast<i16 *>(secondSecondaryVm + 0x1D8) = 1153;
+    secondSecondaryAnmManager->SetAndExecute(secondSecondaryVm, secondSecondaryAnmManager->scripts[1153]);
 
-    {
-        u8 *bullet = reinterpret_cast<u8 *>(this) + 0x2444;
-        i32 bulletCount = 0;
-        while (bulletCount < 96) {
-            *reinterpret_cast<i16 *>(bullet + 0x34A) = 0;
-            ++bulletCount;
-            bullet += 0x364;
-        }
+    u8 *bullet = reinterpret_cast<u8 *>(this) + 0x2444;
+    for (index = 0; index < 96; ++index, bullet += 0x364) {
+        *reinterpret_cast<i16 *>(bullet + 0x34A) = 0;
     }
 
     PlayerBombTimer *bombCooldown = reinterpret_cast<PlayerBombTimer *>(reinterpret_cast<u8 *>(this) + 0x169F4);
@@ -452,16 +458,22 @@ i32 PlayerBombOverlay::RegisterBombCallbacks()
     *reinterpret_cast<f32 *>(reinterpret_cast<u8 *>(this) + 0x23F0) = 1.0f;
     *reinterpret_cast<i32 *>(reinterpret_cast<u8 *>(this) + 0x23F8) = g_PlayerBombScreen->bombCapacity;
 
-    i32 showBombHud;
-    if (g_PlayerGameMode != 3 && g_PlayerGameMode != 11 && g_PlayerGameMode != 12) {
-        showBombHud = 1;
-    } else {
-        showBombHud = 0;
+    {
+        i32 showBombHud;
+        if (g_PlayerGameMode != 3 && g_PlayerGameMode != 11 && g_PlayerGameMode != 12) {
+            showBombHud = 1;
+        } else {
+            showBombHud = 0;
+        }
+        if (showBombHud) {
+            g_PlayerBombHudActive = 1;
+            g_PlayerBombHudTimer = 1;
+        }
     }
-    if (showBombHud) {
-        g_PlayerBombHudActive = 1;
-        g_PlayerBombHudTimer = 1;
-    }
+
+    g_TargetBossUi134DB5A[0] = 2;
+    g_TargetBossUi134DB5A[294] = 2;
+    g_TargetBossUi134DB5A[588] = 2;
 
     if (g_BombScore >= g_PlayerBombResources->scoreFloor + 50000) {
         g_BombScore = g_PlayerBombResources->scoreFloor + 50000;
@@ -470,7 +482,7 @@ i32 PlayerBombOverlay::RegisterBombCallbacks()
     return 0;
 }
 
-#pragma var_order(activeBombTimer, scoreCost, startingBombTimer)
+#pragma var_order(startingBombTimer, scoreCost, activeBombTimer)
 void PlayerBombOverlay::BeginBomb()
 {
     if (*reinterpret_cast<i8 *>(reinterpret_cast<u8 *>(this) + 0x240D)
@@ -492,7 +504,7 @@ void PlayerBombOverlay::BeginBomb()
 
     if (*reinterpret_cast<i32 *>(reinterpret_cast<u8 *>(this) + 0x16A20)) {
         PlayerBombTimer *activeBombTimer = reinterpret_cast<PlayerBombTimer *>(reinterpret_cast<u8 *>(this) + 0x16A30);
-        if (activeBombTimer->current != activeBombTimer->previous) {
+        if (activeBombTimer->current != activeBombTimer->previous ? 1 : 0) {
             i32 scoreCost = *reinterpret_cast<i32 *>(reinterpret_cast<u8 *>(this) + 0x16A2C);
 
             if (g_BombScore - g_PlayerBombResources->scoreFloor >= scoreCost) {
@@ -511,43 +523,43 @@ void PlayerBombOverlay::BeginBomb()
         return;
     }
 
-    if (g_PlayerBombGrazeState626270.IsBombStartBlocked()
-        || g_PlayerBombGuiState49FBF0.IsBombInputBlocked()
-        || !*reinterpret_cast<i32 *>(reinterpret_cast<u8 *>(this) + 0x23F8)
-        || static_cast<i32>(g_PlayerBombResources->bombStock) <= 0
-        || *reinterpret_cast<i32 *>(reinterpret_cast<u8 *>(this) + 0x23FC)
-        || !(g_PlayerInputButtons & 2)) {
-        *reinterpret_cast<i32 *>(reinterpret_cast<u8 *>(this) + 0x23DC) = 0;
-        return;
-    }
+    if (!g_PlayerBombGrazeState626270.IsBombStartBlocked()
+        && !g_PlayerBombGuiState49FBF0.IsBombInputBlocked()
+        && *reinterpret_cast<i32 *>(reinterpret_cast<u8 *>(this) + 0x23F8)
+        && static_cast<i32>(g_PlayerBombResources->bombStock) > 0
+        && !*reinterpret_cast<i32 *>(reinterpret_cast<u8 *>(this) + 0x23FC)
+        && (g_PlayerInputButtons & 2)) {
+        reinterpret_cast<PlayerBombInputState *>(g_PlayerCollisionFlags)->flags |= 1;
+        g_PlayerBombGrazeState626270.MarkBombStart(1);
+        g_PlayerBombGrazeState626270.SetBombItemState(-1);
+        g_PlayerFlags = (g_PlayerFlags & 0xFFFFFFF3) | 8;
 
-    g_PlayerBombGrazeState626270.MarkBombStart(1);
-    g_PlayerBombGrazeState626270.SetBombItemState(-1);
-    g_PlayerFlags = (g_PlayerFlags & 0xFFFFFFF3) | 8;
+        *reinterpret_cast<i32 *>(reinterpret_cast<u8 *>(this) + 0x16A24) = *reinterpret_cast<i8 *>(reinterpret_cast<u8 *>(this) + 0x240B);
+        *reinterpret_cast<i32 *>(reinterpret_cast<u8 *>(this) + 0x16A20) = 1;
+        *reinterpret_cast<i32 *>(reinterpret_cast<u8 *>(this) + 0x23DC) = 1;
+        PlayerBombTimer *startingBombTimer = reinterpret_cast<PlayerBombTimer *>(reinterpret_cast<u8 *>(this) + 0x16A30);
+        startingBombTimer->current = 0;
+        startingBombTimer->fraction = 0.0f;
+        startingBombTimer->previous = -999;
+        *reinterpret_cast<i32 *>(reinterpret_cast<u8 *>(this) + 0x16A28) = 999;
 
-    *reinterpret_cast<i32 *>(reinterpret_cast<u8 *>(this) + 0x16A24) = *reinterpret_cast<i8 *>(reinterpret_cast<u8 *>(this) + 0x240B);
-    *reinterpret_cast<i32 *>(reinterpret_cast<u8 *>(this) + 0x16A20) = 1;
-    *reinterpret_cast<i32 *>(reinterpret_cast<u8 *>(this) + 0x23DC) = 1;
-    PlayerBombTimer *startingBombTimer = reinterpret_cast<PlayerBombTimer *>(reinterpret_cast<u8 *>(this) + 0x16A30);
-    startingBombTimer->current = 0;
-    startingBombTimer->fraction = 0.0f;
-    startingBombTimer->previous = -999;
-    *reinterpret_cast<i32 *>(reinterpret_cast<u8 *>(this) + 0x16A28) = 999;
+        if (!*reinterpret_cast<i32 *>(reinterpret_cast<u8 *>(this) + 0x16A24)) {
+            (*reinterpret_cast<PlayerBombCallback *>(reinterpret_cast<u8 *>(this) + 0x16A3C))(this);
+        } else {
+            (*reinterpret_cast<PlayerBombCallback *>(reinterpret_cast<u8 *>(this) + 0x16A44))(this);
+        }
 
-    if (!*reinterpret_cast<i32 *>(reinterpret_cast<u8 *>(this) + 0x16A24)) {
-        (*reinterpret_cast<PlayerBombCallback *>(reinterpret_cast<u8 *>(this) + 0x16A3C))(this);
+        g_BombEffectState0 = 0;
+        g_BombEffectState1 = 0;
+        g_PlayerBombGrazeState626270.SetBombEffectTimer(200);
+        g_BombEffectState2 = g_BombEffectState3;
+
+        *reinterpret_cast<i32 *>(reinterpret_cast<u8 *>(this) + 0x23F8) += 6;
+        if (*reinterpret_cast<i32 *>(reinterpret_cast<u8 *>(this) + 0x23F8) > g_PlayerBombScreen->bombCapacity) {
+            *reinterpret_cast<i32 *>(reinterpret_cast<u8 *>(this) + 0x23F8) = g_PlayerBombScreen->bombCapacity;
+        }
     } else {
-        (*reinterpret_cast<PlayerBombCallback *>(reinterpret_cast<u8 *>(this) + 0x16A44))(this);
-    }
-
-    g_BombEffectState0 = 0;
-    g_BombEffectState1 = 0;
-    g_PlayerBombGrazeState626270.SetBombEffectTimer(200);
-    g_BombEffectState2 = g_BombEffectState3;
-
-    *reinterpret_cast<i32 *>(reinterpret_cast<u8 *>(this) + 0x23F8) += 6;
-    if (*reinterpret_cast<i32 *>(reinterpret_cast<u8 *>(this) + 0x23F8) > g_PlayerBombScreen->bombCapacity) {
-        *reinterpret_cast<i32 *>(reinterpret_cast<u8 *>(this) + 0x23F8) = g_PlayerBombScreen->bombCapacity;
+        *reinterpret_cast<i32 *>(reinterpret_cast<u8 *>(this) + 0x23DC) = 0;
     }
 }
 
@@ -614,12 +626,12 @@ i32 PlayerBombOverlay::DrawBomb()
             }
 
             color.alpha = 0x80;
-            if (!!(g_BombDrawTimer >= 510)) {
+            if (g_BombDrawTimer >= 510 ? 1 : 0) {
                 i32 flashTimer = g_BombDrawTimer;
                 color.blue = 0x80 - 80 * (540 - flashTimer) / 30;
                 color.green = color.blue;
                 color.red = color.green;
-            } else if (!!(g_BombDrawTimer < 30)) {
+            } else if (g_BombDrawTimer < 30 ? 1 : 0) {
                 i32 flashTimer = g_BombDrawTimer;
                 color.blue = 0x80 - 80 * flashTimer / 30;
                 color.green = color.blue;

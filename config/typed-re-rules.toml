@@ -62,6 +62,13 @@ recommendation = "Hold behavior constant and tune declarations/lifetimes or #pra
 evidence = "TH07 matching workflow exact cases"
 
 [[rules]]
+id = "zun-direct-boolean-materialization"
+requires = ["boolean_materialization", "register_home"]
+confidence = "observed_pattern"
+recommendation = "When target materializes a condition as 0/1 (through setcc or a branch diamond) and then tests it, A/B the direct boolean or explicit `condition ? 1 : 0` source expression before introducing a named flag local; VC7 often gives a named flag a different stack slot and shifts the receiver home. Retain the form only through canonical strict comparison."
+evidence = "BulletManager::DeletedCallback 0x00427620 became strict exact 116/116 when an explicit shouldReleaseAnm local was replaced by the direct conjunction; PlayerBomb::BeginBomb 0x004409F0 and DrawBomb 0x004420B0 independently became strict exact with target-observed explicit boolean materialization"
+
+[[rules]]
 id = "vc7-object-tail-short"
 requires = ["object_tail_short"]
 confidence = "workflow_rule"

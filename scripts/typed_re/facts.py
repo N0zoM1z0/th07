@@ -223,11 +223,27 @@ def analyze(address: str, compare: bool) -> dict[str, Any]:
     calls: list[dict[str, Any]] = []
     returns: list[int] = []
     features: set[str] = set()
+    stack_immediate_bits: dict[int, set[int]] = {}
 
     for index, insn in enumerate(instructions):
         mnemonic = insn.mnemonic
         if mnemonic in {"movzx", "movsx", "idiv"}:
             features.add(mnemonic)
+        if mnemonic.startswith("set"):
+            features.add("setcc")
+            features.add("boolean_materialization")
+        if mnemonic == "mov" and len(insn.operands) == 2:
+            destination, source = insn.operands
+            if (
+                destination.type == X86_OP_MEM
+                and destination.mem.base == X86_REG_EBP
+                and destination.mem.index == 0
+                and source.type == X86_OP_IMM
+                and int(source.imm) in {0, 1}
+            ):
+                stack_immediate_bits.setdefault(int(destination.mem.disp), set()).add(
+                    int(source.imm)
+                )
         if mnemonic == "sub" and len(insn.operands) == 2:
             left, right = insn.operands
             if left.type == X86_OP_REG and left.reg == X86_REG_ESP and right.type == X86_OP_IMM:
@@ -346,6 +362,9 @@ def analyze(address: str, compare: bool) -> dict[str, Any]:
             cleanup = int(insn.operands[0].imm) if insn.operands else 0
             returns.append(cleanup)
 
+    if any(values == {0, 1} for values in stack_immediate_bits.values()):
+        features.add("boolean_materialization")
+
     if register_homes:
         homes = {item["register"] for item in register_homes}
         calling_convention_hint = "__fastcall" if "edx" in homes else "__thiscall"
@@ -398,6 +417,15 @@ def analyze(address: str, compare: bool) -> dict[str, Any]:
             "instruction_count": len(instructions),
             "frame_size": frame_size,
             "frame_instruction": frame_instruction,
+            "unaccessed_frame_slots": (
+                [
+                    f"-{abs(offset):#x}"
+                    for offset in range(-frame_size, 0, 4)
+                    if offset not in stack
+                ]
+                if frame_size is not None
+                else []
+            ),
             "saved_registers": saved_registers,
             "register_homes": register_homes,
             "stack_accesses": stack_rows,
@@ -441,6 +469,11 @@ def main() -> int:
             score = analyze("0x0043EB90", False)
             score_observed = score["exact_observations"]
             score_features = score["inferences"]["features"]
+            deleted = analyze("0x00427620", False)
+            deleted_observed = deleted["exact_observations"]
+            deleted_features = deleted["inferences"]["features"]
+            set_script = analyze("0x0044EA20", False)
+            set_script_observed = set_script["exact_observations"]
             failures = []
             if aux_observed["frame_size"] != 0x44:
                 failures.append("0x0043E0A0 frame regression")
@@ -455,9 +488,16 @@ def main() -> int:
                 failures.append("0x0043EB90 frame/saved-ESI regression")
             if "idiv" not in score_features:
                 failures.append("0x0043EB90 idiv regression")
+            if (
+                deleted_observed["frame_size"] != 0x8
+                or "boolean_materialization" not in deleted_features
+            ):
+                failures.append("0x00427620 frame/boolean-materialization regression")
+            if set_script_observed["unaccessed_frame_slots"] != ["-0x4"]:
+                failures.append("0x0044EA20 unaccessed-frame-slot regression")
             if failures:
                 raise ValueError("; ".join(failures))
-            print("typed reconstruction facts OK: 2 target-pinned regressions")
+            print("typed reconstruction facts OK: 4 target-pinned regressions")
             return 0
         if not args.address:
             parser.error("address is required unless --check is selected")

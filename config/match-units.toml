@@ -543,7 +543,7 @@ rel32_targets = [
   "?RandomU32@TargetRngOverlay@EclOperands@th07@@QAEIXZ=0x004318D0",
   "?RandomF32@TargetRngOverlay@EclOperands@th07@@QAEMXZ=0x00431900",
   "?AngleToPlayer@TargetPlayerOverlay@EclOperands@th07@@QAEMPBUVector3@23@@Z=0x00442370",
-  "?SetAndExecuteScript@SpellVmOverlay@SpellLifecycle@th07@@QAEXPAX@Z=0x0044EA20",
+  "?SetAndExecuteScript@AnmManagerOverlay@SpellLifecycle@th07@@QAEXPAX0@Z=0x0044EA20",
   "?DebugPrint@th07@@YAXPBDZZ=0x0045E4F0",
   "?SpawnParticles@EffectManager@th07@@QAEPAXHPAUD3DXVECTOR3@@HH@Z=0x0041C1C0",
   "?Spawn@BulletUpdateItemManager@th07@@QAEXPAUBulletUpdateVec3@2@HH@Z=0x004326F0",
@@ -682,6 +682,7 @@ rel32_targets = [
 ]
 dir32_targets = [
   "?g_PlayerInputButtons@th07@@3GA=player_bomb_input",
+  "?g_PlayerCollisionFlags@th07@@3HA=?g_PlayerCollisionFlags@th07@@3HA",
   "?g_PlayerBombResources@th07@@3PAUPlayerBombResourceState@1@A=player_bomb_resources",
   "?g_BombScore@th07@@3HA=player_bomb_score_update",
   "?g_PlayerFlags@th07@@3HA=player_bomb_flags",
@@ -717,7 +718,7 @@ dir32_targets = [
 address = "0x004423E0"
 symbol_base = "?RegisterBombCallbacks@PlayerBombOverlay@th07@@QAEHXZ"
 rel32_targets = [
-  "?Load@PlayerBombShtSlot@th07@@QAEHPBD@Z=0x00442B70",
+  "?Load@PlayerBombShtSlot@th07@@QAIHPBD@Z=0x00442B70",
   "?LoadFile@PlayerBombAnmManager@th07@@QAEHHPBDH@Z=0x0044DF90",
   "?SetAndExecute@PlayerBombAnmManager@th07@@QAEXPAX0@Z=0x0044EA20",
   "?FinishDeathBomb@PlayerBombOverlay@th07@@QAEXXZ=0x00441960",
@@ -738,6 +739,7 @@ dir32_targets = [
   "?g_PlayerBombCallbacks@th07@@3PAY03P6IXPAUPlayerBombOverlay@1@@ZA=?g_PlayerBombCallbacks@th07@@3PAY03P6IXPAUPlayerBombOverlay@1@@ZA",
   "?g_PlayerBombHudActive@th07@@3FA=player_bomb_hud_active",
   "?g_PlayerBombHudTimer@th07@@3HA=player_bomb_hud_timer",
+  "?g_TargetBossUi134DB5A@th07@@3PAFA=ecl_boss_ui_134DB5A",
   "?g_PlayerBombResources@th07@@3PAUPlayerBombResourceState@1@A=player_bomb_resources",
   "?g_BombScore@th07@@3HA=player_bomb_score_register",
   "__real@3f000000=__real@3f000000",
@@ -864,7 +866,7 @@ symbol_base = "?StartSpellcard@SpellLifecycle@th07@@YIIPAUEnemyOverlay@12@PBUSpe
 rel32_targets = [
   "?ShowSpellcard@GuiOverlay@SpellLifecycle@th07@@QAEXFPBD@Z=0x00428887",
   "?SetSpellUiState@UiStateOverlay@SpellLifecycle@th07@@QAEXH@Z=0x00424740",
-  "?SetAndExecuteScript@SpellVmOverlay@SpellLifecycle@th07@@QAEXPAX@Z=0x0044EA20",
+  "?SetAndExecuteScript@AnmManagerOverlay@SpellLifecycle@th07@@QAEXPAX0@Z=0x0044EA20",
   "?TargetCreateEffect@SpellLifecycle@th07@@YAPAUEffectOverlay@12@HPBXHHH@Z=0x0041C610",
 ]
 dir32_targets = [
@@ -985,7 +987,7 @@ symbol_base = "?Initialize@BulletManager@th07@@QAEXXZ"
 address = "0x00426F60"
 symbol_base = "?AddedCallback@BulletManager@th07@@SIHPAV12@@Z"
 rel32_targets = [
-  "?LoadAnm@th07@@YAHHPBDH@Z=0x0044DF90",
+  "?LoadAnm@AnmManager@th07@@QAEHHPBDH@Z=0x0044DF90",
   "?SetAndExecuteScript@AnmManager@th07@@QAEXPAUAnmVm@2@PAX@Z=0x0044EA20",
   "__ftol2=0x0048B8A0",
 ]
@@ -1270,6 +1272,29 @@ profile = "vc7-debug-od-no-gs-g6"
 notes = "High-leverage target-observed TH07 ANM VM dispatcher; TH08 opcode structure is supporting evidence only."
 
 [[units.anm-execute.functions]]
+address = "0x00401000"
+symbol_base = "?D3DXMatrixIdentity@th07@@YIPAUD3DXMATRIX@1@PAU21@@Z"
+
+[[units.anm-execute.functions]]
+address = "0x004010B0"
+symbol_base = "?TickImpl@AnmTimer@th07@@QAEIXZ"
+rel32_targets = ["?Advance@AnmTimerManager@th07@@QAEXPAH0@Z=0x0043958D"]
+dir32_targets = ["?g_AnmTimerManager@th07@@3UAnmTimerManager@1@A=bullet_update_timer_manager"]
+
+[[units.anm-execute.functions]]
+address = "0x004010F0"
+symbol_base = "?Initialize@AnmVm@th07@@QAEXXZ"
+rel32_targets = ["?D3DXMatrixIdentity@th07@@YIPAUD3DXMATRIX@1@PAU21@@Z=0x00401000"]
+
+[[units.anm-execute.functions]]
+address = "0x0044EA20"
+symbol_base = "?SetAndExecuteScript@AnmManager@th07@@QAEXPAUAnmVm@2@PAUAnmRawInstr@2@@Z"
+rel32_targets = [
+  "?Initialize@AnmVm@th07@@QAEXXZ=0x004010F0",
+  "?ExecuteScript@AnmManager@th07@@QAEHPAUAnmVm@2@@Z=0x00450D60",
+]
+
+[[units.anm-execute.functions]]
 address = "0x00450D60"
 symbol_base = "?ExecuteScript@AnmManager@th07@@QAEHPAUAnmVm@2@@Z"
 rel32_targets = [
@@ -1301,7 +1326,7 @@ dir32_targets = [
 address = "0x0043D9E0"
 symbol_base = "?CalcDamageToEnemy@Player@th07@@QAEHPAUD3DXVECTOR3@@0PAH@Z"
 rel32_targets = [
-  "?SetAndExecuteScript@PlayerBulletAnimation@th07@@QAEXH@Z=0x0044EA20",
+  "?SetAndExecuteScript@AnmManager@th07@@QAEXPAUAnmVm@2@PAUAnmRawInstr@2@@Z=0x0044EA20",
   "?SpawnParticles@EffectManager@th07@@QAEXHPAUD3DXVECTOR3@@HH@Z=0x0041C1C0",
 ]
 dir32_targets = [

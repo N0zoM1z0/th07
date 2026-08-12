@@ -1,14 +1,10 @@
 #include "Player.hpp"
+#include "AnmManager.hpp"
 
 #include <math.h>
 
 namespace th07
 {
-struct PlayerBulletAnimation
-{
-    void SetAndExecuteScript(i32 script);
-};
-
 struct EffectManager
 {
     void SpawnParticles(i32 effect, D3DXVECTOR3 *position, i32 count, i32 color);
@@ -55,7 +51,7 @@ extern i32 g_HideGrazeCounter;
 extern i32 g_GuiFlags;
 extern i32 g_StageScore;
 extern i32 g_RankValue;
-extern i32 *g_PlayerAnimationData;
+extern AnmManager *g_AnmManager;
 extern Player g_Player;
 
 extern void __fastcall RotatePlayerVector(D3DXVECTOR3 *out, D3DXVECTOR3 *relative, f32 angle);
@@ -70,6 +66,7 @@ i32 Player::CalcDamageToEnemy(D3DXVECTOR3 *enemyPosition, D3DXVECTOR3 *enemySize
     i32 damage;
     i32 damageToAdd;
     i32 animationIndex;
+    AnmManager *anmManager;
     f32 enemyTopLeftX;
     f32 enemyTopLeftY;
     i32 i;
@@ -139,9 +136,11 @@ i32 Player::CalcDamageToEnemy(D3DXVECTOR3 *enemyPosition, D3DXVECTOR3 *enemySize
             if (bullet->state == 1)
             {
                 animationIndex = bullet->animationIndex + 32;
+                anmManager = g_AnmManager;
                 bullet->animationIndex = animationIndex;
-                reinterpret_cast<PlayerBulletAnimation *>(bullet)->SetAndExecuteScript(
-                    g_PlayerAnimationData[animationIndex + 41916]);
+                anmManager->SetAndExecuteScript(
+                    reinterpret_cast<AnmVm *>(bullet),
+                    *reinterpret_cast<AnmRawInstr **>(reinterpret_cast<u8 *>(anmManager) + 0x28EF0 + 4 * animationIndex));
                 g_EffectManager.SpawnParticles(5, &bullet->position, 1, -1);
                 bullet->position.z = 0.1f;
             }

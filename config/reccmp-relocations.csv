@@ -170,7 +170,7 @@ ecl_global_49FC08,0x0049FC08,00000000,0x0,Target-observed zero-initialized ECL g
 ecl_global_62F898,0x0062F898,00000000,0x0,Target-observed zero-initialized ECL accumulator advanced by opcode 0x7E,literal
 ecl_boss_present_49FC14,0x0049FC14,00,0x0,Target-observed ECL boss-presence byte written by opcode 0x63,literal
 ecl_boss_health_49FC18,0x0049FC18,00000000,0x0,Target-observed ECL boss-health float written by opcode 0x63,literal
-ecl_boss_ui_134DB5A,0x0134DB5A,0000,0x0,Target-observed ECL boss UI state array base written by opcode 0x63,literal
+ecl_boss_ui_134DB5A,0x0134DB5A,0000,0x0;0x24C;0x498,Target-observed ECL and Player bomb boss UI state entries at three 0x24C-byte strides,address
 spell_capture_12FE0C4,0x012FE0C4,00000000,0x0,Target-observed zero-initialized spell capture eligibility state,literal
 spell_base_score_12FE0CC,0x012FE0CC,00000000,0x0,Target-observed zero-initialized spell base score,literal
 spell_bonus_accum_12FE0D0,0x012FE0D0,00000000,0x0,Target-observed zero-initialized spell bonus accumulator,literal

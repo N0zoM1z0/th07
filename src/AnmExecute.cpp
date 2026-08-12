@@ -2,16 +2,44 @@
 #include "Rng.hpp"
 
 #include <math.h>
+#include <string.h>
 
 namespace th07
 {
+struct D3DXMATRIX
+{
+    float m[4][4];
+};
+
+D3DXMATRIX *__fastcall D3DXMatrixIdentity(D3DXMATRIX *matrix)
+{
+    matrix->m[3][2] = 0.0f;
+    matrix->m[3][1] = 0.0f;
+    matrix->m[3][0] = 0.0f;
+    matrix->m[2][3] = 0.0f;
+    matrix->m[2][1] = 0.0f;
+    matrix->m[2][0] = 0.0f;
+    matrix->m[1][3] = 0.0f;
+    matrix->m[1][2] = 0.0f;
+    matrix->m[1][0] = 0.0f;
+    matrix->m[0][3] = 0.0f;
+    matrix->m[0][2] = 0.0f;
+    matrix->m[0][1] = 0.0f;
+    matrix->m[3][3] = 1.0f;
+    matrix->m[2][2] = 1.0f;
+    matrix->m[1][1] = 1.0f;
+    matrix->m[0][0] = 1.0f;
+    return matrix;
+}
+
 // This translation unit deliberately keeps the target VM private.  The offsets
 // below are observations from 0x00450D60, not a claim that this is the shared
 // ANM layout: the common header remains coordinator-owned.
 struct AnmVm
 {
-    u8 raw[0x240];
+    u8 raw[0x24C];
 
+    void Initialize();
     i32 GetIntVar(i32 value);
     float GetFloatVar(float value);
     i32 *GetIntVarPtr(i32 *value, u16 mask, u32 index);
@@ -40,6 +68,7 @@ struct AnmTimer
     };
     i32 current;
 
+    u32 TickImpl();
     void Decrement(i32 amount);
 };
 
@@ -90,6 +119,60 @@ static __forceinline void AdvanceTimer(AnmTimer *timer)
 {
     timer->previous = timer->current;
     g_AnmTimerManager.Advance(&timer->current, &timer->subFrameBits);
+}
+
+u32 AnmTimer::TickImpl()
+{
+    previous = current;
+    g_AnmTimerManager.Advance(&current, &subFrameBits);
+    return current;
+}
+
+void AnmVm::Initialize()
+{
+    AnmTimer *timer;
+
+    memset(this, 0, 0x1C8);
+    VM_F(this, 0x18) = 1.0f;
+    VM_F(this, 0x1C) = 1.0f;
+    VM_I(this, 0x1B8) = -1;
+    D3DXMatrixIdentity(reinterpret_cast<D3DXMATRIX *>(raw + 0xF8));
+    *reinterpret_cast<u16 *>(raw + 0x1C0) = 7;
+    timer = TimerAt(this, 0x30);
+    timer->current = 0;
+    timer->previous = -999;
+    timer->subFrame = 0.0f;
+}
+
+#pragma var_order(unknownLocal, timer)
+void AnmManager::SetAndExecuteScript(AnmVm *vm, AnmRawInstr *script)
+{
+    AnmTimer *timer;
+    // Target [ebp-4] is a reserved, never-read source slot.  Its semantic
+    // name is not recovered; keeping the scalar is required for the observed
+    // VC7 frame and is tracked as an unknown rather than invented behavior.
+    i32 unknownLocal;
+
+    if (script == 0)
+    {
+        memset(vm, 0, sizeof(*vm));
+    }
+    else
+    {
+        VM_I(vm, 0x1C0) &= ~0x300;
+        vm->Initialize();
+        VM_P(vm, 0x1DC) = script;
+        VM_P(vm, 0x1E0) = VM_P(vm, 0x1DC);
+
+        timer = TimerAt(vm, 0x30);
+        timer->current = 0;
+        timer->subFrame = 0.0f;
+        timer->previous = -999;
+
+        VM_I(vm, 0x1C0) &= ~1;
+        ExecuteScript(vm);
+        ++executedScriptCount;
+    }
 }
 
 #pragma var_order(instruction, fallback, i, interp)
@@ -147,7 +230,7 @@ i32 AnmManager::ExecuteScript(AnmVm *vm)
         case 7:
             VM_F(vm, 0x18) = GetFloat(vm, instruction, 0); VM_F(vm, 0x1c) = GetFloat(vm, instruction, 1); VM_I(vm, 0x1c0) |= 8;
             break;
-        case 8: VM_F(vm, 0x1bb) = (float)instruction->args.i[0]; break;
+        case 8: vm->raw[0x1bb] = instruction->args.b[0]; break;
         case 9: VM_I(vm, 0x1b8) = (VM_I(vm, 0x1b8) & 0xff000000) | (instruction->args.i[0] & 0x00ffffff); break;
         case 10: VM_I(vm, 0x1c0) ^= 0x100; VM_F(vm, 0x18) = -VM_F(vm, 0x18); VM_I(vm, 0x1c0) |= 8; break;
         case 11: VM_I(vm, 0x1c0) ^= 0x200; VM_F(vm, 0x1c) = -VM_F(vm, 0x1c); VM_I(vm, 0x1c0) |= 8; break;
@@ -161,12 +244,12 @@ i32 AnmManager::ExecuteScript(AnmVm *vm)
         case 15:
             VM_I(vm, 0x60) = -999; VM_I(vm, 0x64) = 0; VM_I(vm, 0x68) = 0;
             VM_I(vm, 0x9c) = -999; VM_I(vm, 0xa0) = 0; VM_I(vm, 0xa4) = GetInt(vm, instruction, 1);
-            VM_I(vm, 0xc2) = 0; VM_F(vm, 0x22b) = VM_F(vm, 0x1bb); VM_F(vm, 0x22f) = GetFloat(vm, instruction, 0);
+            vm->raw[0xc2] = 0; vm->raw[0x22b] = vm->raw[0x1bb]; vm->raw[0x22f] = instruction->args.b[0];
             break;
         case 16: VM_I(vm, 0x1c0) = (VM_I(vm, 0x1c0) & ~0x10) | ((instruction->args.i[0] & 1) << 4); break;
-        case 17: VM_I(vm, 0xc0) = 0; goto pos_time;
-        case 18: VM_I(vm, 0xc0) = 4; goto pos_time;
-        case 19: VM_I(vm, 0xc0) = 6;
+        case 17: vm->raw[0xc0] = 0; goto pos_time;
+        case 18: vm->raw[0xc0] = 4; goto pos_time;
+        case 19: vm->raw[0xc0] = 6;
         pos_time:
             VM_F(vm, 0x1e8) = (VM_I(vm, 0x1c0) & 0x80) ? VM_F(vm, 0x230) : VM_F(vm, 0x1c8);
             VM_F(vm, 0x1ec) = (VM_I(vm, 0x1c0) & 0x80) ? VM_F(vm, 0x234) : VM_F(vm, 0x1cc);
@@ -198,13 +281,13 @@ i32 AnmManager::ExecuteScript(AnmVm *vm)
         case 28: VM_I(vm, 0x1c0) = (VM_I(vm, 0x1c0) & ~1) | (instruction->args.i[0] & 1); break;
         case 29:
             VM_I(vm, 0x78) = -999; VM_I(vm, 0x7c) = 0; VM_I(vm, 0x80) = 0;
-            VM_I(vm, 0xb4) = -999; VM_I(vm, 0xb8) = 0; VM_I(vm, 0xbc) = GetInt(vm, instruction, 2); VM_I(vm, 0xc4) = 0;
+            VM_I(vm, 0xb4) = -999; VM_I(vm, 0xb8) = 0; VM_I(vm, 0xbc) = GetInt(vm, instruction, 2); vm->raw[0xc4] = 0;
             VM_F(vm, 0x218) = VM_F(vm, 0x18); VM_F(vm, 0x21c) = VM_F(vm, 0x1c); VM_F(vm, 0x220) = GetFloat(vm, instruction, 0); VM_F(vm, 0x224) = GetFloat(vm, instruction, 1); break;
         case 30: VM_I(vm, 0x1c0) = (VM_I(vm, 0x1c0) & ~0x1000) | ((instruction->args.i[0] & 1) << 12); break;
         case 31: VM_I(vm, 0x1c0) = (VM_I(vm, 0x1c0) & ~0x4000) | ((instruction->args.i[0] & 1) << 14); break;
         case 32:
             VM_I(vm, 0x78) = -999; VM_I(vm, 0x7c) = 0; VM_I(vm, 0x80) = 0;
-            VM_I(vm, 0xb4) = -999; VM_I(vm, 0xb8) = 0; VM_I(vm, 0xbc) = GetInt(vm, instruction, 0); VM_I(vm, 0xc0) = instruction->args.i[1];
+            VM_I(vm, 0xb4) = -999; VM_I(vm, 0xb8) = 0; VM_I(vm, 0xbc) = GetInt(vm, instruction, 0); vm->raw[0xc0] = instruction->args.b[4];
             VM_F(vm, 0x1e8) = (VM_I(vm, 0x1c0) & 0x80) ? VM_F(vm, 0x230) : VM_F(vm, 0x1c8); VM_F(vm, 0x1ec) = (VM_I(vm, 0x1c0) & 0x80) ? VM_F(vm, 0x234) : VM_F(vm, 0x1cc); VM_F(vm, 0x1f0) = (VM_I(vm, 0x1c0) & 0x80) ? VM_F(vm, 0x238) : VM_F(vm, 0x1d0);
             VM_F(vm, 0x1f4) = GetFloat(vm, instruction, 2); VM_F(vm, 0x1f8) = GetFloat(vm, instruction, 3); VM_F(vm, 0x1fc) = GetFloat(vm, instruction, 4); break;
         case 33:
@@ -340,7 +423,7 @@ advance:
         }
     }
     if (VM_F(vm, 36) != 0.0f) { VM_F(vm, 28) += g_FrameMultiplier * VM_F(vm, 36); VM_I(vm, 0x1c0) |= 8; }
-    if (VM_F(vm, 32) != 0.0f) { VM_F(vm, 24) += g_FrameMultiplier * VM_F(vm, 32); VM_I(vm, 0x1c0) |= 12; }
+    if (VM_F(vm, 32) != 0.0f) { VM_F(vm, 24) += g_FrameMultiplier * VM_F(vm, 32); VM_I(vm, 0x1c0) |= 8; VM_I(vm, 0x1c0) |= 4; }
     VM_F(vm, 40) += VM_F(vm, 0xf0); WrapUnit(&VM_F(vm, 40)); VM_F(vm, 44) += VM_F(vm, 0xf4); WrapUnit(&VM_F(vm, 44));
     AdvanceTimer(TimerAt(vm, 0x30));
     ++*reinterpret_cast<i32 *>(reinterpret_cast<u8 *>(this) + 12);
