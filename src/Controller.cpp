@@ -86,6 +86,7 @@ u32 Controller::SetButtonFromControllerInputs(u16 *outButtons, i16 controllerBut
     return inputButtons & mask ? touhouButton & 0xFFFF : 0;
 }
 
+#pragma var_order(joyinfoex, axisDeadZone, shotPressed, dijoystate2, dires, retryCount)
 u16 Controller::GetControllerInput(u16 buttons)
 {
     JOYINFOEX joyinfoex;
@@ -93,7 +94,6 @@ u16 Controller::GetControllerInput(u16 buttons)
     u32 shotPressed;
     DIJOYSTATE2 dijoystate2;
     HRESULT dires;
-    i32 retryCount;
 
     if (g_Controller == NULL)
     {
@@ -167,7 +167,7 @@ u16 Controller::GetControllerInput(u16 buttons)
     dires = g_Controller->Poll();
     if (FAILED(dires))
     {
-        retryCount = 0;
+        i32 retryCount = 0;
         DebugPrint("error : DIERR_INPUTLOST\r\n");
         dires = g_Controller->Acquire();
         while (dires == DIERR_INPUTLOST)
@@ -241,6 +241,7 @@ u16 Controller::GetControllerInput(u16 buttons)
     return buttons;
 }
 
+#pragma var_order(joyinfoex, joyButtonBit, joyButtonIndex, dires, dijoystate2, retryCount)
 u8 *Controller::GetControllerState()
 {
     JOYINFOEX joyinfoex;
@@ -299,11 +300,12 @@ u8 *Controller::GetControllerState()
     return g_ControllerData;
 }
 
+#pragma var_order(keyboardState, buttons, res)
 u16 Controller::GetInput()
 {
-    u8 keyboardState[256];
-    u16 buttons;
     HRESULT res;
+    u16 buttons;
+    u8 keyboardState[256];
 
     buttons = 0;
     if (g_Keyboard == NULL)

@@ -138,10 +138,10 @@ restart:
                 continue;
             case CHAIN_CALLBACK_RESULT_EXECUTE_AGAIN:
                 goto execute_again;
-            case CHAIN_CALLBACK_RESULT_BREAK:
-                return 1;
             case CHAIN_CALLBACK_RESULT_EXIT_GAME_SUCCESS:
                 return 0;
+            case CHAIN_CALLBACK_RESULT_BREAK:
+                return 1;
             case CHAIN_CALLBACK_RESULT_EXIT_GAME_ERROR:
                 return -1;
             case CHAIN_CALLBACK_RESULT_RESTART_FROM_FIRST_JOB:
@@ -179,10 +179,10 @@ i32 Chain::RunDrawChain()
                 continue;
             case CHAIN_CALLBACK_RESULT_EXECUTE_AGAIN:
                 goto execute_again;
-            case CHAIN_CALLBACK_RESULT_BREAK:
-                return 1;
             case CHAIN_CALLBACK_RESULT_EXIT_GAME_SUCCESS:
                 return 0;
+            case CHAIN_CALLBACK_RESULT_BREAK:
+                return 1;
             case CHAIN_CALLBACK_RESULT_EXIT_GAME_ERROR:
                 return -1;
             default:

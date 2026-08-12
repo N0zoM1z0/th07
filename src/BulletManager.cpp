@@ -38,8 +38,9 @@ extern u8 g_EffectsColorTable[];
 extern int __cdecl LoadAnm(int fileIndex, const char *path, int spriteIndexOffset);
 extern void __cdecl SetAndExecuteScript(AnmVm *vm, void *script);
 
-int __cdecl BulletManager::AddedCallback(BulletManager *manager)
+int __fastcall BulletManager::AddedCallback(BulletManager *inputManager)
 {
+    BulletManager *manager;
     int scriptForLargeBullet;
     int shouldLoadAnm;
     int anmManagerForDonut;
@@ -54,6 +55,7 @@ int __cdecl BulletManager::AddedCallback(BulletManager *manager)
     int scriptForBullet;
     u32 i;
 
+    manager = inputManager;
     shouldLoadAnm = g_SupervisorState != 3 && g_SupervisorState != 11 && g_SupervisorState != 12;
     if (shouldLoadAnm && LoadAnm(11, "data/etama.anm", 512))
     {
@@ -189,18 +191,18 @@ int __fastcall BulletManager::RegisterChain(char *bulletAnmPath)
     manager->Initialize();
     manager->bulletAnmPath = bulletAnmPath;
 
-    g_BulletManagerCalcChain.callback = (int (__cdecl *)(void *))OnUpdate;
+    g_BulletManagerCalcChain.callback = (int (__fastcall *)(void *))OnUpdate;
     g_BulletManagerCalcChain.addedCallback = 0;
     g_BulletManagerCalcChain.deletedCallback = 0;
-    g_BulletManagerCalcChain.addedCallback = (int (__cdecl *)(void *))AddedCallback;
-    g_BulletManagerCalcChain.deletedCallback = (int (__cdecl *)(void *))DeletedCallback;
+    g_BulletManagerCalcChain.addedCallback = (int (__fastcall *)(void *))AddedCallback;
+    g_BulletManagerCalcChain.deletedCallback = (int (__fastcall *)(void *))DeletedCallback;
     g_BulletManagerCalcChain.argument = manager;
     if (g_Chain.AddToCalcChain(&g_BulletManagerCalcChain, 12))
     {
         return -1;
     }
 
-    g_BulletManagerDrawChain.callback = (int (__cdecl *)(void *))OnDraw;
+    g_BulletManagerDrawChain.callback = (int (__fastcall *)(void *))OnDraw;
     g_BulletManagerDrawChain.addedCallback = 0;
     g_BulletManagerDrawChain.deletedCallback = 0;
     g_BulletManagerDrawChain.argument = manager;

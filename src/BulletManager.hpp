@@ -67,9 +67,9 @@ struct ChainElem
 {
     i16 priority;
     u16 flags;
-    int (__cdecl *callback)(void *);
-    int (__cdecl *addedCallback)(void *);
-    int (__cdecl *deletedCallback)(void *);
+    int (__fastcall *callback)(void *);
+    int (__fastcall *addedCallback)(void *);
+    int (__fastcall *deletedCallback)(void *);
     ChainElem *prev;
     ChainElem *next;
     ChainElem *unknown;
@@ -79,7 +79,7 @@ struct ChainElem
 class BulletManager
 {
   public:
-    static int __cdecl AddedCallback(BulletManager *manager);
+    static int __fastcall AddedCallback(BulletManager *manager);
     static int __fastcall DeletedCallback(BulletManager *manager);
     static int __fastcall RegisterChain(char *bulletAnmPath);
     static void __cdecl CutChain();
@@ -87,13 +87,13 @@ class BulletManager
     void RemoveAllBullets();
     void Initialize();
 
-    static int __cdecl OnUpdate(BulletManager *manager);
-    static int __cdecl OnDraw(BulletManager *manager);
+    static int __fastcall OnUpdate(BulletManager *manager);
+    static int __fastcall OnDraw(BulletManager *manager);
 
     BulletTypeSprites templates[11];
-    u8 unknownAfterTemplates[0x33BC];
+    u8 unknownAfterTemplates[0x39BC];
     Bullet bullets[1024];
-    u8 unknownAfterBullets[0x14E80];
+    u8 unknownAfterBullets[0x14880];
     char *bulletAnmPath;
 };
 

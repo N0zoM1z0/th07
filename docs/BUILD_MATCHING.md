@@ -69,12 +69,12 @@ across eight probes:
 | `text-helper` | 11 | 2,992 / 2,992 |
 | `midi` | 11 | 725 / 725 |
 | `zwave` | 19 | 3,316 / 3,316 |
-| `controller` | 1 | 85 / 85 |
+| `controller` | 2 | 477 / 477 |
 | `screen-effect` | 4 | 528 / 528 |
-| `bullet-manager` | 2 | 243 / 243 |
-| `player-core` | 1 | 143 / 143 |
-| `chain` | 6 | 654 / 654 |
-| **Total** | **55** | **8,686 / 8,686** |
+| `bullet-manager` | 3 | 509 / 509 |
+| `player-core` | 3 | 892 / 892 |
+| `chain` | 8 | 961 / 961 |
+| **Total** | **61** | **10,400 / 10,400** |
 
 The strict comparison resolves member and CRT calls; validates GDI32, WINMM,
 and KERNEL32 IAT entries; checks global, string, and vtable target bytes; and
@@ -83,6 +83,10 @@ addresses remain explicit allowlisted evidence rather than wildcard
 relocations. Zero-addend function pointers may map directly to an address only
 when that address is a canonical function start in the target-attested ledger;
 globals and literals still require an explicit relocation allowlist entry.
+Uniform constants/storage use literal validation at every permitted addend.
+Directly evidenced non-uniform tables use address validation with an explicit
+addend set, an identifying base-byte sample, and a mapped-range check against
+the hash-attested target image.
 Accepted commands include:
 
 ```bash

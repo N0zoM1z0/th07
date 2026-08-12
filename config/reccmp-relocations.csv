@@ -35,14 +35,14 @@ __imp__GetKeyboardState@4,0x0048D1B0,d2b00900,0x0,PE USER32 import table entry f
 __imp__SetKeyboardState@4,0x0048D1B4,e6b00900,0x0,PE USER32 import table entry for SetKeyboardState,literal
 ?g_NoPadFoundError@th07@@3QBDB,0x00497D9C,8e6782a682e983708362836882aa91b68ddd82b582c882a282e682a482c582b781418e63944f0d0a00,0x0,Direct target Shift-JIS no-controller error literal,literal
 ?g_GameErrorContext@th07@@3EA,0x00624210,00000000,0x0,Direct target absolute reference to zero-initialized error context storage,literal
-?g_JoystickCaps@th07@@3UtagJOYCAPSA@@A,0x0049FC88,00000000,0x0,Direct target absolute reference to zero-initialized JOYCAPSA storage,literal
+?g_JoystickCaps@th07@@3UtagJOYCAPSA@@A,0x0049FC88,00000000,0x0;0x24;0x28;0x2C;0x30,Direct target absolute references to zero-initialized JOYCAPSA storage and its X/Y-axis range fields,literal
 ?g_ScreenEffectDevice@th07@@3PAUIDirect3DDevice8@@A,0x00575958,00000000,0x0,Direct target absolute reference to shared Direct3D device storage,literal
 ?g_ScreenEffectViewport@th07@@3U_D3DVIEWPORT8@@A,0x00575A18,00000000,0x0;0x4;0x8;0xC;0x10;0x14,Direct target absolute references to shared viewport fields,literal
 ?g_ScreenEffectPresentParameters@th07@@3U_D3DPRESENT_PARAMETERS_@@A,0x00575A30,00000000,0x0,Direct target absolute reference to shared presentation parameters,literal
 ?g_ScreenEffectRenderState@th07@@3PAUScreenEffectRenderState@1@A,0x004B9E44,00000000,0x0,Direct target absolute reference to render-state owner pointer,literal
 ?g_SupervisorState@th07@@3HA,0x00575AA8,00000000,0x0,Direct target absolute references from BulletManager callbacks and zero-initialized target storage,literal
 ?g_AnmManager@th07@@3PAUAnmManager@1@A,0x004B9E44,00000000,0x0,Direct target pointer loaded by BulletManager animation calls and zero-initialized target storage,literal
-?g_BulletManager@th07@@3VBulletManager@1@A,0x0062F958,00000000,0x0;0xB2C0,Direct target absolute references to zero-initialized BulletManager storage and its first embedded bullet,literal
+?g_BulletManager@th07@@3VBulletManager@1@A,0x0062F958,00000000,0x0;0xB8C0,Direct target absolute references to zero-initialized BulletManager storage and its first embedded bullet,literal
 ?g_EffectsColor@th07@@3PAXA,0x0049EF38,58ee4900,0x0,Direct target pointer assignment in BulletManager RegisterChain and target initialized storage,literal
 ?g_EffectsColorTable@th07@@3PAEA,0x0049EEC8,f0f0f0ff,0x0,Direct target immediate assigned by BulletManager RegisterChain and target table prefix,literal
 ?g_BulletManagerCalcChain@th07@@3UChainElem@1@A,0x009A9ABC,00000000,0x0;0x4;0x8;0xC;0x1C,Direct target callback-chain field references and zero-initialized target storage,literal
@@ -55,3 +55,25 @@ __imp__SetKeyboardState@4,0x0048D1B4,e6b00900,0x0,PE USER32 import table entry f
 chain_ctor_dtor_eh_handler,0x0048C418,b8f0a74900e94430ffff,0x0,Direct target EH handler thunk shared by Chain constructor and destructor,address
 chain_release_single_eh_handler,0x0048C58E,b880a94900e9ce2effff,0x0,Direct target EH handler thunk referenced by Chain ReleaseSingleChain,address
 chain_create_elem_eh_handler,0x0048C4BB,b8c8a94900e9a12fffff,0x0,Direct target EH handler thunk referenced by Chain CreateElem,address
+__real@00000000,0x00498A4C,00000000,0x0,Exact target float 0.0 constant used by Player collision code,literal
+__real@3f800000,0x00498A54,0000803f,0x0,Exact target float 1.0 constant used by Player vector division,literal
+__real@40000000,0x00498A70,00000040,0x0,Exact target float 2.0 divisor used by Player collision code,literal
+__real@41000000,0x00498A7C,00000041,0x0,Exact target float 8.0 divisor used by Player damage code,literal
+__real@41a00000,0x00498B84,0000a041,0x0,Exact target float 20.0 graze expansion constant,literal
+__real@42400000,0x00498B34,00004042,0x0,Exact target float 48.0 laser graze expansion constant,literal
+?g_PlayerCollisionFlags@th07@@3HA,0x004B9E48,00000000,0x0,Direct target pointer storage referenced by Player collision flag updates,literal
+?g_BulletTemplateScriptIds@th07@@3PAIA,0x00495160,00020000,0x0;0x4;0x8;0xC;0x10,Direct target script-id table references used by BulletManager AddedCallback,address
+?g_ItemManager@th07@@3PAEA,0x00575C70,00000000,0x0,Direct target destination of BulletManager AddedCallback item-manager clear,literal
+??_C@_0P@ONBKABHC@data?1etama?4anm?$AA@,0x00498524,646174612f6574616d612e616e6d00,0x0,Direct target bullet animation archive path,literal
+__real@41800000,0x00498A80,00008041,0x0,Exact target float 16.0 constant used by BulletManager size classification,literal
+__real@42000000,0x00498A84,00000042,0x0,Exact target float 32.0 constant used by BulletManager size classification,literal
+?g_Keyboard@th07@@3PAUIDirectInputDevice8A@@A,0x00575960,00000000,0x0,Direct target absolute reference to DirectInput keyboard device storage,literal
+?g_Controller@th07@@3PAUIDirectInputDevice8A@@A,0x00575964,00000000,0x0,Direct target absolute reference to DirectInput controller device storage,literal
+?g_ControllerMapping@th07@@3UControllerMapping@1@A,0x00575A68,00000000,0x0;0x2;0x4;0x6;0x8;0xA;0xC;0xE;0x10,Direct target references to the nine signed 16-bit controller mapping fields,literal
+?g_PadXAxis@th07@@3FA,0x00575A80,0000,0x0,Direct target absolute reference to signed 16-bit X-axis threshold,literal
+?g_PadYAxis@th07@@3FA,0x00575A82,0000,0x0,Direct target absolute reference to signed 16-bit Y-axis threshold,literal
+?g_ShotSlowEnabled@th07@@3EA,0x00575A8E,00,0x0,Direct target absolute reference to shot-slow option byte,literal
+?g_FocusButtonConflictState@th07@@3GA,0x0049FE1C,0000,0x0,Direct target absolute reference to the focus conflict counter,literal
+?g_ControllerData@th07@@3PAEA,0x0135E218,00000000,0x0,Direct target absolute reference to 128-byte controller state storage,literal
+??_C@_0BK@BJPCNFPG@error?5?3?5DIERR_INPUTLOST?$AN?6?$AA@,0x00497D80,6572726f72203a2044494552525f494e5055544c4f53540d0a00,0x0,Direct target DIERR_INPUTLOST diagnostic string,literal
+??_C@_0BN@KAGFBIKB@error?5?3?5DIERR_INPUTLOST?5?$CFd?$AN?6?$AA@,0x00497D60,6572726f72203a2044494552525f494e5055544c4f53542025640d0a00,0x0,Direct target DIERR_INPUTLOST retry diagnostic string,literal

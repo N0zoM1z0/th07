@@ -257,12 +257,27 @@ rel32_targets = [
 kind = "probe"
 source = "src/BulletManager.cpp"
 object = "build/match-units/BulletManager.obj"
-profile = "vc7-debug-od"
-notes = "Focused VC7 unoptimized BulletManager probe, bounded to target-confirmed callback and cleanup functions."
+profile = "vc7-debug-od-no-gs-g6"
+notes = "Focused VC7 unoptimized no-GS G6 BulletManager probe; target word loads select the G6 scheduler."
 
 [[units.bullet-manager.functions]]
 address = "0x00426F60"
-symbol_base = "?AddedCallback@BulletManager@th07@@SAHPAV12@@Z"
+symbol_base = "?AddedCallback@BulletManager@th07@@SIHPAV12@@Z"
+rel32_targets = [
+  "?LoadAnm@th07@@YAHHPBDH@Z=0x0044DF90",
+  "?SetAndExecuteScript@th07@@YAXPAUAnmVm@1@PAX@Z=0x0044EA20",
+  "__ftol2=0x0048B8A0",
+]
+dir32_targets = [
+  "?g_SupervisorState@th07@@3HA=?g_SupervisorState@th07@@3HA",
+  "?g_AnmManager@th07@@3PAUAnmManager@1@A=?g_AnmManager@th07@@3PAUAnmManager@1@A",
+  "?g_BulletTemplateScriptIds@th07@@3PAIA=?g_BulletTemplateScriptIds@th07@@3PAIA",
+  "?g_ItemManager@th07@@3PAEA=?g_ItemManager@th07@@3PAEA",
+  "??_C@_0P@ONBKABHC@data?1etama?4anm?$AA@=??_C@_0P@ONBKABHC@data?1etama?4anm?$AA@",
+  "__real@41000000=__real@41000000",
+  "__real@41800000=__real@41800000",
+  "__real@42000000=__real@42000000",
+]
 
 [[units.bullet-manager.functions]]
 address = "0x00427620"
@@ -286,12 +301,12 @@ dir32_targets = [
   "?g_EffectsColor@th07@@3PAXA=?g_EffectsColor@th07@@3PAXA",
   "?g_EffectsColorTable@th07@@3PAEA=?g_EffectsColorTable@th07@@3PAEA",
   "?g_BulletManagerCalcChain@th07@@3UChainElem@1@A=?g_BulletManagerCalcChain@th07@@3UChainElem@1@A",
-  "?OnUpdate@BulletManager@th07@@SAHPAV12@@Z=0x00425A50",
-  "?AddedCallback@BulletManager@th07@@SAHPAV12@@Z=0x00426F60",
+  "?OnUpdate@BulletManager@th07@@SIHPAV12@@Z=0x00425A50",
+  "?AddedCallback@BulletManager@th07@@SIHPAV12@@Z=0x00426F60",
   "?DeletedCallback@BulletManager@th07@@SIHPAV12@@Z=0x00427620",
   "?g_Chain@th07@@3UChain@1@A=?g_Chain@th07@@3UChain@1@A",
   "?g_BulletManagerDrawChain@th07@@3UChainElem@1@A=?g_BulletManagerDrawChain@th07@@3UChainElem@1@A",
-  "?OnDraw@BulletManager@th07@@SAHPAV12@@Z=0x00426C40",
+  "?OnDraw@BulletManager@th07@@SIHPAV12@@Z=0x00426C40",
 ]
 
 [[units.bullet-manager.functions]]
@@ -390,14 +405,44 @@ symbol_base = "?SetButtonFromControllerInputs@Controller@th07@@YIIPAGFW4TouhouBu
 [[units.controller.functions]]
 address = "0x004303F0"
 symbol_base = "?GetControllerInput@Controller@th07@@YIGG@Z"
+rel32_targets = [
+  "?SetButtonFromDirectInputJoystate@Controller@th07@@YIIPAGFW4TouhouButton@2@PAE@Z=0x004302F0",
+  "?SetButtonFromControllerInputs@Controller@th07@@YIIPAGFW4TouhouButton@2@I@Z=0x00430370",
+  "?DebugPrint@th07@@YAXPBDZZ=0x0045E4F0",
+]
+dir32_targets = [
+  "?g_Controller@th07@@3PAUIDirectInputDevice8A@@A=?g_Controller@th07@@3PAUIDirectInputDevice8A@@A",
+  "?g_ControllerMapping@th07@@3UControllerMapping@1@A=?g_ControllerMapping@th07@@3UControllerMapping@1@A",
+  "?g_PadXAxis@th07@@3FA=?g_PadXAxis@th07@@3FA",
+  "?g_PadYAxis@th07@@3FA=?g_PadYAxis@th07@@3FA",
+  "?g_ShotSlowEnabled@th07@@3EA=?g_ShotSlowEnabled@th07@@3EA",
+  "?g_FocusButtonConflictState@th07@@3GA=?g_FocusButtonConflictState@th07@@3GA",
+  "?g_JoystickCaps@th07@@3UtagJOYCAPSA@@A=?g_JoystickCaps@th07@@3UtagJOYCAPSA@@A",
+  "__imp__joyGetPosEx@8=__imp__joyGetPosEx@8",
+  "??_C@_0BK@BJPCNFPG@error?5?3?5DIERR_INPUTLOST?$AN?6?$AA@=??_C@_0BK@BJPCNFPG@error?5?3?5DIERR_INPUTLOST?$AN?6?$AA@",
+  "??_C@_0BN@KAGFBIKB@error?5?3?5DIERR_INPUTLOST?5?$CFd?$AN?6?$AA@=??_C@_0BN@KAGFBIKB@error?5?3?5DIERR_INPUTLOST?5?$CFd?$AN?6?$AA@",
+]
 
 [[units.controller.functions]]
 address = "0x004309C0"
 symbol_base = "?GetControllerState@Controller@th07@@YIPAEXZ"
+rel32_targets = ["?DebugPrint@th07@@YAXPBDZZ=0x0045E4F0"]
+dir32_targets = [
+  "?g_Controller@th07@@3PAUIDirectInputDevice8A@@A=?g_Controller@th07@@3PAUIDirectInputDevice8A@@A",
+  "?g_ControllerData@th07@@3PAEA=?g_ControllerData@th07@@3PAEA",
+  "__imp__joyGetPosEx@8=__imp__joyGetPosEx@8",
+  "??_C@_0BK@BJPCNFPG@error?5?3?5DIERR_INPUTLOST?$AN?6?$AA@=??_C@_0BK@BJPCNFPG@error?5?3?5DIERR_INPUTLOST?$AN?6?$AA@",
+  "??_C@_0BN@KAGFBIKB@error?5?3?5DIERR_INPUTLOST?5?$CFd?$AN?6?$AA@=??_C@_0BN@KAGFBIKB@error?5?3?5DIERR_INPUTLOST?5?$CFd?$AN?6?$AA@",
+]
 
 [[units.controller.functions]]
 address = "0x00430B50"
 symbol_base = "?GetInput@Controller@th07@@YIGXZ"
+rel32_targets = ["?GetControllerInput@Controller@th07@@YIGG@Z=0x004303F0"]
+dir32_targets = [
+  "?g_Keyboard@th07@@3PAUIDirectInputDevice8A@@A=?g_Keyboard@th07@@3PAUIDirectInputDevice8A@@A",
+  "__imp__GetKeyboardState@4=__imp__GetKeyboardState@4",
+]
 
 [[units.controller.functions]]
 address = "0x004312C0"
@@ -411,8 +456,8 @@ dir32_targets = [
 kind = "probe"
 source = "src/Player.cpp"
 object = "build/match-units/Player.obj"
-profile = "vc7-debug-od"
-notes = "Focused VC7 unoptimized player damage, collision, graze, and death probe."
+profile = "vc7-debug-od-no-gs-g6"
+notes = "Focused VC7 unoptimized no-GS G6 player damage, collision, graze, and death probe; target floating comparisons select the G6 scheduler."
 
 [[units.player-core.functions]]
 address = "0x0043D9E0"
@@ -421,18 +466,45 @@ symbol_base = "?CalcDamageToEnemy@Player@th07@@QAEHPAUD3DXVECTOR3@@0PAH@Z"
 [[units.player-core.functions]]
 address = "0x0043E0A0"
 symbol_base = "?CheckAuxProjectileCollision@Player@th07@@QAEHPAUD3DXVECTOR3@@0@Z"
+dir32_targets = [
+  "__real@40000000=__real@40000000",
+  "__real@00000000=__real@00000000",
+]
 
 [[units.player-core.functions]]
 address = "0x0043E260"
 symbol_base = "?CalcKillBoxCollision@Player@th07@@QAEHPAUD3DXVECTOR3@@0@Z"
+rel32_targets = [
+  "?CheckAuxProjectileCollision@Player@th07@@QAEHPAUD3DXVECTOR3@@0@Z=0x0043E0A0",
+  "?AdvanceGrazeDisplay@th07@@YAHH@Z=0x00441BD0",
+  "?BeginPlayerDeath@GrazeState@th07@@QAEXXZ=0x0043B5C0",
+  "?Die@Player@th07@@QAEHXZ=0x0043EDC0",
+]
+dir32_targets = [
+  "__real@40000000=__real@40000000",
+  "?g_PlayerCollisionFlags@th07@@3HA=?g_PlayerCollisionFlags@th07@@3HA",
+  "?g_GrazeState@th07@@3UGrazeState@1@A=?g_GrazeState@th07@@3UGrazeState@1@A",
+]
 
 [[units.player-core.functions]]
 address = "0x0043E3B0"
 symbol_base = "?CheckGraze@Player@th07@@QAEHPAUD3DXVECTOR3@@0@Z"
+rel32_targets = [
+  "?CheckAuxProjectileCollision@Player@th07@@QAEHPAUD3DXVECTOR3@@0@Z=0x0043E0A0",
+  "?ScoreGraze@Player@th07@@QAEHPAUD3DXVECTOR3@@@Z=0x0043EB90",
+]
+dir32_targets = [
+  "__real@40000000=__real@40000000",
+  "__real@41a00000=__real@41a00000",
+]
 
 [[units.player-core.functions]]
 address = "0x0043E4E0"
 symbol_base = "?CalcItemBoxCollision@Player@th07@@QAEHPAUD3DXVECTOR3@@0@Z"
+dir32_targets = [
+  "__real@3f800000=__real@3f800000",
+  "__real@40000000=__real@40000000",
+]
 
 [[units.player-core.functions]]
 address = "0x0043E6B0"

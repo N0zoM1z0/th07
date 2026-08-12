@@ -37,6 +37,12 @@ struct SoundPlayer
     i32 PlaySoundByIdx(i32 sound, i32 param);
 };
 
+struct PlayerCollisionState
+{
+    u8 unknown00[0xD6];
+    u16 flags;
+};
+
 extern EffectManager g_EffectManager;
 extern GameManager g_GameManager;
 extern GrazeState g_GrazeState;
@@ -69,10 +75,10 @@ i32 Player::CalcDamageToEnemy(D3DXVECTOR3 *enemyPosition, D3DXVECTOR3 *enemySize
         return 0;
     }
 
-    enemyLeft = enemyPosition->x - enemySize->x * 0.5f;
-    enemyTop = enemyPosition->y - enemySize->y * 0.5f;
-    enemyRight = enemyPosition->x + enemySize->x * 0.5f;
-    enemyBottom = enemyPosition->y + enemySize->y * 0.5f;
+    enemyLeft = enemyPosition->x - enemySize->x / 2.0f;
+    enemyTop = enemyPosition->y - enemySize->y / 2.0f;
+    enemyRight = enemyPosition->x + enemySize->x / 2.0f;
+    enemyBottom = enemyPosition->y + enemySize->y / 2.0f;
     if (bombHit)
     {
         *bombHit = 0;
@@ -91,10 +97,10 @@ i32 Player::CalcDamageToEnemy(D3DXVECTOR3 *enemyPosition, D3DXVECTOR3 *enemySize
             continue;
         }
 
-        bulletLeft = bullet->position.x - bullet->size.x * 0.5f;
-        bulletTop = bullet->position.y - bullet->size.y * 0.5f;
-        bulletRight = bullet->position.x + bullet->size.x * 0.5f;
-        bulletBottom = bullet->position.y + bullet->size.y * 0.5f;
+        bulletLeft = bullet->position.x - bullet->size.x / 2.0f;
+        bulletTop = bullet->position.y - bullet->size.y / 2.0f;
+        bulletRight = bullet->position.x + bullet->size.x / 2.0f;
+        bulletBottom = bullet->position.y + bullet->size.y / 2.0f;
         if (!PLAYER_BOXES_OVERLAP(bulletLeft, bulletTop, bulletRight, bulletBottom, enemyLeft, enemyTop, enemyRight,
                                   enemyBottom))
         {
@@ -142,10 +148,10 @@ i32 Player::CalcDamageToEnemy(D3DXVECTOR3 *enemyPosition, D3DXVECTOR3 *enemySize
         {
             continue;
         }
-        regionLeft = region->centerX - region->sizeX * 0.5f;
-        regionTop = region->centerY - region->sizeY * 0.5f;
-        regionRight = region->centerX + region->sizeX * 0.5f;
-        regionBottom = region->centerY + region->sizeY * 0.5f;
+        regionLeft = region->centerX - region->sizeX / 2.0f;
+        regionTop = region->centerY - region->sizeY / 2.0f;
+        regionRight = region->centerX + region->sizeX / 2.0f;
+        regionBottom = region->centerY + region->sizeY / 2.0f;
         if (!PLAYER_BOXES_OVERLAP(regionLeft, regionTop, regionRight, regionBottom, enemyLeft, enemyTop, enemyRight,
                                   enemyBottom))
         {
@@ -166,6 +172,7 @@ i32 Player::CalcDamageToEnemy(D3DXVECTOR3 *enemyPosition, D3DXVECTOR3 *enemySize
     return damage;
 }
 
+#pragma var_order(collisionTopLeft, y, x, i, projectileBottomRight, projectileTopLeft, collision, collisionBottomRight)
 i32 Player::CheckAuxProjectileCollision(D3DXVECTOR3 *center, D3DXVECTOR3 *size)
 {
     D3DXVECTOR3 projectileTopLeft;
@@ -174,37 +181,22 @@ i32 Player::CheckAuxProjectileCollision(D3DXVECTOR3 *center, D3DXVECTOR3 *size)
     D3DXVECTOR3 collisionBottomRight;
     PlayerAuxCollision *collision;
     i32 i;
+    f32 x;
+    f32 y;
 
-    projectileTopLeft.x = center->x - size->x * 0.5f;
-    projectileTopLeft.y = center->y - size->y * 0.5f;
-    projectileBottomRight.x = center->x + size->x * 0.5f;
-    projectileBottomRight.y = center->y + size->y * 0.5f;
     collision = &auxCollisions[0];
+    projectileTopLeft.x = center->x - size->x / 2.0f;
+    projectileTopLeft.y = center->y - size->y / 2.0f;
+    projectileBottomRight.x = center->x + size->x / 2.0f;
+    projectileBottomRight.y = center->y + size->y / 2.0f;
     for (i = 0; i < 96; ++i, ++collision)
     {
-        if (collision->sizeX == 0.0f)
+        if (collision->sizeX != 0.0f)
         {
-            if (collision->radius != 0.0f)
-            {
-                f32 x = center->x - collision->centerX;
-                f32 y = center->y - collision->centerY;
-                if (x * x + y * y >= collision->radius * collision->radius)
-                {
-                    continue;
-                }
-                else
-                {
-                    collisionCountdown = collision->collisionValue;
-                    return 2;
-                }
-            }
-        }
-        else
-        {
-            collisionTopLeft.x = collision->centerX - collision->sizeX * 0.5f;
-            collisionTopLeft.y = collision->centerY - collision->sizeY * 0.5f;
-            collisionBottomRight.x = collision->centerX + collision->sizeX * 0.5f;
-            collisionBottomRight.y = collision->centerY + collision->sizeY * 0.5f;
+            collisionTopLeft.x = collision->centerX - collision->sizeX / 2.0f;
+            collisionTopLeft.y = collision->centerY - collision->sizeY / 2.0f;
+            collisionBottomRight.x = collision->centerX + collision->sizeX / 2.0f;
+            collisionBottomRight.y = collision->centerY + collision->sizeY / 2.0f;
             if (PLAYER_BOXES_OVERLAP(collisionTopLeft.x, collisionTopLeft.y, collisionBottomRight.x,
                                      collisionBottomRight.y, projectileTopLeft.x, projectileTopLeft.y,
                                      projectileBottomRight.x, projectileBottomRight.y))
@@ -213,10 +205,28 @@ i32 Player::CheckAuxProjectileCollision(D3DXVECTOR3 *center, D3DXVECTOR3 *size)
                 return 2;
             }
         }
+        else
+        {
+            if (collision->radius != 0.0f)
+            {
+                x = center->x - collision->centerX;
+                y = center->y - collision->centerY;
+                if (x * x + y * y < collision->radius * collision->radius)
+                {
+                    collisionCountdown = collision->collisionValue;
+                    return 2;
+                }
+            }
+            else
+            {
+                continue;
+            }
+        }
     }
     return 0;
 }
 
+#pragma var_order(bulletBottomRight, bulletTopLeft)
 i32 Player::CalcKillBoxCollision(D3DXVECTOR3 *bulletCenter, D3DXVECTOR3 *bulletSize)
 {
     D3DXVECTOR3 bulletTopLeft;
@@ -227,19 +237,23 @@ i32 Player::CalcKillBoxCollision(D3DXVECTOR3 *bulletCenter, D3DXVECTOR3 *bulletS
     {
         return 2;
     }
-    bulletTopLeft.x = bulletCenter->x - bulletSize->x * 0.5f;
-    bulletTopLeft.y = bulletCenter->y - bulletSize->y * 0.5f;
-    bulletBottomRight.x = bulletCenter->x + bulletSize->x * 0.5f;
-    bulletBottomRight.y = bulletCenter->y + bulletSize->y * 0.5f;
-    if (killBoxTopLeft.x <= bulletBottomRight.x && killBoxTopLeft.y <= bulletBottomRight.y &&
-        killBoxBottomRight.x >= bulletTopLeft.x && killBoxBottomRight.y >= bulletTopLeft.y)
+    bulletTopLeft.x = bulletCenter->x - bulletSize->x / 2.0f;
+    bulletTopLeft.y = bulletCenter->y - bulletSize->y / 2.0f;
+    bulletBottomRight.x = bulletCenter->x + bulletSize->x / 2.0f;
+    bulletBottomRight.y = bulletCenter->y + bulletSize->y / 2.0f;
+    if (killBoxTopLeft.x > bulletBottomRight.x || killBoxBottomRight.x < bulletTopLeft.x ||
+        killBoxTopLeft.y > bulletBottomRight.y || killBoxBottomRight.y < bulletTopLeft.y)
     {
-        g_PlayerCollisionFlags |= 2;
-        if (playerState == 4)
-        {
-            AdvanceGrazeDisplay(0);
-            return 1;
-        }
+        return 0;
+    }
+    reinterpret_cast<PlayerCollisionState *>(g_PlayerCollisionFlags)->flags |= 2;
+    if (playerState == 4)
+    {
+        AdvanceGrazeDisplay(0);
+        return 1;
+    }
+    else
+    {
         if (playerState == 0)
         {
             g_GrazeState.BeginPlayerDeath();
@@ -247,9 +261,9 @@ i32 Player::CalcKillBoxCollision(D3DXVECTOR3 *bulletCenter, D3DXVECTOR3 *bulletS
         }
         return 1;
     }
-    return 0;
 }
 
+#pragma var_order(bulletBottomRight, bulletTopLeft)
 i32 Player::CheckGraze(D3DXVECTOR3 *center, D3DXVECTOR3 *size)
 {
     D3DXVECTOR3 bulletTopLeft;
@@ -260,16 +274,16 @@ i32 Player::CheckGraze(D3DXVECTOR3 *center, D3DXVECTOR3 *size)
     {
         return 2;
     }
-    bulletTopLeft.x = center->x - size->x * 0.5f - 20.0f;
-    bulletTopLeft.y = center->y - size->y * 0.5f - 20.0f;
-    bulletBottomRight.x = center->x + size->x * 0.5f + 20.0f;
-    bulletBottomRight.y = center->y + size->y * 0.5f + 20.0f;
+    bulletTopLeft.x = center->x - size->x / 2.0f - 20.0f;
+    bulletTopLeft.y = center->y - size->y / 2.0f - 20.0f;
+    bulletBottomRight.x = center->x + size->x / 2.0f + 20.0f;
+    bulletBottomRight.y = center->y + size->y / 2.0f + 20.0f;
     if (playerState == 2 || playerState == 1)
     {
         return 0;
     }
-    if (!PLAYER_BOXES_OVERLAP(grazeBoxTopLeft.x, grazeBoxTopLeft.y, grazeBoxBottomRight.x, grazeBoxBottomRight.y,
-                              bulletTopLeft.x, bulletTopLeft.y, bulletBottomRight.x, bulletBottomRight.y))
+    if (grazeBoxTopLeft.x > bulletBottomRight.x || grazeBoxBottomRight.x < bulletTopLeft.x ||
+        grazeBoxTopLeft.y > bulletBottomRight.y || grazeBoxBottomRight.y < bulletTopLeft.y)
     {
         return 0;
     }
@@ -277,6 +291,7 @@ i32 Player::CheckGraze(D3DXVECTOR3 *center, D3DXVECTOR3 *size)
     return 1;
 }
 
+#pragma var_order(itemBottomRight, itemTopLeft)
 i32 Player::CalcItemBoxCollision(D3DXVECTOR3 *center, D3DXVECTOR3 *size)
 {
     D3DXVECTOR3 itemTopLeft;
@@ -286,8 +301,8 @@ i32 Player::CalcItemBoxCollision(D3DXVECTOR3 *center, D3DXVECTOR3 *size)
     {
         return 0;
     }
-    itemTopLeft = *center - *size * 0.5f;
-    itemBottomRight = *center + *size * 0.5f;
+    itemTopLeft = *center - *size / 2.0f;
+    itemBottomRight = *center + *size / 2.0f;
     if (itemBoxTopLeft.x > itemBottomRight.x || itemBoxBottomRight.x < itemTopLeft.x ||
         itemBoxTopLeft.y > itemBottomRight.y || itemBoxBottomRight.y < itemTopLeft.y)
     {
@@ -309,10 +324,10 @@ i32 Player::CalcLaserHitbox(D3DXVECTOR3 *laserCenter, D3DXVECTOR3 *laserSize, D3
     f32 playerTop = playerY - laserHitboxHalfSize.y;
     f32 playerRight = playerX + laserHitboxHalfSize.x;
     f32 playerBottom = playerY + laserHitboxHalfSize.y;
-    f32 laserLeft = laserCenter->x - laserSize->x * 0.5f;
-    f32 laserTop = laserCenter->y - laserSize->y * 0.5f;
-    f32 laserRight = laserCenter->x + laserSize->x * 0.5f;
-    f32 laserBottom = laserCenter->y + laserSize->y * 0.5f;
+    f32 laserLeft = laserCenter->x - laserSize->x / 2.0f;
+    f32 laserTop = laserCenter->y - laserSize->y / 2.0f;
+    f32 laserRight = laserCenter->x + laserSize->x / 2.0f;
+    f32 laserBottom = laserCenter->y + laserSize->y / 2.0f;
 
     if (PLAYER_BOXES_OVERLAP(playerLeft, playerTop, playerRight, playerBottom, laserLeft, laserTop, laserRight,
                              laserBottom))
@@ -363,9 +378,9 @@ i32 Player::ScoreGraze(D3DXVECTOR3 *center)
             ++g_GameManager.grazeInTotal;
         }
     }
-    particlePosition.x = (positionCenter.x + center->x) * 0.5f;
-    particlePosition.y = (positionCenter.y + center->y) * 0.5f;
-    particlePosition.z = (positionCenter.z + center->z) * 0.5f;
+    particlePosition.x = (positionCenter.x + center->x) / 2.0f;
+    particlePosition.y = (positionCenter.y + center->y) / 2.0f;
+    particlePosition.z = (positionCenter.z + center->z) / 2.0f;
     g_EffectManager.SpawnParticles(8, &particlePosition, grazeSoundVariant == 1 && grazeVariant == 0 ? 3 : 1,
                                    grazeSoundVariant == 1 && grazeVariant == 0 ? -32640 : -1);
     IncreaseSubrank(6);

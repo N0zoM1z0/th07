@@ -291,8 +291,18 @@ def coff_symbol_bytes(
                 object_literal = data[start : start + len(literal)]
             if object_literal != literal:
                 raise ValueError(f"COFF literal does not match allowlist for {target_name}")
-        if target_bytes(destination + signed_addend, len(literal)) != literal:
-            raise ValueError(f"target literal no longer matches allowlist for {target_name}")
+        if validation == "literal":
+            if target_bytes(destination + signed_addend, len(literal)) != literal:
+                raise ValueError(f"target literal no longer matches allowlist for {target_name}")
+        else:
+            # Address-validated entries cover non-uniform tables whose
+            # permitted addends cannot all share one literal.  The target hash
+            # is already attested; preserve a base identity sample and force a
+            # mapped-image read so a stale or out-of-range ledger address fails
+            # closed without pretending every table element is identical.
+            if target_bytes(destination, len(literal)) != literal:
+                raise ValueError(f"target address sample no longer matches allowlist for {target_name}")
+            target_bytes(destination + signed_addend, 1)
         struct.pack_into("<I", code, field_offset, (destination + signed_addend) & 0xFFFFFFFF)
     return bytes(code)
 

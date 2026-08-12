@@ -19,7 +19,10 @@ Use together with `th07-re` after function semantics and boundaries are known.
    For a zero-addend function pointer, `--dir32-target SYMBOL=0xADDRESS` is
    accepted only when the address is a canonical function start in the
    target-attested ledger. Globals and literals still require the relocation
-   allowlist.
+   allowlist. Use `validation=literal` for constants and uniformly initialized
+   storage. Use `validation=address` only for directly evidenced non-uniform
+   tables: enumerate every accepted addend, retain an identifying base sample,
+   and require every resolved address to map inside the hash-attested target.
 5. Change one source-plausible expression or declaration at a time and rerun
    the canonical unit.
 6. A focused probe does not prove the original object partition. Record that
