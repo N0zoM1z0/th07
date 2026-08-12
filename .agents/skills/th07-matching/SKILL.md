@@ -44,13 +44,22 @@ source. The canonical `vc7-debug-od-no-gs-g6` profile exists for this case.
 Promote it only after all previously exact functions in the focused unit remain
 exact; TH07's DirectSound unit is the reference proof for this discriminator.
 
+If an `/Od` probe has the right ABI and source semantics but emits immediate or
+member-wise stores where the target uses pooled FPU constants, `movsd` aggregate
+copies, and inlined source helpers, A/B the source unchanged under
+`vc7-size-ob1-no-gs-g6` (`/Os /Ob1 /Op /G6`). Do not simulate the target with
+volatile fields, fake locals, or manual copies. Promote the size-oriented
+profile only after strict relocation-aware equality; `spellcard-gui` is the
+reference proof for this discriminator.
+
 ## Resource-aware iteration
 
-When host CPU is constrained, serialize VC7 builds and strict comparison
-batches; workers may continue packet analysis and source drafting in parallel.
-The canonical compiler wrapper enforces a cross-worker `flock` and runs Wine
-at niceness 10 by default; override only through the documented task-specific
-environment variables. Never run an unbounded
+When host CPU is constrained, keep VC7 builds and strict comparison batches
+within the wrapper's bounded lanes; workers may continue packet analysis and
+source drafting in parallel. The canonical compiler wrapper exposes two
+cross-worker `flock` slots and runs Wine at niceness 10 by default, which keeps
+the current host near the agreed 60% ceiling. Override only through the
+documented task-specific environment variables. Never run an unbounded
 `rg --follow --no-ignore` from a workspace containing a Wine prefix: Wine's
 `dosdevices/z:` symlink points to `/`. Keep `TH07_WINEPREFIX` outside the
 workspace, as the canonical scripts do.

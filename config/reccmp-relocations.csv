@@ -88,5 +88,57 @@ __real@3fc90fdb,0x00498A9C,db0fc93f,0x0,Exact target float pi over two used by b
 __real@41200000,0x00498AB4,00002041,0x0,Exact target float 10.0 used by laser endcap scaling,literal
 ?g_PlayerBombCallbacks@th07@@3PAY03P6IXPAUPlayerBombOverlay@1@@ZA,0x0049EC50,10874000,0x0;0x4;0x8;0xC,Target-observed six-by-four Player bomb callback table beginning with 0x408710,address
 ?g_GuiUpdateState@th07@@3HA,0x00575AB4,00000000,0x0,Target-image zero-initialized GUI update-state storage written by spellcard display helpers,literal
+__real@43600000,0x00498B2C,00006043,0x0,Exact target float 224.0 used by the spellcard bonus popup position,literal
+ecl_global_626280,0x00626280,00000000,0x0,Target-observed zero-initialized ECL integer operand storage,literal
+ecl_global_62F8A4,0x0062F8A4,00000000,0x0,Target-observed zero-initialized ECL integer operand storage,literal
+ecl_global_62F647,0x0062F647,00,0x0,Target-observed zero-initialized ECL byte operand storage,literal
+ecl_global_1347AA0,0x01347AA0,00000000,0x0,Target-observed zero-initialized ECL integer bank slot,literal
+ecl_global_1347AA4,0x01347AA4,00000000,0x0,Target-observed zero-initialized ECL integer bank slot,literal
+ecl_global_1347AA8,0x01347AA8,00000000,0x0,Target-observed zero-initialized ECL integer bank slot,literal
+ecl_global_1347AAC,0x01347AAC,00000000,0x0,Target-observed zero-initialized ECL integer bank slot,literal
+ecl_global_4BE408,0x004BE408,00000000,0x0,Target-observed zero-initialized ECL float operand storage,literal
+ecl_global_4BE40C,0x004BE40C,00000000,0x0,Target-observed zero-initialized ECL float operand storage,literal
+ecl_global_4BE410,0x004BE410,00000000,0x0,Target-observed zero-initialized ECL float operand storage,literal
+ecl_global_1347AB0,0x01347AB0,00000000,0x0,Target-observed zero-initialized ECL float bank slot,literal
+ecl_global_1347AB4,0x01347AB4,00000000,0x0,Target-observed zero-initialized ECL float bank slot,literal
+ecl_global_1347AB8,0x01347AB8,00000000,0x0,Target-observed zero-initialized ECL float bank slot,literal
+ecl_global_1347ABC,0x01347ABC,00000000,0x0,Target-observed zero-initialized ECL float bank slot,literal
+ecl_rng_49FE20,0x0049FE20,00000000,0x0,Target-observed zero-initialized ECL random-state storage,literal
+ecl_real_40c90fdb,0x00498A60,db0fc940,0x0,Exact target float two pi used by ECL random-angle resolution,literal
+ecl_real_40490fdb,0x00498A64,db0f4940,0x0,Exact target float pi used by ECL random-angle resolution,literal
+bullet_update_paused,0x0062627C,00,0x0,Target-observed zero-initialized pause byte read by BulletManager OnUpdate,literal
+bullet_update_player,0x004BDAD8,00000000,0x0,Target-observed Player storage used by BulletManager collision calls,literal
+bullet_update_timer_manager,0x00575950,00000000,0x0,Target-observed timer manager storage used by BulletManager OnUpdate,literal
+bullet_update_frame_multiplier,0x00575AC8,00000000,0x0,Target-observed zero-initialized frame multiplier storage used by laser movement,literal
+bullet_update_point_item,0x004BFEDC,00000000,0x0,Target-observed point-item identifier storage used by bullet cancellation,literal
+bullet_update_real_2_5,0x00498D50,00002040,0x0,Exact target float 2.5 divisor used by bullet spawn-state interpolation,literal
+bullet_update_real_3,0x00498A8C,00004040,0x0,Exact target float 3.0 divisor used by bullet spawn-state interpolation,literal
+bullet_update_real_255,0x00498AF8,00007f43,0x0,Exact target float 255.0 used by laser alpha ramps,literal
+bullet_update_real_640,0x00498BD8,00002044,0x0,Exact target float 640.0 used by laser offscreen bounds,literal
+spell_gui_49FBF0,0x0049FBF0,00000000,0x0,Target-observed zero-initialized GUI storage used by spell lifecycle calls,literal
+spell_ui_9A9B00,0x009A9B00,00000000,0x0,Target-observed zero-initialized UI state storage used by spell lifecycle calls,literal
+spell_bullet_manager_62F958,0x0062F958,00000000,0x0,Target-observed BulletManager storage used for spell-end cancellation,literal
+spell_sound_4BA0D8,0x004BA0D8,00000000,0x0,Target-observed sound storage used by spell-end audio,literal
+spell_visual_1348014,0x01348014,00000000,0x0,Target-observed zero-initialized spell visual state,literal
+spell_visual_1348018,0x01348018,00000000,0x0,Target-observed zero-initialized spell visual state,literal
+spell_vm_count_1348020,0x01348020,00000000,0x0,Target-observed zero-initialized spell VM count,literal
+spell_vm_base_1348024,0x01348024,00000000,0x0,Target-observed zero-initialized spell VM script base,literal
+spell_vms_1348028,0x01348028,00000000,0x0,Target-observed zero-initialized spell VM array base,literal
+spell_anm_4B9E44,0x004B9E44,00000000,0x0;0x28EF0,Target-observed animation manager pointer storage and script-table addend used by spell VM setup,address
+spell_active_12FE0C8,0x012FE0C8,00000000,0x0,Target-observed zero-initialized spell active state,literal
+spell_capture_12FE0C4,0x012FE0C4,00000000,0x0,Target-observed zero-initialized spell capture eligibility state,literal
+spell_base_score_12FE0CC,0x012FE0CC,00000000,0x0,Target-observed zero-initialized spell base score,literal
+spell_bonus_accum_12FE0D0,0x012FE0D0,00000000,0x0,Target-observed zero-initialized spell bonus accumulator,literal
+spell_per_tick_12FE0D4,0x012FE0D4,00000000,0x0,Target-observed zero-initialized spell score decay value,literal
+spell_id_12FE0D8,0x012FE0D8,00000000,0x0,Target-observed zero-initialized current spell identifier,literal
+spell_timer_previous_12FE0E0,0x012FE0E0,00000000,0x0,Target-observed zero-initialized spell timer previous value,literal
+spell_timer_current_12FE0E4,0x012FE0E4,00000000,0x0,Target-observed zero-initialized spell timer current value,literal
+spell_timer_subframe_12FE0E8,0x012FE0E8,00000000,0x0,Target-observed zero-initialized spell timer subframe value,literal
+spell_bosses_12FE098,0x012FE098,00000000,0x0,Target-observed zero-initialized eight-entry spell boss array base,literal
+spell_scores_49F1B8,0x0049F1B8,80841e00,0x0,Target-observed non-uniform spell base-score table,address
+spell_records_626288,0x00626288,00000000,0x0,Target-observed zero-initialized persistent spell record array base,literal
+spell_character_62F647,0x0062F647,00,0x0,Target-observed zero-initialized character index used by spell records,literal
+spell_replay_62F648,0x0062F648,00000000,0x0,Target-observed zero-initialized replay flags used by spell record gating,literal
+spell_score_state_626278,0x00626278,00000000,0x0,Target-observed zero-initialized score state pointer storage used by spell capture accounting,literal
 ??_C@_0BK@BJPCNFPG@error?5?3?5DIERR_INPUTLOST?$AN?6?$AA@,0x00497D80,6572726f72203a2044494552525f494e5055544c4f53540d0a00,0x0,Direct target DIERR_INPUTLOST diagnostic string,literal
 ??_C@_0BN@KAGFBIKB@error?5?3?5DIERR_INPUTLOST?5?$CFd?$AN?6?$AA@,0x00497D60,6572726f72203a2044494552525f494e5055544c4f53542025640d0a00,0x0,Direct target DIERR_INPUTLOST retry diagnostic string,literal

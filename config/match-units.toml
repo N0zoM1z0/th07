@@ -342,16 +342,237 @@ rel32_targets = [
 
 [[units.player-bomb.functions]]
 address = "0x004409F0"
-symbol_base = "?BeginBomb@PlayerBombOverlay@th07@@QAEXH@Z"
+symbol_base = "?BeginBomb@PlayerBombOverlay@th07@@QAEXXZ"
 
 [[units.player-bomb.functions]]
 address = "0x004420B0"
-symbol_base = "?DrawBomb@PlayerBombOverlay@th07@@QAEXXZ"
+symbol_base = "?DrawBomb@PlayerBombOverlay@th07@@QAEHXZ"
 
 [[units.player-bomb.functions]]
 address = "0x004423E0"
-symbol_base = "?RegisterBombCallbacks@PlayerBombOverlay@th07@@QAEXE@Z"
+symbol_base = "?RegisterBombCallbacks@PlayerBombOverlay@th07@@QAEHXZ"
 dir32_targets = ["?g_PlayerBombCallbacks@th07@@3PAY03P6IXPAUPlayerBombOverlay@1@@ZA=?g_PlayerBombCallbacks@th07@@3PAY03P6IXPAUPlayerBombOverlay@1@@ZA"]
+
+[units.ecl-operands]
+kind = "probe"
+source = "src/EclOperands.cpp"
+object = "build/match-units/EclOperands.obj"
+profile = "vc7-debug-od-no-gs-g6"
+notes = "Target-observed ECL integer/float rvalue and lvalue resolver switches over private Enemy offset overlays."
+
+[[units.ecl-operands.functions]]
+address = "0x0040E5B0"
+symbol_base = "?ResolveInt@EclOperands@th07@@YIHPAUEnemyOverlay@12@H@Z"
+rel32_targets = [
+  "__ftol2=0x0048B8A0",
+  "?TargetAngleToPlayer@EclOperands@th07@@YAMPBUVector3@12@@Z=0x00442370",
+  "?TargetVectorLength@EclOperands@th07@@YAMPBUVector3@12@@Z=0x00404E70",
+  "?TargetRandomU32@EclOperands@th07@@YAIPAX@Z=0x004318D0",
+]
+dir32_targets = [
+  "?g_TargetInt626280@EclOperands@th07@@3HA=ecl_global_626280",
+  "?g_TargetInt62F8A4@EclOperands@th07@@3HA=ecl_global_62F8A4",
+  "?g_TargetByte62F647@EclOperands@th07@@3EA=ecl_global_62F647",
+  "?g_TargetInt1347AA0@EclOperands@th07@@3HA=ecl_global_1347AA0",
+  "?g_TargetInt1347AA4@EclOperands@th07@@3HA=ecl_global_1347AA4",
+  "?g_TargetInt1347AA8@EclOperands@th07@@3HA=ecl_global_1347AA8",
+  "?g_TargetInt1347AAC@EclOperands@th07@@3HA=ecl_global_1347AAC",
+  "?g_TargetFloat4BE408@EclOperands@th07@@3MA=ecl_global_4BE408",
+  "?g_TargetFloat4BE40C@EclOperands@th07@@3MA=ecl_global_4BE40C",
+  "?g_TargetFloat4BE410@EclOperands@th07@@3MA=ecl_global_4BE410",
+  "?g_TargetFloat1347AB0@EclOperands@th07@@3MA=ecl_global_1347AB0",
+  "?g_TargetFloat1347AB4@EclOperands@th07@@3MA=ecl_global_1347AB4",
+  "?g_TargetFloat1347AB8@EclOperands@th07@@3MA=ecl_global_1347AB8",
+  "?g_TargetFloat1347ABC@EclOperands@th07@@3MA=ecl_global_1347ABC",
+  "?g_TargetRng49FE20@EclOperands@th07@@3PAEA=ecl_rng_49FE20",
+]
+
+[[units.ecl-operands.functions]]
+address = "0x0040EC00"
+symbol_base = "?ResolveIntLValue@EclOperands@th07@@YIPAHPAUEnemyOverlay@12@PAHGH@Z"
+dir32_targets = [
+  "?g_TargetInt626280@EclOperands@th07@@3HA=ecl_global_626280",
+  "?g_TargetInt62F8A4@EclOperands@th07@@3HA=ecl_global_62F8A4",
+  "?g_TargetInt1347AA0@EclOperands@th07@@3HA=ecl_global_1347AA0",
+  "?g_TargetInt1347AA4@EclOperands@th07@@3HA=ecl_global_1347AA4",
+  "?g_TargetInt1347AA8@EclOperands@th07@@3HA=ecl_global_1347AA8",
+  "?g_TargetInt1347AAC@EclOperands@th07@@3HA=ecl_global_1347AAC",
+]
+
+[[units.ecl-operands.functions]]
+address = "0x0040EDF0"
+symbol_base = "?ResolveFloat@EnemyOverlay@EclOperands@th07@@QAEMM@Z"
+rel32_targets = [
+  "__ftol2=0x0048B8A0",
+  "?TargetAngleToPlayer@EclOperands@th07@@YAMPBUVector3@12@@Z=0x00442370",
+  "?TargetVectorLength@EclOperands@th07@@YAMPBUVector3@12@@Z=0x00404E70",
+  "?TargetRandomF32@EclOperands@th07@@YAMPAX@Z=0x00431900",
+]
+dir32_targets = [
+  "?g_TargetInt626280@EclOperands@th07@@3HA=ecl_global_626280",
+  "?g_TargetInt62F8A4@EclOperands@th07@@3HA=ecl_global_62F8A4",
+  "?g_TargetByte62F647@EclOperands@th07@@3EA=ecl_global_62F647",
+  "?g_TargetInt1347AA0@EclOperands@th07@@3HA=ecl_global_1347AA0",
+  "?g_TargetInt1347AA4@EclOperands@th07@@3HA=ecl_global_1347AA4",
+  "?g_TargetInt1347AA8@EclOperands@th07@@3HA=ecl_global_1347AA8",
+  "?g_TargetInt1347AAC@EclOperands@th07@@3HA=ecl_global_1347AAC",
+  "?g_TargetFloat4BE408@EclOperands@th07@@3MA=ecl_global_4BE408",
+  "?g_TargetFloat4BE40C@EclOperands@th07@@3MA=ecl_global_4BE40C",
+  "?g_TargetFloat4BE410@EclOperands@th07@@3MA=ecl_global_4BE410",
+  "?g_TargetFloat1347AB0@EclOperands@th07@@3MA=ecl_global_1347AB0",
+  "?g_TargetFloat1347AB4@EclOperands@th07@@3MA=ecl_global_1347AB4",
+  "?g_TargetFloat1347AB8@EclOperands@th07@@3MA=ecl_global_1347AB8",
+  "?g_TargetFloat1347ABC@EclOperands@th07@@3MA=ecl_global_1347ABC",
+  "?g_TargetRng49FE20@EclOperands@th07@@3PAEA=ecl_rng_49FE20",
+  "__real@40c90fdb=ecl_real_40c90fdb",
+  "__real@40490fdb=ecl_real_40490fdb",
+]
+
+[[units.ecl-operands.functions]]
+address = "0x0040F3C0"
+symbol_base = "?ResolveFloatLValue@EclOperands@th07@@YIPAMPAUEnemyOverlay@12@PAMGH@Z"
+rel32_targets = ["__ftol2=0x0048B8A0"]
+dir32_targets = [
+  "?g_TargetFloat4BE408@EclOperands@th07@@3MA=ecl_global_4BE408",
+  "?g_TargetFloat4BE40C@EclOperands@th07@@3MA=ecl_global_4BE40C",
+  "?g_TargetFloat4BE410@EclOperands@th07@@3MA=ecl_global_4BE410",
+  "?g_TargetFloat1347AB0@EclOperands@th07@@3MA=ecl_global_1347AB0",
+  "?g_TargetFloat1347AB4@EclOperands@th07@@3MA=ecl_global_1347AB4",
+  "?g_TargetFloat1347AB8@EclOperands@th07@@3MA=ecl_global_1347AB8",
+  "?g_TargetFloat1347ABC@EclOperands@th07@@3MA=ecl_global_1347ABC",
+]
+
+[units.spellcard-gui]
+kind = "probe"
+source = "src/Spellcard.cpp"
+object = "build/match-units/Spellcard.obj"
+profile = "vc7-size-ob1-no-gs-g6"
+notes = "Focused VC7 size-oriented GUI spellcard popup probe; TH06 corroborates the source expression while TH07 target bytes determine the layout and extra GUI state write."
+
+[[units.spellcard-gui.functions]]
+address = "0x00427D09"
+symbol_base = "?ShowSpellcardBonus@SpellcardGui@th07@@QAEXI@Z"
+dir32_targets = [
+  "__real@43600000=__real@43600000",
+  "__real@41800000=__real@41800000",
+  "?g_GuiUpdateState@th07@@3HA=?g_GuiUpdateState@th07@@3HA",
+]
+
+[units.spell-lifecycle]
+kind = "probe"
+source = "src/SpellLifecycle.cpp"
+object = "build/match-units/SpellLifecycle.obj"
+profile = "vc7-debug-od-no-gs-g6"
+notes = "Target-observed spell start/capture/finish lifecycle skeleton with private Enemy, GUI, record, and effect overlays."
+
+[[units.spell-lifecycle.functions]]
+address = "0x0040FC90"
+symbol_base = "?StartSpellcard@SpellLifecycle@th07@@YIIPAUEnemyOverlay@12@PBUSpellStartInstruction@12@@Z"
+rel32_targets = [
+  "?ShowSpellcard@GuiOverlay@SpellLifecycle@th07@@QAEXFPBD@Z=0x00428887",
+  "?SetSpellUiState@UiStateOverlay@SpellLifecycle@th07@@QAEXH@Z=0x00424740",
+  "?SetAndExecuteScript@SpellVmOverlay@SpellLifecycle@th07@@QAEXPAX@Z=0x0044EA20",
+  "?TargetCreateEffect@SpellLifecycle@th07@@YAPAUEffectOverlay@12@HPBXHHH@Z=0x0041C610",
+]
+dir32_targets = [
+  "?g_TargetGui49FBF0@SpellLifecycle@th07@@3UGuiOverlay@12@A=spell_gui_49FBF0",
+  "?g_TargetUiState9A9B00@SpellLifecycle@th07@@3UUiStateOverlay@12@A=spell_ui_9A9B00",
+  "?g_TargetStartVisual1348014@SpellLifecycle@th07@@3HA=spell_visual_1348014",
+  "?g_TargetStartVisual1348018@SpellLifecycle@th07@@3HA=spell_visual_1348018",
+  "?g_TargetStartVmCount1348020@SpellLifecycle@th07@@3HA=spell_vm_count_1348020",
+  "?g_TargetStartVmBase1348024@SpellLifecycle@th07@@3HA=spell_vm_base_1348024",
+  "?g_TargetStartVms1348028@SpellLifecycle@th07@@3PAEA=spell_vms_1348028",
+  "?g_TargetAnmManager4B9E44@SpellLifecycle@th07@@3PAEA=spell_anm_4B9E44",
+  "?g_TargetSpellActive12FE0C8@SpellLifecycle@th07@@3HA=spell_active_12FE0C8",
+  "?g_TargetCaptureEligible12FE0C4@SpellLifecycle@th07@@3HA=spell_capture_12FE0C4",
+  "?g_TargetSpellBaseScore12FE0CC@SpellLifecycle@th07@@3HA=spell_base_score_12FE0CC",
+  "?g_TargetSpellBonusAccum12FE0D0@SpellLifecycle@th07@@3HA=spell_bonus_accum_12FE0D0",
+  "?g_TargetSpellPerTick12FE0D4@SpellLifecycle@th07@@3HA=spell_per_tick_12FE0D4",
+  "?g_TargetSpellId12FE0D8@SpellLifecycle@th07@@3HA=spell_id_12FE0D8",
+  "?g_TargetSpellTimerPrevious12FE0E0@SpellLifecycle@th07@@3HA=spell_timer_previous_12FE0E0",
+  "?g_TargetSpellTimerCurrent12FE0E4@SpellLifecycle@th07@@3HA=spell_timer_current_12FE0E4",
+  "?g_TargetSpellTimerSubframe12FE0E8@SpellLifecycle@th07@@3HA=spell_timer_subframe_12FE0E8",
+  "?g_TargetSpellScores49F1B8@SpellLifecycle@th07@@3PAHA=spell_scores_49F1B8",
+  "?g_TargetSpellRecords626288@SpellLifecycle@th07@@3PAEA=spell_records_626288",
+  "?g_TargetCharacterIndex62F647@SpellLifecycle@th07@@3EA=spell_character_62F647",
+  "?g_TargetReplayFlags62F648@SpellLifecycle@th07@@3IA=spell_replay_62F648",
+]
+
+[[units.spell-lifecycle.functions]]
+address = "0x004101A0"
+symbol_base = "?FinishSpellcard@SpellLifecycle@th07@@YIXPAUEnemyOverlay@12@PBX@Z"
+rel32_targets = [
+  "?EndSpellcardDisplay@GuiOverlay@SpellLifecycle@th07@@QAEXXZ=0x00427B54",
+  "?DespawnBullets@BulletManagerOverlay@SpellLifecycle@th07@@QAEHHH@Z=0x004249A0",
+  "?CalculateBonus@UiStateOverlay@SpellLifecycle@th07@@QAEHHH@Z=0x00423090",
+  "?ShowBonusScore@GuiOverlay@SpellLifecycle@th07@@QAEXH@Z=0x00427BF8",
+  "?ShowSpellcardBonus@GuiOverlay@SpellLifecycle@th07@@QAEXH@Z=0x00427D09",
+  "?PlaySound@SoundOverlay@SpellLifecycle@th07@@QAEXHH@Z=0x0044C930",
+]
+dir32_targets = [
+  "?g_TargetGui49FBF0@SpellLifecycle@th07@@3UGuiOverlay@12@A=spell_gui_49FBF0",
+  "?g_TargetUiState9A9B00@SpellLifecycle@th07@@3UUiStateOverlay@12@A=spell_ui_9A9B00",
+  "?g_TargetBulletManager62F958@SpellLifecycle@th07@@3UBulletManagerOverlay@12@A=spell_bullet_manager_62F958",
+  "?g_TargetSound4BA0D8@SpellLifecycle@th07@@3USoundOverlay@12@A=spell_sound_4BA0D8",
+  "?g_TargetSpellActive12FE0C8@SpellLifecycle@th07@@3HA=spell_active_12FE0C8",
+  "?g_TargetCaptureEligible12FE0C4@SpellLifecycle@th07@@3HA=spell_capture_12FE0C4",
+  "?g_TargetSpellBaseScore12FE0CC@SpellLifecycle@th07@@3HA=spell_base_score_12FE0CC",
+  "?g_TargetSpellBonusAccum12FE0D0@SpellLifecycle@th07@@3HA=spell_bonus_accum_12FE0D0",
+  "?g_TargetSpellId12FE0D8@SpellLifecycle@th07@@3HA=spell_id_12FE0D8",
+  "?g_TargetSpellBosses12FE098@SpellLifecycle@th07@@3PAPAUEnemyOverlay@12@A=spell_bosses_12FE098",
+  "?g_TargetSpellRecords626288@SpellLifecycle@th07@@3PAEA=spell_records_626288",
+  "?g_TargetCharacterIndex62F647@SpellLifecycle@th07@@3EA=spell_character_62F647",
+  "?g_TargetReplayFlags62F648@SpellLifecycle@th07@@3IA=spell_replay_62F648",
+  "?g_TargetScoreState626278@SpellLifecycle@th07@@3PAEA=spell_score_state_626278",
+  "?g_TargetStartVisual1348014@SpellLifecycle@th07@@3HA=spell_visual_1348014",
+]
+
+[units.bullet-update]
+kind = "probe"
+source = "src/BulletUpdate.cpp"
+object = "build/match-units/BulletUpdate.obj"
+profile = "vc7-debug-od-no-gs-g6"
+notes = "High-leverage target-observed BulletManager main update skeleton covering 1024 bullets and 64 lasers; canonical comparison tracks structural convergence."
+
+[[units.bullet-update.functions]]
+address = "0x00425A50"
+symbol_base = "?OnUpdate@BulletManager@th07@@SIHPAV12@@Z"
+rel32_targets = [
+  "?OnUpdate@BulletUpdateItemManager@th07@@QAEXXZ=0x00432990",
+  "?Spawn@BulletUpdateItemManager@th07@@QAEXPAUBulletUpdateVec3@2@HH@Z=0x004326F0",
+  "?CheckGraze@BulletUpdatePlayer@th07@@QAEHPAUBulletUpdateVec3@2@0@Z=0x0043E3B0",
+  "?CalcKillBoxCollision@BulletUpdatePlayer@th07@@QAEHPAUBulletUpdateVec3@2@0@Z=0x0043E260",
+  "?CalcLaserHitbox@BulletUpdatePlayer@th07@@QAEHPAUBulletUpdateVec3@2@00MH@Z=0x0043E6B0",
+  "?ExecuteScript@BulletUpdateAnmVm@th07@@QAEHXZ=0x00450D60",
+  "?ApplyMovementCommands@BulletUpdateBullet@th07@@QAEXXZ=0x00424290",
+  "?UpdateSpeedRamp@BulletUpdateBullet@th07@@QAEXXZ=0x004250D0",
+  "?UpdateAcceleration@BulletUpdateBullet@th07@@QAEXXZ=0x004251A0",
+  "?UpdateRotation@BulletUpdateBullet@th07@@QAEXXZ=0x00425310",
+  "?UpdateDirectionChange@BulletUpdateBullet@th07@@QAEXXZ=0x00425400",
+  "?UpdateDirectionSet@BulletUpdateBullet@th07@@QAEXXZ=0x00425580",
+  "?UpdateAimAtPlayer@BulletUpdateBullet@th07@@QAEXXZ=0x00425700",
+  "?UpdateBounce@BulletUpdateBullet@th07@@QAEXXZ=0x004258A0",
+  "?Clear@BulletUpdateBullet@th07@@QAEXXZ=0x00417B20",
+  "?BulletIsInBounds@th07@@YGHMMMM@Z=0x0042D6D8",
+  "?Advance@BulletUpdateTimerManager@th07@@QAEXPAH0@Z=0x0043958D",
+  "__ftol2=0x0048B8A0",
+]
+dir32_targets = [
+  "?g_BulletUpdatePaused@th07@@3EA=bullet_update_paused",
+  "?g_ItemManager@th07@@3UBulletUpdateItemManager@1@A=?g_ItemManager@th07@@3PAEA",
+  "?g_Player@th07@@3UBulletUpdatePlayer@1@A=bullet_update_player",
+  "?g_TimerManager@th07@@3UBulletUpdateTimerManager@1@A=bullet_update_timer_manager",
+  "?g_FrameMultiplier@th07@@3MA=bullet_update_frame_multiplier",
+  "?g_BulletPointItem@th07@@3HA=bullet_update_point_item",
+  "__real@00000000=__real@00000000",
+  "__real@40000000=__real@40000000",
+  "__real@40200000=bullet_update_real_2_5",
+  "__real@40400000=bullet_update_real_3",
+  "__real@41800000=__real@41800000",
+  "__real@3fc90fdb=__real@3fc90fdb",
+  "__real@437f0000=bullet_update_real_255",
+  "__real@44200000=bullet_update_real_640",
+]
 
 [units.bullet-manager]
 kind = "probe"

@@ -53,6 +53,11 @@ case "$profile" in
     # follows the Pentium Pro/II/III scheduler while retaining no-GS /Od.
     profile_flags=(/Od /Ob1 /Op /G6)
     ;;
+  vc7-size-ob1-no-gs-g6)
+    # Some gameplay/UI translation units retain size-oriented code selection
+    # while explicitly inlining source-defined helpers.
+    profile_flags=(/Os /Ob1 /Op /G6)
+    ;;
   *)
     echo "unknown VC7 compiler profile: $profile" >&2
     exit 2
