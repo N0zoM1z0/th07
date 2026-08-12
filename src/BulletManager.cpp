@@ -38,9 +38,20 @@ extern u8 g_EffectsColorTable[];
 
 extern int __cdecl LoadAnm(int fileIndex, const char *path, int spriteIndexOffset);
 
+struct BulletTemplateScriptIds
+{
+    u32 bullet;
+    u32 spawnFast;
+    u32 spawnNormal;
+    u32 spawnSlow;
+    u32 spawnDonut;
+};
+
+#pragma var_order(i, scriptForBullet, anmVmForBullet, anmManagerForBullet, scriptForFast, anmVmForFast, \
+                  anmManagerForFast, scriptForNormal, anmVmForNormal, anmManagerForNormal, scriptForSlow, \
+                  anmVmForSlow, anmManagerForSlow, scriptForDonut, anmVmForDonut, anmManagerForDonut)
 int __fastcall BulletManager::AddedCallback(BulletManager *manager)
 {
-    int scriptForLargeBullet;
     AnmVm *anmVmForDonut;
     AnmManager *anmManagerForDonut;
     int scriptForDonut;
@@ -68,29 +79,29 @@ int __fastcall BulletManager::AddedCallback(BulletManager *manager)
 
     for (i = 0; i < 11; i++)
     {
-        scriptForBullet = g_BulletTemplateScriptIds[5 * i];
+        scriptForBullet = reinterpret_cast<BulletTemplateScriptIds *>(g_BulletTemplateScriptIds)[i].bullet;
         anmVmForBullet = &manager->templates[i].bullet;
         anmManagerForBullet = g_AnmManager;
         anmVmForBullet->scriptIndex = (u16)scriptForBullet;
         anmManagerForBullet->SetAndExecuteScript(anmVmForBullet,
                                                   anmManagerForBullet->scripts[scriptForBullet]);
-        scriptForFast = g_BulletTemplateScriptIds[5 * i + 1];
+        scriptForFast = reinterpret_cast<BulletTemplateScriptIds *>(g_BulletTemplateScriptIds)[i].spawnFast;
         anmVmForFast = &manager->templates[i].spawnFast;
         anmManagerForFast = g_AnmManager;
         anmVmForFast->scriptIndex = (u16)scriptForFast;
         anmManagerForFast->SetAndExecuteScript(anmVmForFast, anmManagerForFast->scripts[scriptForFast]);
-        scriptForNormal = g_BulletTemplateScriptIds[5 * i + 2];
+        scriptForNormal = reinterpret_cast<BulletTemplateScriptIds *>(g_BulletTemplateScriptIds)[i].spawnNormal;
         anmVmForNormal = &manager->templates[i].spawnNormal;
         anmManagerForNormal = g_AnmManager;
         anmVmForNormal->scriptIndex = (u16)scriptForNormal;
         anmManagerForNormal->SetAndExecuteScript(anmVmForNormal,
                                                   anmManagerForNormal->scripts[scriptForNormal]);
-        scriptForSlow = g_BulletTemplateScriptIds[5 * i + 3];
+        scriptForSlow = reinterpret_cast<BulletTemplateScriptIds *>(g_BulletTemplateScriptIds)[i].spawnSlow;
         anmVmForSlow = &manager->templates[i].spawnSlow;
         anmManagerForSlow = g_AnmManager;
         anmVmForSlow->scriptIndex = (u16)scriptForSlow;
         anmManagerForSlow->SetAndExecuteScript(anmVmForSlow, anmManagerForSlow->scripts[scriptForSlow]);
-        scriptForDonut = g_BulletTemplateScriptIds[5 * i + 4];
+        scriptForDonut = reinterpret_cast<BulletTemplateScriptIds *>(g_BulletTemplateScriptIds)[i].spawnDonut;
         anmVmForDonut = &manager->templates[i].spawnDonut;
         anmManagerForDonut = g_AnmManager;
         anmVmForDonut->scriptIndex = (u16)scriptForDonut;
@@ -112,7 +123,7 @@ int __fastcall BulletManager::AddedCallback(BulletManager *manager)
         }
         else if (manager->templates[i].bullet.sprite->heightPx <= 16.0f)
         {
-            switch (g_BulletTemplateScriptIds[5 * i])
+            switch (reinterpret_cast<BulletTemplateScriptIds *>(g_BulletTemplateScriptIds)[i].bullet)
             {
             case 514:
             case 516:
@@ -131,7 +142,9 @@ int __fastcall BulletManager::AddedCallback(BulletManager *manager)
         }
         else if (manager->templates[i].bullet.sprite->heightPx <= 32.0f)
         {
-            scriptForLargeBullet = g_BulletTemplateScriptIds[5 * i];
+            int scriptForLargeBullet;
+
+            scriptForLargeBullet = reinterpret_cast<BulletTemplateScriptIds *>(g_BulletTemplateScriptIds)[i].bullet;
             if (scriptForLargeBullet == 520)
             {
                 manager->templates[i].grazeWidth = 5.0f;

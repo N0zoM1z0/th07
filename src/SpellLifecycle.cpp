@@ -139,14 +139,45 @@ static __forceinline u8 *SpellRecord(i32 spellId)
     return g_TargetSpellRecords626288 + 120 * spellId;
 }
 
+static __forceinline void InitializeEffect(EnemyOverlay *enemy)
+{
+    i32 *effectTimerA;
+    i32 enemyTimer;
+    i32 *effectTimerB;
+
+    I32_AT(enemy->bytes, 0x2EB0) = (i32)TargetCreateEffect(25, enemy->bytes + 0x2B0C, 1, 1, -1);
+    effectTimerA = (i32 *)(I32_AT(enemy->bytes, 0x2EB0) + 120);
+    effectTimerA[2] = 0;
+    effectTimerA[1] = 0;
+    effectTimerA[0] = -999;
+    enemyTimer = I32_AT(enemy->bytes, 0x2EDC);
+    effectTimerB = (i32 *)(I32_AT(enemy->bytes, 0x2EB0) + 180);
+    effectTimerB[2] = enemyTimer;
+    effectTimerB[1] = 0;
+    effectTimerB[0] = -999;
+    U8_AT((u8 *)I32_AT(enemy->bytes, 0x2EB0), 196) = 0;
+    I32_AT((u8 *)I32_AT(enemy->bytes, 0x2EB0), 536) = I32_AT((u8 *)I32_AT(enemy->bytes, 0x2EB0), 24);
+    I32_AT((u8 *)I32_AT(enemy->bytes, 0x2EB0), 540) = I32_AT((u8 *)I32_AT(enemy->bytes, 0x2EB0), 28);
+    I32_AT((u8 *)I32_AT(enemy->bytes, 0x2EB0), 544) = 0x3E000000;
+    I32_AT((u8 *)I32_AT(enemy->bytes, 0x2EB0), 548) = 0x3E000000;
+    I32_AT((u8 *)I32_AT(enemy->bytes, 0x2EB0), 588) = I32_AT(enemy->bytes, 0x2B0C);
+    I32_AT((u8 *)I32_AT(enemy->bytes, 0x2EB0), 592) = I32_AT(enemy->bytes, 0x2B10);
+    I32_AT((u8 *)I32_AT(enemy->bytes, 0x2EB0), 596) = I32_AT(enemy->bytes, 0x2B14);
+}
+
 // Observed target ABI: 0x40FC90 accepts Enemy in ECX and raw ECL instruction
 // in EDX.  The functional names in this file are inferred only.
+#pragma var_order(i, name, record, checksum, scriptId, vm, anm, recordName, enemy, instruction)
 u32 __fastcall StartSpellcard(EnemyOverlay *enemy, const SpellStartInstruction *instruction)
 {
     u8 name[48];
     u32 i;
     u8 *record;
     i32 checksum;
+    i32 scriptId;
+    SpellVmOverlay *vm;
+    u8 *anm;
+    u8 *recordName;
 
     memcpy(name, instruction->encryptedName, sizeof(name));
     for (i = 0; i < 48; ++i)
@@ -159,9 +190,9 @@ u32 __fastcall StartSpellcard(EnemyOverlay *enemy, const SpellStartInstruction *
 
     for (i = 0; (i32)i < g_TargetStartVmCount1348020; ++i)
     {
-        i32 scriptId = (i32)i + g_TargetStartVmBase1348024 + 732;
-        SpellVmOverlay *vm = (SpellVmOverlay *)(g_TargetStartVms1348028 + 588 * i);
-        u8 *anm = g_TargetAnmManager4B9E44;
+        scriptId = (i32)i + g_TargetStartVmBase1348024 + 732;
+        vm = (SpellVmOverlay *)(g_TargetStartVms1348028 + 588 * i);
+        anm = g_TargetAnmManager4B9E44;
 
         U16_AT(vm->bytes, 472) = scriptId;
         vm->SetAndExecuteScript(*(void **)(anm + 0x28EF0 + 4 * scriptId));
@@ -183,45 +214,19 @@ u32 __fastcall StartSpellcard(EnemyOverlay *enemy, const SpellStartInstruction *
     U16_AT(enemy->bytes, 0x2BB2) = 0;
     U16_AT(enemy->bytes, 0x2BB4) = 0;
     U16_AT(enemy->bytes, 0x2BB6) = 0;
-    {
-        i32 *effectTimerA;
-        i32 enemyTimer;
-        i32 *effectTimerB;
-
-        I32_AT(enemy->bytes, 0x2EB0) = (i32)TargetCreateEffect(25, enemy->bytes + 0x2B0C, 1, 1, -1);
-        effectTimerA = (i32 *)(I32_AT(enemy->bytes, 0x2EB0) + 120);
-        effectTimerA[2] = 0;
-        effectTimerA[1] = 0;
-        effectTimerA[0] = -999;
-        enemyTimer = I32_AT(enemy->bytes, 0x2EDC);
-        effectTimerB = (i32 *)(I32_AT(enemy->bytes, 0x2EB0) + 180);
-        effectTimerB[2] = enemyTimer;
-        effectTimerB[1] = 0;
-        effectTimerB[0] = -999;
-        U8_AT((u8 *)I32_AT(enemy->bytes, 0x2EB0), 196) = 0;
-        I32_AT((u8 *)I32_AT(enemy->bytes, 0x2EB0), 536) = I32_AT((u8 *)I32_AT(enemy->bytes, 0x2EB0), 24);
-        I32_AT((u8 *)I32_AT(enemy->bytes, 0x2EB0), 540) = I32_AT((u8 *)I32_AT(enemy->bytes, 0x2EB0), 28);
-        I32_AT((u8 *)I32_AT(enemy->bytes, 0x2EB0), 544) = 0x3E000000;
-        I32_AT((u8 *)I32_AT(enemy->bytes, 0x2EB0), 548) = 0x3E000000;
-        I32_AT((u8 *)I32_AT(enemy->bytes, 0x2EB0), 588) = I32_AT(enemy->bytes, 0x2B0C);
-        I32_AT((u8 *)I32_AT(enemy->bytes, 0x2EB0), 592) = I32_AT(enemy->bytes, 0x2B10);
-        I32_AT((u8 *)I32_AT(enemy->bytes, 0x2EB0), 596) = I32_AT(enemy->bytes, 0x2B14);
-    }
+    InitializeEffect(enemy);
     U8_AT(enemy->bytes, 0x2E2B) &= ~2;
 
     if ((g_TargetReplayFlags62F648 >> 3) & 1)
         return 1;
 
     record = SpellRecord(g_TargetSpellId12FE0D8);
+    recordName = record + 43;
+    for (i = 0; ; ++i)
     {
-        u8 *recordName = record + 43;
-
-        for (i = 0; ; ++i)
-        {
-            recordName[i] = name[i];
-            if (!name[i])
-                break;
-        }
+        recordName[i] = name[i];
+        if (!name[i])
+            break;
     }
     checksum = RecordChecksum(record);
     if ((u8)checksum != record[42])
