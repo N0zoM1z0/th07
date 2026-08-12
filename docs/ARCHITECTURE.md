@@ -36,10 +36,29 @@ This module list is an adjacent-version hypothesis until TH07 addresses are
 confirmed. Exact normalized instruction clones are useful for prioritization,
 but target callers, callees, strings, globals, and data layouts decide names.
 
+## Confirmed source lanes
+
+### TextHelper buffer allocation (`0x00431A0F`–`0x00431D3B`)
+
+Six contiguous methods are implemented from target-side IDA decompilation and
+disassembly, with TH06/TH08 used as cross-version corroboration:
+
+- `TextHelper` is `0x24` bytes and owns a DIB section, compatible DC, selected
+  GDI objects, dimensions, pitch, image size, and Direct3D 8 format;
+- the constructor, destructor, release path, fallback allocator, DIB allocator,
+  and format lookup are instruction-identical or uniquely normalized against
+  one or both adjacent games;
+- `g_FormatInfoArray` is a seven-entry table at `0x0049ED98`, observed directly
+  in the TH07 image;
+- TH07 uses alpha mask `0x00008000` for `D3DFMT_A1R5G5B5`, agreeing with TH08
+  and differing from the current TH06 reference source.
+
+These functions remain `implemented` until a VC7 object build and exact
+address-bounded comparison promote them to `matching`.
+
 ## Planned source layout
 
 Source will be split by original engine responsibility under `src/`, following
 the stable TH06/TH08 module names where TH07 evidence agrees. Unknown routines
 remain ledger entries rather than being forced into a speculative catch-all
 translation unit.
-

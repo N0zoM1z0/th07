@@ -1,2 +1,2 @@
 address,name,module,confidence,evidence
-
+0x0049ED98,g_FormatInfoArray,text,observed,Exact target data at 0x0049ED98 and IDA xref from 0x00431CEC; seven 24-byte D3D format records

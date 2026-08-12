@@ -295,12 +295,12 @@ address,size,span_end,current_name,proposed_name,module,status,match_percent,cal
 0x00431900,40,0x00431927,sub_431900,,,unclassified,0.00,unknown,,false,,,,
 0x00431930,127,0x004319AE,sub_431930,,,unclassified,0.00,unknown,,false,,,,
 0x004319B0,95,0x00431A0E,sub_4319B0,,,unclassified,0.00,unknown,,false,,,,
-0x00431A0F,60,0x00431A4A,sub_431A0F,,,unclassified,0.00,unknown,,false,,,,
-0x00431A4B,17,0x00431A5B,sub_431A4B,,,unclassified,0.00,unknown,,false,,,,
-0x00431A5C,114,0x00431ACD,sub_431A5C,,,unclassified,0.00,unknown,,false,,,,
-0x00431ACE,95,0x00431B2C,sub_431ACE,,,unclassified,0.00,unknown,,false,,,,
-0x00431B2D,447,0x00431CEB,sub_431B2D,,,unclassified,0.00,unknown,,false,,,,
-0x00431CEC,80,0x00431D3B,sub_431CEC,,,unclassified,0.00,unknown,,false,,,,
+0x00431A0F,60,0x00431A4A,sub_431A0F,TextHelper_ctor,text,implemented,0.00,__thiscall,TextHelper * TextHelper_ctor(TextHelper * this),false,src/TextHelper.cpp,IDA decompile/disassembly 2026-08-12; unique TH06+TH08 normalized identity and raw bytes identical,root,Constructor writes offsets 0x00 0x04 0x08 0x14 0x1C 0x18 0x20 exactly
+0x00431A4B,17,0x00431A5B,sub_431A4B,TextHelper_dtor,text,implemented,0.00,__thiscall,void TextHelper_dtor(TextHelper * this),false,src/TextHelper.cpp,IDA decompile/callee 2026-08-12; exact TH06 bytes and matching TH08 source,root,Directly calls TextHelper_release_buffer
+0x00431A5C,114,0x00431ACD,sub_431A5C,TextHelper_release_buffer,text,implemented,0.00,__thiscall,bool TextHelper_release_buffer(TextHelper * this),false,src/TextHelper.cpp,IDA decompile and GDI callees 2026-08-12; unique TH06+TH08 normalized identity,root,Resets the same seven fields as the constructor when HDC is non-null
+0x00431ACE,95,0x00431B2C,sub_431ACE,TextHelper_allocate_buffer_with_fallback,text,implemented,0.00,__thiscall,bool TextHelper_allocate_buffer_with_fallback(TextHelper * this; int width; int height; D3DFORMAT format),false,src/TextHelper.cpp,IDA decompile 2026-08-12; unique TH06+TH08 normalized identity and raw bytes identical,root,Fallback formats 25/26 to 21 and 23 to 22
+0x00431B2D,447,0x00431CEB,sub_431B2D,TextHelper_try_allocate_buffer,text,implemented,0.00,__thiscall,bool TextHelper_try_allocate_buffer(TextHelper * this; int width; int height; D3DFORMAT format),false,src/TextHelper.cpp,IDA decompile/callees 2026-08-12; unique TH06+TH08 normalized identity,root,Confirmed 0x24-byte object layout and 108-byte bitmap-info local
+0x00431CEC,80,0x00431D3B,sub_431CEC,TextHelper_get_format_info,text,implemented,0.00,__thiscall,FormatInfo * TextHelper_get_format_info(TextHelper * this; D3DFORMAT format),false,src/TextHelper.cpp,IDA decompile/xref 2026-08-12 and exact target table at 0x0049ED98,root,Target A1R5G5B5 alpha mask is 0x8000 unlike current TH06 source
 0x00431D3C,1064,0x00432163,sub_431D3C,,,unclassified,0.00,unknown,,false,,,,
 0x00432164,247,0x0043225A,sub_432164,,,unclassified,0.00,unknown,,false,,,,
 0x0043225B,35,0x0043227D,sub_43225B,,,unclassified,0.00,unknown,,false,,,,

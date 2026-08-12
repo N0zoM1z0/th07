@@ -1,2 +1,7 @@
 address,name,module,confidence,evidence
-
+0x00431A0F,TextHelper_ctor,text,observed,IDA decompile and disassembly plus unique TH06/TH08 instruction identity
+0x00431A4B,TextHelper_dtor,text,observed,IDA decompile and direct call to 0x00431A5C plus exact TH06 bytes
+0x00431A5C,TextHelper_release_buffer,text,observed,IDA decompile and exact GDI callees plus unique TH06/TH08 instruction identity
+0x00431ACE,TextHelper_allocate_buffer_with_fallback,text,observed,IDA decompile plus exact TH06/TH08 bytes
+0x00431B2D,TextHelper_try_allocate_buffer,text,observed,IDA decompile and GDI/memset callees plus unique TH06/TH08 instruction identity
+0x00431CEC,TextHelper_get_format_info,text,observed,IDA decompile and exact xref from 0x00431B2D to target format table 0x0049ED98
