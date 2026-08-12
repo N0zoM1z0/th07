@@ -104,9 +104,11 @@ ecl_global_1347AB4,0x01347AB4,00000000,0x0,Target-observed zero-initialized ECL 
 ecl_global_1347AB8,0x01347AB8,00000000,0x0,Target-observed zero-initialized ECL float bank slot,literal
 ecl_global_1347ABC,0x01347ABC,00000000,0x0,Target-observed zero-initialized ECL float bank slot,literal
 ecl_rng_49FE20,0x0049FE20,00000000,0x0,Target-observed zero-initialized ECL random-state storage,literal
+ecl_player_4BDAD8,0x004BDAD8,00000000,0x0,Target-observed Player receiver used by ECL angle-to-player calls,literal
 ecl_real_40c90fdb,0x00498A60,db0fc940,0x0,Exact target float two pi used by ECL random-angle resolution,literal
 ecl_real_40490fdb,0x00498A64,db0f4940,0x0,Exact target float pi used by ECL random-angle resolution,literal
 bullet_update_paused,0x0062627C,00,0x0,Target-observed zero-initialized pause byte read by BulletManager OnUpdate,literal
+bullet_update_anm_manager,0x004B9E44,00000000,0x0,Target-observed animation manager pointer storage used by BulletManager OnUpdate,address
 bullet_update_player,0x004BDAD8,00000000,0x0,Target-observed Player storage used by BulletManager collision calls,literal
 bullet_update_timer_manager,0x00575950,00000000,0x0,Target-observed timer manager storage used by BulletManager OnUpdate,literal
 bullet_update_frame_multiplier,0x00575AC8,00000000,0x0,Target-observed zero-initialized frame multiplier storage used by laser movement,literal
@@ -140,5 +142,34 @@ spell_records_626288,0x00626288,00000000,0x0,Target-observed zero-initialized pe
 spell_character_62F647,0x0062F647,00,0x0,Target-observed zero-initialized character index used by spell records,literal
 spell_replay_62F648,0x0062F648,00000000,0x0,Target-observed zero-initialized replay flags used by spell record gating,literal
 spell_score_state_626278,0x00626278,00000000,0x0,Target-observed zero-initialized score state pointer storage used by spell capture accounting,literal
+player_bomb_input,0x004B9E50,0000,0x0,Target-observed input word used by Player bomb activation,literal
+player_bomb_resources,0x00626278,00000000,0x0,Target-observed player resource pointer storage used by bomb logic,literal
+player_bomb_score_update,0x0062F88C,00000000,0x0,Target-observed bomb score storage used by the update path,literal
+player_bomb_score_register,0x0062F890,00000000,0x0,Target-observed score storage clamped by bomb registration,literal
+player_bomb_flags,0x0049FBF4,00000000,0x0,Target-observed player or GUI flag storage updated by bomb logic,literal
+player_bomb_effect_0,0x012FE0CC,00000000,0x0,Target-observed bomb/spell effect state cleared on activation,literal
+player_bomb_effect_1,0x012FE0C4,00000000,0x0,Target-observed bomb/spell effect state cleared on activation,literal
+player_bomb_effect_2,0x012FE0DC,00000000,0x0,Target-observed bomb effect state destination,literal
+player_bomb_effect_3,0x012FE0C8,00000000,0x0,Target-observed bomb effect state source,literal
+player_bomb_screen,0x00575948,00000000,0x0,Target-observed screen/configuration pointer used by bomb capacity and dimensions,literal
+player_bomb_item_manager,0x00575C70,00000000,0x0,Target-observed ItemManager receiver used by bomb activation,literal
+player_bomb_graze_state,0x00626270,00000000,0x0,Target-observed graze and player-state receiver used by bomb activation,literal
+player_bomb_gui_state,0x0049FBF0,00000000,0x0,Target-observed GUI receiver used by bomb activation gating,literal
+player_bomb_hide_draw,0x0062F64D,00,0x0,Target-observed byte suppressing Player model drawing,literal
+player_bomb_draw_timer,0x004D44E0,00000000,0x0,Target-observed flash timer read by Player bomb drawing,literal
+player_bomb_draw_state,0x01347B00,00000000,0x0,Target-observed draw-state receiver used for bomb flash color,literal
+player_bomb_shot_type,0x0062F647,00,0x0,Target-observed character and shot selector byte,literal
+player_bomb_game_mode,0x0062F645,00,0x0,Target-observed game-mode selector byte used by Player resource loading,literal
+player_bomb_unfocused_sht,0x0049F530,b46b4900,0x0,Target-observed non-uniform unfocused shot-file pointer table,address
+player_bomb_focused_sht,0x0049F548,506b4900,0x0,Target-observed non-uniform focused shot-file pointer table,address
+player_bomb_anm_00,0x00496AD8,646174612f706c6179657230302e616e6d00,0x0,Direct target player00 animation archive path,literal
+player_bomb_anm_01,0x00496AC4,646174612f706c6179657230312e616e6d00,0x0,Direct target player01 animation archive path,literal
+player_bomb_anm_02,0x00496AB0,646174612f706c6179657230322e616e6d00,0x0,Direct target player02 animation archive path,literal
+player_bomb_anm_manager,0x004B9E44,00000000,0x0;0x1000;0x1200;0x1204,Target-observed animation manager pointer storage and source-private script-index addends used by Player bomb setup,address
+player_bomb_initial_x,0x0062F86C,00000000,0x0,Target-observed initial Player X position storage,literal
+player_bomb_initial_y,0x0062F870,00000000,0x0,Target-observed initial Player Y position storage,literal
+player_bomb_hud_active,0x0134D476,0000,0x0,Target-observed HUD state word set during Player bomb setup,literal
+player_bomb_hud_timer,0x013542EC,00000000,0x0,Target-observed HUD timer set during Player bomb setup,literal
+player_bomb_real_64,0x00498B08,00008042,0x0,Exact target float 64.0 used by initial Player Y positioning,literal
 ??_C@_0BK@BJPCNFPG@error?5?3?5DIERR_INPUTLOST?$AN?6?$AA@,0x00497D80,6572726f72203a2044494552525f494e5055544c4f53540d0a00,0x0,Direct target DIERR_INPUTLOST diagnostic string,literal
 ??_C@_0BN@KAGFBIKB@error?5?3?5DIERR_INPUTLOST?5?$CFd?$AN?6?$AA@,0x00497D60,6572726f72203a2044494552525f494e5055544c4f53542025640d0a00,0x0,Direct target DIERR_INPUTLOST retry diagnostic string,literal

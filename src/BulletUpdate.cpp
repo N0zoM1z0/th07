@@ -30,19 +30,27 @@ struct BulletUpdateAnmVm
     u32 color;
     u8 unknown1BC[4];
     u32 flags;
-    u8 unknown1C4[0x20];
+    u8 unknown1C4[0x1C];
+    i32 scriptActive;
     BulletUpdateSprite *sprite;
     u8 unknown1E8[0x24C - 0x1E8];
 
-    i32 ExecuteScript();
 };
 typedef char BulletUpdateAnmVm_size[(sizeof(BulletUpdateAnmVm) == 0x24C) ? 1 : -1];
+
+struct BulletUpdateAnmManager
+{
+    i32 ExecuteScript(BulletUpdateAnmVm *vm);
+};
+extern BulletUpdateAnmManager *g_BulletUpdateAnmManager;
 
 struct BulletUpdateTimer
 {
     i32 previous;
     i32 subFrame;
     i32 current;
+
+    void Decrement(i32 amount);
 };
 typedef char BulletUpdateTimer_size[(sizeof(BulletUpdateTimer) == 0xC) ? 1 : -1];
 
@@ -60,8 +68,7 @@ struct BulletUpdateBullet
     f32 angle;                        // +0xBBC
     u8 unknownBC0[8];
     BulletUpdateTimer lifetime;       // +0xBC8
-    u8 unknownBD4[8];
-    i32 collisionDelay;               // +0xBDC
+    BulletUpdateTimer collisionTimer; // +0xBD4
     u8 unknownBE0[0x10];
     i32 skipBoundsCountdown;          // +0xBF0
     u16 movementFlags;                // +0xBF4
@@ -135,7 +142,7 @@ struct BulletUpdateTimerManager
 };
 extern BulletUpdateTimerManager g_TimerManager;
 
-extern u8 g_BulletUpdatePaused;
+extern i8 g_BulletUpdatePaused;
 extern f32 g_FrameMultiplier;
 extern i32 g_BulletPointItem;
 
@@ -149,144 +156,51 @@ static __forceinline void AdvanceTimer(BulletUpdateTimer *timer)
 
 static __forceinline void ResetTimer(BulletUpdateTimer *timer)
 {
-    timer->previous = -999;
-    timer->subFrame = 0;
     timer->current = 0;
+    timer->subFrame = 0;
+    timer->previous = -999;
 }
 
-static __forceinline void UpdateLaser(BulletUpdateLaser *laser)
-{
-    BulletUpdateVec3 hitboxCenter;
-    BulletUpdateVec3 hitboxSize;
-    i32 fadeAlpha;
-    i32 rampFrames;
-    f32 hitboxThickness;
-    f32 visibleLength;
-
-    if (!laser->isInUse)
-    {
-        return;
-    }
-
-    laser->endOffset += g_FrameMultiplier * laser->speed;
-    if (laser->maximumLength < laser->endOffset - laser->startOffset)
-    {
-        laser->startOffset = laser->endOffset - laser->maximumLength;
-    }
-    if (laser->startOffset < 0.0f)
-    {
-        laser->startOffset = 0.0f;
-    }
-
-    visibleLength = laser->endOffset - laser->startOffset;
-    hitboxSize.x = visibleLength;
-    hitboxSize.y = laser->width / 2.0f;
-    hitboxCenter.x = visibleLength / 2.0f + laser->startOffset + laser->position.x;
-    hitboxCenter.y = laser->position.y;
-    hitboxCenter.z = 0.0f;
-    laser->primaryAnimation.scaleX = laser->width / laser->primaryAnimation.sprite->width;
-    laser->primaryAnimation.scaleY = visibleLength / laser->primaryAnimation.sprite->height;
-    laser->primaryAnimation.rotationZ = laser->angle + 1.5707964f;
-    laser->primaryAnimation.flags |= 4;
-
-    switch (laser->state)
-    {
-    case 0:
-        if (laser->flags & 1)
-        {
-            fadeAlpha = (i32)((laser->timer.current + laser->timer.subFrame) * 255.0f / laser->startTime);
-            if (fadeAlpha > 255)
-            {
-                fadeAlpha = 255;
-            }
-            laser->primaryAnimation.color = fadeAlpha << 24;
-        }
-        else
-        {
-            rampFrames = laser->startTime <= 30 ? laser->startTime : 30;
-            if (laser->startTime - rampFrames < laser->timer.current)
-            {
-                hitboxThickness =
-                    (laser->timer.current + laser->timer.subFrame) * laser->width / laser->startTime;
-            }
-            else
-            {
-                hitboxThickness = 1.2f;
-            }
-            laser->primaryAnimation.scaleX = hitboxThickness / 16.0f;
-            hitboxSize.x = hitboxThickness / 2.0f;
-        }
-        if (laser->timer.current >= laser->hitboxStartTime)
-        {
-            g_Player.CalcLaserHitbox(&hitboxCenter, &hitboxSize, &laser->position, laser->angle,
-                                     laser->timer.current % 12 == 0);
-        }
-        if (laser->timer.current < laser->startTime)
-        {
-            break;
-        }
-        ResetTimer(&laser->timer);
-        ++laser->state;
-        // fall through
-    case 1:
-        g_Player.CalcLaserHitbox(&hitboxCenter, &hitboxSize, &laser->position, laser->angle,
-                                 laser->timer.current % 12 == 0);
-        if (laser->timer.current < laser->duration)
-        {
-            break;
-        }
-        ResetTimer(&laser->timer);
-        ++laser->state;
-        if (!laser->despawnDuration)
-        {
-            laser->isInUse = 0;
-            return;
-        }
-        // fall through
-    case 2:
-        if (laser->flags & 1)
-        {
-            fadeAlpha = (i32)((laser->timer.current + laser->timer.subFrame) * 255.0f / laser->startTime);
-            if (fadeAlpha > 255)
-            {
-                fadeAlpha = 255;
-            }
-            laser->primaryAnimation.color = fadeAlpha << 24;
-        }
-        else if (laser->despawnDuration > 0)
-        {
-            hitboxThickness = laser->width -
-                              (laser->timer.current + laser->timer.subFrame) * laser->width / laser->despawnDuration;
-            laser->primaryAnimation.scaleX = hitboxThickness / 16.0f;
-            hitboxSize.x = hitboxThickness / 2.0f;
-        }
-        if (laser->timer.current < laser->hitboxEndDelay)
-        {
-            g_Player.CalcLaserHitbox(&hitboxCenter, &hitboxSize, &laser->position, laser->angle,
-                                     laser->timer.current % 12 == 0);
-        }
-        if (laser->timer.current >= laser->despawnDuration)
-        {
-            laser->isInUse = 0;
-            return;
-        }
-        break;
-    }
-
-    if (laser->startOffset >= 640.0f)
-    {
-        laser->isInUse = 0;
-    }
-    AdvanceTimer(&laser->timer);
-    laser->primaryAnimation.ExecuteScript();
-}
-
-#pragma var_order(collisionState, i, visibleLength, hitboxSize, bullet, laser, hitboxCenter)
+#pragma var_order(collisionState, i, hitboxThickness, bulletSchedulerIndex, hitboxSize, bullet, fadeAlpha, laser,     \
+                  hitboxCenter, spawnFastVelocity, spawnFastPosition, spawnFastProduct, spawnFastOffset,             \
+                  spawnNormalVelocity, spawnNormalPosition, spawnNormalProduct, spawnNormalOffset,                  \
+                  spawnSlowVelocity, spawnSlowPosition, spawnSlowProduct, spawnSlowOffset, despawnVelocity,          \
+                  despawnPosition, despawnProduct, despawnOffset, spawnFastScale, spawnNormalScale, spawnSlowScale,  \
+                  despawnScale)
 int __fastcall BulletManager::OnUpdate(BulletManager *manager)
 {
     BulletUpdateBullet *bullet;
     BulletUpdateLaser *laser;
+    BulletUpdateVec3 hitboxCenter;
+    BulletUpdateVec3 hitboxSize;
+    BulletUpdateVec3 *spawnFastVelocity;
+    BulletUpdateVec3 *spawnFastPosition;
+    BulletUpdateVec3 spawnFastProduct;
+    BulletUpdateVec3 spawnFastOffset;
+    BulletUpdateVec3 *spawnNormalVelocity;
+    BulletUpdateVec3 *spawnNormalPosition;
+    BulletUpdateVec3 spawnNormalProduct;
+    BulletUpdateVec3 spawnNormalOffset;
+    BulletUpdateVec3 *spawnSlowVelocity;
+    BulletUpdateVec3 *spawnSlowPosition;
+    BulletUpdateVec3 spawnSlowProduct;
+    BulletUpdateVec3 spawnSlowOffset;
+    BulletUpdateVec3 *despawnVelocity;
+    BulletUpdateVec3 *despawnPosition;
+    BulletUpdateVec3 despawnProduct;
+    BulletUpdateVec3 despawnOffset;
+    f32 spawnFastScale;
+    f32 spawnNormalScale;
+    f32 spawnSlowScale;
+    f32 despawnScale;
+    f32 hitboxThickness;
+    i32 fadeAlpha;
+    i32 bulletSchedulerIndex;
     i32 i;
+    i32 collisionState;
+
+    bulletSchedulerIndex = 0;
+    bullet = reinterpret_cast<BulletUpdateBullet *>(reinterpret_cast<u8 *>(manager) + 0xB8C0);
 
     if (g_BulletUpdatePaused)
     {
@@ -304,25 +218,28 @@ int __fastcall BulletManager::OnUpdate(BulletManager *manager)
     reinterpret_cast<BulletUpdateBullet **>(manager)[911442] = 0;
     reinterpret_cast<BulletUpdateBullet **>(manager)[911441] = 0;
 
-    bullet = reinterpret_cast<BulletUpdateBullet *>(reinterpret_cast<u8 *>(manager) + 0xB8C0);
-    for (i = 0; i < 1024; i++, bullet++)
+    for (i = 0; i < 1024; i++)
     {
         BulletUpdateAnmVm *animation;
-        i32 collisionState;
 
-        if (!bullet->state)
+        if (bullet->state)
         {
-            continue;
-        }
-
-        ++*reinterpret_cast<i32 *>(reinterpret_cast<u8 *>(manager) + 0x37A128);
-        switch (bullet->state)
-        {
+            ++*reinterpret_cast<i32 *>(reinterpret_cast<u8 *>(manager) + 0x37A128);
+            switch (bullet->state)
+            {
         case 2:
-            bullet->position.x += bullet->velocity.x / 2.0f;
-            bullet->position.y += bullet->velocity.y / 2.0f;
-            bullet->position.z += bullet->velocity.z / 2.0f;
-            if (!bullet->animation[1].ExecuteScript())
+            bullet->collisionTimer.Decrement(1);
+            spawnFastVelocity = &bullet->velocity;
+            spawnFastScale = 1.0f / 2.0f;
+            spawnFastProduct.z = spawnFastScale * spawnFastVelocity->z;
+            spawnFastProduct.y = spawnFastScale * spawnFastVelocity->y;
+            spawnFastProduct.x = spawnFastScale * spawnFastVelocity->x;
+            spawnFastOffset = spawnFastProduct;
+            spawnFastPosition = &bullet->position;
+            spawnFastPosition->x = spawnFastOffset.x + spawnFastPosition->x;
+            spawnFastPosition->y = spawnFastOffset.y + spawnFastPosition->y;
+            spawnFastPosition->z = spawnFastOffset.z + spawnFastPosition->z;
+            if (!g_BulletUpdateAnmManager->ExecuteScript(&bullet->animation[1]))
             {
                 break;
             }
@@ -332,33 +249,36 @@ int __fastcall BulletManager::OnUpdate(BulletManager *manager)
         case 1:
         update_fired_bullet:
             bullet->ApplyMovementCommands();
-            if (bullet->movementFlags & 1)
+            if (bullet->movementFlags)
             {
-                bullet->UpdateSpeedRamp();
-            }
-            if (bullet->movementFlags & 0x10)
-            {
-                bullet->UpdateAcceleration();
-            }
-            if (bullet->movementFlags & 0x20)
-            {
-                bullet->UpdateRotation();
-            }
-            if (bullet->movementFlags & 0x40)
-            {
-                bullet->UpdateDirectionChange();
-            }
-            if (bullet->movementFlags & 0x100)
-            {
-                bullet->UpdateDirectionSet();
-            }
-            if (bullet->movementFlags & 0x80)
-            {
-                bullet->UpdateAimAtPlayer();
-            }
-            if (bullet->movementFlags & 0xC00)
-            {
-                bullet->UpdateBounce();
+                if (bullet->movementFlags & 1)
+                {
+                    bullet->UpdateSpeedRamp();
+                }
+                if (bullet->movementFlags & 0x10)
+                {
+                    bullet->UpdateAcceleration();
+                }
+                if (bullet->movementFlags & 0x20)
+                {
+                    bullet->UpdateRotation();
+                }
+                if (bullet->movementFlags & 0x40)
+                {
+                    bullet->UpdateDirectionChange();
+                }
+                if (bullet->movementFlags & 0x100)
+                {
+                    bullet->UpdateDirectionSet();
+                }
+                if (bullet->movementFlags & 0x80)
+                {
+                    bullet->UpdateAimAtPlayer();
+                }
+                if (bullet->movementFlags & 0xC00)
+                {
+                    bullet->UpdateBounce();
+                }
             }
 
             if (bullet->skipBoundsCountdown)
@@ -370,31 +290,33 @@ int __fastcall BulletManager::OnUpdate(BulletManager *manager)
             bullet->position.z += bullet->velocity.z;
 
             animation = &bullet->animation[0];
-            if (!bullet->skipBoundsCountdown &&
-                !BulletIsInBounds(bullet->position.x, bullet->position.y, animation->sprite->width,
-                                  animation->sprite->height))
+            if (!bullet->skipBoundsCountdown)
             {
-                if (!(bullet->movementFlags & 0xDC0))
+                if (!BulletIsInBounds(bullet->position.x, bullet->position.y, animation->sprite->width,
+                                      animation->sprite->height))
                 {
-                    if (!bullet->offscreenCounter)
+                    if (!(bullet->movementFlags & 0xDC0))
+                    {
+                        if (!bullet->offscreenCounter)
+                        {
+                            bullet->Clear();
+                            continue;
+                        }
+                        --bullet->offscreenCounter;
+                    }
+                    else if (++bullet->offscreenCounter >= 0x80)
                     {
                         bullet->Clear();
                         continue;
                     }
-                    --bullet->offscreenCounter;
                 }
-                else if (++bullet->offscreenCounter >= 0x80)
+                else
                 {
-                    bullet->Clear();
-                    continue;
+                    bullet->offscreenCounter = 0;
                 }
-            }
-            else
-            {
-                bullet->offscreenCounter = 0;
             }
 
-            if (!bullet->grazeState && bullet->collisionDelay >= 16)
+            if (!bullet->grazeState && bullet->collisionTimer.current >= 16)
             {
                 collisionState = g_Player.CheckGraze(&bullet->position, &bullet->grazeSize);
                 if (collisionState == 1)
@@ -407,7 +329,7 @@ int __fastcall BulletManager::OnUpdate(BulletManager *manager)
                     g_ItemManager.Spawn(&bullet->position, g_BulletPointItem, 1);
                 }
             }
-            if (bullet->grazeState)
+            if (bullet->grazeState || bullet->collisionTimer.current < 16)
             {
                 collisionState = g_Player.CalcKillBoxCollision(&bullet->position, &bullet->grazeSize);
                 if (collisionState && (collisionState != 2 || !(bullet->collisionFlags & 0x1000)))
@@ -419,17 +341,26 @@ int __fastcall BulletManager::OnUpdate(BulletManager *manager)
                     }
                 }
             }
-            if (bullet->animation[0].ExecuteScript())
+            if (bullet->animation[0].scriptActive &&
+                g_BulletUpdateAnmManager->ExecuteScript(&bullet->animation[0]))
             {
                 bullet->Clear();
                 continue;
             }
             break;
         case 3:
-            bullet->position.x += bullet->velocity.x / 2.5f;
-            bullet->position.y += bullet->velocity.y / 2.5f;
-            bullet->position.z += bullet->velocity.z / 2.5f;
-            if (bullet->animation[2].ExecuteScript())
+            bullet->collisionTimer.Decrement(1);
+            spawnNormalVelocity = &bullet->velocity;
+            spawnNormalScale = 1.0f / 2.5f;
+            spawnNormalProduct.z = spawnNormalScale * spawnNormalVelocity->z;
+            spawnNormalProduct.y = spawnNormalScale * spawnNormalVelocity->y;
+            spawnNormalProduct.x = spawnNormalScale * spawnNormalVelocity->x;
+            spawnNormalOffset = spawnNormalProduct;
+            spawnNormalPosition = &bullet->position;
+            spawnNormalPosition->x = spawnNormalOffset.x + spawnNormalPosition->x;
+            spawnNormalPosition->y = spawnNormalOffset.y + spawnNormalPosition->y;
+            spawnNormalPosition->z = spawnNormalOffset.z + spawnNormalPosition->z;
+            if (g_BulletUpdateAnmManager->ExecuteScript(&bullet->animation[2]))
             {
                 bullet->state = 1;
                 ResetTimer(&bullet->lifetime);
@@ -437,10 +368,18 @@ int __fastcall BulletManager::OnUpdate(BulletManager *manager)
             }
             break;
         case 4:
-            bullet->position.x += bullet->velocity.x / 3.0f;
-            bullet->position.y += bullet->velocity.y / 3.0f;
-            bullet->position.z += bullet->velocity.z / 3.0f;
-            if (bullet->animation[3].ExecuteScript())
+            bullet->collisionTimer.Decrement(1);
+            spawnSlowVelocity = &bullet->velocity;
+            spawnSlowScale = 1.0f / 3.0f;
+            spawnSlowProduct.z = spawnSlowScale * spawnSlowVelocity->z;
+            spawnSlowProduct.y = spawnSlowScale * spawnSlowVelocity->y;
+            spawnSlowProduct.x = spawnSlowScale * spawnSlowVelocity->x;
+            spawnSlowOffset = spawnSlowProduct;
+            spawnSlowPosition = &bullet->position;
+            spawnSlowPosition->x = spawnSlowOffset.x + spawnSlowPosition->x;
+            spawnSlowPosition->y = spawnSlowOffset.y + spawnSlowPosition->y;
+            spawnSlowPosition->z = spawnSlowOffset.z + spawnSlowPosition->z;
+            if (g_BulletUpdateAnmManager->ExecuteScript(&bullet->animation[3]))
             {
                 bullet->state = 1;
                 ResetTimer(&bullet->lifetime);
@@ -448,26 +387,159 @@ int __fastcall BulletManager::OnUpdate(BulletManager *manager)
             }
             break;
         case 5:
-            bullet->position.x += bullet->velocity.x / 2.0f;
-            bullet->position.y += bullet->velocity.y / 2.0f;
-            bullet->position.z += bullet->velocity.z / 2.0f;
-            if (bullet->animation[4].ExecuteScript())
+            despawnVelocity = &bullet->velocity;
+            despawnScale = 1.0f / 2.0f;
+            despawnProduct.z = despawnScale * despawnVelocity->z;
+            despawnProduct.y = despawnScale * despawnVelocity->y;
+            despawnProduct.x = despawnScale * despawnVelocity->x;
+            despawnOffset = despawnProduct;
+            despawnPosition = &bullet->position;
+            despawnPosition->x = despawnOffset.x + despawnPosition->x;
+            despawnPosition->y = despawnOffset.y + despawnPosition->y;
+            despawnPosition->z = despawnOffset.z + despawnPosition->z;
+            if (g_BulletUpdateAnmManager->ExecuteScript(&bullet->animation[4]))
             {
                 bullet->Clear();
                 continue;
             }
             break;
+            }
+
+            AdvanceTimer(&bullet->lifetime);
+            bullet->drawNext = reinterpret_cast<BulletUpdateBullet **>(manager)[911441 + bullet->drawListIndex];
+            reinterpret_cast<BulletUpdateBullet **>(manager)[911441 + bullet->drawListIndex] = bullet;
         }
 
-        AdvanceTimer(&bullet->lifetime);
-        bullet->drawNext = reinterpret_cast<BulletUpdateBullet **>(manager)[911441 + bullet->drawListIndex];
-        reinterpret_cast<BulletUpdateBullet **>(manager)[911441 + bullet->drawListIndex] = bullet;
+        if (--bulletSchedulerIndex < 0)
+        {
+            bulletSchedulerIndex = 1023;
+            bullet += 1024;
+        }
+        --bullet;
     }
 
     laser = reinterpret_cast<BulletUpdateLaser *>(reinterpret_cast<u8 *>(manager) + 0x366628);
     for (i = 0; i < 64; i++, laser++)
     {
-        UpdateLaser(laser);
+        i32 rampFrames;
+
+        if (!laser->isInUse)
+        {
+            continue;
+        }
+
+        laser->endOffset += g_FrameMultiplier * laser->speed;
+        if (laser->maximumLength < laser->endOffset - laser->startOffset)
+        {
+            laser->startOffset = laser->endOffset - laser->maximumLength;
+        }
+        if (laser->startOffset < 0.0f)
+        {
+            laser->startOffset = 0.0f;
+        }
+
+        hitboxSize.x = laser->endOffset - laser->startOffset;
+        hitboxSize.y = laser->width / 2.0f;
+        hitboxCenter.x = (laser->endOffset - laser->startOffset) / 2.0f + laser->startOffset + laser->position.x;
+        hitboxCenter.y = laser->position.y;
+        hitboxCenter.z = 0.0f;
+        laser->primaryAnimation.scaleX = laser->width / laser->primaryAnimation.sprite->width;
+        laser->primaryAnimation.scaleY =
+            (laser->endOffset - laser->startOffset) / laser->primaryAnimation.sprite->height;
+        laser->primaryAnimation.rotationZ = laser->angle + 1.5707964f;
+        laser->primaryAnimation.flags |= 4;
+
+        switch (laser->state)
+        {
+        case 0:
+            if (laser->flags & 1)
+            {
+                fadeAlpha = (i32)((laser->timer.current + laser->timer.subFrame) * 255.0f / laser->startTime);
+                if (fadeAlpha > 255)
+                {
+                    fadeAlpha = 255;
+                }
+                laser->primaryAnimation.color = fadeAlpha << 24;
+            }
+            else
+            {
+                rampFrames = laser->startTime <= 30 ? laser->startTime : 30;
+                if (laser->startTime - rampFrames < laser->timer.current)
+                {
+                    hitboxThickness =
+                        (laser->timer.current + laser->timer.subFrame) * laser->width / laser->startTime;
+                }
+                else
+                {
+                    hitboxThickness = 1.2f;
+                }
+                laser->primaryAnimation.scaleX = hitboxThickness / 16.0f;
+                hitboxSize.x = hitboxThickness / 2.0f;
+            }
+            if (laser->timer.current >= laser->hitboxStartTime)
+            {
+                g_Player.CalcLaserHitbox(&hitboxCenter, &hitboxSize, &laser->position, laser->angle,
+                                         laser->timer.current % 12 == 0);
+            }
+            if (laser->timer.current < laser->startTime)
+            {
+                break;
+            }
+            ResetTimer(&laser->timer);
+            ++laser->state;
+            // fall through
+        case 1:
+            g_Player.CalcLaserHitbox(&hitboxCenter, &hitboxSize, &laser->position, laser->angle,
+                                     laser->timer.current % 12 == 0);
+            if (laser->timer.current < laser->duration)
+            {
+                break;
+            }
+            ResetTimer(&laser->timer);
+            ++laser->state;
+            if (!laser->despawnDuration)
+            {
+                laser->isInUse = 0;
+                continue;
+            }
+            // fall through
+        case 2:
+            if (laser->flags & 1)
+            {
+                fadeAlpha = (i32)((laser->timer.current + laser->timer.subFrame) * 255.0f / laser->startTime);
+                if (fadeAlpha > 255)
+                {
+                    fadeAlpha = 255;
+                }
+                laser->primaryAnimation.color = fadeAlpha << 24;
+            }
+            else if (laser->despawnDuration > 0)
+            {
+                hitboxThickness = laser->width -
+                                  (laser->timer.current + laser->timer.subFrame) * laser->width /
+                                      laser->despawnDuration;
+                laser->primaryAnimation.scaleX = hitboxThickness / 16.0f;
+                hitboxSize.x = hitboxThickness / 2.0f;
+            }
+            if (laser->timer.current < laser->hitboxEndDelay)
+            {
+                g_Player.CalcLaserHitbox(&hitboxCenter, &hitboxSize, &laser->position, laser->angle,
+                                         laser->timer.current % 12 == 0);
+            }
+            if (laser->timer.current >= laser->despawnDuration)
+            {
+                laser->isInUse = 0;
+                continue;
+            }
+            break;
+        }
+
+        if (laser->startOffset >= 640.0f)
+        {
+            laser->isInUse = 0;
+        }
+        AdvanceTimer(&laser->timer);
+        g_BulletUpdateAnmManager->ExecuteScript(&laser->primaryAnimation);
     }
 
     AdvanceTimer(reinterpret_cast<BulletUpdateTimer *>(reinterpret_cast<u8 *>(manager) + 0x37A134));

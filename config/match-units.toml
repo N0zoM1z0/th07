@@ -343,15 +343,80 @@ rel32_targets = [
 [[units.player-bomb.functions]]
 address = "0x004409F0"
 symbol_base = "?BeginBomb@PlayerBombOverlay@th07@@QAEXXZ"
+rel32_targets = [
+  "?StartDeathBomb@PlayerBombOverlay@th07@@QAEXH@Z=0x00441BD0",
+  "?RemoveAllItems@PlayerBombItemManager@th07@@QAEXXZ=0x00433A90",
+  "?FinishDeathBomb@PlayerBombOverlay@th07@@QAEXXZ=0x00441960",
+  "?IsBombStartBlocked@PlayerBombGrazeState@th07@@QAEHXZ=0x00404FE0",
+  "?IsBombInputBlocked@PlayerBombGuiState@th07@@QAEHXZ=0x0042AD66",
+  "?MarkBombStart@PlayerBombGrazeState@th07@@QAEXH@Z=0x0043B7A0",
+  "?SetBombItemState@PlayerBombGrazeState@th07@@QAEXH@Z=0x0042D612",
+  "?SetBombEffectTimer@PlayerBombGrazeState@th07@@QAEXH@Z=0x0042F526",
+  "__ftol2=0x0048B8A0",
+]
+dir32_targets = [
+  "?g_PlayerInputButtons@th07@@3GA=player_bomb_input",
+  "?g_PlayerBombResources@th07@@3PAUPlayerBombResourceState@1@A=player_bomb_resources",
+  "?g_BombScore@th07@@3HA=player_bomb_score_update",
+  "?g_PlayerFlags@th07@@3HA=player_bomb_flags",
+  "?g_BombEffectState0@th07@@3HA=player_bomb_effect_0",
+  "?g_BombEffectState1@th07@@3HA=player_bomb_effect_1",
+  "?g_BombEffectState2@th07@@3HA=player_bomb_effect_2",
+  "?g_BombEffectState3@th07@@3HA=player_bomb_effect_3",
+  "?g_PlayerBombScreen@th07@@3PAUPlayerBombScreenState@1@A=player_bomb_screen",
+  "?g_PlayerBombItemManager575C70@th07@@3UPlayerBombItemManager@1@A=player_bomb_item_manager",
+  "?g_PlayerBombGrazeState626270@th07@@3UPlayerBombGrazeState@1@A=player_bomb_graze_state",
+  "?g_PlayerBombGuiState49FBF0@th07@@3UPlayerBombGuiState@1@A=player_bomb_gui_state",
+]
 
 [[units.player-bomb.functions]]
 address = "0x004420B0"
 symbol_base = "?DrawBomb@PlayerBombOverlay@th07@@QAEHXZ"
+rel32_targets = [
+  "?DrawPlayerBullets@PlayerBombOverlay@th07@@QAEXXZ=0x0043D690",
+  "?DrawPlayer@PlayerBombAnmManager@th07@@QAEXPAX@Z=0x0044F770",
+  "?DrawShadow@PlayerBombAnmManager@th07@@QAEXPAX@Z=0x0044F9A0",
+  "?SetDrawColor@PlayerBombDrawState@th07@@QAEXH@Z=0x00406930",
+]
+dir32_targets = [
+  "?g_HidePlayerDraw@th07@@3EA=player_bomb_hide_draw",
+  "?g_PlayerDrawOffsetX@th07@@3MA=?g_RenderOffsetX@th07@@3MA",
+  "?g_PlayerDrawOffsetY@th07@@3MA=?g_RenderOffsetY@th07@@3MA",
+  "?g_BombDrawTimer@th07@@3HA=player_bomb_draw_timer",
+  "?g_PlayerBombAnmManager@th07@@3PAUPlayerBombAnmManager@1@A=player_bomb_anm_manager",
+  "?g_PlayerBombDrawState1347B00@th07@@3UPlayerBombDrawState@1@A=player_bomb_draw_state",
+]
 
 [[units.player-bomb.functions]]
 address = "0x004423E0"
 symbol_base = "?RegisterBombCallbacks@PlayerBombOverlay@th07@@QAEHXZ"
-dir32_targets = ["?g_PlayerBombCallbacks@th07@@3PAY03P6IXPAUPlayerBombOverlay@1@@ZA=?g_PlayerBombCallbacks@th07@@3PAY03P6IXPAUPlayerBombOverlay@1@@ZA"]
+rel32_targets = [
+  "?Load@PlayerBombShtSlot@th07@@QAEHPBD@Z=0x00442B70",
+  "?LoadFile@PlayerBombAnmManager@th07@@QAEHHPBDH@Z=0x0044DF90",
+  "?SetAndExecute@PlayerBombAnmManager@th07@@QAEXPAX0@Z=0x0044EA20",
+  "?FinishDeathBomb@PlayerBombOverlay@th07@@QAEXXZ=0x00441960",
+]
+dir32_targets = [
+  "?g_PlayerShotType@th07@@3EA=player_bomb_shot_type",
+  "?g_PlayerUnfocusedShtFiles@th07@@3PAPBDA=player_bomb_unfocused_sht",
+  "?g_PlayerFocusedShtFiles@th07@@3PAPBDA=player_bomb_focused_sht",
+  "?g_PlayerGameMode@th07@@3HA=player_bomb_game_mode",
+  "??_C@_0BC@NMOFKGIP@data?1player00?4anm?$AA@=player_bomb_anm_00",
+  "??_C@_0BC@BHLJHFCK@data?1player01?4anm?$AA@=player_bomb_anm_01",
+  "??_C@_0BC@JBCNAHIE@data?1player02?4anm?$AA@=player_bomb_anm_02",
+  "?g_PlayerBombAnmManager@th07@@3PAUPlayerBombAnmManager@1@A=player_bomb_anm_manager",
+  "?g_PlayerAnmScripts@th07@@3PAPAXA=player_bomb_anm_manager",
+  "?g_PlayerInitialX@th07@@3MA=player_bomb_initial_x",
+  "?g_PlayerInitialY@th07@@3MA=player_bomb_initial_y",
+  "?g_PlayerBombScreen@th07@@3PAUPlayerBombScreenState@1@A=player_bomb_screen",
+  "?g_PlayerBombCallbacks@th07@@3PAY03P6IXPAUPlayerBombOverlay@1@@ZA=?g_PlayerBombCallbacks@th07@@3PAY03P6IXPAUPlayerBombOverlay@1@@ZA",
+  "?g_PlayerBombHudActive@th07@@3FA=player_bomb_hud_active",
+  "?g_PlayerBombHudTimer@th07@@3HA=player_bomb_hud_timer",
+  "?g_PlayerBombResources@th07@@3PAUPlayerBombResourceState@1@A=player_bomb_resources",
+  "?g_BombScore@th07@@3HA=player_bomb_score_register",
+  "__real@3f000000=__real@3f000000",
+  "__real@42800000=player_bomb_real_64",
+]
 
 [units.ecl-operands]
 kind = "probe"
@@ -365,9 +430,9 @@ address = "0x0040E5B0"
 symbol_base = "?ResolveInt@EclOperands@th07@@YIHPAUEnemyOverlay@12@H@Z"
 rel32_targets = [
   "__ftol2=0x0048B8A0",
-  "?TargetAngleToPlayer@EclOperands@th07@@YAMPBUVector3@12@@Z=0x00442370",
-  "?TargetVectorLength@EclOperands@th07@@YAMPBUVector3@12@@Z=0x00404E70",
-  "?TargetRandomU32@EclOperands@th07@@YAIPAX@Z=0x004318D0",
+  "?AngleToPlayer@TargetPlayerOverlay@EclOperands@th07@@QAEMPBUVector3@23@@Z=0x00442370",
+  "?Length@Vector3@EclOperands@th07@@QBEMXZ=0x00404E70",
+  "?RandomU32@TargetRngOverlay@EclOperands@th07@@QAEIXZ=0x004318D0",
 ]
 dir32_targets = [
   "?g_TargetInt626280@EclOperands@th07@@3HA=ecl_global_626280",
@@ -384,7 +449,8 @@ dir32_targets = [
   "?g_TargetFloat1347AB4@EclOperands@th07@@3MA=ecl_global_1347AB4",
   "?g_TargetFloat1347AB8@EclOperands@th07@@3MA=ecl_global_1347AB8",
   "?g_TargetFloat1347ABC@EclOperands@th07@@3MA=ecl_global_1347ABC",
-  "?g_TargetRng49FE20@EclOperands@th07@@3PAEA=ecl_rng_49FE20",
+  "?g_TargetPlayer4BDAD8@EclOperands@th07@@3UTargetPlayerOverlay@12@A=ecl_player_4BDAD8",
+  "?g_TargetRng49FE20@EclOperands@th07@@3UTargetRngOverlay@12@A=ecl_rng_49FE20",
 ]
 
 [[units.ecl-operands.functions]]
@@ -404,9 +470,9 @@ address = "0x0040EDF0"
 symbol_base = "?ResolveFloat@EnemyOverlay@EclOperands@th07@@QAEMM@Z"
 rel32_targets = [
   "__ftol2=0x0048B8A0",
-  "?TargetAngleToPlayer@EclOperands@th07@@YAMPBUVector3@12@@Z=0x00442370",
-  "?TargetVectorLength@EclOperands@th07@@YAMPBUVector3@12@@Z=0x00404E70",
-  "?TargetRandomF32@EclOperands@th07@@YAMPAX@Z=0x00431900",
+  "?AngleToPlayer@TargetPlayerOverlay@EclOperands@th07@@QAEMPBUVector3@23@@Z=0x00442370",
+  "?Length@Vector3@EclOperands@th07@@QBEMXZ=0x00404E70",
+  "?RandomF32@TargetRngOverlay@EclOperands@th07@@QAEMXZ=0x00431900",
 ]
 dir32_targets = [
   "?g_TargetInt626280@EclOperands@th07@@3HA=ecl_global_626280",
@@ -423,7 +489,8 @@ dir32_targets = [
   "?g_TargetFloat1347AB4@EclOperands@th07@@3MA=ecl_global_1347AB4",
   "?g_TargetFloat1347AB8@EclOperands@th07@@3MA=ecl_global_1347AB8",
   "?g_TargetFloat1347ABC@EclOperands@th07@@3MA=ecl_global_1347ABC",
-  "?g_TargetRng49FE20@EclOperands@th07@@3PAEA=ecl_rng_49FE20",
+  "?g_TargetPlayer4BDAD8@EclOperands@th07@@3UTargetPlayerOverlay@12@A=ecl_player_4BDAD8",
+  "?g_TargetRng49FE20@EclOperands@th07@@3UTargetRngOverlay@12@A=ecl_rng_49FE20",
   "__real@40c90fdb=ecl_real_40c90fdb",
   "__real@40490fdb=ecl_real_40490fdb",
 ]
@@ -476,7 +543,7 @@ rel32_targets = [
 ]
 dir32_targets = [
   "?g_TargetGui49FBF0@SpellLifecycle@th07@@3UGuiOverlay@12@A=spell_gui_49FBF0",
-  "?g_TargetUiState9A9B00@SpellLifecycle@th07@@3UUiStateOverlay@12@A=spell_ui_9A9B00",
+  "?g_TargetUiState62F958@SpellLifecycle@th07@@3UUiStateOverlay@12@A=spell_bullet_manager_62F958",
   "?g_TargetStartVisual1348014@SpellLifecycle@th07@@3HA=spell_visual_1348014",
   "?g_TargetStartVisual1348018@SpellLifecycle@th07@@3HA=spell_visual_1348018",
   "?g_TargetStartVmCount1348020@SpellLifecycle@th07@@3HA=spell_vm_count_1348020",
@@ -543,7 +610,8 @@ rel32_targets = [
   "?CheckGraze@BulletUpdatePlayer@th07@@QAEHPAUBulletUpdateVec3@2@0@Z=0x0043E3B0",
   "?CalcKillBoxCollision@BulletUpdatePlayer@th07@@QAEHPAUBulletUpdateVec3@2@0@Z=0x0043E260",
   "?CalcLaserHitbox@BulletUpdatePlayer@th07@@QAEHPAUBulletUpdateVec3@2@00MH@Z=0x0043E6B0",
-  "?ExecuteScript@BulletUpdateAnmVm@th07@@QAEHXZ=0x00450D60",
+  "?ExecuteScript@BulletUpdateAnmManager@th07@@QAEHPAUBulletUpdateAnmVm@2@@Z=0x00450D60",
+  "?Decrement@BulletUpdateTimer@th07@@QAEXH@Z=0x004394C7",
   "?ApplyMovementCommands@BulletUpdateBullet@th07@@QAEXXZ=0x00424290",
   "?UpdateSpeedRamp@BulletUpdateBullet@th07@@QAEXXZ=0x004250D0",
   "?UpdateAcceleration@BulletUpdateBullet@th07@@QAEXXZ=0x004251A0",
@@ -558,7 +626,8 @@ rel32_targets = [
   "__ftol2=0x0048B8A0",
 ]
 dir32_targets = [
-  "?g_BulletUpdatePaused@th07@@3EA=bullet_update_paused",
+  "?g_BulletUpdatePaused@th07@@3DA=bullet_update_paused",
+  "?g_BulletUpdateAnmManager@th07@@3PAUBulletUpdateAnmManager@1@A=bullet_update_anm_manager",
   "?g_ItemManager@th07@@3UBulletUpdateItemManager@1@A=?g_ItemManager@th07@@3PAEA",
   "?g_Player@th07@@3UBulletUpdatePlayer@1@A=bullet_update_player",
   "?g_TimerManager@th07@@3UBulletUpdateTimerManager@1@A=bullet_update_timer_manager",

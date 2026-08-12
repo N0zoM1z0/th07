@@ -69,6 +69,7 @@ struct SoundOverlay
 // labels rather than speculative game-wide names.  Their mappings are left to
 // the coordinator/owning global lanes.
 extern GuiOverlay g_TargetGui49FBF0;
+extern UiStateOverlay g_TargetUiState62F958;
 extern UiStateOverlay g_TargetUiState9A9B00;
 extern BulletManagerOverlay g_TargetBulletManager62F958;
 extern SoundOverlay g_TargetSound4BA0D8;
@@ -77,7 +78,7 @@ extern i32 g_TargetStartVisual1348018;
 extern i32 g_TargetStartVmCount1348020;
 extern i32 g_TargetStartVmBase1348024;
 extern u8 g_TargetStartVms1348028[];
-extern u8 g_TargetAnmManager4B9E44[];
+extern u8 *g_TargetAnmManager4B9E44;
 extern i32 g_TargetSpellActive12FE0C8;
 extern i32 g_TargetCaptureEligible12FE0C4;
 extern i32 g_TargetSpellBaseScore12FE0CC;
@@ -165,7 +166,7 @@ static __forceinline void InitializeEffect(EnemyOverlay *enemy)
 u32 __fastcall StartSpellcard(EnemyOverlay *enemy, const SpellStartInstruction *instruction)
 {
     u8 name[48];
-    i32 i;
+    u32 i;
     u8 *record;
     i32 checksum;
 
@@ -174,17 +175,18 @@ u32 __fastcall StartSpellcard(EnemyOverlay *enemy, const SpellStartInstruction *
         name[i] ^= 0xAA;
 
     g_TargetGui49FBF0.ShowSpellcard(instruction->portraitScript, (const char *)name);
-    g_TargetUiState9A9B00.SetSpellUiState(1);
+    g_TargetUiState62F958.SetSpellUiState(1);
     g_TargetStartVisual1348014 = 1;
     g_TargetStartVisual1348018 = 0;
 
-    for (i = 0; i < g_TargetStartVmCount1348020; ++i)
+    for (i = 0; (i32)i < g_TargetStartVmCount1348020; ++i)
     {
+        i32 scriptId = (i32)i + g_TargetStartVmBase1348024 + 732;
         SpellVmOverlay *vm = (SpellVmOverlay *)(g_TargetStartVms1348028 + 588 * i);
-        i32 scriptId = i + g_TargetStartVmBase1348024 + 732;
+        u8 *anm = g_TargetAnmManager4B9E44;
 
         U16_AT(vm->bytes, 472) = scriptId;
-        vm->SetAndExecuteScript(*(void **)(g_TargetAnmManager4B9E44 + 0x28EF0 + 4 * scriptId));
+        vm->SetAndExecuteScript(*(void **)(anm + 0x28EF0 + 4 * scriptId));
     }
 
     g_TargetSpellActive12FE0C8 = 1;
@@ -233,9 +235,7 @@ u32 __fastcall StartSpellcard(EnemyOverlay *enemy, const SpellStartInstruction *
 // Capture/record role labels below are semantic inferences corroborated by TH06.
 void __fastcall FinishSpellcard(EnemyOverlay *unusedEnemy, const void *unusedInstruction)
 {
-    i32 bulletBonus;
-    i32 bonus;
-    i32 totalBonus;
+    i32 value;
     i32 i;
     u8 *record;
 
@@ -244,29 +244,29 @@ void __fastcall FinishSpellcard(EnemyOverlay *unusedEnemy, const void *unusedIns
         g_TargetGui49FBF0.EndSpellcardDisplay();
         if (g_TargetSpellActive12FE0C8 == 1)
         {
-            bulletBonus = g_TargetBulletManager62F958.DespawnBullets(8000, 1);
-            bonus = g_TargetUiState9A9B00.CalculateBonus(8000, bulletBonus);
-            if (bonus)
+            value = g_TargetBulletManager62F958.DespawnBullets(8000, 1);
+            value = g_TargetUiState9A9B00.CalculateBonus(8000, value);
+            if (value)
             {
-                I32_AT(g_TargetScoreState626278, 4) += bonus / 10;
-                g_TargetGui49FBF0.ShowBonusScore(bonus);
+                I32_AT(g_TargetScoreState626278, 4) += value / 10;
+                g_TargetGui49FBF0.ShowBonusScore(value);
             }
 
             if (g_TargetCaptureEligible12FE0C4)
             {
-                totalBonus = g_TargetSpellBonusAccum12FE0D0 + g_TargetSpellBaseScore12FE0CC;
-                g_TargetGui49FBF0.ShowSpellcardBonus(totalBonus);
-                I32_AT(g_TargetScoreState626278, 4) += totalBonus / 10;
+                record = SpellRecord(g_TargetSpellId12FE0D8);
+                value = g_TargetSpellBonusAccum12FE0D0 + g_TargetSpellBaseScore12FE0CC;
+                g_TargetGui49FBF0.ShowSpellcardBonus(value);
+                I32_AT(g_TargetScoreState626278, 4) += value / 10;
 
                 if (!((g_TargetReplayFlags62F648 >> 3) & 1))
                 {
-                    record = SpellRecord(g_TargetSpellId12FE0D8);
                     if ((u8)RecordChecksum(record) != record[42])
                         ResetRecordCounts(record);
-                    if (I32_AT(record, 12 + 4 * g_TargetCharacterIndex62F647) < totalBonus)
-                        I32_AT(record, 12 + 4 * g_TargetCharacterIndex62F647) = totalBonus;
-                    if (I32_AT(record, 36) < totalBonus)
-                        I32_AT(record, 36) = totalBonus;
+                    if (I32_AT(record, 12 + 4 * g_TargetCharacterIndex62F647) < value)
+                        I32_AT(record, 12 + 4 * g_TargetCharacterIndex62F647) = value;
+                    if (I32_AT(record, 36) < value)
+                        I32_AT(record, 36) = value;
                     if (U16_AT(record, 106 + 2 * g_TargetCharacterIndex62F647) < 9999)
                         ++U16_AT(record, 106 + 2 * g_TargetCharacterIndex62F647);
                     if (U16_AT(record, 118) < 9999)
