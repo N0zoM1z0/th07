@@ -59,3 +59,28 @@ python3 scripts/build.py --unit vc7-d3dx8-jidctred --compare --json
 The accepted rows cover matrix primitives, CD3DXBlt pixel-format paths, the
 JPEG marker parser, and reduced JPEG IDCTs. Their match units re-extract the
 objects and re-audit all declared relocations on every canonical run.
+
+## Relocation-free breadth wave (2026-08-12)
+
+An archive-wide scan matched COFF function sections with zero relocations
+against unique complete ledger bodies. Ambiguous symbols, duplicate aliases,
+one-byte tails, and every relocated body were excluded from automatic
+acceptance. The accepted manifest is `config/vc7-prebuilt-library.csv`.
+
+Thirty-seven pinned D3DX8 members reproduce another 121 functions and 18,710
+bytes exactly. They cover substantial libpng 1.0.5, IJG JPEG 6a, zlib 1.1.3,
+S3TC, and D3DX image conversion code. `scripts/build.py` materializes the CSV
+as ordinary canonical match units, re-extracts the SHA-pinned member, and runs
+the same strict target-byte comparator. Reproduce one member or the complete
+wave with:
+
+```bash
+python3 scripts/build.py --unit vc7-d3dx8-raw-pngrtran --compare --json
+for unit in $(python3 scripts/build.py --list | awk -F: '/vc7-d3dx8-raw/{print $1}'); do
+  python3 scripts/build.py --unit "$unit" --compare --json || exit
+done
+```
+
+Together, the accepted D3DX8 archive waves account for 150 exact functions and
+28,388 bytes. Relocated archive functions remain the next audit frontier; a
+raw body or cross-version identity alone does not promote them.

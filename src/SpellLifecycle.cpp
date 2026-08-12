@@ -139,28 +139,6 @@ static __forceinline u8 *SpellRecord(i32 spellId)
     return g_TargetSpellRecords626288 + 120 * spellId;
 }
 
-static __forceinline void InitializeEffect(EnemyOverlay *enemy)
-{
-    EffectOverlay *effect = TargetCreateEffect(25, enemy->bytes + 0x2B0C, 1, 1, -1);
-    u8 *bytes = effect->bytes;
-
-    I32_AT(enemy->bytes, 0x2EB0) = (i32)effect;
-    I32_AT(bytes, 120) = -999;
-    I32_AT(bytes, 124) = 0;
-    I32_AT(bytes, 128) = 0;
-    I32_AT(bytes, 180) = -999;
-    I32_AT(bytes, 184) = 0;
-    I32_AT(bytes, 188) = I32_AT(enemy->bytes, 0x2EDC);
-    U8_AT(bytes, 196) = 0;
-    I32_AT(bytes, 536) = I32_AT(bytes, 24);
-    I32_AT(bytes, 540) = I32_AT(bytes, 28);
-    F32_AT(bytes, 544) = 0.125f;
-    F32_AT(bytes, 548) = 0.125f;
-    F32_AT(bytes, 588) = F32_AT(enemy->bytes, 0x2B0C);
-    F32_AT(bytes, 592) = F32_AT(enemy->bytes, 0x2B10);
-    F32_AT(bytes, 596) = F32_AT(enemy->bytes, 0x2B14);
-}
-
 // Observed target ABI: 0x40FC90 accepts Enemy in ECX and raw ECL instruction
 // in EDX.  The functional names in this file are inferred only.
 u32 __fastcall StartSpellcard(EnemyOverlay *enemy, const SpellStartInstruction *instruction)
@@ -205,18 +183,45 @@ u32 __fastcall StartSpellcard(EnemyOverlay *enemy, const SpellStartInstruction *
     U16_AT(enemy->bytes, 0x2BB2) = 0;
     U16_AT(enemy->bytes, 0x2BB4) = 0;
     U16_AT(enemy->bytes, 0x2BB6) = 0;
-    InitializeEffect(enemy);
+    {
+        i32 *effectTimerA;
+        i32 enemyTimer;
+        i32 *effectTimerB;
+
+        I32_AT(enemy->bytes, 0x2EB0) = (i32)TargetCreateEffect(25, enemy->bytes + 0x2B0C, 1, 1, -1);
+        effectTimerA = (i32 *)(I32_AT(enemy->bytes, 0x2EB0) + 120);
+        effectTimerA[2] = 0;
+        effectTimerA[1] = 0;
+        effectTimerA[0] = -999;
+        enemyTimer = I32_AT(enemy->bytes, 0x2EDC);
+        effectTimerB = (i32 *)(I32_AT(enemy->bytes, 0x2EB0) + 180);
+        effectTimerB[2] = enemyTimer;
+        effectTimerB[1] = 0;
+        effectTimerB[0] = -999;
+        U8_AT((u8 *)I32_AT(enemy->bytes, 0x2EB0), 196) = 0;
+        I32_AT((u8 *)I32_AT(enemy->bytes, 0x2EB0), 536) = I32_AT((u8 *)I32_AT(enemy->bytes, 0x2EB0), 24);
+        I32_AT((u8 *)I32_AT(enemy->bytes, 0x2EB0), 540) = I32_AT((u8 *)I32_AT(enemy->bytes, 0x2EB0), 28);
+        I32_AT((u8 *)I32_AT(enemy->bytes, 0x2EB0), 544) = 0x3E000000;
+        I32_AT((u8 *)I32_AT(enemy->bytes, 0x2EB0), 548) = 0x3E000000;
+        I32_AT((u8 *)I32_AT(enemy->bytes, 0x2EB0), 588) = I32_AT(enemy->bytes, 0x2B0C);
+        I32_AT((u8 *)I32_AT(enemy->bytes, 0x2EB0), 592) = I32_AT(enemy->bytes, 0x2B10);
+        I32_AT((u8 *)I32_AT(enemy->bytes, 0x2EB0), 596) = I32_AT(enemy->bytes, 0x2B14);
+    }
     U8_AT(enemy->bytes, 0x2E2B) &= ~2;
 
     if ((g_TargetReplayFlags62F648 >> 3) & 1)
         return 1;
 
     record = SpellRecord(g_TargetSpellId12FE0D8);
-    for (i = 0; ; ++i)
     {
-        record[43 + i] = name[i];
-        if (!name[i])
-            break;
+        u8 *recordName = record + 43;
+
+        for (i = 0; ; ++i)
+        {
+            recordName[i] = name[i];
+            if (!name[i])
+                break;
+        }
     }
     checksum = RecordChecksum(record);
     if ((u8)checksum != record[42])
@@ -236,8 +241,6 @@ u32 __fastcall StartSpellcard(EnemyOverlay *enemy, const SpellStartInstruction *
 void __fastcall FinishSpellcard(EnemyOverlay *unusedEnemy, const void *unusedInstruction)
 {
     i32 value;
-    i32 i;
-    u8 *record;
 
     if (g_TargetSpellActive12FE0C8)
     {
@@ -254,7 +257,7 @@ void __fastcall FinishSpellcard(EnemyOverlay *unusedEnemy, const void *unusedIns
 
             if (g_TargetCaptureEligible12FE0C4)
             {
-                record = SpellRecord(g_TargetSpellId12FE0D8);
+                u8 *record = SpellRecord(g_TargetSpellId12FE0D8);
                 value = g_TargetSpellBonusAccum12FE0D0 + g_TargetSpellBaseScore12FE0CC;
                 g_TargetGui49FBF0.ShowSpellcardBonus(value);
                 I32_AT(g_TargetScoreState626278, 4) += value / 10;
@@ -278,14 +281,12 @@ void __fastcall FinishSpellcard(EnemyOverlay *unusedEnemy, const void *unusedIns
         }
 
         g_TargetSpellActive12FE0C8 = 0;
-        for (i = 0; i < 8; ++i)
+        for (i32 i = 0; i < 8; ++i)
         {
-            EnemyOverlay *boss = g_TargetSpellBosses12FE098[i];
-
-            if (boss && I32_AT(boss->bytes, 0x2EB0))
+            if (g_TargetSpellBosses12FE098[i] && I32_AT(g_TargetSpellBosses12FE098[i]->bytes, 0x2EB0))
             {
-                U8_AT((u8 *)I32_AT(boss->bytes, 0x2EB0), 716) = 0;
-                I32_AT(boss->bytes, 0x2EB0) = 0;
+                U8_AT((u8 *)I32_AT(g_TargetSpellBosses12FE098[i]->bytes, 0x2EB0), 716) = 0;
+                I32_AT(g_TargetSpellBosses12FE098[i]->bytes, 0x2EB0) = 0;
             }
         }
         g_TargetSound4BA0D8.PlaySound(15, 0);

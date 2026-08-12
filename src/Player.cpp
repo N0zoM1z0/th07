@@ -53,6 +53,7 @@ extern i32 g_GuiFlags;
 extern i32 g_StageScore;
 extern i32 g_RankValue;
 extern i32 *g_PlayerAnimationData;
+extern Player g_Player;
 
 extern void __cdecl IncreaseSubrank(i32 amount);
 extern i32 __cdecl AdvanceGrazeDisplay(i32 amount);
@@ -108,6 +109,15 @@ i32 Player::CalcDamageToEnemy(D3DXVECTOR3 *enemyPosition, D3DXVECTOR3 *enemySize
             continue;
         }
 
+        if ((bullet->type == 4 || bullet->type == 5) && (bullet->collisionFrame % 2) != 0)
+        {
+            continue;
+        }
+        if (bullet->collisionCallback && bullet->collisionCallback(this, bullet, enemyPosition))
+        {
+            continue;
+        }
+
         if (bombIsActive)
         {
             i32 reducedDamage = bullet->damage / 3;
@@ -122,8 +132,9 @@ i32 Player::CalcDamageToEnemy(D3DXVECTOR3 *enemyPosition, D3DXVECTOR3 *enemySize
         {
             if (bullet->state == 1)
             {
-                PlayerBulletAnimation *animation = reinterpret_cast<PlayerBulletAnimation *>(bullet);
-                animation->SetAndExecuteScript(g_PlayerAnimationData[bullet->animationIndex + 32 + 41916]);
+                bullet->animationIndex += 32;
+                reinterpret_cast<PlayerBulletAnimation *>(bullet)->SetAndExecuteScript(
+                    g_PlayerAnimationData[bullet->animationIndex + 41916]);
                 g_EffectManager.SpawnParticles(5, &bullet->position, 1, -1);
                 bullet->position.z = 0.1f;
             }
@@ -139,24 +150,23 @@ i32 Player::CalcDamageToEnemy(D3DXVECTOR3 *enemyPosition, D3DXVECTOR3 *enemySize
 
     for (i = 0; i < 112; ++i)
     {
-        PlayerDamageRegion *region = &damageRegions[i];
         D3DXVECTOR3 regionTopLeft;
         D3DXVECTOR3 regionBottomRight;
 
-        if (region->size.x <= 0.0f)
+        if (damageRegions[i].size.x <= 0.0f)
         {
             continue;
         }
-        regionTopLeft = region->position - region->size / 2.0f;
-        regionBottomRight = region->position + region->size / 2.0f;
+        regionTopLeft = damageRegions[i].position - damageRegions[i].size / 2.0f;
+        regionBottomRight = damageRegions[i].position + damageRegions[i].size / 2.0f;
         if (regionTopLeft.x > enemyBottomRight.x || regionBottomRight.x < enemyTopLeft.x ||
             regionTopLeft.y > enemyBottomRight.y || regionBottomRight.y < enemyTopLeft.y)
         {
             continue;
         }
 
-        damage += region->damage;
-        region->accumulatedDamage += region->damage;
+        damage += damageRegions[i].damage;
+        damageRegions[i].accumulatedDamage += damageRegions[i].damage;
         if ((++collisionParticleCounter & 3) == 0)
         {
             g_EffectManager.SpawnParticles(i >= 96 ? 5 : 3, enemyPosition, 1, -1);
@@ -203,7 +213,7 @@ i32 Player::CheckAuxProjectileCollision(D3DXVECTOR3 *center, D3DXVECTOR3 *size)
         }
         else
         {
-            if (collision->radius != 0.0f)
+            if (collision->radius != 0.0)
             {
                 x = center->x - collision->centerX;
                 y = center->y - collision->centerY;
@@ -237,15 +247,15 @@ i32 Player::CalcKillBoxCollision(D3DXVECTOR3 *bulletCenter, D3DXVECTOR3 *bulletS
     bulletTopLeft.y = bulletCenter->y - bulletSize->y / 2.0f;
     bulletBottomRight.x = bulletCenter->x + bulletSize->x / 2.0f;
     bulletBottomRight.y = bulletCenter->y + bulletSize->y / 2.0f;
-    if (killBoxTopLeft.x > bulletBottomRight.x || killBoxBottomRight.x < bulletTopLeft.x ||
-        killBoxTopLeft.y > bulletBottomRight.y || killBoxBottomRight.y < bulletTopLeft.y)
+    if (killBoxTopLeft.x > bulletBottomRight.x || killBoxTopLeft.y > bulletBottomRight.y ||
+        killBoxBottomRight.x < bulletTopLeft.x || killBoxBottomRight.y < bulletTopLeft.y)
     {
         return 0;
     }
     reinterpret_cast<PlayerCollisionState *>(g_PlayerCollisionFlags)->flags |= 2;
     if (playerState == 4)
     {
-        HandleCollisionDuringBomb(0);
+        g_Player.HandleCollisionDuringBomb(0);
         return 1;
     }
     if (playerState != 0)
@@ -352,7 +362,7 @@ LASER_COLLISION:
     reinterpret_cast<PlayerCollisionState *>(g_PlayerCollisionFlags)->flags |= 2;
     if (playerState == 4)
     {
-        HandleCollisionDuringBomb(0);
+        g_Player.HandleCollisionDuringBomb(0);
         return 1;
     }
     else if (playerState != 0)
@@ -383,9 +393,9 @@ i32 Player::ScoreGraze(D3DXVECTOR3 *center)
         }
     }
     particlePosition = (positionCenter + *center) / 2.0f;
-    if (grazeSoundVariant == 1)
+    if (static_cast<i8>(grazeSoundVariant) == 1)
     {
-        if (grazeVariant)
+        if (static_cast<i8>(grazeVariant))
         {
             g_EffectManager.SpawnParticles(8, &particlePosition, 1, -1);
         }
@@ -402,11 +412,10 @@ i32 Player::ScoreGraze(D3DXVECTOR3 *center)
     g_GuiFlags = (g_GuiFlags & 0xFFFFFF3F) | 0x80;
     g_SoundPlayer.PlaySoundByIdx(30, 0);
     g_StageScore += 20 * ((g_RankValue - g_GameManager->rankBaseline) / 1500) + 2500;
-    register i32 scoreUnit = 10;
-    g_GameManager->scoreRelated += 2000 / scoreUnit;
-    if (grazeSoundVariant == 1)
+    g_GameManager->scoreRelated += 2000 / 10;
+    if (static_cast<i8>(grazeSoundVariant) == 1)
     {
-        if (grazeVariant)
+        if (static_cast<i8>(grazeVariant))
         {
             AdvanceGrazeDisplay(30);
             return FinishGrazeDisplay(30);

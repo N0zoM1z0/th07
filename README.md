@@ -77,10 +77,12 @@ The PE linker metadata and Rich header identify Visual C++ .NET 2002 (VC7,
 build 9466), matching the toolchain family used by the TH06 and TH08 reference
 projects. A matching full executable is not yet advertised; reconstruction
 starts with address-bounded translation units and function-level comparison.
-The current VC7 probes reconstruct 55 `TextHelper`, MIDI, DirectSound,
-Controller, ScreenEffect, BulletManager, Player, and Chain functions exactly
-(8,686/8,686 compared bytes). They remain focused probes rather than
-assertions about the original object boundaries.
+Focused VC7 probes cover `TextHelper`, MIDI, DirectSound, Controller,
+ScreenEffect, BulletManager, Player, spell, and Chain code. SHA-pinned D3DX8
+archive replay separately recovers original third-party objects without
+inflating authored-game progress. Current exact counts and byte totals are
+generated in [docs/PROGRESS.md](docs/PROGRESS.md); probe units are not claims
+about the original game translation-unit boundaries.
 
 ## License
 

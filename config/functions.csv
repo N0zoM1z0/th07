@@ -88,8 +88,8 @@ address,size,span_end,current_name,proposed_name,module,status,match_percent,cal
 0x0040F8F0,566,0x0040FB25,sub_40F8F0,,,unclassified,0.00,unknown,,false,,,,
 0x0040FB30,89,0x0040FB88,sub_40FB30,,,unclassified,0.00,unknown,,false,,,,
 0x0040FB90,256,0x0040FC8F,sub_40FB90,,,unclassified,0.00,unknown,,false,,,,
-0x0040FC90,1285,0x00410194,sub_40FC90,Ecl_start_spellcard,ecl,compiles,0.00,__fastcall,u32 Ecl_start_spellcard(EnemyOverlay * enemy; const SpellStartInstruction * instruction),false,src/SpellLifecycle.cpp,python3 scripts/build.py --unit spell-lifecycle --compare --json; corrected 0x62F958 UI receiver and unsigned name loop; object 1291 bytes frame 0x7C versus target 1285 frame 0x84 2026-08-12,root,Target-observed name decryption GUI VM spell timer effect and non-replay record initialization lifecycle
-0x004101A0,889,0x00410518,sub_4101A0,Ecl_finish_spellcard,ecl,compiles,0.00,__fastcall,void Ecl_finish_spellcard(EnemyOverlay * enemy; const void * instruction),false,src/SpellLifecycle.cpp,python3 scripts/build.py --unit spell-lifecycle --compare --json; reused target value local and record ordering; object 921 bytes frame 0x3C versus target 889 frame 0x34 2026-08-12,root,Target-observed spell-end bullet bonus capture record boss-effect cleanup and audio lifecycle
+0x0040FC90,1285,0x00410194,sub_40FC90,Ecl_start_spellcard,ecl,compiles,0.00,__fastcall,u32 Ecl_start_spellcard(EnemyOverlay * enemy; const SpellStartInstruction * instruction),false,src/SpellLifecycle.cpp,python3 scripts/build.py --unit spell-lifecycle --compare --json; target frame 0x84 reached; object 1389 bytes first mismatch +0xC argument home 2026-08-12,root,Target-observed name decryption GUI VM spell timer effect and non-replay record initialization lifecycle
+0x004101A0,889,0x00410518,sub_4101A0,Ecl_finish_spellcard,ecl,compiles,0.00,__fastcall,void Ecl_finish_spellcard(EnemyOverlay * enemy; const void * instruction),false,src/SpellLifecycle.cpp,python3 scripts/build.py --unit spell-lifecycle --compare --json; direct boss indexing; object 936 bytes frame 0x38 versus target 0x34 2026-08-12,root,Target-observed spell-end bullet bonus capture record boss-effect cleanup and audio lifecycle
 0x00410520,29464,0x00417837,sub_410520,,,unclassified,0.00,unknown,,false,,,,
 0x00417AF0,33,0x00417B10,sub_417AF0,,,unclassified,0.00,unknown,,false,,,,
 0x00417B20,107,0x00417B8A,sub_417B20,,,unclassified,0.00,unknown,,false,,,,
@@ -190,7 +190,7 @@ address,size,span_end,current_name,proposed_name,module,status,match_percent,cal
 0x00425580,372,0x004256F3,sub_425580,,,unclassified,0.00,unknown,,false,,,,
 0x00425700,403,0x00425892,sub_425700,,,unclassified,0.00,unknown,,false,,,,
 0x004258A0,425,0x00425A48,sub_4258A0,,,unclassified,0.00,unknown,,false,,,,
-0x00425A50,4237,0x00426ADC,sub_425A50,BulletManager_on_update,bullet,compiles,0.00,__fastcall,i32 BulletManager_on_update(BulletManager * manager),false,src/BulletUpdate.cpp,python3 scripts/build.py --unit bullet-update --compare --json; target scheduler traversal timer decrement ANM receiver and collision gates recovered; object 4119 bytes frame 0x12C versus target 4237 frame 0x13C 2026-08-12,root,Target-observed 1024-bullet and 64-laser state movement collision graze despawn timer and draw-list loop skeleton
+0x00425A50,4237,0x00426ADC,sub_425A50,BulletManager_on_update,bullet,compiles,0.00,__fastcall,i32 BulletManager_on_update(BulletManager * manager),false,src/BulletUpdate.cpp,python3 scripts/build.py --unit bullet-update --compare --json; target branch laser store order and fractional timer math recovered; object 4123 bytes frame 0x12C versus target 4237 frame 0x13C 2026-08-12,root,Target-observed 1024-bullet and 64-laser state movement collision graze despawn timer and draw-list loop skeleton
 0x00426B00,289,0x00426C20,sub_426B00,BulletManager_draw_selected_bullet_animation,bullet,matching,100.00,__fastcall,void BulletManager_draw_selected_bullet_animation(Bullet * bullet),false,src/BulletRender.cpp,python3 scripts/build.py --unit bullet-render --compare --json; strict VC7 no-GS G6 COFF exact 289/289 bytes with verified animation globals and angle helper 2026-08-12,root,Target-observed five-VM state selection and draw transform
 0x00426C40,796,0x00426F5B,sub_426C40,BulletManager_on_draw,bullet,matching,100.00,__fastcall,int BulletManager_on_draw(BulletManager * manager),false,src/BulletRender.cpp,python3 scripts/build.py --unit bullet-render --compare --json; strict VC7 no-GS G6 COFF exact 796/796 bytes with verified render globals and callees 2026-08-12,root,Target-observed 64-laser loop plus item draw and six bullet draw lists
 0x00426F60,1703,0x00427606,sub_426F60,BulletManager_added_callback,bullet,compiles,0.00,__cdecl,int BulletManager_added_callback(BulletManager * manager),false,src/BulletManager.cpp,VC7 COFF compiles; target callback semantics and 11 template records observed,root,Source shaping and relocation integration remain
@@ -431,13 +431,13 @@ address,size,span_end,current_name,proposed_name,module,status,match_percent,cal
 0x0043D790,229,0x0043D874,sub_43D790,,,unclassified,0.00,unknown,,false,,,,
 0x0043D880,264,0x0043D987,sub_43D880,,,unclassified,0.00,unknown,,false,,,,
 0x0043D990,72,0x0043D9D7,sub_43D990,,,unclassified,0.00,unknown,,false,,,,
-0x0043D9E0,1724,0x0043E09B,sub_43D9E0,Player_calc_damage_to_enemy,player,compiles,0.00,__thiscall,i32 Player_calc_damage_to_enemy(Player * this; D3DXVECTOR3 * position; D3DXVECTOR3 * size; i32 * bomb_hit),false,src/Player.cpp,VC7 COFF compiles; target bullet and damage-region walks observed,root,Relocations and source shaping remain
-0x0043E0A0,442,0x0043E259,sub_43E0A0,Player_check_aux_projectile_collision,player,compiles,0.00,__thiscall,i32 Player_check_aux_projectile_collision(Player * this; D3DXVECTOR3 * center; D3DXVECTOR3 * size),false,src/Player.cpp,VC7 COFF compiles; target AABB and circle pool scan observed,root,Original source name remains hypothesis-qualified
-0x0043E260,324,0x0043E3A3,sub_43E260,Player_calc_kill_box_collision,player,compiles,0.00,__thiscall,i32 Player_calc_kill_box_collision(Player * this; D3DXVECTOR3 * center; D3DXVECTOR3 * size),false,src/Player.cpp,VC7 COFF compiles; target death collision flow observed,root,Relocations and source shaping remain
+0x0043D9E0,1724,0x0043E09B,sub_43D9E0,Player_calc_damage_to_enemy,player,compiles,0.00,__thiscall,i32 Player_calc_damage_to_enemy(Player * this; D3DXVECTOR3 * position; D3DXVECTOR3 * size; i32 * bomb_hit),false,src/Player.cpp,python3 scripts/build.py --unit player-core --compare --json; object 1691 bytes frame 0xDC versus target 1724 frame 0xD0 2026-08-12,root,Target-observed bullet and damage-region walks odd-frame rejection callback and animation mutation
+0x0043E0A0,442,0x0043E259,sub_43E0A0,Player_check_aux_projectile_collision,player,matching,100.00,__thiscall,i32 Player_check_aux_projectile_collision(Player * this; D3DXVECTOR3 * center; D3DXVECTOR3 * size),false,src/Player.cpp,python3 scripts/build.py --unit player-core --compare --json exact 442/442,root,Target qword-zero radius guard and AABB/circle pool scan
+0x0043E260,324,0x0043E3A3,sub_43E260,Player_calc_kill_box_collision,player,matching,100.00,__thiscall,i32 Player_calc_kill_box_collision(Player * this; D3DXVECTOR3 * center; D3DXVECTOR3 * size),false,src/Player.cpp,python3 scripts/build.py --unit player-core --compare --json exact 324/324,root,Target global Player receiver death and bomb collision flow
 0x0043E3B0,293,0x0043E4D4,sub_43E3B0,Player_check_graze,player,matching,100.00,__thiscall,i32 Player_check_graze(Player * this; D3DXVECTOR3 * center; D3DXVECTOR3 * size),false,src/Player.cpp,python3 scripts/build.py --unit player-core --compare --json; strict VC7 no-GS G6 COFF exact 293/293 bytes with verified collision constants/calls 2026-08-12,root,Target local order and explicit disjoint AABB control flow match exactly
 0x0043E4E0,456,0x0043E6A7,sub_43E4E0,Player_calc_item_box_collision,player,matching,100.00,__thiscall,i32 Player_calc_item_box_collision(Player * this; D3DXVECTOR3 * center; D3DXVECTOR3 * size),false,src/Player.cpp,python3 scripts/build.py --unit player-core --compare --json; strict VC7 no-GS G6 COFF exact 456/456 bytes with verified float relocations 2026-08-12,root,TH06-style vector division and target variable order reproduce code exactly
-0x0043E6B0,1247,0x0043EB8E,sub_43E6B0,Player_calc_laser_hitbox,player,compiles,0.00,__thiscall,i32 Player_calc_laser_hitbox(Player * this; D3DXVECTOR3 * center; D3DXVECTOR3 * size; D3DXVECTOR3 * rotation; f32 angle; i32 can_graze),false,src/Player.cpp,VC7 COFF compiles; target rotated hitbox and graze flow observed,root,Rotation helper representation remains under comparison
-0x0043EB90,549,0x0043EDB4,sub_43EB90,Player_score_graze,player,compiles,0.00,__thiscall,i32 Player_score_graze(Player * this; D3DXVECTOR3 * center),false,src/Player.cpp,VC7 COFF compiles; target counters effects rank and sound flow observed,root,Relocations and source shaping remain
+0x0043E6B0,1247,0x0043EB8E,sub_43E6B0,Player_calc_laser_hitbox,player,matching,100.00,__thiscall,i32 Player_calc_laser_hitbox(Player * this; D3DXVECTOR3 * center; D3DXVECTOR3 * size; D3DXVECTOR3 * rotation; f32 angle; i32 can_graze),false,src/Player.cpp,python3 scripts/build.py --unit player-core --compare --json exact 1247/1247,root,Target rotated hitbox graze and global Player bomb receiver flow
+0x0043EB90,549,0x0043EDB4,sub_43EB90,Player_score_graze,player,compiles,0.00,__thiscall,i32 Player_score_graze(Player * this; D3DXVECTOR3 * center),false,src/Player.cpp,python3 scripts/build.py --unit player-core --compare --json; object 534 bytes target frame 0x48 reached; missing preserved ESI divisor path 2026-08-12,root,Target counters effects rank sound and non-folded division flow
 0x0043EDC0,143,0x0043EE4E,sub_43EDC0,Player_die,player,matching,100.00,__thiscall,i32 Player_die(Player * this),false,src/Player.cpp,python3 scripts/build.py --unit player-core --compare --json; strict VC7 COFF exact 143/143 bytes with verified effect/state/sound relocations 2026-08-12,root,Resets last-hit vector through a target-shaped pointer local
 0x0043EE50,6790,0x004408D5,sub_43EE50,,,unclassified,0.00,unknown,,false,,,,
 0x00440940,169,0x004409E8,sub_440940,,,unclassified,0.00,unknown,,false,,,,
@@ -694,7 +694,7 @@ address,size,span_end,current_name,proposed_name,module,status,match_percent,cal
 0x00462083,253,0x0046217F,sub_462083,,,unclassified,0.00,unknown,,false,,,,
 0x004621A0,262,0x004622A5,sub_4621A0,,,unclassified,0.00,unknown,,false,,,,
 0x004622A6,36,0x004622C9,sub_4622A6,,,unclassified,0.00,unknown,,false,,,,
-0x004622CA,128,0x00462349,sub_4622CA,,,unclassified,0.00,unknown,,false,,,,
+0x004622CA,128,0x00462349,sub_4622CA,?FI_Score@@YAKPAUFormatInfo@@0@Z,third_party,library,100.00,unknown,,false,docs/LIBRARY_RECOVERY.md,python3 scripts/build.py --unit vc7-d3dx8-raw-d3dx8tex --compare --json exact 128/128,root,SHA-pinned d3dx8.lib d3dx8tex.obj relocation-free raw exact replay
 0x0046234A,994,0x0046272B,sub_46234A,,,unclassified,0.00,unknown,,false,,,,
 0x0046272C,566,0x00462961,sub_46272C,,,unclassified,0.00,unknown,,false,,,,
 0x00462962,40,0x00462989,sub_462962,,,unclassified,0.00,unknown,,false,,,,
@@ -703,15 +703,15 @@ address,size,span_end,current_name,proposed_name,module,status,match_percent,cal
 0x00462AA6,285,0x00462BC2,sub_462AA6,,,unclassified,0.00,unknown,,false,,,,
 0x00462BC3,305,0x00462CF3,sub_462BC3,,,unclassified,0.00,unknown,,false,,,,
 0x00462CF4,1041,0x00463104,sub_462CF4,,,unclassified,0.00,unknown,,false,,,,
-0x00463105,10,0x0046310E,sub_463105,,,unclassified,0.00,unknown,,false,,,,
-0x0046310F,30,0x0046312C,sub_46310F,,,unclassified,0.00,unknown,,false,,,,
+0x00463105,10,0x0046310E,sub_463105,??0CD3DXBlt@@QAE@XZ,third_party,library,100.00,unknown,,false,docs/LIBRARY_RECOVERY.md,python3 scripts/build.py --unit vc7-d3dx8-raw-cd3dxblt --compare --json exact 10/10,root,SHA-pinned d3dx8.lib cd3dxblt.obj relocation-free raw exact replay
+0x0046310F,30,0x0046312C,sub_46310F,??1CD3DXBlt@@QAE@XZ,third_party,library,100.00,unknown,,false,docs/LIBRARY_RECOVERY.md,python3 scripts/build.py --unit vc7-d3dx8-raw-cd3dxblt --compare --json exact 30/30,root,SHA-pinned d3dx8.lib cd3dxblt.obj relocation-free raw exact replay
 0x0046312D,34,0x0046314E,sub_46312D,,,unclassified,0.00,unknown,,false,,,,
 0x0046314F,673,0x004633EF,sub_46314F,,,unclassified,0.00,unknown,,false,,,,
 0x004633F0,950,0x004637A5,sub_4633F0,,,unclassified,0.00,unknown,,false,,,,
 0x004637A6,1239,0x00463C7C,sub_4637A6,,,unclassified,0.00,unknown,,false,,,,
 0x00463C7D,385,0x00463DFD,sub_463C7D,CD3DXBlt::BltSame_DXTn,third_party,library,100.00,__thiscall,,false,docs/LIBRARY_RECOVERY.md,python3 scripts/build.py --unit vc7-d3dx8-cd3dxblt --compare --json exact 385/385,root,SHA-pinned d3dx8.lib cd3dxblt.obj replay
-0x00463DFE,350,0x00463F5B,sub_463DFE,,,unclassified,0.00,unknown,,false,,,,
-0x00463F5C,284,0x00464077,sub_463F5C,,,unclassified,0.00,unknown,,false,,,,
+0x00463DFE,350,0x00463F5B,sub_463DFE,?BltBox2D_A8R8G8B8@CD3DXBlt@@IAEJXZ,third_party,library,100.00,unknown,,false,docs/LIBRARY_RECOVERY.md,python3 scripts/build.py --unit vc7-d3dx8-raw-cd3dxblt --compare --json exact 350/350,root,SHA-pinned d3dx8.lib cd3dxblt.obj relocation-free raw exact replay
+0x00463F5C,284,0x00464077,sub_463F5C,?BltBox2D_X8R8G8B8@CD3DXBlt@@IAEJXZ,third_party,library,100.00,unknown,,false,docs/LIBRARY_RECOVERY.md,python3 scripts/build.py --unit vc7-d3dx8-raw-cd3dxblt --compare --json exact 284/284,root,SHA-pinned d3dx8.lib cd3dxblt.obj relocation-free raw exact replay
 0x00464078,336,0x004641C7,sub_464078,CD3DXBlt::BltBox2D_R5G6B5,third_party,library,100.00,__thiscall,,false,docs/LIBRARY_RECOVERY.md,python3 scripts/build.py --unit vc7-d3dx8-cd3dxblt --compare --json exact 336/336,root,SHA-pinned d3dx8.lib cd3dxblt.obj replay
 0x004641C8,292,0x004642EB,sub_4641C8,CD3DXBlt::BltBox2D_X1R5G5B5,third_party,library,100.00,__thiscall,,false,docs/LIBRARY_RECOVERY.md,python3 scripts/build.py --unit vc7-d3dx8-cd3dxblt --compare --json exact 292/292,root,SHA-pinned d3dx8.lib cd3dxblt.obj replay
 0x004642EC,335,0x0046443A,sub_4642EC,CD3DXBlt::BltBox2D_A1R5G5B5,third_party,library,100.00,__thiscall,,false,docs/LIBRARY_RECOVERY.md,python3 scripts/build.py --unit vc7-d3dx8-cd3dxblt --compare --json exact 335/335,root,SHA-pinned d3dx8.lib cd3dxblt.obj replay
@@ -735,11 +735,11 @@ address,size,span_end,current_name,proposed_name,module,status,match_percent,cal
 0x00465987,833,0x00465CC7,sub_465987,,,unclassified,0.00,unknown,,false,,,,
 0x00465CC8,1613,0x00466314,sub_465CC8,,,unclassified,0.00,unknown,,false,,,,
 0x00466315,274,0x00466426,sub_466315,,,unclassified,0.00,unknown,,false,,,,
-0x00466427,25,0x0046643F,sub_466427,,,unclassified,0.00,unknown,,false,,,,
+0x00466427,25,0x0046643F,sub_466427,??0CD3DXImage@@QAE@XZ,third_party,library,100.00,unknown,,false,docs/LIBRARY_RECOVERY.md,python3 scripts/build.py --unit vc7-d3dx8-raw-cd3dximage --compare --json exact 25/25,root,SHA-pinned d3dx8.lib cd3dximage.obj relocation-free raw exact replay
 0x00466440,89,0x00466498,sub_466440,,,unclassified,0.00,unknown,,false,,,,
 0x00466499,1595,0x00466AD3,sub_466499,,,unclassified,0.00,unknown,,false,,,,
 0x00466AD4,27,0x00466AEE,sub_466AD4,,,unclassified,0.00,unknown,,false,,,,
-0x00466B05,17,0x00466B15,sub_466B05,,,unclassified,0.00,unknown,,false,,,,
+0x00466B05,17,0x00466B15,sub_466B05,?d3dx_jpeg_skip_input_data@@YAXPAUjpeg_decompress_struct@D3DX@@J@Z,third_party,library,100.00,unknown,,false,docs/LIBRARY_RECOVERY.md,python3 scripts/build.py --unit vc7-d3dx8-raw-cd3dximage --compare --json exact 17/17,root,SHA-pinned d3dx8.lib cd3dximage.obj relocation-free raw exact replay
 0x00466B16,597,0x00466D6A,sub_466B16,,,unclassified,0.00,unknown,,false,,,,
 0x00466D6B,1144,0x004671E2,sub_466D6B,,,unclassified,0.00,unknown,,false,,,,
 0x004671E3,642,0x00467464,sub_4671E3,,,unclassified,0.00,unknown,,false,,,,
@@ -759,12 +759,12 @@ address,size,span_end,current_name,proposed_name,module,status,match_percent,cal
 0x0046803E,126,0x004680BB,sub_46803E,,,unclassified,0.00,unknown,,false,,,,
 0x004680BC,106,0x00468125,sub_4680BC,,,unclassified,0.00,unknown,,false,,,,
 0x00468126,159,0x004681C4,sub_468126,,,unclassified,0.00,unknown,,false,,,,
-0x004681C5,44,0x004681F0,sub_4681C5,,,unclassified,0.00,unknown,,false,,,,
+0x004681C5,44,0x004681F0,sub_4681C5,??GD3DXCOLOR@@QBE?AU0@ABU0@@Z,third_party,library,100.00,unknown,,false,docs/LIBRARY_RECOVERY.md,python3 scripts/build.py --unit vc7-d3dx8-raw-cd3dxcodec --compare --json exact 44/44,root,SHA-pinned d3dx8.lib cd3dxcodec.obj relocation-free raw exact replay
 0x004681F1,35,0x00468213,sub_4681F1,,,unclassified,0.00,unknown,,false,,,,
 0x00468214,16,0x00468223,sub_468214,,,unclassified,0.00,unknown,,false,,,,
 0x00468224,489,0x0046840C,sub_468224,,,unclassified,0.00,unknown,,false,,,,
 0x0046840D,28,0x00468428,sub_46840D,,,unclassified,0.00,unknown,,false,,,,
-0x00468429,112,0x00468498,sub_468429,,,unclassified,0.00,unknown,,false,,,,
+0x00468429,112,0x00468498,sub_468429,?ColorKey@CD3DXCodec@@IAEXPAUD3DXCOLOR@@@Z,third_party,library,100.00,unknown,,false,docs/LIBRARY_RECOVERY.md,python3 scripts/build.py --unit vc7-d3dx8-raw-cd3dxcodec --compare --json exact 112/112,root,SHA-pinned d3dx8.lib cd3dxcodec.obj relocation-free raw exact replay
 0x00468499,193,0x00468559,sub_468499,,,unclassified,0.00,unknown,,false,,,,
 0x0046855A,249,0x00468652,sub_46855A,,,unclassified,0.00,unknown,,false,,,,
 0x00468653,215,0x00468729,sub_468653,,,unclassified,0.00,unknown,,false,,,,
@@ -824,14 +824,14 @@ address,size,span_end,current_name,proposed_name,module,status,match_percent,cal
 0x0046B5D4,5,0x0046B5D8,sub_46B5D4,,,unclassified,0.00,unknown,,false,,,,
 0x0046B5D9,192,0x0046B698,sub_46B5D9,,,unclassified,0.00,unknown,,false,,,,
 0x0046B699,5,0x0046B69D,sub_46B699,,,unclassified,0.00,unknown,,false,,,,
-0x0046B69E,383,0x0046B81C,sub_46B69E,,,unclassified,0.00,unknown,,false,,,,
+0x0046B69E,383,0x0046B81C,sub_46B69E,?default_decompress_parms@D3DX@@YAXPAUjpeg_decompress_struct@1@@Z,third_party,library,100.00,unknown,,false,docs/LIBRARY_RECOVERY.md,python3 scripts/build.py --unit vc7-d3dx8-raw-jdapimin --compare --json exact 383/383,root,SHA-pinned d3dx8.lib jdapimin.obj relocation-free raw exact replay
 0x0046B81D,154,0x0046B8B6,sub_46B81D,,,unclassified,0.00,unknown,,false,,,,
 0x0046B8B7,161,0x0046B957,sub_46B8B7,,,unclassified,0.00,unknown,,false,,,,
 0x0046B958,99,0x0046B9BA,sub_46B958,,,unclassified,0.00,unknown,,false,,,,
-0x0046B9BB,164,0x0046BA5E,sub_46B9BB,,,unclassified,0.00,unknown,,false,,,,
-0x0046BA5F,132,0x0046BAE2,sub_46BA5F,,,unclassified,0.00,unknown,,false,,,,
+0x0046B9BB,164,0x0046BA5E,sub_46B9BB,?output_pass_setup@D3DX@@YAEPAUjpeg_decompress_struct@1@@Z,third_party,library,100.00,unknown,,false,docs/LIBRARY_RECOVERY.md,python3 scripts/build.py --unit vc7-d3dx8-raw-jdapistd --compare --json exact 164/164,root,SHA-pinned d3dx8.lib jdapistd.obj relocation-free raw exact replay
+0x0046BA5F,132,0x0046BAE2,sub_46BA5F,_jpeg_read_scanlines,third_party,library,100.00,unknown,,false,docs/LIBRARY_RECOVERY.md,python3 scripts/build.py --unit vc7-d3dx8-raw-jdapistd --compare --json exact 132/132,root,SHA-pinned d3dx8.lib jdapistd.obj relocation-free raw exact replay
 0x0046BAE3,193,0x0046BBA3,sub_46BAE3,,,unclassified,0.00,unknown,,false,,,,
-0x0046BBA4,142,0x0046BC31,sub_46BBA4,,,unclassified,0.00,unknown,,false,,,,
+0x0046BBA4,142,0x0046BC31,sub_46BBA4,?get_soi@D3DX@@YAEPAUjpeg_decompress_struct@1@@Z,third_party,library,100.00,unknown,,false,docs/LIBRARY_RECOVERY.md,python3 scripts/build.py --unit vc7-d3dx8-raw-jdmarker --compare --json exact 142/142,root,SHA-pinned d3dx8.lib jdmarker.obj relocation-free raw exact replay
 0x0046BC32,763,0x0046BF2C,sub_46BC32,D3DX::get_sof,third_party,library,100.00,unknown,,false,docs/LIBRARY_RECOVERY.md,python3 scripts/build.py --unit vc7-d3dx8-jdmarker --compare --json exact 763/763,root,SHA-pinned d3dx8.lib jdmarker.obj replay
 0x0046BF2D,745,0x0046C215,sub_46BF2D,D3DX::get_sos,third_party,library,100.00,unknown,,false,docs/LIBRARY_RECOVERY.md,python3 scripts/build.py --unit vc7-d3dx8-jdmarker --compare --json exact 745/745,root,SHA-pinned d3dx8.lib jdmarker.obj replay
 0x0046C216,572,0x0046C451,sub_46C216,D3DX::get_app0,third_party,library,100.00,unknown,,false,docs/LIBRARY_RECOVERY.md,python3 scripts/build.py --unit vc7-d3dx8-jdmarker --compare --json exact 572/572,root,SHA-pinned d3dx8.lib jdmarker.obj replay
@@ -846,18 +846,18 @@ address,size,span_end,current_name,proposed_name,module,status,match_percent,cal
 0x0046CEEB,500,0x0046D0DE,sub_46CEEB,D3DX::read_markers,third_party,library,100.00,unknown,,false,docs/LIBRARY_RECOVERY.md,python3 scripts/build.py --unit vc7-d3dx8-jdmarker --compare --json exact 500/500,root,SHA-pinned d3dx8.lib jdmarker.obj replay
 0x0046D0DF,126,0x0046D15C,sub_46D0DF,,,unclassified,0.00,unknown,,false,,,,
 0x0046D15D,239,0x0046D24B,sub_46D15D,,,unclassified,0.00,unknown,,false,,,,
-0x0046D24C,42,0x0046D275,sub_46D24C,,,unclassified,0.00,unknown,,false,,,,
+0x0046D24C,42,0x0046D275,sub_46D24C,?reset_marker_reader@D3DX@@YAXPAUjpeg_decompress_struct@1@@Z,third_party,library,100.00,unknown,,false,docs/LIBRARY_RECOVERY.md,python3 scripts/build.py --unit vc7-d3dx8-raw-jdmarker --compare --json exact 42/42,root,SHA-pinned d3dx8.lib jdmarker.obj relocation-free raw exact replay
 0x0046D276,125,0x0046D2F2,sub_46D276,,,unclassified,0.00,unknown,,false,,,,
 0x0046D2F3,26,0x0046D30C,sub_46D2F3,,,unclassified,0.00,unknown,,false,,,,
 0x0046D30E,29,0x0046D32A,sub_46D30E,,,unclassified,0.00,unknown,,false,,,,
-0x0046D32B,49,0x0046D35B,sub_46D32B,,,unclassified,0.00,unknown,,false,,,,
+0x0046D32B,49,0x0046D35B,sub_46D32B,?emit_message@D3DX@@YAXPAUjpeg_common_struct@1@H@Z,third_party,library,100.00,unknown,,false,docs/LIBRARY_RECOVERY.md,python3 scripts/build.py --unit vc7-d3dx8-raw-jerror --compare --json exact 49/49,root,SHA-pinned d3dx8.lib jerror.obj relocation-free raw exact replay
 0x0046D35C,151,0x0046D3F2,sub_46D35C,,,unclassified,0.00,unknown,,false,,,,
-0x0046D3F3,17,0x0046D403,sub_46D3F3,,,unclassified,0.00,unknown,,false,,,,
+0x0046D3F3,17,0x0046D403,sub_46D3F3,?reset_error_mgr@D3DX@@YAXPAUjpeg_common_struct@1@@Z,third_party,library,100.00,unknown,,false,docs/LIBRARY_RECOVERY.md,python3 scripts/build.py --unit vc7-d3dx8-raw-jerror --compare --json exact 17/17,root,SHA-pinned d3dx8.lib jerror.obj relocation-free raw exact replay
 0x0046D404,76,0x0046D44F,sub_46D404,,,unclassified,0.00,unknown,,false,,,,
 0x0046D450,135,0x0046D4D6,sub_46D450,,,unclassified,0.00,unknown,,false,,,,
-0x0046D4D7,26,0x0046D4F0,sub_46D4D7,,,unclassified,0.00,unknown,,false,,,,
+0x0046D4D7,26,0x0046D4F0,sub_46D4D7,_png_set_error_fn,third_party,library,100.00,unknown,,false,docs/LIBRARY_RECOVERY.md,python3 scripts/build.py --unit vc7-d3dx8-raw-pngerror --compare --json exact 26/26,root,SHA-pinned d3dx8.lib pngerror.obj relocation-free raw exact replay
 0x0046D4F1,31,0x0046D50F,sub_46D4F1,,,unclassified,0.00,unknown,,false,,,,
-0x0046D514,21,0x0046D528,sub_46D514,,,unclassified,0.00,unknown,,false,,,,
+0x0046D514,21,0x0046D528,sub_46D514,_png_warning,third_party,library,100.00,unknown,,false,docs/LIBRARY_RECOVERY.md,python3 scripts/build.py --unit vc7-d3dx8-raw-pngerror --compare --json exact 21/21,root,SHA-pinned d3dx8.lib pngerror.obj relocation-free raw exact replay
 0x0046D529,32,0x0046D548,sub_46D529,,,unclassified,0.00,unknown,,false,,,,
 0x0046D54E,37,0x0046D572,sub_46D54E,,,unclassified,0.00,unknown,,false,,,,
 0x0046D573,259,0x0046D675,sub_46D573,,,unclassified,0.00,unknown,,false,,,,
@@ -867,40 +867,40 @@ address,size,span_end,current_name,proposed_name,module,status,match_percent,cal
 0x0046DBB2,77,0x0046DBFE,sub_46DBB2,,,unclassified,0.00,unknown,,false,,,,
 0x0046DBFF,291,0x0046DD21,sub_46DBFF,,,unclassified,0.00,unknown,,false,,,,
 0x0046DD22,129,0x0046DDA2,sub_46DD22,,,unclassified,0.00,unknown,,false,,,,
-0x0046DDA3,26,0x0046DDBC,sub_46DDA3,,,unclassified,0.00,unknown,,false,,,,
-0x0046DDBD,22,0x0046DDD2,sub_46DDBD,,,unclassified,0.00,unknown,,false,,,,
-0x0046DDD3,22,0x0046DDE8,sub_46DDD3,,,unclassified,0.00,unknown,,false,,,,
-0x0046DDE9,41,0x0046DE11,sub_46DDE9,,,unclassified,0.00,unknown,,false,,,,
-0x0046DE12,43,0x0046DE3C,sub_46DE12,,,unclassified,0.00,unknown,,false,,,,
+0x0046DDA3,26,0x0046DDBC,sub_46DDA3,_png_get_valid,third_party,library,100.00,unknown,,false,docs/LIBRARY_RECOVERY.md,python3 scripts/build.py --unit vc7-d3dx8-raw-pngget --compare --json exact 26/26,root,SHA-pinned d3dx8.lib pngget.obj relocation-free raw exact replay
+0x0046DDBD,22,0x0046DDD2,sub_46DDBD,_png_get_rowbytes,third_party,library,100.00,unknown,,false,docs/LIBRARY_RECOVERY.md,python3 scripts/build.py --unit vc7-d3dx8-raw-pngget --compare --json exact 22/22,root,SHA-pinned d3dx8.lib pngget.obj relocation-free raw exact replay
+0x0046DDD3,22,0x0046DDE8,sub_46DDD3,_png_get_channels,third_party,library,100.00,unknown,,false,docs/LIBRARY_RECOVERY.md,python3 scripts/build.py --unit vc7-d3dx8-raw-pngget --compare --json exact 22/22,root,SHA-pinned d3dx8.lib pngget.obj relocation-free raw exact replay
+0x0046DDE9,41,0x0046DE11,sub_46DDE9,_png_get_gAMA,third_party,library,100.00,unknown,,false,docs/LIBRARY_RECOVERY.md,python3 scripts/build.py --unit vc7-d3dx8-raw-pngget --compare --json exact 41/41,root,SHA-pinned d3dx8.lib pngget.obj relocation-free raw exact replay
+0x0046DE12,43,0x0046DE3C,sub_46DE12,_png_get_sRGB,third_party,library,100.00,unknown,,false,docs/LIBRARY_RECOVERY.md,python3 scripts/build.py --unit vc7-d3dx8-raw-pngget --compare --json exact 43/43,root,SHA-pinned d3dx8.lib pngget.obj relocation-free raw exact replay
 0x0046DE3D,209,0x0046DF0D,sub_46DE3D,,,unclassified,0.00,unknown,,false,,,,
-0x0046DF0E,51,0x0046DF40,sub_46DF0E,,,unclassified,0.00,unknown,,false,,,,
-0x0046DF41,103,0x0046DFA7,sub_46DF41,,,unclassified,0.00,unknown,,false,,,,
+0x0046DF0E,51,0x0046DF40,sub_46DF0E,_png_get_PLTE,third_party,library,100.00,unknown,,false,docs/LIBRARY_RECOVERY.md,python3 scripts/build.py --unit vc7-d3dx8-raw-pngget --compare --json exact 51/51,root,SHA-pinned d3dx8.lib pngget.obj relocation-free raw exact replay
+0x0046DF41,103,0x0046DFA7,sub_46DF41,_png_get_tRNS,third_party,library,100.00,unknown,,false,docs/LIBRARY_RECOVERY.md,python3 scripts/build.py --unit vc7-d3dx8-raw-pngget --compare --json exact 103/103,root,SHA-pinned d3dx8.lib pngget.obj relocation-free raw exact replay
 0x0046DFA8,9,0x0046DFB0,sub_46DFA8,,,unclassified,0.00,unknown,,false,,,,
-0x0046DFB1,25,0x0046DFC9,sub_46DFB1,,,unclassified,0.00,unknown,,false,,,,
-0x0046DFCA,25,0x0046DFE2,sub_46DFCA,,,unclassified,0.00,unknown,,false,,,,
-0x0046DFE3,77,0x0046E02F,sub_46DFE3,,,unclassified,0.00,unknown,,false,,,,
-0x0046E030,191,0x0046E0EE,sub_46E030,,,unclassified,0.00,unknown,,false,,,,
+0x0046DFB1,25,0x0046DFC9,sub_46DFB1,_png_set_packing,third_party,library,100.00,unknown,,false,docs/LIBRARY_RECOVERY.md,python3 scripts/build.py --unit vc7-d3dx8-raw-pngtrans --compare --json exact 25/25,root,SHA-pinned d3dx8.lib pngtrans.obj relocation-free raw exact replay
+0x0046DFCA,25,0x0046DFE2,sub_46DFCA,_png_set_interlace_handling,third_party,library,100.00,unknown,,false,docs/LIBRARY_RECOVERY.md,python3 scripts/build.py --unit vc7-d3dx8-raw-pngtrans --compare --json exact 25/25,root,SHA-pinned d3dx8.lib pngtrans.obj relocation-free raw exact replay
+0x0046DFE3,77,0x0046E02F,sub_46DFE3,_png_set_filler,third_party,library,100.00,unknown,,false,docs/LIBRARY_RECOVERY.md,python3 scripts/build.py --unit vc7-d3dx8-raw-pngtrans --compare --json exact 77/77,root,SHA-pinned d3dx8.lib pngtrans.obj relocation-free raw exact replay
+0x0046E030,191,0x0046E0EE,sub_46E030,_png_do_bgr,third_party,library,100.00,unknown,,false,docs/LIBRARY_RECOVERY.md,python3 scripts/build.py --unit vc7-d3dx8-raw-pngtrans --compare --json exact 191/191,root,SHA-pinned d3dx8.lib pngtrans.obj relocation-free raw exact replay
 0x0046E0EF,9,0x0046E0F7,sub_46E0EF,,,unclassified,0.00,unknown,,false,,,,
 0x0046E0F8,54,0x0046E12D,sub_46E0F8,,,unclassified,0.00,unknown,,false,,,,
 0x0046E12E,9,0x0046E136,sub_46E12E,,,unclassified,0.00,unknown,,false,,,,
-0x0046E137,235,0x0046E221,sub_46E137,,,unclassified,0.00,unknown,,false,,,,
-0x0046E222,271,0x0046E330,sub_46E222,,,unclassified,0.00,unknown,,false,,,,
-0x0046E331,379,0x0046E4AB,sub_46E331,,,unclassified,0.00,unknown,,false,,,,
-0x0046E4AC,68,0x0046E4EF,sub_46E4AC,,,unclassified,0.00,unknown,,false,,,,
-0x0046E4F0,567,0x0046E726,sub_46E4F0,,,unclassified,0.00,unknown,,false,,,,
-0x0046E727,882,0x0046EA98,sub_46E727,,,unclassified,0.00,unknown,,false,,,,
-0x0046EA99,519,0x0046EC9F,sub_46EA99,,,unclassified,0.00,unknown,,false,,,,
-0x0046ECA0,851,0x0046EFF2,sub_46ECA0,,,unclassified,0.00,unknown,,false,,,,
-0x0046EFF3,269,0x0046F0FF,sub_46EFF3,,,unclassified,0.00,unknown,,false,,,,
+0x0046E137,235,0x0046E221,sub_46E137,_png_read_transform_info,third_party,library,100.00,unknown,,false,docs/LIBRARY_RECOVERY.md,python3 scripts/build.py --unit vc7-d3dx8-raw-pngrtran --compare --json exact 235/235,root,SHA-pinned d3dx8.lib pngrtran.obj relocation-free raw exact replay
+0x0046E222,271,0x0046E330,sub_46E222,_png_do_unpack,third_party,library,100.00,unknown,,false,docs/LIBRARY_RECOVERY.md,python3 scripts/build.py --unit vc7-d3dx8-raw-pngrtran --compare --json exact 271/271,root,SHA-pinned d3dx8.lib pngrtran.obj relocation-free raw exact replay
+0x0046E331,379,0x0046E4AB,sub_46E331,_png_do_unshift,third_party,library,100.00,unknown,,false,docs/LIBRARY_RECOVERY.md,python3 scripts/build.py --unit vc7-d3dx8-raw-pngrtran --compare --json exact 379/379,root,SHA-pinned d3dx8.lib pngrtran.obj relocation-free raw exact replay
+0x0046E4AC,68,0x0046E4EF,sub_46E4AC,_png_do_chop,third_party,library,100.00,unknown,,false,docs/LIBRARY_RECOVERY.md,python3 scripts/build.py --unit vc7-d3dx8-raw-pngrtran --compare --json exact 68/68,root,SHA-pinned d3dx8.lib pngrtran.obj relocation-free raw exact replay
+0x0046E4F0,567,0x0046E726,sub_46E4F0,_png_do_read_filler,third_party,library,100.00,unknown,,false,docs/LIBRARY_RECOVERY.md,python3 scripts/build.py --unit vc7-d3dx8-raw-pngrtran --compare --json exact 567/567,root,SHA-pinned d3dx8.lib pngrtran.obj relocation-free raw exact replay
+0x0046E727,882,0x0046EA98,sub_46E727,_png_do_gamma,third_party,library,100.00,unknown,,false,docs/LIBRARY_RECOVERY.md,python3 scripts/build.py --unit vc7-d3dx8-raw-pngrtran --compare --json exact 882/882,root,SHA-pinned d3dx8.lib pngrtran.obj relocation-free raw exact replay
+0x0046EA99,519,0x0046EC9F,sub_46EA99,_png_do_expand_palette,third_party,library,100.00,unknown,,false,docs/LIBRARY_RECOVERY.md,python3 scripts/build.py --unit vc7-d3dx8-raw-pngrtran --compare --json exact 519/519,root,SHA-pinned d3dx8.lib pngrtran.obj relocation-free raw exact replay
+0x0046ECA0,851,0x0046EFF2,sub_46ECA0,_png_do_expand,third_party,library,100.00,unknown,,false,docs/LIBRARY_RECOVERY.md,python3 scripts/build.py --unit vc7-d3dx8-raw-pngrtran --compare --json exact 851/851,root,SHA-pinned d3dx8.lib pngrtran.obj relocation-free raw exact replay
+0x0046EFF3,269,0x0046F0FF,sub_46EFF3,_png_do_dither,third_party,library,100.00,unknown,,false,docs/LIBRARY_RECOVERY.md,python3 scripts/build.py --unit vc7-d3dx8-raw-pngrtran --compare --json exact 269/269,root,SHA-pinned d3dx8.lib pngrtran.obj relocation-free raw exact replay
 0x0046F100,767,0x0046F3FE,sub_46F100,,,unclassified,0.00,unknown,,false,,,,
 0x0046F3FF,277,0x0046F513,sub_46F3FF,,,unclassified,0.00,unknown,,false,,,,
 0x0046F514,412,0x0046F6AF,sub_46F514,,,unclassified,0.00,unknown,,false,,,,
-0x0046F6B0,27,0x0046F6CA,sub_46F6B0,,,unclassified,0.00,unknown,,false,,,,
+0x0046F6B0,27,0x0046F6CA,sub_46F6B0,_png_set_gAMA,third_party,library,100.00,unknown,,false,docs/LIBRARY_RECOVERY.md,python3 scripts/build.py --unit vc7-d3dx8-raw-pngset --compare --json exact 27/27,root,SHA-pinned d3dx8.lib pngset.obj relocation-free raw exact replay
 0x0046F6CB,162,0x0046F76C,sub_46F6CB,,,unclassified,0.00,unknown,,false,,,,
-0x0046F76D,36,0x0046F790,sub_46F76D,,,unclassified,0.00,unknown,,false,,,,
-0x0046F791,27,0x0046F7AB,sub_46F791,,,unclassified,0.00,unknown,,false,,,,
+0x0046F76D,36,0x0046F790,sub_46F76D,_png_set_PLTE,third_party,library,100.00,unknown,,false,docs/LIBRARY_RECOVERY.md,python3 scripts/build.py --unit vc7-d3dx8-raw-pngset --compare --json exact 36/36,root,SHA-pinned d3dx8.lib pngset.obj relocation-free raw exact replay
+0x0046F791,27,0x0046F7AB,sub_46F791,_png_set_sRGB,third_party,library,100.00,unknown,,false,docs/LIBRARY_RECOVERY.md,python3 scripts/build.py --unit vc7-d3dx8-raw-pngset --compare --json exact 27/27,root,SHA-pinned d3dx8.lib pngset.obj relocation-free raw exact replay
 0x0046F7AC,57,0x0046F7E4,sub_46F7AC,,,unclassified,0.00,unknown,,false,,,,
-0x0046F7E5,71,0x0046F82B,sub_46F7E5,,,unclassified,0.00,unknown,,false,,,,
+0x0046F7E5,71,0x0046F82B,sub_46F7E5,_png_set_tRNS,third_party,library,100.00,unknown,,false,docs/LIBRARY_RECOVERY.md,python3 scripts/build.py --unit vc7-d3dx8-raw-pngset --compare --json exact 71/71,root,SHA-pinned d3dx8.lib pngset.obj relocation-free raw exact replay
 0x0046F82C,37,0x0046F850,sub_46F82C,,,unclassified,0.00,unknown,,false,,,,
 0x0046F854,63,0x0046F892,sub_46F854,,,unclassified,0.00,unknown,,false,,,,
 0x0046F893,72,0x0046F8DA,sub_46F893,,,unclassified,0.00,unknown,,false,,,,
@@ -908,16 +908,16 @@ address,size,span_end,current_name,proposed_name,module,status,match_percent,cal
 0x0046F92E,5,0x0046F932,sub_46F92E,,,unclassified,0.00,unknown,,false,,,,
 0x0046F933,24,0x0046F94A,sub_46F933,,,unclassified,0.00,unknown,,false,,,,
 0x0046F94B,63,0x0046F989,sub_46F94B,,,unclassified,0.00,unknown,,false,,,,
-0x0046F98A,14,0x0046F997,sub_46F98A,,,unclassified,0.00,unknown,,false,,,,
+0x0046F98A,14,0x0046F997,sub_46F98A,_png_info_init,third_party,library,100.00,unknown,,false,docs/LIBRARY_RECOVERY.md,python3 scripts/build.py --unit vc7-d3dx8-raw-png --compare --json exact 14/14,root,SHA-pinned d3dx8.lib png.obj relocation-free raw exact replay
 0x0046F998,11,0x0046F9A2,sub_46F998,,,unclassified,0.00,unknown,,false,,,,
 0x0046F9A3,34,0x0046F9C4,sub_46F9A3,,,unclassified,0.00,unknown,,false,,,,
 0x0046F9C5,105,0x0046FA2D,sub_46F9C5,,,unclassified,0.00,unknown,,false,,,,
 0x0046FA2E,38,0x0046FA53,sub_46FA2E,,,unclassified,0.00,unknown,,false,,,,
 0x0046FA54,50,0x0046FA85,sub_46FA54,,,unclassified,0.00,unknown,,false,,,,
 0x0046FA86,53,0x0046FABA,sub_46FA86,,,unclassified,0.00,unknown,,false,,,,
-0x0046FABB,48,0x0046FAEA,sub_46FABB,,,unclassified,0.00,unknown,,false,,,,
-0x0046FAEB,77,0x0046FB37,sub_46FAEB,,,unclassified,0.00,unknown,,false,,,,
-0x0046FB38,159,0x0046FBD6,sub_46FB38,,,unclassified,0.00,unknown,,false,,,,
+0x0046FABB,48,0x0046FAEA,sub_46FABB,?ColorToRGB@@YAXPAUS3TC_COLOR@@PAG@Z,third_party,library,100.00,unknown,,false,docs/LIBRARY_RECOVERY.md,python3 scripts/build.py --unit vc7-d3dx8-raw-s3tc --compare --json exact 48/48,root,SHA-pinned d3dx8.lib s3tc.obj relocation-free raw exact replay
+0x0046FAEB,77,0x0046FB37,sub_46FAEB,?RGBToColor@@YAXPAGPAUS3TC_COLOR@@@Z,third_party,library,100.00,unknown,,false,docs/LIBRARY_RECOVERY.md,python3 scripts/build.py --unit vc7-d3dx8-raw-s3tc --compare --json exact 77/77,root,SHA-pinned d3dx8.lib s3tc.obj relocation-free raw exact replay
+0x0046FB38,159,0x0046FBD6,sub_46FB38,?Square3x3@@YAXQAY02M0@Z,third_party,library,100.00,unknown,,false,docs/LIBRARY_RECOVERY.md,python3 scripts/build.py --unit vc7-d3dx8-raw-s3tc --compare --json exact 159/159,root,SHA-pinned d3dx8.lib s3tc.obj relocation-free raw exact replay
 0x0046FBD7,139,0x0046FC61,sub_46FBD7,,,unclassified,0.00,unknown,,false,,,,
 0x0046FC62,306,0x0046FD93,sub_46FC62,,,unclassified,0.00,unknown,,false,,,,
 0x0046FD94,97,0x0046FDF4,sub_46FD94,,,unclassified,0.00,unknown,,false,,,,
@@ -928,21 +928,21 @@ address,size,span_end,current_name,proposed_name,module,status,match_percent,cal
 0x004704C3,50,0x004704F4,sub_4704C3,,,unclassified,0.00,unknown,,false,,,,
 0x004704F5,89,0x0047054D,sub_4704F5,,,unclassified,0.00,unknown,,false,,,,
 0x0047054E,342,0x004706A3,sub_47054E,,,unclassified,0.00,unknown,,false,,,,
-0x004706A4,16,0x004706B3,sub_4706A4,,,unclassified,0.00,unknown,,false,,,,
-0x004706B4,24,0x004706CB,sub_4706B4,,,unclassified,0.00,unknown,,false,,,,
-0x004706CC,71,0x00470712,sub_4706CC,,,unclassified,0.00,unknown,,false,,,,
-0x00470713,34,0x00470734,sub_470713,,,unclassified,0.00,unknown,,false,,,,
-0x00470735,27,0x0047074F,sub_470735,,,unclassified,0.00,unknown,,false,,,,
-0x00470750,49,0x00470780,sub_470750,,,unclassified,0.00,unknown,,false,,,,
+0x004706A4,16,0x004706B3,sub_4706A4,?jdiv_round_up@D3DX@@YAJJJ@Z,third_party,library,100.00,unknown,,false,docs/LIBRARY_RECOVERY.md,python3 scripts/build.py --unit vc7-d3dx8-raw-jutils --compare --json exact 16/16,root,SHA-pinned d3dx8.lib jutils.obj relocation-free raw exact replay
+0x004706B4,24,0x004706CB,sub_4706B4,?jround_up@D3DX@@YAJJJ@Z,third_party,library,100.00,unknown,,false,docs/LIBRARY_RECOVERY.md,python3 scripts/build.py --unit vc7-d3dx8-raw-jutils --compare --json exact 24/24,root,SHA-pinned d3dx8.lib jutils.obj relocation-free raw exact replay
+0x004706CC,71,0x00470712,sub_4706CC,?jcopy_sample_rows@D3DX@@YAXPAPAEH0HHI@Z,third_party,library,100.00,unknown,,false,docs/LIBRARY_RECOVERY.md,python3 scripts/build.py --unit vc7-d3dx8-raw-jutils --compare --json exact 71/71,root,SHA-pinned d3dx8.lib jutils.obj relocation-free raw exact replay
+0x00470713,34,0x00470734,sub_470713,?jcopy_block_row@D3DX@@YAXPAY0EA@F0I@Z,third_party,library,100.00,unknown,,false,docs/LIBRARY_RECOVERY.md,python3 scripts/build.py --unit vc7-d3dx8-raw-jutils --compare --json exact 34/34,root,SHA-pinned d3dx8.lib jutils.obj relocation-free raw exact replay
+0x00470735,27,0x0047074F,sub_470735,?jzero_far@D3DX@@YAXPAXI@Z,third_party,library,100.00,unknown,,false,docs/LIBRARY_RECOVERY.md,python3 scripts/build.py --unit vc7-d3dx8-raw-jutils --compare --json exact 27/27,root,SHA-pinned d3dx8.lib jutils.obj relocation-free raw exact replay
+0x00470750,49,0x00470780,sub_470750,?IsMMX@D3DX@@YAHXZ,third_party,library,100.00,unknown,,false,docs/LIBRARY_RECOVERY.md,python3 scripts/build.py --unit vc7-d3dx8-raw-jutils --compare --json exact 49/49,root,SHA-pinned d3dx8.lib jutils.obj relocation-free raw exact replay
 0x00470781,443,0x0047093B,sub_470781,,,unclassified,0.00,unknown,,false,,,,
 0x0047093C,374,0x00470AB1,sub_47093C,,,unclassified,0.00,unknown,,false,,,,
-0x00470AB2,146,0x00470B43,sub_470AB2,,,unclassified,0.00,unknown,,false,,,,
+0x00470AB2,146,0x00470B43,sub_470AB2,?latch_quant_tables@D3DX@@YAXPAUjpeg_decompress_struct@1@@Z,third_party,library,100.00,unknown,,false,docs/LIBRARY_RECOVERY.md,python3 scripts/build.py --unit vc7-d3dx8-raw-jdinput --compare --json exact 146/146,root,SHA-pinned d3dx8.lib jdinput.obj relocation-free raw exact replay
 0x00470B44,58,0x00470B7D,sub_470B44,,,unclassified,0.00,unknown,,false,,,,
 0x00470B7E,147,0x00470C10,sub_470B7E,,,unclassified,0.00,unknown,,false,,,,
 0x00470C11,55,0x00470C47,sub_470C11,,,unclassified,0.00,unknown,,false,,,,
 0x00470C48,17,0x00470C58,sub_470C48,,,unclassified,0.00,unknown,,false,,,,
 0x00470C59,65,0x00470C99,sub_470C59,,,unclassified,0.00,unknown,,false,,,,
-0x00470C9A,21,0x00470CAE,sub_470C9A,,,unclassified,0.00,unknown,,false,,,,
+0x00470C9A,21,0x00470CAE,sub_470C9A,?out_of_memory@D3DX@@YAXPAUjpeg_common_struct@1@H@Z,third_party,library,100.00,unknown,,false,docs/LIBRARY_RECOVERY.md,python3 scripts/build.py --unit vc7-d3dx8-raw-jmemmgr --compare --json exact 21/21,root,SHA-pinned d3dx8.lib jmemmgr.obj relocation-free raw exact replay
 0x00470CAF,252,0x00470DAA,sub_470CAF,,,unclassified,0.00,unknown,,false,,,,
 0x00470DAB,142,0x00470E38,sub_470DAB,,,unclassified,0.00,unknown,,false,,,,
 0x00470E39,146,0x00470ECA,sub_470E39,,,unclassified,0.00,unknown,,false,,,,
@@ -950,23 +950,23 @@ address,size,span_end,current_name,proposed_name,module,status,match_percent,cal
 0x00470F69,97,0x00470FC9,sub_470F69,,,unclassified,0.00,unknown,,false,,,,
 0x00470FCA,97,0x0047102A,sub_470FCA,,,unclassified,0.00,unknown,,false,,,,
 0x0047102B,383,0x004711A9,sub_47102B,,,unclassified,0.00,unknown,,false,,,,
-0x004711AA,136,0x00471231,sub_4711AA,,,unclassified,0.00,unknown,,false,,,,
-0x00471232,139,0x004712BC,sub_471232,,,unclassified,0.00,unknown,,false,,,,
+0x004711AA,136,0x00471231,sub_4711AA,?do_sarray_io@D3DX@@YAXPAUjpeg_common_struct@1@PAUjvirt_sarray_control@1@E@Z,third_party,library,100.00,unknown,,false,docs/LIBRARY_RECOVERY.md,python3 scripts/build.py --unit vc7-d3dx8-raw-jmemmgr --compare --json exact 136/136,root,SHA-pinned d3dx8.lib jmemmgr.obj relocation-free raw exact replay
+0x00471232,139,0x004712BC,sub_471232,?do_barray_io@D3DX@@YAXPAUjpeg_common_struct@1@PAUjvirt_barray_control@1@E@Z,third_party,library,100.00,unknown,,false,docs/LIBRARY_RECOVERY.md,python3 scripts/build.py --unit vc7-d3dx8-raw-jmemmgr --compare --json exact 139/139,root,SHA-pinned d3dx8.lib jmemmgr.obj relocation-free raw exact replay
 0x004712BD,286,0x004713DA,sub_4712BD,,,unclassified,0.00,unknown,,false,,,,
 0x004713DB,291,0x004714FD,sub_4713DB,,,unclassified,0.00,unknown,,false,,,,
 0x004714FE,225,0x004715DE,sub_4714FE,,,unclassified,0.00,unknown,,false,,,,
 0x004715DF,48,0x0047160E,sub_4715DF,,,unclassified,0.00,unknown,,false,,,,
 0x0047160F,180,0x004716C2,sub_47160F,,,unclassified,0.00,unknown,,false,,,,
-0x004716C3,34,0x004716E4,sub_4716C3,,,unclassified,0.00,unknown,,false,,,,
-0x004716E5,27,0x004716FF,sub_4716E5,,,unclassified,0.00,unknown,,false,,,,
-0x00471700,28,0x0047171B,sub_471700,,,unclassified,0.00,unknown,,false,,,,
-0x0047171C,28,0x00471737,sub_47171C,,,unclassified,0.00,unknown,,false,,,,
-0x00471738,113,0x004717A8,sub_471738,,,unclassified,0.00,unknown,,false,,,,
+0x004716C3,34,0x004716E4,sub_4716C3,_jpeg_abort,third_party,library,100.00,unknown,,false,docs/LIBRARY_RECOVERY.md,python3 scripts/build.py --unit vc7-d3dx8-raw-jcomapi --compare --json exact 34/34,root,SHA-pinned d3dx8.lib jcomapi.obj relocation-free raw exact replay
+0x004716E5,27,0x004716FF,sub_4716E5,_jpeg_destroy,third_party,library,100.00,unknown,,false,docs/LIBRARY_RECOVERY.md,python3 scripts/build.py --unit vc7-d3dx8-raw-jcomapi --compare --json exact 27/27,root,SHA-pinned d3dx8.lib jcomapi.obj relocation-free raw exact replay
+0x00471700,28,0x0047171B,sub_471700,_jpeg_alloc_quant_table,third_party,library,100.00,unknown,,false,docs/LIBRARY_RECOVERY.md,python3 scripts/build.py --unit vc7-d3dx8-raw-jcomapi --compare --json exact 28/28,root,SHA-pinned d3dx8.lib jcomapi.obj relocation-free raw exact replay
+0x0047171C,28,0x00471737,sub_47171C,_jpeg_alloc_huff_table,third_party,library,100.00,unknown,,false,docs/LIBRARY_RECOVERY.md,python3 scripts/build.py --unit vc7-d3dx8-raw-jcomapi --compare --json exact 28/28,root,SHA-pinned d3dx8.lib jcomapi.obj relocation-free raw exact replay
+0x00471738,113,0x004717A8,sub_471738,?use_merged_upsample@D3DX@@YAEPAUjpeg_decompress_struct@1@@Z,third_party,library,100.00,unknown,,false,docs/LIBRARY_RECOVERY.md,python3 scripts/build.py --unit vc7-d3dx8-raw-jdmaster --compare --json exact 113/113,root,SHA-pinned d3dx8.lib jdmaster.obj relocation-free raw exact replay
 0x004717A9,495,0x00471997,sub_4717A9,,,unclassified,0.00,unknown,,false,,,,
-0x00471998,111,0x00471A06,sub_471998,,,unclassified,0.00,unknown,,false,,,,
+0x00471998,111,0x00471A06,sub_471998,?prepare_range_limit_table@D3DX@@YAXPAUjpeg_decompress_struct@1@@Z,third_party,library,100.00,unknown,,false,docs/LIBRARY_RECOVERY.md,python3 scripts/build.py --unit vc7-d3dx8-raw-jdmaster --compare --json exact 111/111,root,SHA-pinned d3dx8.lib jdmaster.obj relocation-free raw exact replay
 0x00471A07,429,0x00471BB3,sub_471A07,,,unclassified,0.00,unknown,,false,,,,
-0x00471BB4,301,0x00471CE0,sub_471BB4,,,unclassified,0.00,unknown,,false,,,,
-0x00471CE1,33,0x00471D01,sub_471CE1,,,unclassified,0.00,unknown,,false,,,,
+0x00471BB4,301,0x00471CE0,sub_471BB4,?prepare_for_output_pass@D3DX@@YAXPAUjpeg_decompress_struct@1@@Z,third_party,library,100.00,unknown,,false,docs/LIBRARY_RECOVERY.md,python3 scripts/build.py --unit vc7-d3dx8-raw-jdmaster --compare --json exact 301/301,root,SHA-pinned d3dx8.lib jdmaster.obj relocation-free raw exact replay
+0x00471CE1,33,0x00471D01,sub_471CE1,?finish_output_pass@D3DX@@YAXPAUjpeg_decompress_struct@1@@Z,third_party,library,100.00,unknown,,false,docs/LIBRARY_RECOVERY.md,python3 scripts/build.py --unit vc7-d3dx8-raw-jdmaster --compare --json exact 33/33,root,SHA-pinned d3dx8.lib jdmaster.obj relocation-free raw exact replay
 0x00471D02,48,0x00471D31,sub_471D02,,,unclassified,0.00,unknown,,false,,,,
 0x00471D32,63,0x00471D70,sub_471D32,,,unclassified,0.00,unknown,,false,,,,
 0x00471D71,62,0x00471DAE,sub_471D71,,,unclassified,0.00,unknown,,false,,,,
@@ -977,14 +977,14 @@ address,size,span_end,current_name,proposed_name,module,status,match_percent,cal
 0x0047224E,13,0x0047225A,sub_47224E,,,unclassified,0.00,unknown,,false,,,,
 0x0047225B,54,0x00472290,sub_47225B,,,unclassified,0.00,unknown,,false,,,,
 0x00472291,25,0x004722A9,sub_472291,,,unclassified,0.00,unknown,,false,,,,
-0x004722AA,35,0x004722CC,sub_4722AA,,,unclassified,0.00,unknown,,false,,,,
-0x004722CD,51,0x004722FF,sub_4722CD,,,unclassified,0.00,unknown,,false,,,,
-0x00472300,35,0x00472322,sub_472300,,,unclassified,0.00,unknown,,false,,,,
-0x00472323,19,0x00472335,sub_472323,,,unclassified,0.00,unknown,,false,,,,
+0x004722AA,35,0x004722CC,sub_4722AA,_png_memcpy_check,third_party,library,100.00,unknown,,false,docs/LIBRARY_RECOVERY.md,python3 scripts/build.py --unit vc7-d3dx8-raw-pngmem --compare --json exact 35/35,root,SHA-pinned d3dx8.lib pngmem.obj relocation-free raw exact replay
+0x004722CD,51,0x004722FF,sub_4722CD,_png_memset_check,third_party,library,100.00,unknown,,false,docs/LIBRARY_RECOVERY.md,python3 scripts/build.py --unit vc7-d3dx8-raw-pngmem --compare --json exact 51/51,root,SHA-pinned d3dx8.lib pngmem.obj relocation-free raw exact replay
+0x00472300,35,0x00472322,sub_472300,_png_get_uint_32,third_party,library,100.00,unknown,,false,docs/LIBRARY_RECOVERY.md,python3 scripts/build.py --unit vc7-d3dx8-raw-pngrutil --compare --json exact 35/35,root,SHA-pinned d3dx8.lib pngrutil.obj relocation-free raw exact replay
+0x00472323,19,0x00472335,sub_472323,_png_get_uint_16,third_party,library,100.00,unknown,,false,docs/LIBRARY_RECOVERY.md,python3 scripts/build.py --unit vc7-d3dx8-raw-pngrutil --compare --json exact 19/19,root,SHA-pinned d3dx8.lib pngrutil.obj relocation-free raw exact replay
 0x00472336,36,0x00472359,sub_472336,,,unclassified,0.00,unknown,,false,,,,
 0x0047235A,94,0x004723B7,sub_47235A,,,unclassified,0.00,unknown,,false,,,,
 0x004723B8,98,0x00472419,sub_4723B8,,,unclassified,0.00,unknown,,false,,,,
-0x0047241A,532,0x0047262D,sub_47241A,,,unclassified,0.00,unknown,,false,,,,
+0x0047241A,532,0x0047262D,sub_47241A,_png_combine_row,third_party,library,100.00,unknown,,false,docs/LIBRARY_RECOVERY.md,python3 scripts/build.py --unit vc7-d3dx8-raw-pngrutil --compare --json exact 532/532,root,SHA-pinned d3dx8.lib pngrutil.obj relocation-free raw exact replay
 0x0047262E,713,0x004728F6,sub_47262E,,,unclassified,0.00,unknown,,false,,,,
 0x004728F7,377,0x00472A6F,sub_4728F7,,,unclassified,0.00,unknown,,false,,,,
 0x00472A70,412,0x00472C0B,sub_472A70,,,unclassified,0.00,unknown,,false,,,,
@@ -1000,33 +1000,33 @@ address,size,span_end,current_name,proposed_name,module,status,match_percent,cal
 0x004735F9,265,0x00473701,sub_4735F9,,,unclassified,0.00,unknown,,false,,,,
 0x00473702,11,0x0047370C,sub_473702,,,unclassified,0.00,unknown,,false,,,,
 0x0047370D,5,0x00473711,sub_47370D,,,unclassified,0.00,unknown,,false,,,,
-0x00473712,20,0x00473725,sub_473712,,,unclassified,0.00,unknown,,false,,,,
-0x00473726,168,0x004737CD,sub_473726,,,unclassified,0.00,unknown,,false,,,,
-0x004737CE,305,0x004738FE,sub_4737CE,,,unclassified,0.00,unknown,,false,,,,
-0x004738FF,212,0x004739D2,sub_4738FF,,,unclassified,0.00,unknown,,false,,,,
-0x004739D3,150,0x00473A68,sub_4739D3,,,unclassified,0.00,unknown,,false,,,,
-0x00473A69,104,0x00473AD0,sub_473A69,,,unclassified,0.00,unknown,,false,,,,
+0x00473712,20,0x00473725,sub_473712,?jpeg_open_backing_store@D3DX@@YAXPAUjpeg_common_struct@1@PAUbacking_store_struct@1@J@Z,third_party,library,100.00,unknown,,false,docs/LIBRARY_RECOVERY.md,python3 scripts/build.py --unit vc7-d3dx8-raw-jmemnobs --compare --json exact 20/20,root,SHA-pinned d3dx8.lib jmemnobs.obj relocation-free raw exact replay
+0x00473726,168,0x004737CD,sub_473726,?alloc_funny_pointers@D3DX@@YAXPAUjpeg_decompress_struct@1@@Z,third_party,library,100.00,unknown,,false,docs/LIBRARY_RECOVERY.md,python3 scripts/build.py --unit vc7-d3dx8-raw-jdmainct --compare --json exact 168/168,root,SHA-pinned d3dx8.lib jdmainct.obj relocation-free raw exact replay
+0x004737CE,305,0x004738FE,sub_4737CE,?make_funny_pointers@D3DX@@YAXPAUjpeg_decompress_struct@1@@Z,third_party,library,100.00,unknown,,false,docs/LIBRARY_RECOVERY.md,python3 scripts/build.py --unit vc7-d3dx8-raw-jdmainct --compare --json exact 305/305,root,SHA-pinned d3dx8.lib jdmainct.obj relocation-free raw exact replay
+0x004738FF,212,0x004739D2,sub_4738FF,?set_wraparound_pointers@D3DX@@YAXPAUjpeg_decompress_struct@1@@Z,third_party,library,100.00,unknown,,false,docs/LIBRARY_RECOVERY.md,python3 scripts/build.py --unit vc7-d3dx8-raw-jdmainct --compare --json exact 212/212,root,SHA-pinned d3dx8.lib jdmainct.obj relocation-free raw exact replay
+0x004739D3,150,0x00473A68,sub_4739D3,?set_bottom_pointers@D3DX@@YAXPAUjpeg_decompress_struct@1@@Z,third_party,library,100.00,unknown,,false,docs/LIBRARY_RECOVERY.md,python3 scripts/build.py --unit vc7-d3dx8-raw-jdmainct --compare --json exact 150/150,root,SHA-pinned d3dx8.lib jdmainct.obj relocation-free raw exact replay
+0x00473A69,104,0x00473AD0,sub_473A69,?process_data_simple_main@D3DX@@YAXPAUjpeg_decompress_struct@1@PAPAEPAII@Z,third_party,library,100.00,unknown,,false,docs/LIBRARY_RECOVERY.md,python3 scripts/build.py --unit vc7-d3dx8-raw-jdmainct --compare --json exact 104/104,root,SHA-pinned d3dx8.lib jdmainct.obj relocation-free raw exact replay
 0x00473AD1,264,0x00473BD8,sub_473AD1,,,unclassified,0.00,unknown,,false,,,,
-0x00473BD9,35,0x00473BFB,sub_473BD9,,,unclassified,0.00,unknown,,false,,,,
+0x00473BD9,35,0x00473BFB,sub_473BD9,?process_data_crank_post@D3DX@@YAXPAUjpeg_decompress_struct@1@PAPAEPAII@Z,third_party,library,100.00,unknown,,false,docs/LIBRARY_RECOVERY.md,python3 scripts/build.py --unit vc7-d3dx8-raw-jdmainct --compare --json exact 35/35,root,SHA-pinned d3dx8.lib jdmainct.obj relocation-free raw exact replay
 0x00473BFC,104,0x00473C63,sub_473BFC,,,unclassified,0.00,unknown,,false,,,,
 0x00473C64,211,0x00473D36,sub_473C64,,,unclassified,0.00,unknown,,false,,,,
-0x00473D37,63,0x00473D75,sub_473D37,,,unclassified,0.00,unknown,,false,,,,
+0x00473D37,63,0x00473D75,sub_473D37,?start_iMCU_row@D3DX@@YAXPAUjpeg_decompress_struct@1@@Z,third_party,library,100.00,unknown,,false,docs/LIBRARY_RECOVERY.md,python3 scripts/build.py --unit vc7-d3dx8-raw-jdcoefct --compare --json exact 63/63,root,SHA-pinned d3dx8.lib jdcoefct.obj relocation-free raw exact replay
 0x00473D76,16,0x00473D85,sub_473D76,,,unclassified,0.00,unknown,,false,,,,
 0x00473D86,474,0x00473F5F,sub_473D86,,,unclassified,0.00,unknown,,false,,,,
 0x00473F60,415,0x004740FE,sub_473F60,,,unclassified,0.00,unknown,,false,,,,
-0x004740FF,358,0x00474264,sub_4740FF,,,unclassified,0.00,unknown,,false,,,,
-0x00474265,227,0x00474347,sub_474265,,,unclassified,0.00,unknown,,false,,,,
+0x004740FF,358,0x00474264,sub_4740FF,?decompress_data@D3DX@@YAHPAUjpeg_decompress_struct@1@PAPAPAE@Z,third_party,library,100.00,unknown,,false,docs/LIBRARY_RECOVERY.md,python3 scripts/build.py --unit vc7-d3dx8-raw-jdcoefct --compare --json exact 358/358,root,SHA-pinned d3dx8.lib jdcoefct.obj relocation-free raw exact replay
+0x00474265,227,0x00474347,sub_474265,?smoothing_ok@D3DX@@YAEPAUjpeg_decompress_struct@1@@Z,third_party,library,100.00,unknown,,false,docs/LIBRARY_RECOVERY.md,python3 scripts/build.py --unit vc7-d3dx8-raw-jdcoefct --compare --json exact 227/227,root,SHA-pinned d3dx8.lib jdcoefct.obj relocation-free raw exact replay
 0x00474348,1304,0x0047485F,sub_474348,,,unclassified,0.00,unknown,,false,,,,
 0x00474860,59,0x0047489A,sub_474860,,,unclassified,0.00,unknown,,false,,,,
 0x0047489B,248,0x00474992,sub_47489B,,,unclassified,0.00,unknown,,false,,,,
-0x00474993,419,0x00474B35,sub_474993,,,unclassified,0.00,unknown,,false,,,,
-0x00474B36,234,0x00474C1F,sub_474B36,,,unclassified,0.00,unknown,,false,,,,
+0x00474993,419,0x00474B35,sub_474993,?jpeg_make_d_derived_tbl@D3DX@@YAXPAUjpeg_decompress_struct@1@PAUJHUFF_TBL@1@PAPAUd_derived_tbl@1@@Z,third_party,library,100.00,unknown,,false,docs/LIBRARY_RECOVERY.md,python3 scripts/build.py --unit vc7-d3dx8-raw-jdhuff --compare --json exact 419/419,root,SHA-pinned d3dx8.lib jdhuff.obj relocation-free raw exact replay
+0x00474B36,234,0x00474C1F,sub_474B36,?jpeg_fill_bit_buffer@D3DX@@YAEPAUbitread_working_state@1@JHH@Z,third_party,library,100.00,unknown,,false,docs/LIBRARY_RECOVERY.md,python3 scripts/build.py --unit vc7-d3dx8-raw-jdhuff --compare --json exact 234/234,root,SHA-pinned d3dx8.lib jdhuff.obj relocation-free raw exact replay
 0x00474C20,230,0x00474D05,sub_474C20,,,unclassified,0.00,unknown,,false,,,,
-0x00474D06,94,0x00474D63,sub_474D06,,,unclassified,0.00,unknown,,false,,,,
+0x00474D06,94,0x00474D63,sub_474D06,?process_restart@D3DX@@YAEPAUjpeg_decompress_struct@1@@Z,third_party,library,100.00,unknown,,false,docs/LIBRARY_RECOVERY.md,python3 scripts/build.py --unit vc7-d3dx8-raw-jdhuff --compare --json exact 94/94,root,SHA-pinned d3dx8.lib jdhuff.obj relocation-free raw exact replay
 0x00474D64,973,0x00475130,sub_474D64,,,unclassified,0.00,unknown,,false,,,,
 0x00475131,303,0x0047525F,sub_475131,,,unclassified,0.00,unknown,,false,,,,
 0x00475260,58,0x00475299,sub_475260,,,unclassified,0.00,unknown,,false,,,,
-0x0047529A,91,0x004752F4,sub_47529A,,,unclassified,0.00,unknown,,false,,,,
+0x0047529A,91,0x004752F4,sub_47529A,?process_restart@D3DX@@YAEPAUjpeg_decompress_struct@1@@Z,third_party,library,100.00,unknown,,false,docs/LIBRARY_RECOVERY.md,python3 scripts/build.py --unit vc7-d3dx8-raw-jdphuff --compare --json exact 91/91,root,SHA-pinned d3dx8.lib jdphuff.obj relocation-free raw exact replay
 0x004752F5,509,0x004754F1,sub_4752F5,,,unclassified,0.00,unknown,,false,,,,
 0x004754F2,557,0x0047571E,sub_4754F2,,,unclassified,0.00,unknown,,false,,,,
 0x0047571F,226,0x00475800,sub_47571F,,,unclassified,0.00,unknown,,false,,,,
@@ -1035,73 +1035,73 @@ address,size,span_end,current_name,proposed_name,module,status,match_percent,cal
 0x00475E12,97,0x00475E72,sub_475E12,,,unclassified,0.00,unknown,,false,,,,
 0x00475E73,439,0x00476029,sub_475E73,,,unclassified,0.00,unknown,,false,,,,
 0x0047602A,116,0x0047609D,sub_47602A,,,unclassified,0.00,unknown,,false,,,,
-0x0047609E,101,0x00476102,sub_47609E,,,unclassified,0.00,unknown,,false,,,,
-0x00476103,144,0x00476192,sub_476103,,,unclassified,0.00,unknown,,false,,,,
-0x00476193,140,0x0047621E,sub_476193,,,unclassified,0.00,unknown,,false,,,,
+0x0047609E,101,0x00476102,sub_47609E,?post_process_1pass@D3DX@@YAXPAUjpeg_decompress_struct@1@PAPAPAEPAIIPAPAE2I@Z,third_party,library,100.00,unknown,,false,docs/LIBRARY_RECOVERY.md,python3 scripts/build.py --unit vc7-d3dx8-raw-jdpostct --compare --json exact 101/101,root,SHA-pinned d3dx8.lib jdpostct.obj relocation-free raw exact replay
+0x00476103,144,0x00476192,sub_476103,?post_process_prepass@D3DX@@YAXPAUjpeg_decompress_struct@1@PAPAPAEPAIIPAPAE2I@Z,third_party,library,100.00,unknown,,false,docs/LIBRARY_RECOVERY.md,python3 scripts/build.py --unit vc7-d3dx8-raw-jdpostct --compare --json exact 144/144,root,SHA-pinned d3dx8.lib jdpostct.obj relocation-free raw exact replay
+0x00476193,140,0x0047621E,sub_476193,?post_process_2pass@D3DX@@YAXPAUjpeg_decompress_struct@1@PAPAPAEPAIIPAPAE2I@Z,third_party,library,100.00,unknown,,false,docs/LIBRARY_RECOVERY.md,python3 scripts/build.py --unit vc7-d3dx8-raw-jdpostct --compare --json exact 140/140,root,SHA-pinned d3dx8.lib jdpostct.obj relocation-free raw exact replay
 0x0047621F,166,0x004762C4,sub_47621F,,,unclassified,0.00,unknown,,false,,,,
 0x004762C5,131,0x00476347,sub_4762C5,,,unclassified,0.00,unknown,,false,,,,
-0x00476348,26,0x00476361,sub_476348,,,unclassified,0.00,unknown,,false,,,,
-0x00476362,198,0x00476427,sub_476362,,,unclassified,0.00,unknown,,false,,,,
-0x00476428,11,0x00476432,sub_476428,,,unclassified,0.00,unknown,,false,,,,
+0x00476348,26,0x00476361,sub_476348,?start_pass_upsample@D3DX@@YAXPAUjpeg_decompress_struct@1@@Z,third_party,library,100.00,unknown,,false,docs/LIBRARY_RECOVERY.md,python3 scripts/build.py --unit vc7-d3dx8-raw-jdsample --compare --json exact 26/26,root,SHA-pinned d3dx8.lib jdsample.obj relocation-free raw exact replay
+0x00476362,198,0x00476427,sub_476362,?sep_upsample@D3DX@@YAXPAUjpeg_decompress_struct@1@PAPAPAEPAIIPAPAE2I@Z,third_party,library,100.00,unknown,,false,docs/LIBRARY_RECOVERY.md,python3 scripts/build.py --unit vc7-d3dx8-raw-jdsample --compare --json exact 198/198,root,SHA-pinned d3dx8.lib jdsample.obj relocation-free raw exact replay
+0x00476428,11,0x00476432,sub_476428,?fullsize_upsample@D3DX@@YAXPAUjpeg_decompress_struct@1@PAUjpeg_component_info@1@PAPAEPAPAPAE@Z,third_party,library,100.00,unknown,,false,docs/LIBRARY_RECOVERY.md,python3 scripts/build.py --unit vc7-d3dx8-raw-jdsample --compare --json exact 11/11,root,SHA-pinned d3dx8.lib jdsample.obj relocation-free raw exact replay
 0x00476433,8,0x0047643A,sub_476433,,,unclassified,0.00,unknown,,false,,,,
 0x0047643B,223,0x00476519,sub_47643B,,,unclassified,0.00,unknown,,false,,,,
-0x0047651A,87,0x00476570,sub_47651A,,,unclassified,0.00,unknown,,false,,,,
+0x0047651A,87,0x00476570,sub_47651A,?h2v1_upsample@D3DX@@YAXPAUjpeg_decompress_struct@1@PAUjpeg_component_info@1@PAPAEPAPAPAE@Z,third_party,library,100.00,unknown,,false,docs/LIBRARY_RECOVERY.md,python3 scripts/build.py --unit vc7-d3dx8-raw-jdsample --compare --json exact 87/87,root,SHA-pinned d3dx8.lib jdsample.obj relocation-free raw exact replay
 0x00476571,106,0x004765DA,sub_476571,,,unclassified,0.00,unknown,,false,,,,
-0x004765DB,163,0x0047667D,sub_4765DB,,,unclassified,0.00,unknown,,false,,,,
-0x0047667E,263,0x00476784,sub_47667E,,,unclassified,0.00,unknown,,false,,,,
+0x004765DB,163,0x0047667D,sub_4765DB,?h2v1_fancy_upsample@D3DX@@YAXPAUjpeg_decompress_struct@1@PAUjpeg_component_info@1@PAPAEPAPAPAE@Z,third_party,library,100.00,unknown,,false,docs/LIBRARY_RECOVERY.md,python3 scripts/build.py --unit vc7-d3dx8-raw-jdsample --compare --json exact 163/163,root,SHA-pinned d3dx8.lib jdsample.obj relocation-free raw exact replay
+0x0047667E,263,0x00476784,sub_47667E,?h2v2_fancy_upsample@D3DX@@YAXPAUjpeg_decompress_struct@1@PAUjpeg_component_info@1@PAPAEPAPAPAE@Z,third_party,library,100.00,unknown,,false,docs/LIBRARY_RECOVERY.md,python3 scripts/build.py --unit vc7-d3dx8-raw-jdsample --compare --json exact 263/263,root,SHA-pinned d3dx8.lib jdsample.obj relocation-free raw exact replay
 0x00476785,449,0x00476945,sub_476785,,,unclassified,0.00,unknown,,false,,,,
-0x00476946,176,0x004769F5,sub_476946,,,unclassified,0.00,unknown,,false,,,,
-0x004769F6,106,0x00476A5F,sub_4769F6,,,unclassified,0.00,unknown,,false,,,,
+0x00476946,176,0x004769F5,sub_476946,?build_ycc_rgb_table@D3DX@@YAXPAUjpeg_decompress_struct@1@@Z,third_party,library,100.00,unknown,,false,docs/LIBRARY_RECOVERY.md,python3 scripts/build.py --unit vc7-d3dx8-raw-jdcolor --compare --json exact 176/176,root,SHA-pinned d3dx8.lib jdcolor.obj relocation-free raw exact replay
+0x004769F6,106,0x00476A5F,sub_4769F6,?null_convert@D3DX@@YAXPAUjpeg_decompress_struct@1@PAPAPAEIPAPAEH@Z,third_party,library,100.00,unknown,,false,docs/LIBRARY_RECOVERY.md,python3 scripts/build.py --unit vc7-d3dx8-raw-jdcolor --compare --json exact 106/106,root,SHA-pinned d3dx8.lib jdcolor.obj relocation-free raw exact replay
 0x00476A60,35,0x00476A82,sub_476A60,,,unclassified,0.00,unknown,,false,,,,
-0x00476A83,306,0x00476BB4,sub_476A83,,,unclassified,0.00,unknown,,false,,,,
+0x00476A83,306,0x00476BB4,sub_476A83,?ycck_cmyk_convert@D3DX@@YAXPAUjpeg_decompress_struct@1@PAPAPAEIPAPAEH@Z,third_party,library,100.00,unknown,,false,docs/LIBRARY_RECOVERY.md,python3 scripts/build.py --unit vc7-d3dx8-raw-jdcolor --compare --json exact 306/306,root,SHA-pinned d3dx8.lib jdcolor.obj relocation-free raw exact replay
 0x00476BB5,317,0x00476CF1,sub_476BB5,,,unclassified,0.00,unknown,,false,,,,
 0x00476CF2,542,0x00476F0F,sub_476CF2,,,unclassified,0.00,unknown,,false,,,,
 0x00476F10,289,0x00477030,sub_476F10,,,unclassified,0.00,unknown,,false,,,,
-0x00477031,176,0x004770E0,sub_477031,,,unclassified,0.00,unknown,,false,,,,
-0x004770E1,21,0x004770F5,sub_4770E1,,,unclassified,0.00,unknown,,false,,,,
+0x00477031,176,0x004770E0,sub_477031,?build_ycc_rgb_table@D3DX@@YAXPAUjpeg_decompress_struct@1@@Z,third_party,library,100.00,unknown,,false,docs/LIBRARY_RECOVERY.md,python3 scripts/build.py --unit vc7-d3dx8-raw-jdmerge --compare --json exact 176/176,root,SHA-pinned d3dx8.lib jdmerge.obj relocation-free raw exact replay
+0x004770E1,21,0x004770F5,sub_4770E1,?start_pass_merged_upsample@D3DX@@YAXPAUjpeg_decompress_struct@1@@Z,third_party,library,100.00,unknown,,false,docs/LIBRARY_RECOVERY.md,python3 scripts/build.py --unit vc7-d3dx8-raw-jdmerge --compare --json exact 21/21,root,SHA-pinned d3dx8.lib jdmerge.obj relocation-free raw exact replay
 0x004770F6,166,0x0047719B,sub_4770F6,,,unclassified,0.00,unknown,,false,,,,
-0x0047719C,49,0x004771CC,sub_47719C,,,unclassified,0.00,unknown,,false,,,,
-0x004771CD,342,0x00477322,sub_4771CD,,,unclassified,0.00,unknown,,false,,,,
-0x00477323,486,0x00477508,sub_477323,,,unclassified,0.00,unknown,,false,,,,
+0x0047719C,49,0x004771CC,sub_47719C,?merged_1v_upsample@D3DX@@YAXPAUjpeg_decompress_struct@1@PAPAPAEPAIIPAPAE2I@Z,third_party,library,100.00,unknown,,false,docs/LIBRARY_RECOVERY.md,python3 scripts/build.py --unit vc7-d3dx8-raw-jdmerge --compare --json exact 49/49,root,SHA-pinned d3dx8.lib jdmerge.obj relocation-free raw exact replay
+0x004771CD,342,0x00477322,sub_4771CD,?h2v1_merged_upsample@D3DX@@YAXPAUjpeg_decompress_struct@1@PAPAPAEIPAPAE@Z,third_party,library,100.00,unknown,,false,docs/LIBRARY_RECOVERY.md,python3 scripts/build.py --unit vc7-d3dx8-raw-jdmerge --compare --json exact 342/342,root,SHA-pinned d3dx8.lib jdmerge.obj relocation-free raw exact replay
+0x00477323,486,0x00477508,sub_477323,?h2v2_merged_upsample@D3DX@@YAXPAUjpeg_decompress_struct@1@PAPAPAEIPAPAE@Z,third_party,library,100.00,unknown,,false,docs/LIBRARY_RECOVERY.md,python3 scripts/build.py --unit vc7-d3dx8-raw-jdmerge --compare --json exact 486/486,root,SHA-pinned d3dx8.lib jdmerge.obj relocation-free raw exact replay
 0x00477509,117,0x0047757D,sub_477509,,,unclassified,0.00,unknown,,false,,,,
-0x0047757E,108,0x004775E9,sub_47757E,,,unclassified,0.00,unknown,,false,,,,
-0x004775EA,41,0x00477612,sub_4775EA,,,unclassified,0.00,unknown,,false,,,,
-0x00477613,35,0x00477635,sub_477613,,,unclassified,0.00,unknown,,false,,,,
-0x00477636,824,0x0047796D,sub_477636,,,unclassified,0.00,unknown,,false,,,,
+0x0047757E,108,0x004775E9,sub_47757E,?prescan_quantize@D3DX@@YAXPAUjpeg_decompress_struct@1@PAPAE1H@Z,third_party,library,100.00,unknown,,false,docs/LIBRARY_RECOVERY.md,python3 scripts/build.py --unit vc7-d3dx8-raw-jquant2 --compare --json exact 108/108,root,SHA-pinned d3dx8.lib jquant2.obj relocation-free raw exact replay
+0x004775EA,41,0x00477612,sub_4775EA,?find_biggest_color_pop@D3DX@@YAPAUbox@1@PAU21@H@Z,third_party,library,100.00,unknown,,false,docs/LIBRARY_RECOVERY.md,python3 scripts/build.py --unit vc7-d3dx8-raw-jquant2 --compare --json exact 41/41,root,SHA-pinned d3dx8.lib jquant2.obj relocation-free raw exact replay
+0x00477613,35,0x00477635,sub_477613,?find_biggest_volume@D3DX@@YAPAUbox@1@PAU21@H@Z,third_party,library,100.00,unknown,,false,docs/LIBRARY_RECOVERY.md,python3 scripts/build.py --unit vc7-d3dx8-raw-jquant2 --compare --json exact 35/35,root,SHA-pinned d3dx8.lib jquant2.obj relocation-free raw exact replay
+0x00477636,824,0x0047796D,sub_477636,?update_box@D3DX@@YAXPAUjpeg_decompress_struct@1@PAUbox@1@@Z,third_party,library,100.00,unknown,,false,docs/LIBRARY_RECOVERY.md,python3 scripts/build.py --unit vc7-d3dx8-raw-jquant2 --compare --json exact 824/824,root,SHA-pinned d3dx8.lib jquant2.obj relocation-free raw exact replay
 0x0047796E,282,0x00477A87,sub_47796E,,,unclassified,0.00,unknown,,false,,,,
-0x00477A88,312,0x00477BBF,sub_477A88,,,unclassified,0.00,unknown,,false,,,,
+0x00477A88,312,0x00477BBF,sub_477A88,?compute_color@D3DX@@YAXPAUjpeg_decompress_struct@1@PAUbox@1@H@Z,third_party,library,100.00,unknown,,false,docs/LIBRARY_RECOVERY.md,python3 scripts/build.py --unit vc7-d3dx8-raw-jquant2 --compare --json exact 312/312,root,SHA-pinned d3dx8.lib jquant2.obj relocation-free raw exact replay
 0x00477BC0,141,0x00477C4C,sub_477BC0,,,unclassified,0.00,unknown,,false,,,,
-0x00477C4D,384,0x00477DCC,sub_477C4D,,,unclassified,0.00,unknown,,false,,,,
-0x00477DCD,282,0x00477EE6,sub_477DCD,,,unclassified,0.00,unknown,,false,,,,
+0x00477C4D,384,0x00477DCC,sub_477C4D,?find_nearby_colors@D3DX@@YAHPAUjpeg_decompress_struct@1@HHHQAE@Z,third_party,library,100.00,unknown,,false,docs/LIBRARY_RECOVERY.md,python3 scripts/build.py --unit vc7-d3dx8-raw-jquant2 --compare --json exact 384/384,root,SHA-pinned d3dx8.lib jquant2.obj relocation-free raw exact replay
+0x00477DCD,282,0x00477EE6,sub_477DCD,?find_best_colors@D3DX@@YAXPAUjpeg_decompress_struct@1@HHHHQAE1@Z,third_party,library,100.00,unknown,,false,docs/LIBRARY_RECOVERY.md,python3 scripts/build.py --unit vc7-d3dx8-raw-jquant2 --compare --json exact 282/282,root,SHA-pinned d3dx8.lib jquant2.obj relocation-free raw exact replay
 0x00477EE7,208,0x00477FB6,sub_477EE7,,,unclassified,0.00,unknown,,false,,,,
 0x00477FB7,169,0x0047805F,sub_477FB7,,,unclassified,0.00,unknown,,false,,,,
 0x00478060,622,0x004782CD,sub_478060,,,unclassified,0.00,unknown,,false,,,,
-0x004782CE,144,0x0047835D,sub_4782CE,,,unclassified,0.00,unknown,,false,,,,
+0x004782CE,144,0x0047835D,sub_4782CE,?init_error_limit@D3DX@@YAXPAUjpeg_decompress_struct@1@@Z,third_party,library,100.00,unknown,,false,docs/LIBRARY_RECOVERY.md,python3 scripts/build.py --unit vc7-d3dx8-raw-jquant2 --compare --json exact 144/144,root,SHA-pinned d3dx8.lib jquant2.obj relocation-free raw exact replay
 0x0047835E,34,0x0047837F,sub_47835E,,,unclassified,0.00,unknown,,false,,,,
 0x00478380,258,0x00478481,sub_478380,,,unclassified,0.00,unknown,,false,,,,
-0x00478482,15,0x00478490,sub_478482,,,unclassified,0.00,unknown,,false,,,,
+0x00478482,15,0x00478490,sub_478482,?new_color_map_2_quant@D3DX@@YAXPAUjpeg_decompress_struct@1@@Z,third_party,library,100.00,unknown,,false,docs/LIBRARY_RECOVERY.md,python3 scripts/build.py --unit vc7-d3dx8-raw-jquant2 --compare --json exact 15/15,root,SHA-pinned d3dx8.lib jquant2.obj relocation-free raw exact replay
 0x00478491,275,0x004785A3,sub_478491,,,unclassified,0.00,unknown,,false,,,,
 0x004785A4,203,0x0047866E,sub_4785A4,,,unclassified,0.00,unknown,,false,,,,
-0x0047866F,25,0x00478687,sub_47866F,,,unclassified,0.00,unknown,,false,,,,
-0x00478688,19,0x0047869A,sub_478688,,,unclassified,0.00,unknown,,false,,,,
+0x0047866F,25,0x00478687,sub_47866F,?output_value@D3DX@@YAHPAUjpeg_decompress_struct@1@HHH@Z,third_party,library,100.00,unknown,,false,docs/LIBRARY_RECOVERY.md,python3 scripts/build.py --unit vc7-d3dx8-raw-jquant1 --compare --json exact 25/25,root,SHA-pinned d3dx8.lib jquant1.obj relocation-free raw exact replay
+0x00478688,19,0x0047869A,sub_478688,?largest_input_value@D3DX@@YAHPAUjpeg_decompress_struct@1@HHH@Z,third_party,library,100.00,unknown,,false,docs/LIBRARY_RECOVERY.md,python3 scripts/build.py --unit vc7-d3dx8-raw-jquant1 --compare --json exact 19/19,root,SHA-pinned d3dx8.lib jquant1.obj relocation-free raw exact replay
 0x0047869B,285,0x004787B7,sub_47869B,,,unclassified,0.00,unknown,,false,,,,
 0x004787B8,289,0x004788D8,sub_4787B8,,,unclassified,0.00,unknown,,false,,,,
 0x004788D9,98,0x0047893A,sub_4788D9,,,unclassified,0.00,unknown,,false,,,,
 0x0047893B,89,0x00478993,sub_47893B,,,unclassified,0.00,unknown,,false,,,,
-0x00478994,136,0x00478A1B,sub_478994,,,unclassified,0.00,unknown,,false,,,,
-0x00478A1C,141,0x00478AA8,sub_478A1C,,,unclassified,0.00,unknown,,false,,,,
+0x00478994,136,0x00478A1B,sub_478994,?color_quantize@D3DX@@YAXPAUjpeg_decompress_struct@1@PAPAE1H@Z,third_party,library,100.00,unknown,,false,docs/LIBRARY_RECOVERY.md,python3 scripts/build.py --unit vc7-d3dx8-raw-jquant1 --compare --json exact 136/136,root,SHA-pinned d3dx8.lib jquant1.obj relocation-free raw exact replay
+0x00478A1C,141,0x00478AA8,sub_478A1C,?color_quantize3@D3DX@@YAXPAUjpeg_decompress_struct@1@PAPAE1H@Z,third_party,library,100.00,unknown,,false,docs/LIBRARY_RECOVERY.md,python3 scripts/build.py --unit vc7-d3dx8-raw-jquant1 --compare --json exact 141/141,root,SHA-pinned d3dx8.lib jquant1.obj relocation-free raw exact replay
 0x00478AA9,235,0x00478B93,sub_478AA9,,,unclassified,0.00,unknown,,false,,,,
-0x00478B94,255,0x00478C92,sub_478B94,,,unclassified,0.00,unknown,,false,,,,
+0x00478B94,255,0x00478C92,sub_478B94,?quantize3_ord_dither@D3DX@@YAXPAUjpeg_decompress_struct@1@PAPAE1H@Z,third_party,library,100.00,unknown,,false,docs/LIBRARY_RECOVERY.md,python3 scripts/build.py --unit vc7-d3dx8-raw-jquant1 --compare --json exact 255/255,root,SHA-pinned d3dx8.lib jquant1.obj relocation-free raw exact replay
 0x00478C93,388,0x00478E16,sub_478C93,,,unclassified,0.00,unknown,,false,,,,
-0x00478E17,54,0x00478E4C,sub_478E17,,,unclassified,0.00,unknown,,false,,,,
+0x00478E17,54,0x00478E4C,sub_478E17,?alloc_fs_workspace@D3DX@@YAXPAUjpeg_decompress_struct@1@@Z,third_party,library,100.00,unknown,,false,docs/LIBRARY_RECOVERY.md,python3 scripts/build.py --unit vc7-d3dx8-raw-jquant1 --compare --json exact 54/54,root,SHA-pinned d3dx8.lib jquant1.obj relocation-free raw exact replay
 0x00478E4D,200,0x00478F14,sub_478E4D,,,unclassified,0.00,unknown,,false,,,,
-0x00478F15,20,0x00478F28,sub_478F15,,,unclassified,0.00,unknown,,false,,,,
+0x00478F15,20,0x00478F28,sub_478F15,?new_color_map_1_quant@D3DX@@YAXPAUjpeg_decompress_struct@1@@Z,third_party,library,100.00,unknown,,false,docs/LIBRARY_RECOVERY.md,python3 scripts/build.py --unit vc7-d3dx8-raw-jquant1 --compare --json exact 20/20,root,SHA-pinned d3dx8.lib jquant1.obj relocation-free raw exact replay
 0x00478F29,137,0x00478FB1,sub_478F29,,,unclassified,0.00,unknown,,false,,,,
 0x00478FB2,107,0x0047901C,sub_478FB2,,,unclassified,0.00,unknown,,false,,,,
 0x0047901D,139,0x004790A7,sub_47901D,,,unclassified,0.00,unknown,,false,,,,
 0x004790A8,2289,0x00479998,sub_4790A8,,,unclassified,0.00,unknown,,false,,,,
 0x004799C1,52,0x004799F4,sub_4799C1,,,unclassified,0.00,unknown,,false,,,,
-0x004799F5,281,0x00479B0D,sub_4799F5,,,unclassified,0.00,unknown,,false,,,,
+0x004799F5,281,0x00479B0D,sub_4799F5,_adler32,third_party,library,100.00,unknown,,false,docs/LIBRARY_RECOVERY.md,python3 scripts/build.py --unit vc7-d3dx8-raw-adler32 --compare --json exact 281/281,root,SHA-pinned d3dx8.lib adler32.obj relocation-free raw exact replay
 0x00479B0E,16,0x00479B1D,sub_479B0E,,,unclassified,0.00,unknown,,false,,,,
 0x00479B1E,11,0x00479B28,sub_479B1E,,,unclassified,0.00,unknown,,false,,,,
 0x00479B29,789,0x00479E3D,sub_479B29,D3DX::jpeg_idct_4x4,third_party,library,100.00,unknown,,false,docs/LIBRARY_RECOVERY.md,python3 scripts/build.py --unit vc7-d3dx8-jidctred --compare --json exact 789/789,root,SHA-pinned d3dx8.lib jidctred.obj replay
@@ -1110,14 +1110,14 @@ address,size,span_end,current_name,proposed_name,module,status,match_percent,cal
 0x0047A039,76,0x0047A084,sub_47A039,,,unclassified,0.00,unknown,,false,,,,
 0x0047A085,76,0x0047A0D0,sub_47A085,,,unclassified,0.00,unknown,,false,,,,
 0x0047A0D1,993,0x0047A4B1,sub_47A0D1,,,unclassified,0.00,unknown,,false,,,,
-0x0047A4B2,52,0x0047A4E5,sub_47A4B2,,,unclassified,0.00,unknown,,false,,,,
+0x0047A4B2,52,0x0047A4E5,sub_47A4B2,?inflate_codes_new@D3DX@@YAPAUinflate_codes_state@1@IIPAUinflate_huft_s@1@0PAUz_stream_s@1@@Z,third_party,library,100.00,unknown,,false,docs/LIBRARY_RECOVERY.md,python3 scripts/build.py --unit vc7-d3dx8-raw-infcodes --compare --json exact 52/52,root,SHA-pinned d3dx8.lib infcodes.obj relocation-free raw exact replay
 0x0047A4E6,1326,0x0047AA13,sub_47A4E6,,,unclassified,0.00,unknown,,false,,,,
-0x0047AA3C,17,0x0047AA4C,sub_47AA3C,,,unclassified,0.00,unknown,,false,,,,
-0x0047AA4D,901,0x0047ADD1,sub_47AA4D,,,unclassified,0.00,unknown,,false,,,,
+0x0047AA3C,17,0x0047AA4C,sub_47AA3C,?inflate_codes_free@D3DX@@YAXPAUinflate_codes_state@1@PAUz_stream_s@1@@Z,third_party,library,100.00,unknown,,false,docs/LIBRARY_RECOVERY.md,python3 scripts/build.py --unit vc7-d3dx8-raw-infcodes --compare --json exact 17/17,root,SHA-pinned d3dx8.lib infcodes.obj relocation-free raw exact replay
+0x0047AA4D,901,0x0047ADD1,sub_47AA4D,?huft_build@D3DX@@YAHPAIIIPBI1PAPAUinflate_huft_s@1@0PAU21@00@Z,third_party,library,100.00,unknown,,false,docs/LIBRARY_RECOVERY.md,python3 scripts/build.py --unit vc7-d3dx8-raw-inftrees --compare --json exact 901/901,root,SHA-pinned d3dx8.lib inftrees.obj relocation-free raw exact replay
 0x0047ADD2,127,0x0047AE50,sub_47ADD2,,,unclassified,0.00,unknown,,false,,,,
 0x0047AE51,259,0x0047AF53,sub_47AE51,,,unclassified,0.00,unknown,,false,,,,
 0x0047AF54,47,0x0047AF82,sub_47AF54,,,unclassified,0.00,unknown,,false,,,,
-0x0047AF83,277,0x0047B097,sub_47AF83,,,unclassified,0.00,unknown,,false,,,,
+0x0047AF83,277,0x0047B097,sub_47AF83,?inflate_flush@D3DX@@YAHPAUinflate_blocks_state@1@PAUz_stream_s@1@H@Z,third_party,library,100.00,unknown,,false,docs/LIBRARY_RECOVERY.md,python3 scripts/build.py --unit vc7-d3dx8-raw-infutil --compare --json exact 277/277,root,SHA-pinned d3dx8.lib infutil.obj relocation-free raw exact replay
 0x0047B098,1261,0x0047B584,sub_47B098,,,unclassified,0.00,unknown,,false,,,,
 0x0047B585,1931,0x0047BD0F,sub_47B585,,,unclassified,0.00,unknown,,false,,,,
 0x0047BD10,937,0x0047C0B8,sub_47BD10,,,unclassified,0.00,unknown,,false,,,,

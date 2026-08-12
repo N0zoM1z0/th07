@@ -161,6 +161,11 @@ static __forceinline void ResetTimer(BulletUpdateTimer *timer)
     timer->previous = -999;
 }
 
+static __forceinline f32 TimerAsFramesFloat(BulletUpdateTimer *timer)
+{
+    return (f32)timer->current + *reinterpret_cast<f32 *>(&timer->subFrame);
+}
+
 #pragma var_order(collisionState, i, hitboxThickness, bulletSchedulerIndex, hitboxSize, bullet, fadeAlpha, laser,     \
                   hitboxCenter, spawnFastVelocity, spawnFastPosition, spawnFastProduct, spawnFastOffset,             \
                   spawnNormalVelocity, spawnNormalPosition, spawnNormalProduct, spawnNormalOffset,                  \
@@ -222,7 +227,11 @@ int __fastcall BulletManager::OnUpdate(BulletManager *manager)
     {
         BulletUpdateAnmVm *animation;
 
-        if (bullet->state)
+        if (!bullet->state)
+        {
+            goto advance_bullet;
+        }
+        else
         {
             ++*reinterpret_cast<i32 *>(reinterpret_cast<u8 *>(manager) + 0x37A128);
             switch (bullet->state)
@@ -410,6 +419,7 @@ int __fastcall BulletManager::OnUpdate(BulletManager *manager)
             reinterpret_cast<BulletUpdateBullet **>(manager)[911441 + bullet->drawListIndex] = bullet;
         }
 
+    advance_bullet:
         if (--bulletSchedulerIndex < 0)
         {
             bulletSchedulerIndex = 1023;
@@ -438,11 +448,10 @@ int __fastcall BulletManager::OnUpdate(BulletManager *manager)
             laser->startOffset = 0.0f;
         }
 
-        hitboxSize.x = laser->endOffset - laser->startOffset;
         hitboxSize.y = laser->width / 2.0f;
+        hitboxSize.x = laser->endOffset - laser->startOffset;
         hitboxCenter.x = (laser->endOffset - laser->startOffset) / 2.0f + laser->startOffset + laser->position.x;
         hitboxCenter.y = laser->position.y;
-        hitboxCenter.z = 0.0f;
         laser->primaryAnimation.scaleX = laser->width / laser->primaryAnimation.sprite->width;
         laser->primaryAnimation.scaleY =
             (laser->endOffset - laser->startOffset) / laser->primaryAnimation.sprite->height;
@@ -454,7 +463,7 @@ int __fastcall BulletManager::OnUpdate(BulletManager *manager)
         case 0:
             if (laser->flags & 1)
             {
-                fadeAlpha = (i32)((laser->timer.current + laser->timer.subFrame) * 255.0f / laser->startTime);
+                fadeAlpha = (i32)(TimerAsFramesFloat(&laser->timer) * 255.0f / laser->startTime);
                 if (fadeAlpha > 255)
                 {
                     fadeAlpha = 255;
@@ -467,7 +476,7 @@ int __fastcall BulletManager::OnUpdate(BulletManager *manager)
                 if (laser->startTime - rampFrames < laser->timer.current)
                 {
                     hitboxThickness =
-                        (laser->timer.current + laser->timer.subFrame) * laser->width / laser->startTime;
+                        TimerAsFramesFloat(&laser->timer) * laser->width / laser->startTime;
                 }
                 else
                 {
@@ -506,7 +515,7 @@ int __fastcall BulletManager::OnUpdate(BulletManager *manager)
         case 2:
             if (laser->flags & 1)
             {
-                fadeAlpha = (i32)((laser->timer.current + laser->timer.subFrame) * 255.0f / laser->startTime);
+                fadeAlpha = (i32)(TimerAsFramesFloat(&laser->timer) * 255.0f / laser->startTime);
                 if (fadeAlpha > 255)
                 {
                     fadeAlpha = 255;
@@ -516,7 +525,7 @@ int __fastcall BulletManager::OnUpdate(BulletManager *manager)
             else if (laser->despawnDuration > 0)
             {
                 hitboxThickness = laser->width -
-                                  (laser->timer.current + laser->timer.subFrame) * laser->width /
+                                  TimerAsFramesFloat(&laser->timer) * laser->width /
                                       laser->despawnDuration;
                 laser->primaryAnimation.scaleX = hitboxThickness / 16.0f;
                 hitboxSize.x = hitboxThickness / 2.0f;

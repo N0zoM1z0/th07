@@ -1,5 +1,6 @@
 schema_version = 1
 target_sha256 = "35467eaf8dc7fc85f024f16fb2037255f151cefda33cf4867bc9122aaa2e80ca"
+prebuilt_index = "config/vc7-prebuilt-library.csv"
 
 [units.vc7-d3dx8-d3dxmath]
 kind = "vc7_prebuilt"
@@ -1044,6 +1045,7 @@ symbol_base = "?CheckAuxProjectileCollision@Player@th07@@QAEHPAUD3DXVECTOR3@@0@Z
 dir32_targets = [
   "__real@40000000=__real@40000000",
   "__real@00000000=__real@00000000",
+  "__real@0000000000000000=__real@0000000000000000",
 ]
 
 [[units.player-core.functions]]
@@ -1057,6 +1059,7 @@ rel32_targets = [
 ]
 dir32_targets = [
   "__real@40000000=__real@40000000",
+  "?g_Player@th07@@3VPlayer@1@A=bullet_update_player",
   "?g_PlayerCollisionFlags@th07@@3HA=?g_PlayerCollisionFlags@th07@@3HA",
   "?g_GrazeState@th07@@3UGrazeState@1@A=?g_GrazeState@th07@@3UGrazeState@1@A",
 ]
@@ -1092,6 +1095,7 @@ rel32_targets = [
   "?ScoreGraze@Player@th07@@QAEHPAUD3DXVECTOR3@@@Z=0x0043EB90",
 ]
 dir32_targets = [
+  "?g_Player@th07@@3VPlayer@1@A=bullet_update_player",
   "?g_PlayerCollisionFlags@th07@@3HA=?g_PlayerCollisionFlags@th07@@3HA",
   "?g_GrazeState@th07@@3UGrazeState@1@A=?g_GrazeState@th07@@3UGrazeState@1@A",
   "__real@40000000=__real@40000000",

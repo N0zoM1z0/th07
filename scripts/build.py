@@ -19,6 +19,11 @@ ROOT = Path(__file__).resolve().parents[1]
 MANIFEST = ROOT / "config" / "match-units.toml"
 FUNCTIONS = ROOT / "config" / "functions.csv"
 TARGET_CONFIG = ROOT / "config" / "target.toml"
+VC7_PREBUILT_SHA256 = {
+    "d3dx8": "32148094cebbbe9b55f7769787cdde5926ca01014e072844f5152d25072e1f44",
+    "libc": "bd963bdc9388da3452b550886d5a4a35ff300dd66c8f88319daebbbcb5c14eb6",
+    "libcmt": "8815af7b9b6e0e28b77708ede25ab7ecfc4b05e1d8811f092c516cff5ce19d94",
+}
 
 
 def file_sha256(path: Path) -> str:
@@ -50,6 +55,39 @@ def load_manifest() -> dict[str, object]:
     units = manifest.get("units")
     if not isinstance(units, dict) or not units:
         raise ValueError("match-unit manifest has no units")
+    prebuilt_index = manifest.get("prebuilt_index")
+    if prebuilt_index:
+        index_path = repository_path(str(prebuilt_index))
+        with index_path.open(newline="", encoding="utf-8") as stream:
+            reader = csv.DictReader(stream)
+            expected = ["unit", "member", "address", "symbol"]
+            if reader.fieldnames != expected:
+                raise ValueError(f"invalid prebuilt index header: {reader.fieldnames}")
+            for row in reader:
+                name = row["unit"]
+                member = row["member"]
+                if not name or not member or not row["symbol"]:
+                    raise ValueError("prebuilt index contains an empty required field")
+                unit = units.setdefault(
+                    name,
+                    {
+                        "kind": "vc7_prebuilt",
+                        "source": "docs/LIBRARY_RECOVERY.md",
+                        "object": f"build/match-units/{name.replace('-', '_')}.obj",
+                        "profile": "vc7-prebuilt",
+                        "toolchain_library": "d3dx8",
+                        "toolchain_object": member,
+                        "toolchain_archive_sha256": "32148094cebbbe9b55f7769787cdde5926ca01014e072844f5152d25072e1f44",
+                        "prebuilt_index": str(prebuilt_index),
+                        "notes": "Audited relocation-free raw-exact D3DX8 archive breadth wave.",
+                        "functions": [],
+                    },
+                )
+                if unit.get("kind") != "vc7_prebuilt" or unit.get("toolchain_object") != member:
+                    raise ValueError(f"prebuilt index unit {name} mixes archive members")
+                functions = unit["functions"]
+                assert isinstance(functions, list)
+                functions.append({"address": row["address"], "symbol_base": row["symbol"]})
     with FUNCTIONS.open(newline="", encoding="utf-8") as stream:
         ledger = {row["address"] for row in csv.DictReader(stream)}
     claimed: set[str] = set()
@@ -74,14 +112,14 @@ def load_manifest() -> dict[str, object]:
         if unit["kind"] == "vc7_prebuilt":
             if unit["profile"] != "vc7-prebuilt":
                 raise ValueError(f"prebuilt unit {name} has the wrong profile")
-            if unit.get("toolchain_library") not in {"d3dx8", "libc", "libcmt"}:
+            library = unit.get("toolchain_library")
+            if library not in VC7_PREBUILT_SHA256:
                 raise ValueError(f"prebuilt unit {name} has an invalid library")
             member = unit.get("toolchain_object")
             if not isinstance(member, str) or not member.lower().endswith(".obj"):
                 raise ValueError(f"prebuilt unit {name} has an invalid object member")
-            archive_hash = unit.get("toolchain_archive_sha256")
-            if not isinstance(archive_hash, str) or len(archive_hash) != 64:
-                raise ValueError(f"prebuilt unit {name} lacks an archive digest")
+            if unit.get("toolchain_archive_sha256") != VC7_PREBUILT_SHA256[library]:
+                raise ValueError(f"prebuilt unit {name} has the wrong archive digest")
         functions = unit.get("functions")
         if not isinstance(functions, list) or not functions:
             raise ValueError(f"unit {name} has no functions")
@@ -165,6 +203,10 @@ def build_unit(name: str, unit: dict[str, object], json_mode: bool) -> dict[str,
                 ),
             }
         )
+        if unit.get("prebuilt_index"):
+            inputs["prebuilt_index_sha256"] = file_sha256(
+                repository_path(str(unit["prebuilt_index"]))
+            )
     input_digest = hashlib.sha256(
         json.dumps(inputs, sort_keys=True, separators=(",", ":")).encode()
     ).hexdigest()
