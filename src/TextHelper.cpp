@@ -14,6 +14,17 @@ static FormatInfo g_FormatInfoArray[7] = {
     {(D3DFORMAT)-1, 0, 0, 0, 0, 0},
 };
 
+// Inferred from the direct absolute references in the target routines below.
+extern IDirect3DDevice8 *g_TextBufferDevice;
+extern IDirect3DSurface8 *g_TextBufferSurface;
+extern const char g_TextFontName[];
+
+extern "C" HRESULT __stdcall D3DXLoadSurfaceFromSurface(IDirect3DSurface8 *destSurface,
+                                                         const PALETTEENTRY *destPalette, const RECT *destRect,
+                                                         IDirect3DSurface8 *srcSurface,
+                                                         const PALETTEENTRY *srcPalette, const RECT *srcRect,
+                                                         DWORD filter, D3DCOLOR colorKey);
+
 TextHelper::TextHelper()
 {
     this->format = (D3DFORMAT)-1;
@@ -139,5 +150,219 @@ FormatInfo *TextHelper::GetFormatInfo(D3DFORMAT format)
         return NULL;
     }
     return &g_FormatInfoArray[index];
+}
+
+struct A1R5G5B5
+{
+    u16 blue : 5;
+    u16 green : 5;
+    u16 red : 5;
+    u16 alpha : 1;
+};
+
+#pragma var_order(bufferRegion, idx, doubleArea, bufferCursor, bufferStart)
+bool TextHelper::InvertAlpha(i32 x, i32 y, i32 spriteWidth, i32 fontHeight, BOOL param5)
+{
+    i32 doubleArea;
+    u8 *bufferRegion;
+    i32 idx;
+    A1R5G5B5 *bufferCursor;
+    u8 *bufferStart;
+
+    doubleArea = spriteWidth * fontHeight * 2;
+    bufferStart = &this->buffer[0];
+    bufferRegion = &bufferStart[y * spriteWidth * 2];
+    switch (this->format)
+    {
+    case D3DFMT_A8R8G8B8:
+        for (idx = 3; idx < doubleArea; idx += 4)
+        {
+            bufferRegion[idx] = bufferRegion[idx] ^ 0xff;
+        }
+        break;
+    case D3DFMT_A1R5G5B5:
+        for (bufferCursor = (A1R5G5B5 *)bufferRegion, idx = 0; idx < doubleArea; idx += 2, bufferCursor += 1)
+        {
+            bufferCursor->alpha ^= 1;
+            if (bufferCursor->alpha)
+            {
+                if (!param5)
+                {
+                    if (bufferCursor->red >= bufferCursor->blue)
+                    {
+                        bufferCursor->red = bufferCursor->red - bufferCursor->red * idx * 2 / doubleArea / 3;
+                        bufferCursor->green = bufferCursor->green - bufferCursor->green * idx * 2 / doubleArea / 3;
+                    }
+                    else
+                    {
+                        bufferCursor->blue = bufferCursor->blue - bufferCursor->blue * idx / doubleArea / 2;
+                        bufferCursor->green = bufferCursor->green - bufferCursor->green * idx / doubleArea / 2;
+                    }
+                }
+                else
+                {
+                    if (bufferCursor->red >= bufferCursor->blue)
+                    {
+                        bufferCursor->red = bufferCursor->red - bufferCursor->red * idx / doubleArea / 4;
+                        bufferCursor->green = bufferCursor->green - bufferCursor->green * idx / doubleArea / 4;
+                    }
+                    else
+                    {
+                        bufferCursor->blue = bufferCursor->blue - bufferCursor->blue * idx / doubleArea / 4;
+                        bufferCursor->green = bufferCursor->green - bufferCursor->green * idx / doubleArea / 4;
+                    }
+                }
+            }
+            else
+            {
+                bufferCursor->red = 0;
+                bufferCursor->green = 0;
+                bufferCursor->blue = 0;
+            }
+        }
+        break;
+    case D3DFMT_A4R4G4B4:
+        for (idx = 1; idx < doubleArea; idx += 2)
+        {
+            bufferRegion[idx] = bufferRegion[idx] ^ 0xf0;
+        }
+        break;
+    default:
+        return false;
+    }
+    return true;
+}
+
+#pragma function(memcpy)
+#pragma var_order(dstBuf, dstWidthBytes, rectToLock, curHeight, srcWidthBytes, outSurfaceDesc, srcBuf, lockedRect,     \
+                  width, height, thisFormat, thisHeight)
+bool TextHelper::CopyTextToSurface(IDirect3DSurface8 *outSurface)
+{
+    D3DLOCKED_RECT lockedRect;
+    u8 *srcBuf;
+    D3DSURFACE_DESC outSurfaceDesc;
+    size_t srcWidthBytes;
+    int curHeight;
+    RECT rectToLock;
+    int dstWidthBytes;
+    u8 *dstBuf;
+    i32 width;
+    i32 height;
+    D3DFORMAT thisFormat;
+    i32 thisHeight;
+
+    if (!(bool)(u32)(this->gdiObj2 != NULL))
+    {
+        return false;
+    }
+    outSurface->GetDesc(&outSurfaceDesc);
+    rectToLock.left = 0;
+    rectToLock.top = 0;
+    rectToLock.right = width = this->width;
+    rectToLock.bottom = height = this->height;
+    if (outSurface->LockRect(&lockedRect, &rectToLock, 0))
+    {
+        return false;
+    }
+    dstWidthBytes = lockedRect.Pitch;
+    srcWidthBytes = this->imageWidthInBytes;
+    srcBuf = this->buffer;
+    dstBuf = (u8 *)lockedRect.pBits;
+    thisFormat = this->format;
+    if (outSurfaceDesc.Format == thisFormat)
+    {
+        for (curHeight = 0; thisHeight = this->height, curHeight < thisHeight; curHeight++)
+        {
+            memcpy(dstBuf, srcBuf, srcWidthBytes);
+            srcBuf += srcWidthBytes;
+            dstBuf += dstWidthBytes;
+        }
+    }
+    outSurface->UnlockRect();
+    return true;
+}
+
+void TextHelper::CreateTextBuffer()
+{
+    g_TextBufferDevice->CreateImageSurface(1024, 64, D3DFMT_A1R5G5B5, &g_TextBufferSurface);
+}
+
+void TextHelper::ReleaseTextBuffer()
+{
+    if (g_TextBufferSurface != NULL)
+    {
+        g_TextBufferSurface->Release();
+        g_TextBufferSurface = NULL;
+    }
+}
+
+#pragma function(strlen)
+#pragma var_order(hdc, font, textSurfaceDesc, h, textHelper, hdc, srcRect, destRect, destSurface)
+void __fastcall TextHelper::RenderTextToTextureBold(i32 xPos, i32 yPos, i32 spriteWidth, i32 spriteHeight,
+                                                    i32 fontHeight, i32 fontWidth, COLORREF textColor,
+                                                    COLORREF outlineType, char *string, IDirect3DTexture8 *outTexture)
+{
+    HGDIOBJ h;
+    LPDIRECT3DSURFACE8 destSurface;
+    RECT destRect;
+    RECT srcRect;
+    D3DSURFACE_DESC textSurfaceDesc;
+    HFONT font;
+    HDC hdc;
+
+    font = CreateFontA(fontHeight * 2 - 2, 0, 0, 0, FW_BOLD, false, false, false, SHIFTJIS_CHARSET,
+                       OUT_DEFAULT_PRECIS, CLIP_DEFAULT_PRECIS, ANTIALIASED_QUALITY, FF_ROMAN | FIXED_PITCH,
+                       g_TextFontName);
+    TextHelper textHelper;
+    g_TextBufferSurface->GetDesc(&textSurfaceDesc);
+    textHelper.AllocateBufferWithFallback(textSurfaceDesc.Width, textSurfaceDesc.Height, textSurfaceDesc.Format);
+    hdc = textHelper.hdc;
+    h = SelectObject(hdc, font);
+    textHelper.InvertAlpha(0, 0, spriteWidth * 2, fontHeight * 2 + 6, FALSE);
+    SetBkMode(hdc, TRANSPARENT);
+
+    if (outlineType != 0xffffffff)
+    {
+        SetTextColor(hdc, 0);
+        TextOutA(hdc, xPos * 2 + 4, 2, string, strlen(string));
+        TextOutA(hdc, xPos * 2, 2, string, strlen(string));
+        TextOutA(hdc, xPos * 2 + 2, 0, string, strlen(string));
+        TextOutA(hdc, xPos * 2 + 2, 4, string, strlen(string));
+    }
+    else
+    {
+        SetTextColor(hdc, 0);
+        TextOutA(hdc, xPos * 2 + 3, 2, string, strlen(string));
+        TextOutA(hdc, xPos * 2 + 1, 2, string, strlen(string));
+        TextOutA(hdc, xPos * 2 + 2, 1, string, strlen(string));
+        TextOutA(hdc, xPos * 2 + 2, 3, string, strlen(string));
+    }
+    SetTextColor(hdc, textColor);
+    TextOutA(hdc, xPos * 2 + 2, 2, string, strlen(string));
+
+    SelectObject(hdc, h);
+    textHelper.InvertAlpha(0, 0, spriteWidth * 2, fontHeight * 2 + 6, outlineType == 0xffffffff);
+    textHelper.CopyTextToSurface(g_TextBufferSurface);
+    SelectObject(hdc, h);
+    DeleteObject(font);
+    destRect.left = 0;
+    destRect.top = yPos;
+    destRect.right = spriteWidth;
+    destRect.bottom = yPos + fontWidth;
+    srcRect.left = 0;
+    srcRect.top = 0;
+    srcRect.right = spriteWidth * 2;
+    srcRect.bottom = fontHeight * 2;
+    if (srcRect.right > 1024)
+    {
+        srcRect.right = 1024;
+    }
+    outTexture->GetSurfaceLevel(0, &destSurface);
+    D3DXLoadSurfaceFromSurface(destSurface, NULL, &destRect, g_TextBufferSurface, NULL, &srcRect, 4, 0);
+    if (destSurface != NULL)
+    {
+        destSurface->Release();
+        destSurface = NULL;
+    }
 }
 }; // namespace th07

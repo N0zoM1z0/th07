@@ -301,11 +301,11 @@ address,size,span_end,current_name,proposed_name,module,status,match_percent,cal
 0x00431ACE,95,0x00431B2C,sub_431ACE,TextHelper_allocate_buffer_with_fallback,text,matching,100.00,__thiscall,bool TextHelper_allocate_buffer_with_fallback(TextHelper * this; int width; int height; D3DFORMAT format),false,src/TextHelper.cpp,python3 scripts/build.py --unit text-helper --compare --json; strict VC7 COFF exact 95/95 bytes 2026-08-12,root,Fallback formats 25/26 to 21 and 23 to 22
 0x00431B2D,447,0x00431CEB,sub_431B2D,TextHelper_try_allocate_buffer,text,matching,100.00,__thiscall,bool TextHelper_try_allocate_buffer(TextHelper * this; int width; int height; D3DFORMAT format),false,src/TextHelper.cpp,python3 scripts/build.py --unit text-helper --compare --json; strict VC7 COFF exact 447/447 bytes with verified code/import relocations 2026-08-12,root,Confirmed 0x24-byte object layout and 108-byte bitmap-info local
 0x00431CEC,80,0x00431D3B,sub_431CEC,TextHelper_get_format_info,text,matching,100.00,__thiscall,FormatInfo * TextHelper_get_format_info(TextHelper * this; D3DFORMAT format),false,src/TextHelper.cpp,python3 scripts/build.py --unit text-helper --compare --json; strict VC7 COFF exact 80/80 bytes with verified 0x0049ED98 table relocation 2026-08-12,root,Target A1R5G5B5 alpha mask is 0x8000 unlike current TH06 source
-0x00431D3C,1064,0x00432163,sub_431D3C,,,unclassified,0.00,unknown,,false,,,,
-0x00432164,247,0x0043225A,sub_432164,,,unclassified,0.00,unknown,,false,,,,
-0x0043225B,35,0x0043227D,sub_43225B,,,unclassified,0.00,unknown,,false,,,,
-0x0043227E,37,0x004322A2,sub_43227E,,,unclassified,0.00,unknown,,false,,,,
-0x004322A3,796,0x004325BE,sub_4322A3,,,unclassified,0.00,unknown,,false,,,,
+0x00431D3C,1064,0x00432163,sub_431D3C,TextHelper_invert_alpha,text,matching,100.00,__thiscall,bool TextHelper_invert_alpha(TextHelper * this; int x; int y; int width; int height; BOOL fade),false,src/TextHelper.cpp,strict VC7 COFF exact 1064/1064 bytes 2026-08-12,root,TH07-specific A1R5G5B5 alpha and fade behavior verified
+0x00432164,247,0x0043225A,sub_432164,TextHelper_copy_text_to_surface,text,matching,100.00,__thiscall,bool TextHelper_copy_text_to_surface(TextHelper * this; IDirect3DSurface8 * surface),false,src/TextHelper.cpp,strict VC7 COFF exact 247/247 bytes 2026-08-12,root,Pitch-aware row copy and surface lock lifecycle verified
+0x0043225B,35,0x0043227D,sub_43225B,TextHelper_create_text_buffer,text,matching,100.00,__cdecl,void TextHelper_create_text_buffer(void),false,src/TextHelper.cpp,strict VC7 COFF exact 35/35 bytes 2026-08-12,root,Static buffer creation uses 1024x64 D3DFMT_A1R5G5B5
+0x0043227E,37,0x004322A2,sub_43227E,TextHelper_release_text_buffer,text,matching,100.00,__cdecl,void TextHelper_release_text_buffer(void),false,src/TextHelper.cpp,strict VC7 COFF exact 37/37 bytes 2026-08-12,root,Releases and clears global text surface
+0x004322A3,796,0x004325BE,sub_4322A3,TextHelper_render_text_to_texture_bold,text,matching,100.00,__fastcall,void TextHelper_render_text_to_texture_bold(int x; int y; int spriteWidth; int spriteHeight; int fontHeight; int fontWidth; COLORREF textColor; COLORREF outlineType; char * text; IDirect3DTexture8 * texture),false,src/TextHelper.cpp,strict VC7 COFF exact 796/796 bytes with verified EH/import/global relocations 2026-08-12,root,TH07 uses FW_BOLD unlike the TH08 reference implementation
 0x004325C0,32,0x004325DF,sub_4325C0,,,unclassified,0.00,unknown,,false,,,,
 0x004325E0,71,0x00432626,sub_4325E0,,,unclassified,0.00,unknown,,false,,,,
 0x00432630,84,0x00432683,sub_432630,,,unclassified,0.00,unknown,,false,,,,
@@ -333,31 +333,31 @@ address,size,span_end,current_name,proposed_name,module,status,match_percent,cal
 0x00435E30,143,0x00435EBE,sub_435E30,,,unclassified,0.00,unknown,,false,,,,
 0x00435EC0,255,0x00435FBE,sub_435EC0,,,unclassified,0.00,unknown,,false,,,,
 0x00435FC0,322,0x00436101,sub_435FC0,,,unclassified,0.00,unknown,,false,,,,
-0x00436110,33,0x00436130,unknown_libname_2,,,unclassified,0.00,unknown,,false,,,,
+0x00436110,33,0x00436130,unknown_libname_2,MidiDevice_ctor,midi,matching,100.00,__thiscall,MidiDevice * MidiDevice_ctor(MidiDevice * this),false,src/Midi.cpp,strict VC7 COFF exact 33/33 bytes 2026-08-12,root,Initializes handle and device identifier
 0x00436140,19,0x00436152,sub_436140,,,unclassified,0.00,unknown,,false,,,,
-0x00436160,89,0x004361B8,sub_436160,,,unclassified,0.00,unknown,,false,,,,
-0x004361C0,59,0x004361FA,sub_4361C0,,,unclassified,0.00,unknown,,false,,,,
-0x00436200,78,0x0043624D,sub_436200,,,unclassified,0.00,unknown,,false,,,,
-0x00436250,67,0x00436292,sub_436250,,,unclassified,0.00,unknown,,false,,,,
-0x004362A0,48,0x004362CF,sub_4362A0,,,unclassified,0.00,unknown,,false,,,,
-0x004362D0,41,0x004362F8,sub_4362D0,,,unclassified,0.00,unknown,,false,,,,
+0x00436160,89,0x004361B8,sub_436160,MidiDevice_open_device,midi,matching,100.00,__thiscall,BOOL MidiDevice_open_device(MidiDevice * this; UINT deviceId),false,src/Midi.cpp,strict VC7 COFF exact 89/89 bytes with verified WINMM/global relocations 2026-08-12,root,Uses callback window at target global 0x00575994
+0x004361C0,59,0x004361FA,sub_4361C0,MidiDevice_close,midi,matching,100.00,__thiscall,ZunResult MidiDevice_close(MidiDevice * this),false,src/Midi.cpp,strict VC7 COFF exact 59/59 bytes with verified WINMM relocations 2026-08-12,root,Resets and closes active MIDI output handle
+0x00436200,78,0x0043624D,sub_436200,MidiDevice_send_long_msg,midi,matching,100.00,__thiscall,BOOL MidiDevice_send_long_msg(MidiDevice * this; MIDIHDR * header),false,src/Midi.cpp,strict VC7 COFF exact 78/78 bytes with verified WINMM relocations 2026-08-12,root,Prepares and sends long MIDI message
+0x00436250,67,0x00436292,sub_436250,MidiDevice_send_short_msg,midi,matching,100.00,__thiscall,BOOL MidiDevice_send_short_msg(MidiDevice * this; BYTE status; BYTE first; BYTE second),false,src/Midi.cpp,strict VC7 COFF exact 67/67 bytes with verified WINMM relocation 2026-08-12,root,Packs three bytes into a short MIDI message
+0x004362A0,48,0x004362CF,sub_4362A0,MidiTimer_ctor,midi,matching,100.00,__thiscall,MidiTimer * MidiTimer_ctor(MidiTimer * this),false,src/Midi.cpp,strict VC7 COFF exact 48/48 bytes with verified vtable/WINMM relocations 2026-08-12,root,0x10-byte layout verified
+0x004362D0,41,0x004362F8,sub_4362D0,MidiTimer_dtor,midi,matching,100.00,__thiscall,void MidiTimer_dtor(MidiTimer * this),false,src/Midi.cpp,strict VC7 COFF exact 41/41 bytes with verified vtable/WINMM relocations 2026-08-12,root,Stops timer and ends timer period
 0x00436300,115,0x00436372,sub_436300,,,unclassified,0.00,unknown,,false,,,,
 0x00436380,61,0x004363BC,sub_436380,,,unclassified,0.00,unknown,,false,,,,
-0x004363C0,26,0x004363D9,fptc,,,unclassified,0.00,unknown,,false,,,,
+0x004363C0,26,0x004363D9,fptc,MidiTimer_default_timer_callback,midi,matching,100.00,__stdcall,void MidiTimer_default_timer_callback(UINT id; UINT message; DWORD_PTR user; DWORD_PTR dw1; DWORD_PTR dw2),false,src/Midi.cpp,strict VC7 COFF exact 26/26 bytes 2026-08-12,root,Dispatches through virtual OnTimerElapsed
 0x004363E0,30,0x004363FD,sub_4363E0,,,unclassified,0.00,unknown,,false,,,,
 0x00436400,78,0x0043644D,sub_436400,,,unclassified,0.00,unknown,,false,,,,
 0x00436450,351,0x004365AE,sub_436450,,,unclassified,0.00,unknown,,false,,,,
-0x004365B0,147,0x00436642,sub_4365B0,,,unclassified,0.00,unknown,,false,,,,
+0x004365B0,147,0x00436642,sub_4365B0,MidiOutput_dtor,midi,matching,100.00,__thiscall,void MidiOutput_dtor(MidiOutput * this),false,src/Midi.cpp,strict VC7 COFF exact 147/147 bytes with verified EH/vtable relocations 2026-08-12,root,0x300-byte layout and 32 file slots verified
 0x00436650,112,0x004366BF,sub_436650,,,unclassified,0.00,unknown,,false,,,,
 0x004366C0,60,0x004366FB,sub_4366C0,,,unclassified,0.00,unknown,,false,,,,
 0x00436700,131,0x00436782,sub_436700,,,unclassified,0.00,unknown,,false,,,,
 0x00436790,547,0x004369B2,sub_436790,,,unclassified,0.00,unknown,,false,,,,
-0x004369C0,58,0x004369F9,sub_4369C0,,,unclassified,0.00,unknown,,false,,,,
+0x004369C0,58,0x004369F9,sub_4369C0,MidiOutput_load_file,midi,matching,100.00,__thiscall,ZunResult MidiOutput_load_file(MidiOutput * this; char * path),false,src/Midi.cpp,strict VC7 COFF exact 58/58 bytes 2026-08-12,root,Read parse and cleanup path verified
 0x00436A00,203,0x00436ACA,sub_436A00,,,unclassified,0.00,unknown,,false,,,,
 0x00436AD0,81,0x00436B20,sub_436AD0,,,unclassified,0.00,unknown,,false,,,,
 0x00436B30,134,0x00436BB5,sub_436B30,,,unclassified,0.00,unknown,,false,,,,
 0x00436BC0,199,0x00436C86,sub_436BC0,,,unclassified,0.00,unknown,,false,,,,
-0x00436C90,79,0x00436CDE,sub_436C90,,,unclassified,0.00,unknown,,false,,,,
+0x00436C90,79,0x00436CDE,sub_436C90,MidiOutput_set_fade_out,midi,matching,100.00,__thiscall,ZunResult MidiOutput_set_fade_out(MidiOutput * this; UINT milliseconds),false,src/Midi.cpp,strict VC7 COFF exact 79/79 bytes 2026-08-12,root,Fade interval and multiplier state verified
 0x00436CE0,619,0x00436F4A,sub_436CE0,,,unclassified,0.00,unknown,,false,,,,
 0x00436F50,1868,0x0043769B,sub_436F50,,,unclassified,0.00,unknown,,false,,,,
 0x004377F0,187,0x004378AA,sub_4377F0,,,unclassified,0.00,unknown,,false,,,,
@@ -604,9 +604,9 @@ address,size,span_end,current_name,proposed_name,module,status,match_percent,cal
 0x0045C4D9,109,0x0045C545,sub_45C4D9,,,unclassified,0.00,unknown,,false,,,,
 0x0045C546,138,0x0045C5CF,sub_45C546,,,unclassified,0.00,unknown,,false,,,,
 0x0045C5D0,273,0x0045C6E0,sub_45C5D0,,,unclassified,0.00,unknown,,false,,,,
-0x0045C6F0,23,0x0045C706,unknown_libname_4,,,unclassified,0.00,unknown,,false,,,,
-0x0045C710,44,0x0045C73B,sub_45C710,,,unclassified,0.00,unknown,,false,,,,
-0x0045C740,142,0x0045C7CD,sub_45C740,,,unclassified,0.00,unknown,,false,,,,
+0x0045C6F0,23,0x0045C706,unknown_libname_4,CSoundManager_ctor,sound,matching,100.00,__thiscall,CSoundManager * CSoundManager_ctor(CSoundManager * this),false,src/zwave.cpp,strict VC7 COFF exact 23/23 bytes 2026-08-12,root,Initializes DirectSound interface pointer
+0x0045C710,44,0x0045C73B,sub_45C710,CSoundManager_dtor,sound,matching,100.00,__thiscall,void CSoundManager_dtor(CSoundManager * this),false,src/zwave.cpp,strict VC7 COFF exact 44/44 bytes 2026-08-12,root,Releases DirectSound interface
+0x0045C740,142,0x0045C7CD,sub_45C740,CSoundManager_initialize,sound,matching,100.00,__thiscall,HRESULT CSoundManager_initialize(CSoundManager * this; HWND window; DWORD coop; DWORD channels; DWORD frequency; DWORD bitrate),false,src/zwave.cpp,strict VC7 COFF exact 142/142 bytes 2026-08-12,root,DirectSoundCreate8 and primary format call targets verified
 0x0045C7D0,265,0x0045C8D8,sub_45C7D0,,,unclassified,0.00,unknown,,false,,,,
 0x0045C8E0,844,0x0045CC2B,sub_45C8E0,,,unclassified,0.00,unknown,,false,,,,
 0x0045CC30,795,0x0045CF4A,sub_45CC30,,,unclassified,0.00,unknown,,false,,,,
@@ -615,17 +615,17 @@ address,size,span_end,current_name,proposed_name,module,status,match_percent,cal
 0x0045D060,599,0x0045D2B6,sub_45D060,,,unclassified,0.00,unknown,,false,,,,
 0x0045D2C0,241,0x0045D3B0,sub_45D2C0,,,unclassified,0.00,unknown,,false,,,,
 0x0045D3C0,484,0x0045D5A3,sub_45D3C0,,,unclassified,0.00,unknown,,false,,,,
-0x0045D5B0,163,0x0045D652,sub_45D5B0,,,unclassified,0.00,unknown,,false,,,,
-0x0045D660,182,0x0045D715,sub_45D660,,,unclassified,0.00,unknown,,false,,,,
-0x0045D720,53,0x0045D754,sub_45D720,,,unclassified,0.00,unknown,,false,,,,
+0x0045D5B0,163,0x0045D652,sub_45D5B0,CSound_restore_buffer,sound,matching,100.00,__thiscall,HRESULT CSound_restore_buffer(CSound * this; IDirectSoundBuffer * buffer; BOOL * restored),false,src/zwave.cpp,strict VC7 COFF exact 163/163 bytes with verified Sleep IAT relocation 2026-08-12,root,Lost-buffer restore loop verified
+0x0045D660,182,0x0045D715,sub_45D660,CSound_get_free_buffer,sound,matching,100.00,__thiscall,IDirectSoundBuffer * CSound_get_free_buffer(CSound * this),false,src/zwave.cpp,strict VC7 COFF exact 182/182 bytes 2026-08-12,root,Chooses stopped buffer or randomized fallback
+0x0045D720,53,0x0045D754,sub_45D720,CSound_get_buffer,sound,matching,100.00,__thiscall,IDirectSoundBuffer * CSound_get_buffer(CSound * this; DWORD index),false,src/zwave.cpp,strict VC7 COFF exact 53/53 bytes 2026-08-12,root,Bounds-checked buffer accessor
 0x0045D760,250,0x0045D859,sub_45D760,,,unclassified,0.00,unknown,,false,,,,
 0x0045D860,171,0x0045D90A,sub_45D860,,,unclassified,0.00,unknown,,false,,,,
 0x0045D910,79,0x0045D95E,sub_45D910,,,unclassified,0.00,unknown,,false,,,,
 0x0045D960,78,0x0045D9AD,sub_45D960,,,unclassified,0.00,unknown,,false,,,,
-0x0045D9B0,110,0x0045DA1D,sub_45D9B0,,,unclassified,0.00,unknown,,false,,,,
+0x0045D9B0,110,0x0045DA1D,sub_45D9B0,CSound_reset,sound,matching,100.00,__thiscall,HRESULT CSound_reset(CSound * this),false,src/zwave.cpp,strict VC7 COFF exact 110/110 bytes 2026-08-12,root,Resets every duplicated sound buffer cursor
 0x0045DA20,96,0x0045DA7F,sub_45DA20,,,unclassified,0.00,unknown,,false,,,,
 0x0045DA80,46,0x0045DAAD,sub_45DA80,,,unclassified,0.00,unknown,,false,,,,
-0x0045DAB0,28,0x0045DACB,sub_45DAB0,,,unclassified,0.00,unknown,,false,,,,
+0x0045DAB0,28,0x0045DACB,sub_45DAB0,CStreamingSound_dtor,sound,matching,100.00,__thiscall,void CStreamingSound_dtor(CStreamingSound * this),false,src/zwave.cpp,strict VC7 COFF exact 28/28 bytes with verified vtable relocation 2026-08-12,root,Derived vptr reset precedes CSound destructor
 0x0045DAD0,143,0x0045DB5E,sub_45DAD0,,,unclassified,0.00,unknown,,false,,,,
 0x0045DB60,1000,0x0045DF47,sub_45DB60,,,unclassified,0.00,unknown,,false,,,,
 0x0045DF50,194,0x0045E011,sub_45DF50,,,unclassified,0.00,unknown,,false,,,,

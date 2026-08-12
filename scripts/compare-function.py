@@ -105,6 +105,18 @@ def rel32_operand_kind(code: bytes | bytearray, field_offset: int) -> str | None
     return None
 
 
+def is_seh_chain_operand(code: bytes | bytearray, field_offset: int) -> bool:
+    """Recognize VC7's absolute FS:[0] load/store operand."""
+    if field_offset >= 2 and code[field_offset - 2 : field_offset] == b"\x64\xa1":
+        return True
+    return (
+        field_offset >= 3
+        and code[field_offset - 3] == 0x64
+        and code[field_offset - 2] in (0x89, 0x8B)
+        and code[field_offset - 1] & 0xC7 == 0x05
+    )
+
+
 def load_relocations() -> dict[str, tuple[int, bytes, frozenset[int], str]]:
     rows: dict[str, tuple[int, bytes, frozenset[int], str]] = {}
     with RELOCATIONS.open(newline="", encoding="utf-8") as stream:
@@ -236,6 +248,14 @@ def coff_symbol_bytes(
         if target_section_number == section_number:
             destination = function_address + int(target_symbol["value"]) - value + signed_addend
             struct.pack_into("<I", code, field_offset, destination & 0xFFFFFFFF)
+            continue
+
+        if target_name == "__except_list":
+            if raw_addend != 0 or not is_seh_chain_operand(code, field_offset):
+                raise ValueError("unsupported __except_list relocation")
+            # `__except_list` is the compiler's symbolic spelling for the
+            # process SEH chain head at FS:[0], not a PE image address.
+            struct.pack_into("<I", code, field_offset, 0)
             continue
 
         key = dir32_overrides.get(f"{target_name}+0x{raw_addend:X}", dir32_overrides.get(target_name, target_name))

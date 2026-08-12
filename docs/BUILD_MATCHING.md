@@ -53,30 +53,32 @@ It records the source, manifest, compiler runner, `cl.exe`, patched `C1XX.DLL`,
 and object hashes. The JSON comparator has stable `exact`, `mismatch`,
 `blocked`, and `error` outcomes and reports the first differing byte.
 
-The first `text-helper` unit is explicitly a focused probe. Its success can
-prove function code generation but does not claim the original TH07 object
-partition.
+The `text-helper`, `midi`, and `zwave` units are explicitly focused probes.
+Their success can prove function code generation but does not claim the
+original TH07 object partitions.
 
-## First exact code-generation result
+## Exact code-generation results
 
-The pinned VC7 build and patched `C1XX.DLL` reproduce all six implemented
-`TextHelper` allocation methods:
+The pinned VC7 build and patched `C1XX.DLL` currently reproduce 30 functions
+across three probes:
 
-| Address | Function | Bytes |
-| --- | --- | ---: |
-| `0x00431A0F` | constructor | 60 / 60 |
-| `0x00431A4B` | destructor | 17 / 17 |
-| `0x00431A5C` | release buffer | 114 / 114 |
-| `0x00431ACE` | allocate with fallback | 95 / 95 |
-| `0x00431B2D` | DIB allocation | 447 / 447 |
-| `0x00431CEC` | format lookup | 80 / 80 |
+| Probe | Functions | Exact bytes |
+| --- | ---: | ---: |
+| `text-helper` | 11 | 2,992 / 2,992 |
+| `midi` | 11 | 725 / 725 |
+| `zwave` | 8 | 745 / 745 |
+| **Total** | **30** | **4,462 / 4,462** |
 
-The strict comparison resolves member and CRT calls, validates five exact
-GDI32 import-table entries, and validates the `g_FormatInfoArray` relocation at
-`0x0049ED98`. The accepted command is:
+The strict comparison resolves member and CRT calls; validates GDI32, WINMM,
+and KERNEL32 IAT entries; checks global, string, and vtable target bytes; and
+recognizes VC7's compiler-generated `FS:[0]` SEH-chain operands. Local EH thunk
+addresses remain explicit allowlisted evidence rather than wildcard
+relocations. Accepted commands include:
 
 ```bash
 python3 scripts/build.py --unit text-helper --compare --json
+python3 scripts/build.py --unit midi --compare --json
+python3 scripts/build.py --unit zwave --compare --json
 ```
 
 ## Guardrails

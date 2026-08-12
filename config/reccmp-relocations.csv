@@ -5,3 +5,25 @@ __imp__DeleteObject@4,0x0048D028,fab20900,0x0,PE import table entry and GDI32 De
 __imp__SelectObject@8,0x0048D02C,eab20900,0x0,PE import table entry and GDI32 SelectObject import,literal
 __imp__CreateCompatibleDC@4,0x0048D030,d4b20900,0x0,PE import table entry and GDI32 CreateCompatibleDC import,literal
 _g_FormatInfoArray,0x0049ED98,16000000,0x0,Direct target table bytes and IDA xref from TextHelper GetFormatInfo,literal
+__imp__Sleep@4,0x0048D0B0,8ab00900,0x0,PE KERNEL32 import table entry for Sleep,literal
+__imp__SetTextColor@8,0x0048D014,44b30900,0x0,PE GDI32 import table entry for SetTextColor,literal
+__imp__CreateFontA@56,0x0048D020,16b30900,0x0,PE GDI32 import table entry for CreateFontA,literal
+__imp__SetBkMode@8,0x0048D024,0ab30900,0x0,PE GDI32 import table entry for SetBkMode,literal
+__imp__TextOutA@20,0x0048D034,c8b20900,0x0,PE GDI32 import table entry for TextOutA,literal
+__imp__midiOutReset@4,0x0048D21C,5cae0900,0x0,PE WINMM import table entry for midiOutReset,literal
+__imp__timeGetDevCaps@8,0x0048D228,beae0900,0x0,PE WINMM import table entry for timeGetDevCaps,literal
+__imp__midiOutLongMsg@12,0x0048D22C,acae0900,0x0,PE WINMM import table entry for midiOutLongMsg,literal
+__imp__midiOutClose@4,0x0048D230,9cae0900,0x0,PE WINMM import table entry for midiOutClose,literal
+__imp__midiOutShortMsg@8,0x0048D234,8aae0900,0x0,PE WINMM import table entry for midiOutShortMsg,literal
+__imp__midiOutOpen@20,0x0048D23C,6cae0900,0x0,PE WINMM import table entry for midiOutOpen,literal
+__imp__timeEndPeriod@4,0x0048D240,f8ad0900,0x0,PE WINMM import table entry for timeEndPeriod,literal
+__imp__midiOutPrepareHeader@12,0x0048D244,44ae0900,0x0,PE WINMM import table entry for midiOutPrepareHeader,literal
+?g_GameWindow@th07@@3PAUHWND__@@A,0x00575994,00000000,0x0,Direct target absolute reference from MidiDevice OpenDevice and zero-initialized target storage,literal
+??_7MidiTimer@th07@@6B@,0x00497260,20d64400,0x0,Direct target vptr assignment in MidiTimer constructor and destructor,address
+??_7MidiOutput@th07@@6B@,0x00497264,e06c4300,0x0,Direct target vptr assignment in MidiOutput destructor,address
+midi_output_dtor_eh_handler,0x0048C486,b864a84900e9d62fffff,0x0,Direct target EH handler thunk referenced by MidiOutput destructor,address
+?g_TextBufferSurface@th07@@3PAUIDirect3DSurface8@@A,0x0049FE28,00000000,0x0,Direct target absolute references and zero-initialized TextHelper surface storage,literal
+?g_TextBufferDevice@th07@@3PAUIDirect3DDevice8@@A,0x00575958,00000000,0x0,Direct target absolute reference from TextHelper CreateTextBuffer and zero-initialized storage,literal
+?g_TextFontName@th07@@3QBDB,0x00497CBC,826c827220835383568362834e00,0x0,Direct target Shift-JIS font-name literal referenced by TextHelper rendering,literal
+texthelper_render_eh_handler,0x0048C558,b84ca94900e9042fffff,0x0,Direct target EH handler thunk referenced by TextHelper rendering,address
+??_7CStreamingSound@th07@@6B@,0x0049528C,80da450030d04500,0x0,Direct target vptr assignment in CStreamingSound destructor,address

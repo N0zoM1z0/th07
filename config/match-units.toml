@@ -38,3 +38,146 @@ rel32_targets = [
 [[units.text-helper.functions]]
 address = "0x00431CEC"
 symbol_base = "?GetFormatInfo@TextHelper@th07@@QAEPAUFormatInfo@2@W4_D3DFORMAT@@@Z"
+
+[[units.text-helper.functions]]
+address = "0x00431D3C"
+symbol_base = "?InvertAlpha@TextHelper@th07@@QAE_NHHHHH@Z"
+
+[[units.text-helper.functions]]
+address = "0x00432164"
+symbol_base = "?CopyTextToSurface@TextHelper@th07@@QAE_NPAUIDirect3DSurface8@@@Z"
+rel32_targets = ["_memcpy=0x0047D4E0"]
+
+[[units.text-helper.functions]]
+address = "0x0043225B"
+symbol_base = "?CreateTextBuffer@TextHelper@th07@@SIXXZ"
+
+[[units.text-helper.functions]]
+address = "0x0043227E"
+symbol_base = "?ReleaseTextBuffer@TextHelper@th07@@SIXXZ"
+
+[[units.text-helper.functions]]
+address = "0x004322A3"
+symbol_base = "?RenderTextToTextureBold@TextHelper@th07@@SIXHHHHHHKKPADPAUIDirect3DTexture8@@@Z"
+rel32_targets = [
+  "__EH_prolog=0x0047F830",
+  "??0TextHelper@th07@@QAE@XZ=0x00431A0F",
+  "?AllocateBufferWithFallback@TextHelper@th07@@QAE_NHHW4_D3DFORMAT@@@Z=0x00431ACE",
+  "?InvertAlpha@TextHelper@th07@@QAE_NHHHHH@Z=0x00431D3C",
+  "_strlen=0x0047DB60",
+  "?CopyTextToSurface@TextHelper@th07@@QAE_NPAUIDirect3DSurface8@@@Z=0x00432164",
+  "_D3DXLoadSurfaceFromSurface@32=0x00462AA6",
+  "??1TextHelper@th07@@QAE@XZ=0x00431A4B",
+]
+dir32_targets = ["$L56551=texthelper_render_eh_handler"]
+
+[units.midi]
+kind = "probe"
+source = "src/Midi.cpp"
+object = "build/match-units/Midi.obj"
+profile = "vc7-debug-od"
+notes = "Focused VC7 unoptimized probe aligned with the adjacent-engine Midi translation units."
+
+[[units.midi.functions]]
+address = "0x00436110"
+symbol_base = "??0MidiDevice@th07@@QAE@XZ"
+
+[[units.midi.functions]]
+address = "0x00436160"
+symbol_base = "?OpenDevice@MidiDevice@th07@@QAEHI@Z"
+rel32_targets = ["?Close@MidiDevice@th07@@QAE?AW4ZunResult@2@XZ=0x004361C0"]
+
+[[units.midi.functions]]
+address = "0x004361C0"
+symbol_base = "?Close@MidiDevice@th07@@QAE?AW4ZunResult@2@XZ"
+
+[[units.midi.functions]]
+address = "0x00436200"
+symbol_base = "?SendLongMsg@MidiDevice@th07@@QAEHPAUmidihdr_tag@@@Z"
+
+[[units.midi.functions]]
+address = "0x00436250"
+symbol_base = "?SendShortMsg@MidiDevice@th07@@QAEHEEE@Z"
+
+[[units.midi.functions]]
+address = "0x004362A0"
+symbol_base = "??0MidiTimer@th07@@QAE@XZ"
+
+[[units.midi.functions]]
+address = "0x004362D0"
+symbol_base = "??1MidiTimer@th07@@QAE@XZ"
+rel32_targets = ["?StopTimer@MidiTimer@th07@@QAEHXZ=0x00436380"]
+
+[[units.midi.functions]]
+address = "0x004363C0"
+symbol_base = "?DefaultTimerCallback@MidiTimer@th07@@SGXIIKKK@Z"
+
+[[units.midi.functions]]
+address = "0x004365B0"
+symbol_base = "??1MidiOutput@th07@@QAE@XZ"
+rel32_targets = [
+  "?StopPlayback@MidiOutput@th07@@QAE?AW4ZunResult@2@XZ=0x00436B30",
+  "?ClearTracks@MidiOutput@th07@@QAEXXZ=0x00436700",
+  "?ReleaseFileData@MidiOutput@th07@@QAEXI@Z=0x004366C0",
+  "??1MidiDevice@th07@@QAE@XZ=0x00436140",
+  "??1MidiTimer@th07@@QAE@XZ=0x004362D0",
+]
+dir32_targets = ["$L54568=midi_output_dtor_eh_handler"]
+
+[[units.midi.functions]]
+address = "0x004369C0"
+symbol_base = "?LoadFile@MidiOutput@th07@@QAE?AW4ZunResult@2@PAD@Z"
+rel32_targets = [
+  "?ReadFileData@MidiOutput@th07@@QAE?AW4ZunResult@2@IPAD@Z=0x00436650",
+  "?ParseFile@MidiOutput@th07@@QAE?AW4ZunResult@2@H@Z=0x00436790",
+  "?ReleaseFileData@MidiOutput@th07@@QAEXI@Z=0x004366C0",
+]
+
+[[units.midi.functions]]
+address = "0x00436C90"
+symbol_base = "?SetFadeOut@MidiOutput@th07@@QAE?AW4ZunResult@2@I@Z"
+
+[units.zwave]
+kind = "probe"
+source = "src/zwave.cpp"
+object = "build/match-units/zwave.obj"
+profile = "vc7-debug-od"
+notes = "Focused VC7 unoptimized probe aligned with the adjacent-engine DirectSound translation units."
+
+[[units.zwave.functions]]
+address = "0x0045C6F0"
+symbol_base = "??0CSoundManager@th07@@QAE@XZ"
+
+[[units.zwave.functions]]
+address = "0x0045C710"
+symbol_base = "??1CSoundManager@th07@@QAE@XZ"
+
+[[units.zwave.functions]]
+address = "0x0045C740"
+symbol_base = "?Initialize@CSoundManager@th07@@QAEJPAUHWND__@@KKKK@Z"
+rel32_targets = [
+  "_DirectSoundCreate8@12=0x00461A96",
+  "?SetPrimaryBufferFormat@CSoundManager@th07@@QAEJKKK@Z=0x0045C7D0",
+]
+
+[[units.zwave.functions]]
+address = "0x0045D5B0"
+symbol_base = "?RestoreBuffer@CSound@th07@@QAEJPAUIDirectSoundBuffer@@PAH@Z"
+
+[[units.zwave.functions]]
+address = "0x0045D660"
+symbol_base = "?GetFreeBuffer@CSound@th07@@QAEPAUIDirectSoundBuffer@@XZ"
+rel32_targets = ["_rand=0x0047E8E9"]
+
+[[units.zwave.functions]]
+address = "0x0045D720"
+symbol_base = "?GetBuffer@CSound@th07@@QAEPAUIDirectSoundBuffer@@K@Z"
+
+[[units.zwave.functions]]
+address = "0x0045D9B0"
+symbol_base = "?Reset@CSound@th07@@QAEJXZ"
+
+[[units.zwave.functions]]
+address = "0x0045DAB0"
+symbol_base = "??1CStreamingSound@th07@@UAE@XZ"
+rel32_targets = ["??1CSound@th07@@UAE@XZ=0x0045D2C0"]
