@@ -384,7 +384,7 @@ LASER_COLLISION:
     }
 }
 
-i32 Player::ScoreGraze(D3DXVECTOR3 *center)
+void Player::ScoreGraze(D3DXVECTOR3 *center)
 {
     D3DXVECTOR3 particlePosition;
 
@@ -400,9 +400,9 @@ i32 Player::ScoreGraze(D3DXVECTOR3 *center)
         }
     }
     particlePosition = (positionCenter + *center) / 2.0f;
-    if (static_cast<i8>(grazeSoundVariant) == 1)
+    if (grazeSoundVariant == 1)
     {
-        if (static_cast<i8>(grazeVariant))
+        if (grazeVariant)
         {
             g_EffectManager.SpawnParticles(8, &particlePosition, 1, -1);
         }
@@ -430,17 +430,19 @@ i32 Player::ScoreGraze(D3DXVECTOR3 *center)
         mov edx, DWORD PTR[g_GameManager]
         mov DWORD PTR[edx + 4], eax
     }
-    if (static_cast<i8>(grazeSoundVariant) == 1)
+    if (grazeSoundVariant == 1)
     {
-        if (static_cast<i8>(grazeVariant))
+        if (grazeVariant)
         {
             g_GrazeState.AdvanceGrazeDisplay(30);
-            return g_GrazeState.FinishGrazeDisplay(30);
+            g_GrazeState.FinishGrazeDisplay(30);
         }
-        g_GrazeState.AdvanceGrazeDisplay(80);
-        return g_GrazeState.FinishGrazeDisplay(80);
+        else
+        {
+            g_GrazeState.AdvanceGrazeDisplay(80);
+            g_GrazeState.FinishGrazeDisplay(80);
+        }
     }
-    return reinterpret_cast<i32>(this);
 }
 
 i32 Player::Die()

@@ -1343,7 +1343,7 @@ address = "0x0043E3B0"
 symbol_base = "?CheckGraze@Player@th07@@QAEHPAUD3DXVECTOR3@@0@Z"
 rel32_targets = [
   "?CheckAuxProjectileCollision@Player@th07@@QAEHPAUD3DXVECTOR3@@0@Z=0x0043E0A0",
-  "?ScoreGraze@Player@th07@@QAEHPAUD3DXVECTOR3@@@Z=0x0043EB90",
+  "?ScoreGraze@Player@th07@@QAEXPAUD3DXVECTOR3@@@Z=0x0043EB90",
 ]
 dir32_targets = [
   "__real@40000000=__real@40000000",
@@ -1366,7 +1366,7 @@ rel32_targets = [
   "?HandleCollisionDuringBomb@Player@th07@@QAEHH@Z=0x00441BD0",
   "?BeginPlayerDeath@GrazeState@th07@@QAEXXZ=0x0043B5C0",
   "?Die@Player@th07@@QAEHXZ=0x0043EDC0",
-  "?ScoreGraze@Player@th07@@QAEHPAUD3DXVECTOR3@@@Z=0x0043EB90",
+  "?ScoreGraze@Player@th07@@QAEXPAUD3DXVECTOR3@@@Z=0x0043EB90",
 ]
 dir32_targets = [
   "?g_Player@th07@@3VPlayer@1@A=bullet_update_player",
@@ -1378,7 +1378,7 @@ dir32_targets = [
 
 [[units.player-core.functions]]
 address = "0x0043EB90"
-symbol_base = "?ScoreGraze@Player@th07@@QAEHPAUD3DXVECTOR3@@@Z"
+symbol_base = "?ScoreGraze@Player@th07@@QAEXPAUD3DXVECTOR3@@@Z"
 rel32_targets = [
   "?SpawnParticles@EffectManager@th07@@QAEXHPAUD3DXVECTOR3@@HH@Z=0x0041C1C0",
   "?IncreaseSubrank@GrazeState@th07@@QAEXH@Z=0x0042F4AA",

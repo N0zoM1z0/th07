@@ -76,7 +76,7 @@ class Player
     i32 CalcLaserHitbox(D3DXVECTOR3 *laserCenter, D3DXVECTOR3 *laserSize, D3DXVECTOR3 *rotation, f32 angle,
                         i32 canGraze);
     i32 HandleCollisionDuringBomb(i32 collisionKind);
-    i32 ScoreGraze(D3DXVECTOR3 *center);
+    void ScoreGraze(D3DXVECTOR3 *center);
     i32 Die();
 
   private:
@@ -97,9 +97,9 @@ class Player
     i32 collisionCountdown;                 // +0x2404
     i8 playerState;                         // +0x2408
     u8 unknown2409[2];
-    u8 grazeVariant;                        // +0x240B
+    i8 grazeVariant;                        // +0x240B
     u8 collisionParticleCounter;            // +0x240C
-    u8 grazeSoundVariant;                   // +0x240D
+    i8 grazeSoundVariant;                   // +0x240D
     u8 unknown240E[0x36];
     PlayerBullet bullets[96];               // +0x2444
     u8 unknown169C4[0x3C];

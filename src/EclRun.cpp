@@ -198,22 +198,25 @@ static __forceinline u8 &ByteAt(EclOperands::EnemyOverlay *enemy, i32 offset)
 static __forceinline i32 ReadInt(EclOperands::EnemyOverlay *enemy, const RunEclInstruction *instruction,
                                  i32 operandIndex)
 {
-    i32 value = instruction->operand[operandIndex];
-    return (instruction->operandFlags & (1 << operandIndex)) ? EclOperands::ResolveInt(enemy, value) : value;
+    if (instruction->operandFlags & (1 << operandIndex))
+        return EclOperands::ResolveInt(enemy, instruction->operand[operandIndex]);
+    return instruction->operand[operandIndex];
 }
 
 static __forceinline f32 ReadFloat(EclOperands::EnemyOverlay *enemy, const RunEclInstruction *instruction,
                                    i32 operandIndex)
 {
-    f32 value = *(const f32 *)&instruction->operand[operandIndex];
-    return (instruction->operandFlags & (1 << operandIndex)) ? enemy->ResolveFloat(value) : value;
+    if (instruction->operandFlags & (1 << operandIndex))
+        return enemy->ResolveFloat(*(const f32 *)&instruction->operand[operandIndex]);
+    return *(const f32 *)&instruction->operand[operandIndex];
 }
 
 static __forceinline i32 ReadShortInt(EclOperands::EnemyOverlay *enemy, const RunEclInstruction *instruction,
                                       i32 byteOffset, i32 flagIndex)
 {
-    i16 value = *(const i16 *)((const u8 *)instruction + byteOffset);
-    return (instruction->operandFlags & (1 << flagIndex)) ? EclOperands::ResolveInt(enemy, value) : value;
+    if (instruction->operandFlags & (1 << flagIndex))
+        return EclOperands::ResolveInt(enemy, *(const i16 *)((const u8 *)instruction + byteOffset));
+    return *(const i16 *)((const u8 *)instruction + byteOffset);
 }
 
 static __forceinline i32 RawI32(const RunEclInstruction *instruction, i32 byteOffset)
@@ -260,22 +263,22 @@ static __forceinline void ConditionalJump(EclOperands::EnemyOverlay *enemy, RunE
 // EnemyEclContext declaration, so use a private byte copy here.
 static __forceinline void SaveEclContext(EclOperands::EnemyOverlay *enemy)
 {
-    i32 depth = IntAt(enemy, ENEMY_CONTEXT_STACK_DEPTH);
-    memcpy(enemy->bytes + ENEMY_CONTEXT_STACK_BASE + 0x218 * depth, enemy->bytes + ENEMY_CURRENT_INSTRUCTION, 0x218);
+    memcpy(enemy->bytes + ENEMY_CONTEXT_STACK_BASE +
+               0x218 * IntAt(enemy, ENEMY_CONTEXT_STACK_DEPTH),
+           enemy->bytes + ENEMY_CURRENT_INSTRUCTION, 0x218);
 }
 
 static __forceinline void EnterInterrupt(EclOperands::EnemyOverlay *enemy)
 {
-    i32 interrupt = IntAt(enemy, ENEMY_RUN_INTERRUPT);
-
-    if (interrupt < 0)
+    if (IntAt(enemy, ENEMY_RUN_INTERRUPT) < 0)
         return;
 
     if ((ByteAt(enemy, ENEMY_DISABLE_CALL_STACK) & 0x20) == 0)
         SaveEclContext(enemy);
 
     g_TargetEclManager1347938.CallEclSub((EnemyEclContext *)(enemy->bytes + ENEMY_CURRENT_INSTRUCTION),
-                                         (i16)IntAt(enemy, ENEMY_INTERRUPT_TABLE + 4 * interrupt));
+                                         (i16)IntAt(enemy, ENEMY_INTERRUPT_TABLE +
+                                                           4 * IntAt(enemy, ENEMY_RUN_INTERRUPT)));
     if (IntAt(enemy, ENEMY_CONTEXT_STACK_DEPTH) < 15)
         ++IntAt(enemy, ENEMY_CONTEXT_STACK_DEPTH);
     IntAt(enemy, ENEMY_RUN_INTERRUPT) = -1;
@@ -690,7 +693,8 @@ ZunResult EclManager::RunEcl(Enemy *enemy)
             IntAt(rawEnemy, 4 * 2858) = ReadInt(rawEnemy, instruction, 0);
             if (IntAt(rawEnemy, 4 * 2858))
             {
-                IntAt(rawEnemy, 4 * 2858) += IntAt(rawEnemy, 4 * 2858) / 5 +
+                IntAt(rawEnemy, 4 * 2858) = IntAt(rawEnemy, 4 * 2858) +
+                                               IntAt(rawEnemy, 4 * 2858) / 5 +
                                                g_TargetRank62F8A4 * (-IntAt(rawEnemy, 4 * 2858) / 5 -
                                                                       IntAt(rawEnemy, 4 * 2858) / 5) / 32;
                 IntAt(rawEnemy, 4 * 2861) = 0;
@@ -703,7 +707,8 @@ ZunResult EclManager::RunEcl(Enemy *enemy)
             IntAt(rawEnemy, 4 * 2858) = ReadInt(rawEnemy, instruction, 0);
             if (IntAt(rawEnemy, 4 * 2858))
             {
-                IntAt(rawEnemy, 4 * 2858) += IntAt(rawEnemy, 4 * 2858) / 5 +
+                IntAt(rawEnemy, 4 * 2858) = IntAt(rawEnemy, 4 * 2858) +
+                                               IntAt(rawEnemy, 4 * 2858) / 5 +
                                                g_TargetRank62F8A4 * (-IntAt(rawEnemy, 4 * 2858) / 5 -
                                                                       IntAt(rawEnemy, 4 * 2858) / 5) / 32;
                 IntAt(rawEnemy, 4 * 2861) = EclOperands::g_TargetRng49FE20.RandomU32() %
@@ -871,7 +876,7 @@ ZunResult EclManager::RunEcl(Enemy *enemy)
                 if (currentBossId < 4)
                     g_TargetBossPresent49FC14 = 0;
                 SpellLifecycle::g_TargetSpellBosses12FE098[currentBossId] = 0;
-                ByteAt(rawEnemy, 11817) &= ~0x40;
+                *(u8 *)(rawEnemy->bytes + 11817) &= ~0x40;
                 g_TargetBossUi134DB5A[294 * currentBossId] = 2;
                 ((SpellLifecycle::EnemyOverlay *)rawEnemy)->UnregisterBoss();
             }
@@ -881,7 +886,7 @@ ZunResult EclManager::RunEcl(Enemy *enemy)
                     (SpellLifecycle::EnemyOverlay *)rawEnemy;
                 g_TargetBossPresent49FC14 = 1;
                 g_TargetBossHealth49FC18 = 1.0f;
-                ByteAt(rawEnemy, 11817) |= 0x40;
+                *(u8 *)(rawEnemy->bytes + 11817) |= 0x40;
                 const u8 assignedBossId = (u8)ReadInt(rawEnemy, instruction, 0);
                 ByteAt(rawEnemy, 11799) = assignedBossId;
                 g_TargetBossUi134DB5A[294 * assignedBossId] = 1;
@@ -897,7 +902,7 @@ ZunResult EclManager::RunEcl(Enemy *enemy)
             *(i32 *)((u8 *)effect + 664) = RawI32(instruction, 20);
             *(i32 *)((u8 *)effect + 668) = RawI32(instruction, 24);
             IntAt(rawEnemy, 4 * 2990) = RawI32(instruction, 28);
-            ++IntAt(rawEnemy, 4 * 2989);
+            IntAt(rawEnemy, 4 * 2989) = IntAt(rawEnemy, 4 * 2989) + 1;
             break;
         }
         case 101:
@@ -1067,10 +1072,18 @@ ZunResult EclManager::RunEcl(Enemy *enemy)
         case 139:
         {
             const i32 slot = ReadInt(rawEnemy, instruction, 0);
-            g_TargetEclSlotFloatY49FC44[slot] =
-                (f32)((f64)ReadInt(rawEnemy, instruction, 1) / (f64)IntAt(rawEnemy, 4 * 2799));
-            g_TargetEclSlotFloatX49FC24[slot] =
-                (f32)((f64)ReadInt(rawEnemy, instruction, 2) / (f64)IntAt(rawEnemy, 4 * 2799));
+            i32 yValue;
+            if (instruction->operandFlags & 2)
+                yValue = EclOperands::ResolveInt(rawEnemy, instruction->operand[1]);
+            else
+                yValue = instruction->operand[1];
+            i32 xValue;
+            if (instruction->operandFlags & 4)
+                xValue = EclOperands::ResolveInt(rawEnemy, instruction->operand[2]);
+            else
+                xValue = instruction->operand[2];
+            g_TargetEclSlotFloatY49FC44[slot] = (f32)yValue / IntAt(rawEnemy, 4 * 2799);
+            g_TargetEclSlotFloatX49FC24[slot] = (f32)xValue / IntAt(rawEnemy, 4 * 2799);
             g_TargetEclSlotValue49FC64[slot] = ReadInt(rawEnemy, instruction, 3);
             break;
         }
