@@ -116,6 +116,28 @@ bullet_update_frame_multiplier,0x00575AC8,00000000,0x0,Target-observed zero-init
 bullet_update_point_item,0x004BFEDC,00000000,0x0,Target-observed point-item identifier storage used by bullet cancellation,literal
 bullet_update_real_2_5,0x00498D50,00002040,0x0,Exact target float 2.5 divisor used by bullet spawn-state interpolation,literal
 bullet_update_real_3,0x00498A8C,00004040,0x0,Exact target float 3.0 divisor used by bullet spawn-state interpolation,literal
+rng_real_neg_pi,0x00498A5C,db0f49c0,0x0,Exact target float negative pi used by core angle normalization,literal
+rng_real_4294967296,0x00498B28,0000804f,0x0,Exact target rounded UINT_MAX divisor used by core RNG float conversion,literal
+ecl_difficulty_mask,0x00626284,00,0x0,Target-observed ECL difficulty bitmask storage read by RunEcl,literal
+ecl_manager_1347938,0x01347938,00000000,0x0,Target-observed EclManager storage used by RunEcl interrupt dispatch,literal
+player_update_bound_left,0x0062F874,00000000,0x0,Target-observed player movement-area left edge storage,literal
+player_update_bound_top,0x0062F878,00000000,0x0,Target-observed player movement-area top edge storage,literal
+player_update_bound_width,0x0062F87C,00000000,0x0,Target-observed player movement-area width storage,literal
+player_update_bound_height,0x0062F880,00000000,0x0,Target-observed player movement-area height storage,literal
+player_update_double_24,0x00498AE8,0000000000003840,0x0,Exact target double 24 used by player orb trigonometry,literal
+player_update_real_neg_0_94247782,0x00498D08,3a4671bf,0x0,Exact target player rotation upper clamp,literal
+player_update_real_neg_2_1991148,0x00498D0C,4cbe0cc0,0x0,Exact target player rotation lower clamp,literal
+player_update_real_pi_over_25,0x00498BEC,fdad803d,0x0,Exact target positive player rotation step,literal
+ecl_real_0_3,0x00498A88,9a99993e,0x0,Exact target float 0.3 used by ECL projectile parameters,literal
+player_update_real_5,0x00498B3C,0000a040,0x0,Exact target float 5 used by Player state motion,literal
+player_update_real_pi_over_100,0x00498BE8,fdad003d,0x0,Exact target player rotation settling threshold,literal
+player_update_real_neg_pi_over_25,0x00498D00,fdad80bd,0x0,Exact target negative player rotation step,literal
+player_update_real_neg_pi_over_2,0x00498D04,db0fc9bf,0x0,Exact target centered player rotation angle,literal
+player_update_real_24,0x00498C28,0000c041,0x0,Exact target float 24 used by player orb spread,literal
+player_update_real_32,0x00498A84,00000042,0x0,Exact target float 32 used by player orb interpolation,literal
+__real@40800000,0x00498AA8,00008040,0x0,Exact target float 4.0 used by player horizontal-velocity rotation scaling,literal
+timer_flags,0x00575ADC,00000000,0x0,Target-observed scheduler flag storage used by core timer reset paths,literal
+timer_real_0_99,0x00498A58,a4707d3f,0x0,Exact target float 0.99 threshold used by core timer arithmetic,literal
 bullet_update_real_255,0x00498AF8,00007f43,0x0,Exact target float 255.0 used by laser alpha ramps,literal
 bullet_update_real_640,0x00498BD8,00002044,0x0,Exact target float 640.0 used by laser offscreen bounds,literal
 spell_gui_49FBF0,0x0049FBF0,00000000,0x0,Target-observed zero-initialized GUI storage used by spell lifecycle calls,literal

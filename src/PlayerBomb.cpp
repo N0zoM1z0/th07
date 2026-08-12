@@ -470,6 +470,7 @@ i32 PlayerBombOverlay::RegisterBombCallbacks()
     return 0;
 }
 
+#pragma var_order(activeBombTimer, scoreCost, startingBombTimer)
 void PlayerBombOverlay::BeginBomb()
 {
     if (*reinterpret_cast<i8 *>(reinterpret_cast<u8 *>(this) + 0x240D)
@@ -490,22 +491,22 @@ void PlayerBombOverlay::BeginBomb()
     }
 
     if (*reinterpret_cast<i32 *>(reinterpret_cast<u8 *>(this) + 0x16A20)) {
-        PlayerBombState *bomb = BombState();
-        if (bomb->tick.current != bomb->tick.previous) {
-            i32 scoreCost = bomb->unknown0C;
+        PlayerBombTimer *activeBombTimer = reinterpret_cast<PlayerBombTimer *>(reinterpret_cast<u8 *>(this) + 0x16A30);
+        if (activeBombTimer->current != activeBombTimer->previous) {
+            i32 scoreCost = *reinterpret_cast<i32 *>(reinterpret_cast<u8 *>(this) + 0x16A2C);
 
-            if (g_BombScore - g_PlayerBombResources->scoreFloor < scoreCost) {
-                g_BombScore = g_PlayerBombResources->scoreFloor;
-            } else {
+            if (g_BombScore - g_PlayerBombResources->scoreFloor >= scoreCost) {
                 g_BombScore -= scoreCost;
+            } else {
+                g_BombScore = g_PlayerBombResources->scoreFloor;
             }
             g_PlayerFlags = (g_PlayerFlags & 0xFFFFFCFF) | 0x200;
         }
 
-        if (!bomb->capturedFocus) {
-            bomb->calculateUnfocused(this);
+        if (!*reinterpret_cast<i32 *>(reinterpret_cast<u8 *>(this) + 0x16A24)) {
+            (*reinterpret_cast<PlayerBombCallback *>(reinterpret_cast<u8 *>(this) + 0x16A3C))(this);
         } else {
-            bomb->calculateFocused(this);
+            (*reinterpret_cast<PlayerBombCallback *>(reinterpret_cast<u8 *>(this) + 0x16A44))(this);
         }
         return;
     }
@@ -524,19 +525,19 @@ void PlayerBombOverlay::BeginBomb()
     g_PlayerBombGrazeState626270.SetBombItemState(-1);
     g_PlayerFlags = (g_PlayerFlags & 0xFFFFFFF3) | 8;
 
-    PlayerBombState *bomb = BombState();
-    bomb->capturedFocus = *reinterpret_cast<i8 *>(reinterpret_cast<u8 *>(this) + 0x240B);
-    bomb->active = 1;
+    *reinterpret_cast<i32 *>(reinterpret_cast<u8 *>(this) + 0x16A24) = *reinterpret_cast<i8 *>(reinterpret_cast<u8 *>(this) + 0x240B);
+    *reinterpret_cast<i32 *>(reinterpret_cast<u8 *>(this) + 0x16A20) = 1;
     *reinterpret_cast<i32 *>(reinterpret_cast<u8 *>(this) + 0x23DC) = 1;
-    bomb->tick.current = 0;
-    bomb->tick.fraction = 0.0f;
-    bomb->tick.previous = -999;
-    bomb->unknown08 = 999;
+    PlayerBombTimer *startingBombTimer = reinterpret_cast<PlayerBombTimer *>(reinterpret_cast<u8 *>(this) + 0x16A30);
+    startingBombTimer->current = 0;
+    startingBombTimer->fraction = 0.0f;
+    startingBombTimer->previous = -999;
+    *reinterpret_cast<i32 *>(reinterpret_cast<u8 *>(this) + 0x16A28) = 999;
 
-    if (!bomb->capturedFocus) {
-        bomb->calculateUnfocused(this);
+    if (!*reinterpret_cast<i32 *>(reinterpret_cast<u8 *>(this) + 0x16A24)) {
+        (*reinterpret_cast<PlayerBombCallback *>(reinterpret_cast<u8 *>(this) + 0x16A3C))(this);
     } else {
-        bomb->calculateFocused(this);
+        (*reinterpret_cast<PlayerBombCallback *>(reinterpret_cast<u8 *>(this) + 0x16A44))(this);
     }
 
     g_BombEffectState0 = 0;
@@ -565,6 +566,7 @@ void PlayerBombOverlay::UpdateBomb()
     }
 }
 
+#pragma var_order(color, bombTimer, shadowTimer, flashTimer)
 i32 PlayerBombOverlay::DrawBomb()
 {
     DrawPlayerBullets();
@@ -598,34 +600,37 @@ i32 PlayerBombOverlay::DrawBomb()
         }
     }
 
-    i32 bombTimer = *reinterpret_cast<i32 *>(reinterpret_cast<u8 *>(this) + 0x16A08);
-    if (*reinterpret_cast<i8 *>(reinterpret_cast<u8 *>(this) + 0x2408) == 4 && bombTimer > 0) {
-        i32 shadowTimer = *reinterpret_cast<i32 *>(reinterpret_cast<u8 *>(this) + 0x16A08);
+    PlayerBombDrawColor color;
+    i32 bombTimer;
+    if (*reinterpret_cast<i8 *>(reinterpret_cast<u8 *>(this) + 0x2408) == 4) {
+        bombTimer = *reinterpret_cast<i32 *>(reinterpret_cast<u8 *>(this) + 0x16A08);
+        if (bombTimer > 0) {
+            i32 shadowTimer = *reinterpret_cast<i32 *>(reinterpret_cast<u8 *>(this) + 0x16A08);
 
-        if (shadowTimer % 4 >= 2) {
-            *reinterpret_cast<i32 *>(reinterpret_cast<u8 *>(this) + 0x1B8) = -1;
-        } else {
-            *reinterpret_cast<i32 *>(reinterpret_cast<u8 *>(this) + 0x1B8) = -65536;
-        }
+            if (shadowTimer % 4 < 2) {
+                *reinterpret_cast<i32 *>(reinterpret_cast<u8 *>(this) + 0x1B8) = -65536;
+            } else {
+                *reinterpret_cast<i32 *>(reinterpret_cast<u8 *>(this) + 0x1B8) = -1;
+            }
 
-        PlayerBombDrawColor color;
-        color.alpha = 0x80;
-        if (g_BombDrawTimer >= 510) {
-            i32 flashTimer = g_BombDrawTimer;
-            color.blue = 0x80 - 80 * (540 - flashTimer) / 30;
-            color.green = color.blue;
-            color.red = color.green;
-        } else if (g_BombDrawTimer < 30) {
-            i32 flashTimer = g_BombDrawTimer;
-            color.blue = 0x80 - 80 * flashTimer / 30;
-            color.green = color.blue;
-            color.red = color.green;
-        } else {
-            color.blue = 0x30;
-            color.green = color.blue;
-            color.red = color.green;
+            color.alpha = 0x80;
+            if (!!(g_BombDrawTimer >= 510)) {
+                i32 flashTimer = g_BombDrawTimer;
+                color.blue = 0x80 - 80 * (540 - flashTimer) / 30;
+                color.green = color.blue;
+                color.red = color.green;
+            } else if (!!(g_BombDrawTimer < 30)) {
+                i32 flashTimer = g_BombDrawTimer;
+                color.blue = 0x80 - 80 * flashTimer / 30;
+                color.green = color.blue;
+                color.red = color.green;
+                } else {
+                color.blue = 0x30;
+                color.green = color.blue;
+                color.red = color.green;
+            }
+            g_PlayerBombDrawState1347B00.SetDrawColor(*reinterpret_cast<i32 *>(&color));
         }
-        g_PlayerBombDrawState1347B00.SetDrawColor(*reinterpret_cast<i32 *>(&color));
     }
     return 1;
 }

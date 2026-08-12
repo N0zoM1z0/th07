@@ -53,6 +53,11 @@ case "$profile" in
     # follows the Pentium Pro/II/III scheduler while retaining no-GS /Od.
     profile_flags=(/Od /Ob1 /Op /G6)
     ;;
+  vc7-debug-od-no-gs-g6-no-op)
+    # Diagnostic sibling for target units whose integer scheduling is G6 but
+    # whose x87 conversions are not forced through /Op precision stores.
+    profile_flags=(/Od /Ob1 /G6)
+    ;;
   vc7-size-ob1-no-gs-g6)
     # Some gameplay/UI translation units retain size-oriented code selection
     # while explicitly inlining source-defined helpers.

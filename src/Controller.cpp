@@ -86,14 +86,14 @@ u32 Controller::SetButtonFromControllerInputs(u16 *outButtons, i16 controllerBut
     return inputButtons & mask ? (u16)touhouButton : 0;
 }
 
-#pragma var_order(joyinfoex, axisDeadZone, shotPressed, dires, dijoystate2, retryCount, buttons)
+#pragma var_order(joyinfoex, axisDeadZone, joystickShotPressed, directInputShotPressed, dires, dijoystate2, buttons)
 u16 Controller::GetControllerInput(u16 buttons)
 {
     JOYINFOEX joyinfoex;
     u32 axisDeadZone;
-    u32 shotPressed;
+    u32 joystickShotPressed;
     DIJOYSTATE2 dijoystate2;
-    i32 retryCount;
+    u32 directInputShotPressed;
     HRESULT dires;
 
     if (g_Controller == NULL)
@@ -106,11 +106,11 @@ u16 Controller::GetControllerInput(u16 buttons)
             return buttons;
         }
 
-        shotPressed = SetButtonFromControllerInputs(&buttons, g_ControllerMapping.shotButton, TH_BUTTON_SHOOT,
-                                                    joyinfoex.dwButtons);
+        joystickShotPressed = SetButtonFromControllerInputs(&buttons, g_ControllerMapping.shotButton,
+                                                            TH_BUTTON_SHOOT, joyinfoex.dwButtons);
         if (g_ShotSlowEnabled)
         {
-            if (shotPressed != 0)
+            if (joystickShotPressed != 0)
             {
                 if (g_FocusButtonConflictState < 20)
                 {
@@ -168,7 +168,7 @@ u16 Controller::GetControllerInput(u16 buttons)
     dires = g_Controller->Poll();
     if (FAILED(dires))
     {
-        retryCount = 0;
+        i32 retryCount = 0;
         DebugPrint("error : DIERR_INPUTLOST\r\n");
         dires = g_Controller->Acquire();
         while (dires == DIERR_INPUTLOST)
@@ -191,11 +191,11 @@ u16 Controller::GetControllerInput(u16 buttons)
         return buttons;
     }
 
-    shotPressed = SetButtonFromDirectInputJoystate(&buttons, g_ControllerMapping.shotButton,
-                                                   TH_BUTTON_SHOOT, dijoystate2.rgbButtons);
+    directInputShotPressed = SetButtonFromDirectInputJoystate(&buttons, g_ControllerMapping.shotButton,
+                                                              TH_BUTTON_SHOOT, dijoystate2.rgbButtons);
     if (g_ShotSlowEnabled)
     {
-        if (shotPressed != 0)
+        if (directInputShotPressed != 0)
         {
             if (g_FocusButtonConflictState < 20)
             {

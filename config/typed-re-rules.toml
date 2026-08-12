@@ -67,3 +67,31 @@ requires = ["object_tail_long"]
 confidence = "workflow_rule"
 recommendation = "Look for redundant temporaries, repeated loads, or non-target cleanup before changing ABI or target-observed behavior."
 evidence = "TH07 matching workflow"
+
+[[rules]]
+id = "zun-local-size-pragma"
+requires = ["adjacent_size_pragma", "unoptimized_tail_near"]
+confidence = "observed_pattern"
+recommendation = "When adjacent ZUN source brackets the routine with #pragma optimize(\"s\", on), probe that source-local pragma before inventing temporaries or a translation-unit profile; keep the pragma bounded and require strict comparison."
+evidence = "Timer 0x00439401 206->198, 0x004394C7 206->198, and 0x0043958D 116->110 became strict exact only under the bounded size pragma"
+
+[[rules]]
+id = "vc7-g6-word-bitfield"
+requires = ["word_bitfield_mask", "profile_mismatch"]
+confidence = "observed_pattern"
+recommendation = "When target clears or sets a u16 bitfield through 66 25/66 83 and a G5 probe selects byte 24/80, test the canonical no-GS G6 profile before changing the field layout or source expression."
+evidence = "ChainElem 0x0042FAB0, Chain::CreateElem 0x00430090, and Chain::Cut 0x00430140 all became strict exact when the existing source moved from G5 to G6"
+
+[[rules]]
+id = "vc7-op-int-to-float-spill"
+requires = ["x87_int_to_float_return", "frame_mismatch", "object_tail_long"]
+confidence = "observed_pattern"
+recommendation = "If target returns integer-backed float switch arms with direct fild but the object stores and reloads conversion temporaries, A/B an otherwise-identical profile without /Op before changing the source or ABI."
+evidence = "AnmVm::GetFloatVar 0x00450A50 changed from 249 bytes/frame 0x20 to strict exact 166 bytes/frame 0x08 when only /Op was removed; three sibling helpers remained exact"
+
+[[rules]]
+id = "zun-adjacent-distinct-branch-locals"
+requires = ["frame_mismatch", "adjacent_named_locals", "equal_object_tail"]
+confidence = "observed_pattern"
+recommendation = "When adjacent ZUN source keeps same-typed results in separate mutually exclusive branch locals, preserve both declarations and the inner retry lifetime before var_order shaping; coalescing them can shrink the frame while leaving the tail deceptively equal."
+evidence = "Controller::GetControllerInput 0x004303F0 required distinct WinMM/DirectInput shot results and scoped retry count before target var_order yielded strict exact 1488 bytes"

@@ -161,6 +161,7 @@ def load_manifest() -> dict[str, object]:
             "vc7-debug-od",
             "vc7-debug-od-no-gs",
             "vc7-debug-od-no-gs-g6",
+            "vc7-debug-od-no-gs-g6-no-op",
             "vc7-size-ob1-no-gs-g6",
             "vc7-prebuilt",
         }:

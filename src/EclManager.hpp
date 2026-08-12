@@ -46,6 +46,7 @@ typedef char EnemyEclContextSubIdOffsetCheck[offsetof(EnemyEclContext, subId) ==
 // read by the implemented TH07 functions; the opaque file pointer is enough
 // for Unload while the separately observed subroutine table drives CallEclSub.
 struct EclRawHeader;
+struct Enemy;
 
 enum ZunResult
 {
@@ -57,6 +58,7 @@ struct EclManager
 {
     void Unload();
     ZunResult CallEclSub(EnemyEclContext *context, i16 subId);
+    ZunResult RunEcl(Enemy *enemy);
 
     EclRawHeader *eclFile; // +0x0, observed
     EclRawInstr **subTable; // +0x4, observed

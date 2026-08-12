@@ -52,3 +52,18 @@ address,name,module,confidence,evidence
 0x00427D09,Gui_show_spellcard_bonus,ui,observed,Exact-target popup position timer score and GUI-state writes under VC7 size-oriented compilation
 0x0040EC00,Ecl_resolve_int_lvalue,ecl,observed,Exact-target ECL writable integer operand switch plus strict VC7 no-GS G6 COFF comparison
 0x0040F3C0,Ecl_resolve_float_lvalue,ecl,observed,Exact-target ECL writable float operand switch plus strict VC7 no-GS G6 COFF comparison
+0x00431870,Rng_get_random_u16,rng,observed,Exact-target RNG transition and strict VC7 default COFF comparison
+0x004318D0,Rng_get_random_u32,rng,observed,Exact-target paired U16 composition and strict VC7 default COFF comparison
+0x00431900,Rng_get_random_f32,rng,observed,Exact-target unsigned float conversion and strict VC7 default COFF comparison
+0x00431930,Add_normalize_angle,math,observed,Exact-target bounded angle wrapping and strict VC7 default COFF comparison
+0x00439401,ZunTimer_increment,timer,observed,Exact-target frame arithmetic and strict VC7 size-pragma COFF comparison
+0x004394C7,ZunTimer_decrement,timer,observed,Exact-target reverse frame arithmetic and strict VC7 size-pragma COFF comparison
+0x0043958D,TimerManager_advance,timer,observed,Exact-target fractional timer advance and strict VC7 size-pragma COFF comparison
+0x00450A50,AnmVm_get_float_var,anm,observed,Exact-target ANM float operand resolver and strict VC7 no-Op G6 COFF comparison
+0x00450B20,AnmVm_get_int_var,anm,observed,Exact-target ANM integer operand resolver and strict VC7 COFF comparison
+0x00450C10,AnmVm_get_float_var_ptr,anm,observed,Exact-target ANM writable float operand resolver and strict VC7 COFF comparison
+0x00450CA0,AnmVm_get_int_var_ptr,anm,observed,Exact-target ANM writable integer operand resolver and strict VC7 COFF comparison
+0x00410520,EclManager_run_ecl,ecl,observed,Exact-target extent callers and opcode dispatch evidence with compiling behavior reconstruction
+0x0043EE50,Player_on_update,player,observed,Exact-target callback ABI input globals and collision/state evidence with compiling behavior reconstruction
+0x00450D60,AnmManager_execute_script,anm,observed,Exact-target ANM opcode dispatcher extent and helper calls with compiling behavior reconstruction
+0x004303F0,Controller_get_controller_input,input,observed,Exact-target WinMM DirectInput polling and button mapping plus strict VC7 COFF comparison

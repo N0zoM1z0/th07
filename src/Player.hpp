@@ -67,6 +67,7 @@ C_ASSERT(sizeof(PlayerBullet) == 0x364);
 class Player
 {
   public:
+    static i32 __fastcall OnUpdate(Player *player);
     i32 CalcDamageToEnemy(D3DXVECTOR3 *enemyPosition, D3DXVECTOR3 *enemySize, i32 *bombHit);
     i32 CheckAuxProjectileCollision(D3DXVECTOR3 *center, D3DXVECTOR3 *size);
     i32 CalcKillBoxCollision(D3DXVECTOR3 *bulletCenter, D3DXVECTOR3 *bulletSize);

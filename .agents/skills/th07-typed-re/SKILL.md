@@ -37,6 +37,9 @@ the coordinator to create the canonical entry before matching iterations.
   locals, or side effects; do not add inert padding or fake behavior.
 - Diagnose frame mismatches by declaration order and lifetime before changing
   semantics. Diagnose tail mismatches by missing or redundant behavior first.
+- Treat adjacent-version `#pragma optimize` regions as source evidence. Probe
+  them in the smallest bounded region before adding a new translation-unit
+  profile, and retain them only when strict target comparison proves the shape.
 - Confirm every TH06/TH08-derived type and name against the packet and target.
 
 ## Improve the model

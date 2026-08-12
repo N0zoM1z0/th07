@@ -440,6 +440,109 @@ rel32_targets = ["_free=0x0047D285"]
 address = "0x0040E530"
 symbol_base = "?CallEclSub@EclManager@th07@@QAE?AW4ZunResult@2@PAUEnemyEclContext@2@F@Z"
 
+[units.rng-core]
+kind = "probe"
+source = "src/Rng.cpp"
+object = "build/match-units/Rng.obj"
+profile = "vc7-default"
+notes = "Focused target-observed core RNG and angle-normalization dependency probe; TH06/TH08 semantics agree."
+
+[[units.rng-core.functions]]
+address = "0x00431870"
+symbol_base = "?GetRandomU16@Rng@th07@@QAEGXZ"
+
+[[units.rng-core.functions]]
+address = "0x004318D0"
+symbol_base = "?GetRandomU32@Rng@th07@@QAEIXZ"
+rel32_targets = ["?GetRandomU16@Rng@th07@@QAEGXZ=0x00431870"]
+
+[[units.rng-core.functions]]
+address = "0x00431900"
+symbol_base = "?GetRandomF32@Rng@th07@@QAEMXZ"
+rel32_targets = ["?GetRandomU32@Rng@th07@@QAEIXZ=0x004318D0"]
+dir32_targets = ["__real@4f800000=rng_real_4294967296"]
+
+[[units.rng-core.functions]]
+address = "0x00431930"
+symbol_base = "?AddNormalizeAngle@th07@@YGMMM@Z"
+dir32_targets = [
+  "__real@c0490fdb=rng_real_neg_pi",
+  "__real@40c90fdb=ecl_real_40c90fdb",
+  "__real@40490fdb=ecl_real_40490fdb",
+]
+
+[units.timer-core]
+kind = "probe"
+source = "src/Timer.cpp"
+object = "build/match-units/Timer.obj"
+profile = "vc7-default"
+notes = "Focused target-observed core timer arithmetic used by ECL, ANM, bullets, and player updates."
+
+[[units.timer-core.functions]]
+address = "0x00439401"
+symbol_base = "?Increment@ZunTimer@th07@@QAEXH@Z"
+rel32_targets = ["?Decrement@ZunTimer@th07@@QAEXH@Z=0x004394C7"]
+dir32_targets = [
+  "?g_TimerFlags@th07@@3IA=timer_flags",
+  "?g_FrameMultiplier@th07@@3MA=bullet_update_frame_multiplier",
+  "__real@3f7d70a4=timer_real_0_99",
+  "__real@3f800000=__real@3f800000",
+  "__real@00000000=__real@00000000",
+]
+
+[[units.timer-core.functions]]
+address = "0x004394C7"
+symbol_base = "?Decrement@ZunTimer@th07@@QAEXH@Z"
+rel32_targets = ["?Increment@ZunTimer@th07@@QAEXH@Z=0x00439401"]
+dir32_targets = [
+  "?g_TimerFlags@th07@@3IA=timer_flags",
+  "?g_FrameMultiplier@th07@@3MA=bullet_update_frame_multiplier",
+  "__real@3f7d70a4=timer_real_0_99",
+  "__real@3f800000=__real@3f800000",
+  "__real@00000000=__real@00000000",
+]
+
+[[units.timer-core.functions]]
+address = "0x0043958D"
+symbol_base = "?Advance@TimerManager@th07@@QAEXPAHPAM@Z"
+dir32_targets = [
+  "__real@3f7d70a4=timer_real_0_99",
+  "__real@3f800000=__real@3f800000",
+]
+
+[units.ecl-run]
+kind = "probe"
+source = "src/EclRun.cpp"
+object = "build/match-units/EclRun.obj"
+profile = "vc7-debug-od-no-gs-g6"
+notes = "High-leverage target-observed TH07 ECL dispatcher; TH06 opcode structure is supporting evidence only."
+
+[[units.ecl-run.functions]]
+address = "0x00410520"
+symbol_base = "?RunEcl@EclManager@th07@@QAE?AW4ZunResult@2@PAUEnemy@2@@Z"
+rel32_targets = [
+  "?ResolveInt@EclOperands@th07@@YIHPAUEnemyOverlay@12@H@Z=0x0040E5B0",
+  "?ResolveIntLValue@EclOperands@th07@@YIPAHPAUEnemyOverlay@12@PAHGH@Z=0x0040EC00",
+  "?ResolveFloat@EnemyOverlay@EclOperands@th07@@QAEMM@Z=0x0040EDF0",
+  "?ResolveFloatLValue@EclOperands@th07@@YIPAMPAUEnemyOverlay@12@PAMGH@Z=0x0040F3C0",
+  "?CallEclSub@EclManager@th07@@QAE?AW4ZunResult@2@PAUEnemyEclContext@2@F@Z=0x0040E530",
+  "?TargetClampEnemy@th07@@YIXPAUEnemyOverlay@EclOperands@1@@Z=0x004203B0",
+  "?StartSpellcard@SpellLifecycle@th07@@YIIPAUEnemyOverlay@12@PBUSpellStartInstruction@12@@Z=0x0040FC90",
+  "?FinishSpellcard@SpellLifecycle@th07@@YIXPAUEnemyOverlay@12@PBX@Z=0x004101A0",
+  "?TargetSpawnBullet@th07@@YAXPAX0@Z=0x00424D20",
+  "_fmod=0x0048BB0A",
+  "_sin=0x0048BB40",
+  "_cos=0x0048BBF0",
+]
+dir32_targets = [
+  "?g_TargetDifficultyMask626284@th07@@3EA=ecl_difficulty_mask",
+  "?g_TargetEclManager1347938@th07@@3UEclManager@1@A=ecl_manager_1347938",
+  "?g_TargetSpellActive12FE0C8@th07@@3HA=spell_active_12FE0C8",
+  "?g_TargetRank62F8A4@th07@@3HA=ecl_global_62F8A4",
+  "?g_TargetBulletManager62F958@th07@@3PAEA=spell_bullet_manager_62F958",
+  "__real@3e99999a=ecl_real_0_3",
+]
+
 [units.bullet-render]
 kind = "probe"
 source = "src/BulletRender.cpp"
@@ -1025,6 +1128,120 @@ object = "build/match-units/Player.obj"
 profile = "vc7-debug-od-no-gs-g6"
 notes = "Focused VC7 unoptimized no-GS G6 player damage, collision, graze, and death probe; target floating comparisons select the G6 scheduler."
 
+[units.player-update]
+kind = "probe"
+source = "src/PlayerUpdate.cpp"
+object = "build/match-units/PlayerUpdate.obj"
+profile = "vc7-debug-od-no-gs-g6"
+notes = "High-leverage target-observed TH07 player update callback; TH06 behavior is supporting evidence only."
+
+[[units.player-update.functions]]
+address = "0x0043EE50"
+symbol_base = "?OnUpdate@Player@th07@@SIHPAV12@@Z"
+rel32_targets = [
+  "?SetAndExecute@PlayerBombAnmManager@th07@@QAEXPAX0@Z=0x0044EA20",
+  "?SpawnParticlesColored@EffectManager@th07@@QAEPAXHPAUD3DXVECTOR3@@HHH@Z=0x0041C610",
+  "?Advance@BulletUpdateTimerManager@th07@@QAEXPAH0@Z=0x0043958D",
+  "?IsBombInputBlocked@PlayerBombGuiState@th07@@QAEHXZ=0x0042AD66",
+  "?IsBombStartBlocked@PlayerBombGrazeState@th07@@QAEHXZ=0x00404FE0",
+  "?UpdateBombCollisionState@PlayerUpdateOverlay@th07@@QAEXXZ=0x0043D990",
+  "_sin=0x0048BB40",
+  "_cos=0x0048BBF0",
+]
+dir32_targets = [
+  "?g_PlayerInputButtons@th07@@3GA=player_bomb_input",
+  "?g_PlayerGameMode@th07@@3HA=player_bomb_game_mode",
+  "?g_PlayerShotType@th07@@3EA=player_bomb_shot_type",
+  "?g_FrameMultiplier@th07@@3MA=bullet_update_frame_multiplier",
+  "?g_PlayerBombAnmManager@th07@@3PAUPlayerBombAnmManager@1@A=player_bomb_anm_manager",
+  "?g_EffectManager@th07@@3UEffectManager@1@A=?g_EffectManager@th07@@3UEffectManager@1@A",
+  "?g_TimerManager@th07@@3UBulletUpdateTimerManager@1@A=bullet_update_timer_manager",
+  "?g_PlayerBombGuiState49FBF0@th07@@3UPlayerBombGuiState@1@A=player_bomb_gui_state",
+  "?g_PlayerBombGrazeState626270@th07@@3UPlayerBombGrazeState@1@A=player_bomb_graze_state",
+  "?g_PlayerUpdateBoundLeft@th07@@3MA=player_update_bound_left",
+  "?g_PlayerUpdateBoundTop@th07@@3MA=player_update_bound_top",
+  "?g_PlayerUpdateBoundWidth@th07@@3MA=player_update_bound_width",
+  "?g_PlayerUpdateBoundHeight@th07@@3MA=player_update_bound_height",
+  "__real@4038000000000000=player_update_double_24",
+  "__real@bf71463a=player_update_real_neg_0_94247782",
+  "__real@c00cbe4c=player_update_real_neg_2_1991148",
+  "__real@40490fdb=ecl_real_40490fdb",
+  "__real@40800000=__real@40800000",
+  "__real@40a00000=player_update_real_5",
+  "__real@3d80adfd=player_update_real_pi_over_25",
+  "__real@3d00adfd=player_update_real_pi_over_100",
+  "__real@bd80adfd=player_update_real_neg_pi_over_25",
+  "__real@bfc90fdb=player_update_real_neg_pi_over_2",
+  "__real@3fc90fdb=__real@3fc90fdb",
+  "__real@41c00000=player_update_real_24",
+  "__real@41800000=__real@41800000",
+  "__real@42000000=player_update_real_32",
+  "__real@3f800000=__real@3f800000",
+  "__real@41000000=__real@41000000",
+  "__real@00000000=__real@00000000",
+]
+
+[units.anm-vm-helpers]
+kind = "probe"
+source = "src/AnmVm.cpp"
+object = "build/match-units/AnmVm.obj"
+profile = "vc7-debug-od-no-gs-g6-no-op"
+notes = "Target-observed ANM VM scalar and lvalue operand resolvers shared by the main opcode dispatcher."
+
+[[units.anm-vm-helpers.functions]]
+address = "0x00450A50"
+symbol_base = "?GetFloatVar@AnmVm@th07@@QAEMM@Z"
+rel32_targets = ["__ftol2=0x0048B8A0"]
+
+[[units.anm-vm-helpers.functions]]
+address = "0x00450B20"
+symbol_base = "?GetIntVar@AnmVm@th07@@QAEHH@Z"
+rel32_targets = ["__ftol2=0x0048B8A0"]
+
+[[units.anm-vm-helpers.functions]]
+address = "0x00450C10"
+symbol_base = "?GetFloatVarPtr@AnmVm@th07@@QAEPAMPAMGI@Z"
+rel32_targets = ["__ftol2=0x0048B8A0"]
+
+[[units.anm-vm-helpers.functions]]
+address = "0x00450CA0"
+symbol_base = "?GetIntVarPtr@AnmVm@th07@@QAEPAHPAHGI@Z"
+
+[units.anm-execute]
+kind = "probe"
+source = "src/AnmExecute.cpp"
+object = "build/match-units/AnmExecute.obj"
+profile = "vc7-debug-od-no-gs-g6"
+notes = "High-leverage target-observed TH07 ANM VM dispatcher; TH08 opcode structure is supporting evidence only."
+
+[[units.anm-execute.functions]]
+address = "0x00450D60"
+symbol_base = "?ExecuteScript@AnmManager@th07@@QAEHPAUAnmVm@2@@Z"
+rel32_targets = [
+  "?GetFloatVar@AnmVm@th07@@QAEMM@Z=0x00450A50",
+  "?GetIntVar@AnmVm@th07@@QAEHH@Z=0x00450B20",
+  "?GetFloatVarPtr@AnmVm@th07@@QAEPAMPAMGI@Z=0x00450C10",
+  "?GetIntVarPtr@AnmVm@th07@@QAEPAHPAHGI@Z=0x00450CA0",
+  "?AnmManagerSetSprite@th07@@YIXPAUAnmManager@1@PAUAnmVm@1@H@Z=0x0044E8E0",
+  "?RandomU32@AnmRngOverlay@th07@@QAEIXZ=0x004318D0",
+  "?RandomF32@AnmRngOverlay@th07@@QAEMXZ=0x00431900",
+  "?AddNormalizeAngle@th07@@YGMMM@Z=0x00431930",
+  "?Decrement@AnmTimer@th07@@QAEXH@Z=0x004394C7",
+  "?Advance@AnmTimerManager@th07@@QAEXPAH0@Z=0x0043958D",
+  "_fmod=0x0048BB0A",
+  "_sin=0x0048BB40",
+  "_cos=0x0048BBF0",
+  "_tan=0x0048B920",
+  "_acos=0x0047ECA0",
+  "_atan=0x0048BA20",
+  "__ftol2=0x0048B8A0",
+]
+dir32_targets = [
+  "?g_AnmRng@th07@@3UAnmRngOverlay@1@A=ecl_rng_49FE20",
+  "?g_FrameMultiplier@th07@@3MA=bullet_update_frame_multiplier",
+  "?g_AnmTimerManager@th07@@3UAnmTimerManager@1@A=bullet_update_timer_manager",
+]
+
 [[units.player-core.functions]]
 address = "0x0043D9E0"
 symbol_base = "?CalcDamageToEnemy@Player@th07@@QAEHPAUD3DXVECTOR3@@0PAH@Z"
@@ -1144,7 +1361,7 @@ dir32_targets = [
 kind = "probe"
 source = "src/Chain.cpp"
 object = "build/match-units/Chain.obj"
-profile = "vc7-debug-od"
+profile = "vc7-debug-od-no-gs-g6"
 notes = "Focused VC7 unoptimized callback-chain scheduler probe, bounded to the complete 0x0042FA60--0x00430284 cluster."
 
 [[units.chain.functions]]
