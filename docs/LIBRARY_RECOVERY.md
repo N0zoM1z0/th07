@@ -1,0 +1,61 @@
+# Prebuilt library recovery
+
+TH07 statically links substantial VC7-era D3DX8 and C runtime code. The
+repository's pinned toolchain contains the original `d3dx8.lib`, `LIBC.LIB`,
+and `LIBCMT.LIB` archives, so these functions should be replayed from their
+original i386 COFF members before anyone attempts a manual rewrite.
+
+The extractor fails closed on the archive SHA-256, archive structure, member
+identity, output location, and i386 COFF machine type:
+
+```bash
+python3 scripts/extract-vc7-library-object.py \
+  --library d3dx8 --object obj/i386/d3dxmath.obj \
+  --output build/match-units/vc7_d3dx8_d3dxmath.obj
+```
+
+Archive symbols, TH06/TH08 clone names, and target sizes are candidate-finding
+evidence only. A row remains non-exact until its canonical match unit returns
+`result=exact` after every REL32 and DIR32 destination is independently
+verified. Ambiguous identical symbols are excluded rather than guessed.
+
+Accepted prebuilt rows retain `status=library`; their exact bytes contribute
+to reproducible-library and combined progress, never authored-game matching.
+The proprietary archives and extracted objects remain ignored below `.tools/`
+and `build/` and are not redistributed by this repository.
+
+## Embedded open-source versions
+
+The pinned D3DX8 archive retains compiler paths and version strings that make
+its codec ancestry unusually strong target-adjacent evidence:
+
+- `zutil.obj` names Microsoft's `zlib113` build directory and contains the
+  exact `1.1.3` version string. The official historical release is preserved
+  in the [zlib fossil archive](https://zlib.net/fossils/).
+- `jerror.obj` contains `6a  7-Feb-96` and the 1996 Thomas G. Lane copyright
+  string, identifying IJG JPEG release 6a. The release remains available in
+  historical source archives; its provenance agrees with the target error
+  strings and object symbols.
+- The D3DX8 image objects contain `libpng version 1.0.5` and `@1.0.5`, fixing
+  the embedded libpng line to 1.0.5.
+
+This enables a second recovery route for functions that cannot be replayed
+directly: vendor an unmodified, license-compatible official release under
+`third_party/`, apply only a tracked D3DX namespace/configuration adapter, and
+compile with VC7. Archive replay remains preferred because it preserves
+Microsoft's exact wrappers, macros, flags, and object partition automatically.
+
+## Accepted first wave (2026-08-12)
+
+Four archive members reproduce 29 functions and 9,678 function bytes exactly:
+
+```bash
+python3 scripts/build.py --unit vc7-d3dx8-d3dxmath --compare --json
+python3 scripts/build.py --unit vc7-d3dx8-cd3dxblt --compare --json
+python3 scripts/build.py --unit vc7-d3dx8-jdmarker --compare --json
+python3 scripts/build.py --unit vc7-d3dx8-jidctred --compare --json
+```
+
+The accepted rows cover matrix primitives, CD3DXBlt pixel-format paths, the
+JPEG marker parser, and reduced JPEG IDCTs. Their match units re-extract the
+objects and re-audit all declared relocations on every canonical run.

@@ -194,9 +194,8 @@ i32 Player::CheckAuxProjectileCollision(D3DXVECTOR3 *center, D3DXVECTOR3 *size)
             collisionTopLeft.y = collision->centerY - collision->sizeY / 2.0f;
             collisionBottomRight.x = collision->centerX + collision->sizeX / 2.0f;
             collisionBottomRight.y = collision->centerY + collision->sizeY / 2.0f;
-            if (PLAYER_BOXES_OVERLAP(collisionTopLeft.x, collisionTopLeft.y, collisionBottomRight.x,
-                                     collisionBottomRight.y, projectileTopLeft.x, projectileTopLeft.y,
-                                     projectileBottomRight.x, projectileBottomRight.y))
+            if (!(collisionTopLeft.x > projectileBottomRight.x || collisionBottomRight.x < projectileTopLeft.x ||
+                  collisionTopLeft.y > projectileBottomRight.y || collisionBottomRight.y < projectileTopLeft.y))
             {
                 collisionCountdown = collision->collisionValue;
                 return 2;
@@ -249,15 +248,13 @@ i32 Player::CalcKillBoxCollision(D3DXVECTOR3 *bulletCenter, D3DXVECTOR3 *bulletS
         HandleCollisionDuringBomb(0);
         return 1;
     }
-    else
+    if (playerState != 0)
     {
-        if (playerState == 0)
-        {
-            g_GrazeState.BeginPlayerDeath();
-            Die();
-        }
         return 1;
     }
+    g_GrazeState.BeginPlayerDeath();
+    Die();
+    return 1;
 }
 
 #pragma var_order(bulletBottomRight, bulletTopLeft)
@@ -358,13 +355,16 @@ LASER_COLLISION:
         HandleCollisionDuringBomb(0);
         return 1;
     }
-    if (playerState != 0)
+    else if (playerState != 0)
     {
         return 0;
     }
-    g_GrazeState.BeginPlayerDeath();
-    Die();
-    return 1;
+    else
+    {
+        g_GrazeState.BeginPlayerDeath();
+        Die();
+        return 1;
+    }
 }
 
 i32 Player::ScoreGraze(D3DXVECTOR3 *center)
@@ -383,13 +383,27 @@ i32 Player::ScoreGraze(D3DXVECTOR3 *center)
         }
     }
     particlePosition = (positionCenter + *center) / 2.0f;
-    g_EffectManager.SpawnParticles(8, &particlePosition, grazeSoundVariant == 1 && grazeVariant == 0 ? 3 : 1,
-                                   grazeSoundVariant == 1 && grazeVariant == 0 ? -32640 : -1);
+    if (grazeSoundVariant == 1)
+    {
+        if (grazeVariant)
+        {
+            g_EffectManager.SpawnParticles(8, &particlePosition, 1, -1);
+        }
+        else
+        {
+            g_EffectManager.SpawnParticles(8, &particlePosition, 3, -32640);
+        }
+    }
+    else
+    {
+        g_EffectManager.SpawnParticles(8, &particlePosition, 1, -1);
+    }
     IncreaseSubrank(6);
     g_GuiFlags = (g_GuiFlags & 0xFFFFFF3F) | 0x80;
     g_SoundPlayer.PlaySoundByIdx(30, 0);
     g_StageScore += 20 * ((g_RankValue - g_GameManager->rankBaseline) / 1500) + 2500;
-    g_GameManager->scoreRelated += 2000 / 10;
+    register i32 scoreUnit = 10;
+    g_GameManager->scoreRelated += 2000 / scoreUnit;
     if (grazeSoundVariant == 1)
     {
         if (grazeVariant)

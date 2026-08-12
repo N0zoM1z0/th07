@@ -1,6 +1,13 @@
 # 東方妖々夢 ～ Perfect Cherry Blossom
 
 <p align="center">
+  <img
+    src="resources/title-screen.png"
+    width="640"
+    alt="Original Japanese TH07 1.00b title screen">
+</p>
+
+<p align="center">
   <img src="resources/progress.svg" alt="TH07 source reconstruction progress">
 </p>
 
@@ -59,6 +66,7 @@ instructions, data layout, or exact comparison.
 - [Reverse-engineering workflow](docs/RE_WORKFLOW.md)
 - [IDA-first analysis](docs/IDA_MCP.md)
 - [Build and matching plan](docs/BUILD_MATCHING.md)
+- [Prebuilt D3DX8 and VC7 runtime recovery](docs/LIBRARY_RECOVERY.md)
 - [Workflow evolution and parallel gates](docs/WORKFLOW_EVOLUTION.md)
 - [Generated progress](docs/PROGRESS.md)
 - [Agent operating rules](AGENTS.md)

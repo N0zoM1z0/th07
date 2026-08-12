@@ -26,7 +26,9 @@ def render() -> tuple[str, str]:
     total_bytes = sum(int(row["size"]) for row in authored)
     matching_bytes = sum(int(row["size"]) for row in matching)
     all_bytes = sum(int(row["size"]) for row in rows)
-    exact_bytes = matching_bytes + sum(int(row["size"]) for row in exact_libraries)
+    library_bytes = sum(int(row["size"]) for row in libraries)
+    exact_library_bytes = sum(int(row["size"]) for row in exact_libraries)
+    exact_bytes = matching_bytes + exact_library_bytes
     function_pct = 100 * len(matching) / len(authored) if authored else 0.0
     byte_pct = 100 * matching_bytes / total_bytes if total_bytes else 0.0
     combined_pct = 100 * exact_bytes / all_bytes if all_bytes else 0.0
@@ -36,7 +38,8 @@ def render() -> tuple[str, str]:
         "Generated from `config/functions.csv`. Only verified 100% comparisons count as reconstructed.", "",
         f"- Matching authored functions: **{len(matching)} / {len(authored)} ({function_pct:.2f}%)**",
         f"- Matching authored bytes: **{matching_bytes:,} / {total_bytes:,} ({byte_pct:.2f}%)**",
-        f"- Exact library functions: **{len(exact_libraries)} / {len(libraries)}**",
+        f"- Exact library functions: **{len(exact_libraries)} / {len(libraries)}; {exact_library_bytes:,} / {library_bytes:,} bytes**",
+        f"- Combined exact bytes: **{exact_bytes:,} / {all_bytes:,} ({combined_pct:.2f}%)**",
         f"- IDA seed inventory: **{len(rows):,} functions / {all_bytes:,} function bytes**", "",
         "| Status | Functions |", "| --- | ---: |",
     ]
@@ -50,7 +53,7 @@ def render() -> tuple[str, str]:
   <rect x="24" y="48" width="440" height="14" rx="7" fill="#3b4058"/>
   <rect x="24" y="48" width="{filled:.2f}" height="14" rx="7" fill="#e46c8c"/>
   <text x="24" y="88" fill="#c8cad2" font-family="sans-serif" font-size="13">Authored exact: {len(matching):,} / {len(authored):,} functions · {matching_bytes:,} / {total_bytes:,} bytes</text>
-  <text x="24" y="108" fill="#c8cad2" font-family="sans-serif" font-size="13">IDA seed inventory: {len(rows):,} functions</text>
+  <text x="24" y="108" fill="#c8cad2" font-family="sans-serif" font-size="13">Library exact: {len(exact_libraries):,} / {len(libraries):,} functions · {exact_library_bytes:,} / {library_bytes:,} bytes</text>
 </svg>
 '''
     return "\n".join(lines), svg
@@ -77,4 +80,3 @@ def main() -> int:
 
 if __name__ == "__main__":
     raise SystemExit(main())
-

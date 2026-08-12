@@ -67,8 +67,8 @@ u32 Controller::SetButtonFromDirectInputJoystate(u16 *outButtons, i16 controller
         return 0;
     }
 
-    *outButtons |= inputButtons[controllerButtonToTest] & 0x80 ? touhouButton & 0xFFFF : 0;
-    return inputButtons[controllerButtonToTest] & 0x80 ? touhouButton & 0xFFFF : 0;
+    *outButtons |= inputButtons[controllerButtonToTest] & 0x80 ? (u16)touhouButton : 0;
+    return inputButtons[controllerButtonToTest] & 0x80 ? (u16)touhouButton : 0;
 }
 
 u32 Controller::SetButtonFromControllerInputs(u16 *outButtons, i16 controllerButtonToTest, enum TouhouButton touhouButton,
@@ -82,17 +82,18 @@ u32 Controller::SetButtonFromControllerInputs(u16 *outButtons, i16 controllerBut
     }
 
     mask = 1 << controllerButtonToTest;
-    *outButtons |= inputButtons & mask ? touhouButton & 0xFFFF : 0;
-    return inputButtons & mask ? touhouButton & 0xFFFF : 0;
+    *outButtons |= inputButtons & mask ? (u16)touhouButton : 0;
+    return inputButtons & mask ? (u16)touhouButton : 0;
 }
 
-#pragma var_order(joyinfoex, axisDeadZone, shotPressed, dijoystate2, dires, retryCount)
+#pragma var_order(joyinfoex, axisDeadZone, shotPressed, dires, dijoystate2, retryCount, buttons)
 u16 Controller::GetControllerInput(u16 buttons)
 {
     JOYINFOEX joyinfoex;
     u32 axisDeadZone;
     u32 shotPressed;
     DIJOYSTATE2 dijoystate2;
+    i32 retryCount;
     HRESULT dires;
 
     if (g_Controller == NULL)
@@ -167,7 +168,7 @@ u16 Controller::GetControllerInput(u16 buttons)
     dires = g_Controller->Poll();
     if (FAILED(dires))
     {
-        i32 retryCount = 0;
+        retryCount = 0;
         DebugPrint("error : DIERR_INPUTLOST\r\n");
         dires = g_Controller->Acquire();
         while (dires == DIERR_INPUTLOST)
@@ -325,7 +326,6 @@ u16 Controller::GetInput()
         buttons |= KEYBOARD_KEY_PRESSED(TH_BUTTON_DOWN_LEFT, VK_NUMPAD1);
         buttons |= KEYBOARD_KEY_PRESSED(TH_BUTTON_DOWN_RIGHT, VK_NUMPAD3);
         buttons |= KEYBOARD_KEY_PRESSED(TH_BUTTON_HOME, VK_HOME);
-        buttons |= KEYBOARD_KEY_PRESSED(TH_BUTTON_HOME, 'P');
         buttons |= KEYBOARD_KEY_PRESSED(TH_BUTTON_D, 'D');
         buttons |= KEYBOARD_KEY_PRESSED(TH_BUTTON_SHOOT, 'Z');
         buttons |= KEYBOARD_KEY_PRESSED(TH_BUTTON_BOMB, 'X');
@@ -360,7 +360,6 @@ u16 Controller::GetInput()
         buttons |= KEYBOARD_KEY_PRESSED(TH_BUTTON_DOWN_LEFT, DIK_NUMPAD1);
         buttons |= KEYBOARD_KEY_PRESSED(TH_BUTTON_DOWN_RIGHT, DIK_NUMPAD3);
         buttons |= KEYBOARD_KEY_PRESSED(TH_BUTTON_HOME, DIK_HOME);
-        buttons |= KEYBOARD_KEY_PRESSED(TH_BUTTON_HOME, DIK_P);
         buttons |= KEYBOARD_KEY_PRESSED(TH_BUTTON_D, DIK_D);
         buttons |= KEYBOARD_KEY_PRESSED(TH_BUTTON_SHOOT, DIK_Z);
         buttons |= KEYBOARD_KEY_PRESSED(TH_BUTTON_BOMB, DIK_X);

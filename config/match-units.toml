@@ -1,6 +1,175 @@
 schema_version = 1
 target_sha256 = "35467eaf8dc7fc85f024f16fb2037255f151cefda33cf4867bc9122aaa2e80ca"
 
+[units.vc7-d3dx8-d3dxmath]
+kind = "vc7_prebuilt"
+source = "docs/LIBRARY_RECOVERY.md"
+object = "build/match-units/vc7_d3dx8_d3dxmath.obj"
+profile = "vc7-prebuilt"
+toolchain_library = "d3dx8"
+toolchain_object = "obj/i386/d3dxmath.obj"
+toolchain_archive_sha256 = "32148094cebbbe9b55f7769787cdde5926ca01014e072844f5152d25072e1f44"
+notes = "SHA-pinned DirectX 8 SDK archive replay; documentation is a provenance sentinel, not reconstructed D3DX source."
+
+[[units.vc7-d3dx8-d3dxmath.functions]]
+address = "0x00461AA2"
+symbol_base = "_D3DXMatrixMultiply@12"
+
+[[units.vc7-d3dx8-d3dxmath.functions]]
+address = "0x00461B85"
+symbol_base = "_D3DXMatrixRotationX@8"
+
+[[units.vc7-d3dx8-d3dxmath.functions]]
+address = "0x00461BFF"
+symbol_base = "_D3DXMatrixRotationY@8"
+
+[[units.vc7-d3dx8-d3dxmath.functions]]
+address = "0x00461C7A"
+symbol_base = "_D3DXMatrixRotationZ@8"
+
+[units.vc7-d3dx8-cd3dxblt]
+kind = "vc7_prebuilt"
+source = "docs/LIBRARY_RECOVERY.md"
+object = "build/match-units/vc7_d3dx8_cd3dxblt.obj"
+profile = "vc7-prebuilt"
+toolchain_library = "d3dx8"
+toolchain_object = "obj/i386/cd3dxblt.obj"
+toolchain_archive_sha256 = "32148094cebbbe9b55f7769787cdde5926ca01014e072844f5152d25072e1f44"
+notes = "SHA-pinned DirectX 8 SDK archive replay of exact CD3DXBlt member functions."
+
+[[units.vc7-d3dx8-cd3dxblt.functions]]
+address = "0x00463C7D"
+symbol_base = "?BltSame_DXTn@CD3DXBlt@@IAEJXZ"
+
+[[units.vc7-d3dx8-cd3dxblt.functions]]
+address = "0x00464078"
+symbol_base = "?BltBox2D_R5G6B5@CD3DXBlt@@IAEJXZ"
+
+[[units.vc7-d3dx8-cd3dxblt.functions]]
+address = "0x004641C8"
+symbol_base = "?BltBox2D_X1R5G5B5@CD3DXBlt@@IAEJXZ"
+
+[[units.vc7-d3dx8-cd3dxblt.functions]]
+address = "0x004642EC"
+symbol_base = "?BltBox2D_A1R5G5B5@CD3DXBlt@@IAEJXZ"
+
+[[units.vc7-d3dx8-cd3dxblt.functions]]
+address = "0x0046443B"
+symbol_base = "?BltBox2D_A4R4G4B4@CD3DXBlt@@IAEJXZ"
+
+[[units.vc7-d3dx8-cd3dxblt.functions]]
+address = "0x0046458E"
+symbol_base = "?BltBox2D_R3G3B2@CD3DXBlt@@IAEJXZ"
+
+[[units.vc7-d3dx8-cd3dxblt.functions]]
+address = "0x004646CD"
+symbol_base = "?BltBox2D_A8@CD3DXBlt@@IAEJXZ"
+
+[[units.vc7-d3dx8-cd3dxblt.functions]]
+address = "0x00464768"
+symbol_base = "?BltBox2D_A8R3G3B2@CD3DXBlt@@IAEJXZ"
+
+[[units.vc7-d3dx8-cd3dxblt.functions]]
+address = "0x004648B4"
+symbol_base = "?BltBox2D_X4R4G4B4@CD3DXBlt@@IAEJXZ"
+
+[[units.vc7-d3dx8-cd3dxblt.functions]]
+address = "0x004649DB"
+symbol_base = "?BltBox2D_A8L8@CD3DXBlt@@IAEJXZ"
+
+[[units.vc7-d3dx8-cd3dxblt.functions]]
+address = "0x00464B27"
+symbol_base = "?BltBox2D_A4L4@CD3DXBlt@@IAEJXZ"
+
+[[units.vc7-d3dx8-cd3dxblt.functions]]
+address = "0x00464C99"
+symbol_base = "?BltSame@CD3DXBlt@@IAEJXZ"
+rel32_targets = ["?BltSame_DXTn@CD3DXBlt@@IAEJXZ=0x00463C7D"]
+
+[units.vc7-d3dx8-jdmarker]
+kind = "vc7_prebuilt"
+source = "docs/LIBRARY_RECOVERY.md"
+object = "build/match-units/vc7_d3dx8_jdmarker.obj"
+profile = "vc7-prebuilt"
+toolchain_library = "d3dx8"
+toolchain_object = "obj/i386/jdmarker.obj"
+toolchain_archive_sha256 = "32148094cebbbe9b55f7769787cdde5926ca01014e072844f5152d25072e1f44"
+notes = "SHA-pinned DirectX 8 SDK embedded JPEG marker parser replay."
+
+[[units.vc7-d3dx8-jdmarker.functions]]
+address = "0x0046BC32"
+symbol_base = "?get_sof@D3DX@@YAEPAUjpeg_decompress_struct@1@EE@Z"
+
+[[units.vc7-d3dx8-jdmarker.functions]]
+address = "0x0046BF2D"
+symbol_base = "?get_sos@D3DX@@YAEPAUjpeg_decompress_struct@1@@Z"
+
+[[units.vc7-d3dx8-jdmarker.functions]]
+address = "0x0046C216"
+symbol_base = "?get_app0@D3DX@@YAEPAUjpeg_decompress_struct@1@@Z"
+
+[[units.vc7-d3dx8-jdmarker.functions]]
+address = "0x0046C452"
+symbol_base = "?get_app14@D3DX@@YAEPAUjpeg_decompress_struct@1@@Z"
+
+[[units.vc7-d3dx8-jdmarker.functions]]
+address = "0x0046C5CC"
+symbol_base = "?get_dac@D3DX@@YAEPAUjpeg_decompress_struct@1@@Z"
+
+[[units.vc7-d3dx8-jdmarker.functions]]
+address = "0x0046CC01"
+symbol_base = "?get_dri@D3DX@@YAEPAUjpeg_decompress_struct@1@@Z"
+
+[[units.vc7-d3dx8-jdmarker.functions]]
+address = "0x0046CCE0"
+symbol_base = "?skip_variable@D3DX@@YAEPAUjpeg_decompress_struct@1@@Z"
+
+[[units.vc7-d3dx8-jdmarker.functions]]
+address = "0x0046CD7C"
+symbol_base = "?next_marker@D3DX@@YAEPAUjpeg_decompress_struct@1@@Z"
+
+[[units.vc7-d3dx8-jdmarker.functions]]
+address = "0x0046CE53"
+symbol_base = "?first_marker@D3DX@@YAEPAUjpeg_decompress_struct@1@@Z"
+
+[[units.vc7-d3dx8-jdmarker.functions]]
+address = "0x0046CEEB"
+symbol_base = "?read_markers@D3DX@@YAHPAUjpeg_decompress_struct@1@@Z"
+rel32_targets = [
+  "?first_marker@D3DX@@YAEPAUjpeg_decompress_struct@1@@Z=0x0046CE53",
+  "?next_marker@D3DX@@YAEPAUjpeg_decompress_struct@1@@Z=0x0046CD7C",
+  "?get_dht@D3DX@@YAEPAUjpeg_decompress_struct@1@@Z=0x0046C723",
+  "?get_dac@D3DX@@YAEPAUjpeg_decompress_struct@1@@Z=0x0046C5CC",
+  "?get_sof@D3DX@@YAEPAUjpeg_decompress_struct@1@EE@Z=0x0046BC32",
+  "?get_soi@D3DX@@YAEPAUjpeg_decompress_struct@1@@Z=0x0046BBA4",
+  "?get_dqt@D3DX@@YAEPAUjpeg_decompress_struct@1@@Z=0x0046C9B7",
+  "?get_dri@D3DX@@YAEPAUjpeg_decompress_struct@1@@Z=0x0046CC01",
+  "?skip_variable@D3DX@@YAEPAUjpeg_decompress_struct@1@@Z=0x0046CCE0",
+  "?get_sos@D3DX@@YAEPAUjpeg_decompress_struct@1@@Z=0x0046BF2D",
+]
+
+[units.vc7-d3dx8-jidctred]
+kind = "vc7_prebuilt"
+source = "docs/LIBRARY_RECOVERY.md"
+object = "build/match-units/vc7_d3dx8_jidctred.obj"
+profile = "vc7-prebuilt"
+toolchain_library = "d3dx8"
+toolchain_object = "obj/i386/jidctred.obj"
+toolchain_archive_sha256 = "32148094cebbbe9b55f7769787cdde5926ca01014e072844f5152d25072e1f44"
+notes = "SHA-pinned DirectX 8 SDK embedded reduced JPEG IDCT replay."
+
+[[units.vc7-d3dx8-jidctred.functions]]
+address = "0x00479B29"
+symbol_base = "?jpeg_idct_4x4@D3DX@@YAXPAUjpeg_decompress_struct@1@PAUjpeg_component_info@1@PAFPAPAEI@Z"
+
+[[units.vc7-d3dx8-jidctred.functions]]
+address = "0x00479E3E"
+symbol_base = "?jpeg_idct_2x2@D3DX@@YAXPAUjpeg_decompress_struct@1@PAUjpeg_component_info@1@PAFPAPAEI@Z"
+
+[[units.vc7-d3dx8-jidctred.functions]]
+address = "0x00479FFC"
+symbol_base = "?jpeg_idct_1x1@D3DX@@YAXPAUjpeg_decompress_struct@1@PAUjpeg_component_info@1@PAFPAPAEI@Z"
+
 [units.text-helper]
 kind = "probe"
 source = "src/TextHelper.cpp"
@@ -659,7 +828,7 @@ address = "0x00426F60"
 symbol_base = "?AddedCallback@BulletManager@th07@@SIHPAV12@@Z"
 rel32_targets = [
   "?LoadAnm@th07@@YAHHPBDH@Z=0x0044DF90",
-  "?SetAndExecuteScript@th07@@YAXPAUAnmVm@1@PAX@Z=0x0044EA20",
+  "?SetAndExecuteScript@AnmManager@th07@@QAEXPAUAnmVm@2@PAX@Z=0x0044EA20",
   "__ftol2=0x0048B8A0",
 ]
 dir32_targets = [

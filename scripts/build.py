@@ -57,7 +57,7 @@ def load_manifest() -> dict[str, object]:
         if not isinstance(raw_unit, dict):
             raise ValueError(f"invalid unit: {name}")
         unit = raw_unit
-        if unit.get("kind") != "probe":
+        if unit.get("kind") not in {"probe", "vc7_prebuilt"}:
             raise ValueError(f"unsupported unit kind for {name}: {unit.get('kind')}")
         repository_path(str(unit["source"]))
         repository_path(str(unit["object"]), output=True)
@@ -68,8 +68,20 @@ def load_manifest() -> dict[str, object]:
             "vc7-debug-od-no-gs",
             "vc7-debug-od-no-gs-g6",
             "vc7-size-ob1-no-gs-g6",
+            "vc7-prebuilt",
         }:
             raise ValueError(f"unknown compiler profile in unit {name}")
+        if unit["kind"] == "vc7_prebuilt":
+            if unit["profile"] != "vc7-prebuilt":
+                raise ValueError(f"prebuilt unit {name} has the wrong profile")
+            if unit.get("toolchain_library") not in {"d3dx8", "libc", "libcmt"}:
+                raise ValueError(f"prebuilt unit {name} has an invalid library")
+            member = unit.get("toolchain_object")
+            if not isinstance(member, str) or not member.lower().endswith(".obj"):
+                raise ValueError(f"prebuilt unit {name} has an invalid object member")
+            archive_hash = unit.get("toolchain_archive_sha256")
+            if not isinstance(archive_hash, str) or len(archive_hash) != 64:
+                raise ValueError(f"prebuilt unit {name} lacks an archive digest")
         functions = unit.get("functions")
         if not isinstance(functions, list) or not functions:
             raise ValueError(f"unit {name} has no functions")
@@ -101,12 +113,24 @@ def build_unit(name: str, unit: dict[str, object], json_mode: bool) -> dict[str,
     source = repository_path(str(unit["source"]))
     output = repository_path(str(unit["object"]), output=True)
     output.parent.mkdir(parents=True, exist_ok=True)
-    command = [
-        str(ROOT / "scripts" / "compile-unit.sh"),
-        str(source),
-        str(output),
-        str(unit["profile"]),
-    ]
+    if unit["kind"] == "vc7_prebuilt":
+        command = [
+            sys.executable,
+            str(ROOT / "scripts" / "extract-vc7-library-object.py"),
+            "--library",
+            str(unit["toolchain_library"]),
+            "--object",
+            str(unit["toolchain_object"]),
+            "--output",
+            str(output),
+        ]
+    else:
+        command = [
+            str(ROOT / "scripts" / "compile-unit.sh"),
+            str(source),
+            str(output),
+            str(unit["profile"]),
+        ]
     completed = subprocess.run(
         command,
         cwd=ROOT,
@@ -117,10 +141,11 @@ def build_unit(name: str, unit: dict[str, object], json_mode: bool) -> dict[str,
         message = completed.stderr.strip() if json_mode else f"compiler exited {completed.returncode}"
         raise RuntimeError(message)
     compiler_hashes = {}
-    for path in compiler_paths():
-        if not path.is_file():
-            raise ValueError(f"compiler component is missing after build: {path}")
-        compiler_hashes[path.name] = file_sha256(path)
+    if unit["kind"] != "vc7_prebuilt":
+        for path in compiler_paths():
+            if not path.is_file():
+                raise ValueError(f"compiler component is missing after build: {path}")
+            compiler_hashes[path.name] = file_sha256(path)
     inputs = {
         "source_sha256": file_sha256(source),
         "manifest_sha256": file_sha256(MANIFEST),
@@ -129,6 +154,17 @@ def build_unit(name: str, unit: dict[str, object], json_mode: bool) -> dict[str,
         "compiler_sha256": compiler_hashes,
         "profile": unit["profile"],
     }
+    if unit["kind"] == "vc7_prebuilt":
+        inputs.update(
+            {
+                "toolchain_library": unit["toolchain_library"],
+                "toolchain_object": unit["toolchain_object"],
+                "toolchain_archive_sha256": unit["toolchain_archive_sha256"],
+                "extractor_sha256": file_sha256(
+                    ROOT / "scripts" / "extract-vc7-library-object.py"
+                ),
+            }
+        )
     input_digest = hashlib.sha256(
         json.dumps(inputs, sort_keys=True, separators=(",", ":")).encode()
     ).hexdigest()
@@ -145,6 +181,14 @@ def build_unit(name: str, unit: dict[str, object], json_mode: bool) -> dict[str,
         "command": command,
         "built_utc": datetime.now(timezone.utc).isoformat().replace("+00:00", "Z"),
     }
+    if unit["kind"] == "vc7_prebuilt":
+        provenance.update(
+            {
+                "toolchain_library": unit["toolchain_library"],
+                "toolchain_object": unit["toolchain_object"],
+                "toolchain_archive_sha256": unit["toolchain_archive_sha256"],
+            }
+        )
     provenance_path = output.with_suffix(output.suffix + ".provenance.json")
     provenance_path.write_text(json.dumps(provenance, indent=2) + "\n", encoding="utf-8")
     return provenance

@@ -279,11 +279,11 @@ address,size,span_end,current_name,proposed_name,module,status,match_percent,cal
 0x00430090,161,0x00430130,sub_430090,Chain_create_elem,chain,compiles,0.00,__thiscall,ChainElem * Chain_create_elem(Chain * this; ChainCallback callback),false,src/Chain.cpp,VC7 COFF compiles with verified EH and allocator relocations,root,Strict mismatch at 0x00430113; bitfield set shaping remains
 0x00430140,325,0x00430284,sub_430140,Chain_cut,chain,compiles,0.00,__thiscall,void Chain_cut(Chain * this; ChainElem * element),false,src/Chain.cpp,VC7 COFF compiles; both chain searches and destruction paths observed,root,Strict mismatch at 0x0043014B; local ordering and dead debug-state shaping remain
 0x00430290,85,0x004302E4,sub_430290,Controller_get_joystick_caps,input,matching,100.00,__fastcall,u16 Controller_get_joystick_caps(void),false,src/Controller.cpp,strict VC7 COFF exact 85/85 bytes 2026-08-12,root,WINMM IAT and controller globals verified
-0x004302F0,122,0x00430369,sub_4302F0,Controller_set_direct_input_button,input,compiles,0.00,__fastcall,u32 Controller_set_direct_input_button(u16 * out; i16 mapping; TouhouButton button; u8 * state),false,src/Controller.cpp,VC7 COFF compiles; strict mismatch at 0x00430308,root,Control-flow shaping remains
-0x00430370,115,0x004303E2,sub_430370,Controller_set_legacy_button,input,compiles,0.00,__fastcall,u32 Controller_set_legacy_button(u16 * out; i16 mapping; TouhouButton button; u32 state),false,src/Controller.cpp,VC7 COFF compiles; strict mismatch at 0x00430388,root,Control-flow shaping remains
+0x004302F0,122,0x00430369,sub_4302F0,Controller_set_direct_input_button,input,matching,100.00,__fastcall,u32 Controller_set_direct_input_button(u16 * out; i16 mapping; TouhouButton button; u8 * state),false,src/Controller.cpp,python3 scripts/build.py --unit controller --compare --json exact 122/122,root,Target enum narrowing emits the required movzx loads
+0x00430370,115,0x004303E2,sub_430370,Controller_set_legacy_button,input,matching,100.00,__fastcall,u32 Controller_set_legacy_button(u16 * out; i16 mapping; TouhouButton button; u32 state),false,src/Controller.cpp,python3 scripts/build.py --unit controller --compare --json exact 115/115,root,Target enum narrowing emits the required movzx loads
 0x004303F0,1488,0x004309BF,sub_4303F0,Controller_get_controller_input,input,compiles,0.00,__fastcall,u16 Controller_get_controller_input(u16 buttons),false,src/Controller.cpp,VC7 COFF compiles with target-confirmed no-GS profile,root,Relocations and source shaping remain
 0x004309C0,392,0x00430B47,sub_4309C0,Controller_get_controller_state,input,matching,100.00,__fastcall,u8 * Controller_get_controller_state(void),false,src/Controller.cpp,python3 scripts/build.py --unit controller --compare --json; strict VC7 no-GS COFF exact 392/392 bytes with verified input globals/imports/strings 2026-08-12,root,Original var_order preserves the target stale Poll result after GetDeviceState
-0x00430B50,1904,0x004312BF,sub_430B50,Controller_get_input,input,compiles,0.00,__fastcall,u16 Controller_get_input(void),false,src/Controller.cpp,VC7 COFF compiles with target-confirmed no-GS profile,root,Keyboard control-flow shaping remains
+0x00430B50,1904,0x004312BF,sub_430B50,Controller_get_input,input,matching,100.00,__fastcall,u16 Controller_get_input(void),false,src/Controller.cpp,python3 scripts/build.py --unit controller --compare --json exact 1904/1904,root,Target has no P or DIK_P Home binding
 0x004312C0,110,0x0043132D,sub_4312C0,Controller_reset_keyboard,input,matching,100.00,__fastcall,void Controller_reset_keyboard(void),false,src/Controller.cpp,python3 scripts/build.py --unit controller --compare --json; strict VC7 no-GS G6 COFF exact 110/110 bytes with verified USER32 imports 2026-08-12,root,TH06-corroborated loop and G6 byte load reproduce the target exactly
 0x00431330,434,0x004314E1,sub_431330,,,unclassified,0.00,unknown,,false,,,,
 0x004314F0,69,0x00431534,sub_4314F0,,,unclassified,0.00,unknown,,false,,,,
@@ -681,10 +681,10 @@ address,size,span_end,current_name,proposed_name,module,status,match_percent,cal
 0x00461A90,6,0x00461A95,DirectInput8Create,,,unclassified,0.00,unknown,,false,,,,
 0x00461A96,6,0x00461A9B,DirectSoundCreate8,,,unclassified,0.00,unknown,,false,,,,
 0x00461A9C,6,0x00461AA1,Direct3DCreate8,,,unclassified,0.00,unknown,,false,,,,
-0x00461AA2,227,0x00461B84,sub_461AA2,,,unclassified,0.00,unknown,,false,,,,
-0x00461B85,122,0x00461BFE,sub_461B85,,,unclassified,0.00,unknown,,false,,,,
-0x00461BFF,123,0x00461C79,sub_461BFF,,,unclassified,0.00,unknown,,false,,,,
-0x00461C7A,124,0x00461CF5,sub_461C7A,,,unclassified,0.00,unknown,,false,,,,
+0x00461AA2,227,0x00461B84,sub_461AA2,D3DXMatrixMultiply,third_party,library,100.00,__stdcall,,false,docs/LIBRARY_RECOVERY.md,python3 scripts/build.py --unit vc7-d3dx8-d3dxmath --compare --json exact 227/227,root,SHA-pinned d3dx8.lib d3dxmath.obj replay
+0x00461B85,122,0x00461BFE,sub_461B85,D3DXMatrixRotationX,third_party,library,100.00,__stdcall,,false,docs/LIBRARY_RECOVERY.md,python3 scripts/build.py --unit vc7-d3dx8-d3dxmath --compare --json exact 122/122,root,SHA-pinned d3dx8.lib d3dxmath.obj replay
+0x00461BFF,123,0x00461C79,sub_461BFF,D3DXMatrixRotationY,third_party,library,100.00,__stdcall,,false,docs/LIBRARY_RECOVERY.md,python3 scripts/build.py --unit vc7-d3dx8-d3dxmath --compare --json exact 123/123,root,SHA-pinned d3dx8.lib d3dxmath.obj replay
+0x00461C7A,124,0x00461CF5,sub_461C7A,D3DXMatrixRotationZ,third_party,library,100.00,__stdcall,,false,docs/LIBRARY_RECOVERY.md,python3 scripts/build.py --unit vc7-d3dx8-d3dxmath --compare --json exact 124/124,root,SHA-pinned d3dx8.lib d3dxmath.obj replay
 0x00461CF6,226,0x00461DD7,sub_461CF6,,,unclassified,0.00,unknown,,false,,,,
 0x00461DD8,148,0x00461E6B,sub_461DD8,,,unclassified,0.00,unknown,,false,,,,
 0x00461E6C,76,0x00461EB7,sub_461E6C,,,unclassified,0.00,unknown,,false,,,,
@@ -709,23 +709,23 @@ address,size,span_end,current_name,proposed_name,module,status,match_percent,cal
 0x0046314F,673,0x004633EF,sub_46314F,,,unclassified,0.00,unknown,,false,,,,
 0x004633F0,950,0x004637A5,sub_4633F0,,,unclassified,0.00,unknown,,false,,,,
 0x004637A6,1239,0x00463C7C,sub_4637A6,,,unclassified,0.00,unknown,,false,,,,
-0x00463C7D,385,0x00463DFD,sub_463C7D,,,unclassified,0.00,unknown,,false,,,,
+0x00463C7D,385,0x00463DFD,sub_463C7D,CD3DXBlt::BltSame_DXTn,third_party,library,100.00,__thiscall,,false,docs/LIBRARY_RECOVERY.md,python3 scripts/build.py --unit vc7-d3dx8-cd3dxblt --compare --json exact 385/385,root,SHA-pinned d3dx8.lib cd3dxblt.obj replay
 0x00463DFE,350,0x00463F5B,sub_463DFE,,,unclassified,0.00,unknown,,false,,,,
 0x00463F5C,284,0x00464077,sub_463F5C,,,unclassified,0.00,unknown,,false,,,,
-0x00464078,336,0x004641C7,sub_464078,,,unclassified,0.00,unknown,,false,,,,
-0x004641C8,292,0x004642EB,sub_4641C8,,,unclassified,0.00,unknown,,false,,,,
-0x004642EC,335,0x0046443A,sub_4642EC,,,unclassified,0.00,unknown,,false,,,,
-0x0046443B,339,0x0046458D,sub_46443B,,,unclassified,0.00,unknown,,false,,,,
-0x0046458E,319,0x004646CC,sub_46458E,,,unclassified,0.00,unknown,,false,,,,
-0x004646CD,155,0x00464767,sub_4646CD,,,unclassified,0.00,unknown,,false,,,,
-0x00464768,332,0x004648B3,sub_464768,,,unclassified,0.00,unknown,,false,,,,
-0x004648B4,289,0x004649D4,sub_4648B4,,,unclassified,0.00,unknown,,false,,,,
+0x00464078,336,0x004641C7,sub_464078,CD3DXBlt::BltBox2D_R5G6B5,third_party,library,100.00,__thiscall,,false,docs/LIBRARY_RECOVERY.md,python3 scripts/build.py --unit vc7-d3dx8-cd3dxblt --compare --json exact 336/336,root,SHA-pinned d3dx8.lib cd3dxblt.obj replay
+0x004641C8,292,0x004642EB,sub_4641C8,CD3DXBlt::BltBox2D_X1R5G5B5,third_party,library,100.00,__thiscall,,false,docs/LIBRARY_RECOVERY.md,python3 scripts/build.py --unit vc7-d3dx8-cd3dxblt --compare --json exact 292/292,root,SHA-pinned d3dx8.lib cd3dxblt.obj replay
+0x004642EC,335,0x0046443A,sub_4642EC,CD3DXBlt::BltBox2D_A1R5G5B5,third_party,library,100.00,__thiscall,,false,docs/LIBRARY_RECOVERY.md,python3 scripts/build.py --unit vc7-d3dx8-cd3dxblt --compare --json exact 335/335,root,SHA-pinned d3dx8.lib cd3dxblt.obj replay
+0x0046443B,339,0x0046458D,sub_46443B,CD3DXBlt::BltBox2D_A4R4G4B4,third_party,library,100.00,__thiscall,,false,docs/LIBRARY_RECOVERY.md,python3 scripts/build.py --unit vc7-d3dx8-cd3dxblt --compare --json exact 339/339,root,SHA-pinned d3dx8.lib cd3dxblt.obj replay
+0x0046458E,319,0x004646CC,sub_46458E,CD3DXBlt::BltBox2D_R3G3B2,third_party,library,100.00,__thiscall,,false,docs/LIBRARY_RECOVERY.md,python3 scripts/build.py --unit vc7-d3dx8-cd3dxblt --compare --json exact 319/319,root,SHA-pinned d3dx8.lib cd3dxblt.obj replay
+0x004646CD,155,0x00464767,sub_4646CD,CD3DXBlt::BltBox2D_A8,third_party,library,100.00,__thiscall,,false,docs/LIBRARY_RECOVERY.md,python3 scripts/build.py --unit vc7-d3dx8-cd3dxblt --compare --json exact 155/155,root,SHA-pinned d3dx8.lib cd3dxblt.obj replay
+0x00464768,332,0x004648B3,sub_464768,CD3DXBlt::BltBox2D_A8R3G3B2,third_party,library,100.00,__thiscall,,false,docs/LIBRARY_RECOVERY.md,python3 scripts/build.py --unit vc7-d3dx8-cd3dxblt --compare --json exact 332/332,root,SHA-pinned d3dx8.lib cd3dxblt.obj replay
+0x004648B4,289,0x004649D4,sub_4648B4,CD3DXBlt::BltBox2D_X4R4G4B4,third_party,library,100.00,__thiscall,,false,docs/LIBRARY_RECOVERY.md,python3 scripts/build.py --unit vc7-d3dx8-cd3dxblt --compare --json exact 289/289,root,SHA-pinned d3dx8.lib cd3dxblt.obj replay
 0x004649D5,6,0x004649DA,sub_4649D5,,,unclassified,0.00,unknown,,false,,,,
-0x004649DB,332,0x00464B26,sub_4649DB,,,unclassified,0.00,unknown,,false,,,,
-0x00464B27,319,0x00464C65,sub_464B27,,,unclassified,0.00,unknown,,false,,,,
+0x004649DB,332,0x00464B26,sub_4649DB,CD3DXBlt::BltBox2D_A8L8,third_party,library,100.00,__thiscall,,false,docs/LIBRARY_RECOVERY.md,python3 scripts/build.py --unit vc7-d3dx8-cd3dxblt --compare --json exact 332/332,root,SHA-pinned d3dx8.lib cd3dxblt.obj replay
+0x00464B27,319,0x00464C65,sub_464B27,CD3DXBlt::BltBox2D_A4L4,third_party,library,100.00,__thiscall,,false,docs/LIBRARY_RECOVERY.md,python3 scripts/build.py --unit vc7-d3dx8-cd3dxblt --compare --json exact 319/319,root,SHA-pinned d3dx8.lib cd3dxblt.obj replay
 0x00464C66,35,0x00464C88,sub_464C66,,,unclassified,0.00,unknown,,false,,,,
 0x00464C89,16,0x00464C98,sub_464C89,,,unclassified,0.00,unknown,,false,,,,
-0x00464C99,306,0x00464DCA,sub_464C99,,,unclassified,0.00,unknown,,false,,,,
+0x00464C99,306,0x00464DCA,sub_464C99,CD3DXBlt::BltSame,third_party,library,100.00,__thiscall,,false,docs/LIBRARY_RECOVERY.md,python3 scripts/build.py --unit vc7-d3dx8-cd3dxblt --compare --json exact 306/306,root,SHA-pinned d3dx8.lib cd3dxblt.obj replay
 0x00464DCB,162,0x00464E6C,sub_464DCB,,,unclassified,0.00,unknown,,false,,,,
 0x00464E6D,373,0x00464FE1,sub_464E6D,,,unclassified,0.00,unknown,,false,,,,
 0x00464FE2,406,0x00465177,sub_464FE2,,,unclassified,0.00,unknown,,false,,,,
@@ -832,18 +832,18 @@ address,size,span_end,current_name,proposed_name,module,status,match_percent,cal
 0x0046BA5F,132,0x0046BAE2,sub_46BA5F,,,unclassified,0.00,unknown,,false,,,,
 0x0046BAE3,193,0x0046BBA3,sub_46BAE3,,,unclassified,0.00,unknown,,false,,,,
 0x0046BBA4,142,0x0046BC31,sub_46BBA4,,,unclassified,0.00,unknown,,false,,,,
-0x0046BC32,763,0x0046BF2C,sub_46BC32,,,unclassified,0.00,unknown,,false,,,,
-0x0046BF2D,745,0x0046C215,sub_46BF2D,,,unclassified,0.00,unknown,,false,,,,
-0x0046C216,572,0x0046C451,sub_46C216,,,unclassified,0.00,unknown,,false,,,,
-0x0046C452,378,0x0046C5CB,sub_46C452,,,unclassified,0.00,unknown,,false,,,,
-0x0046C5CC,343,0x0046C722,sub_46C5CC,,,unclassified,0.00,unknown,,false,,,,
+0x0046BC32,763,0x0046BF2C,sub_46BC32,D3DX::get_sof,third_party,library,100.00,unknown,,false,docs/LIBRARY_RECOVERY.md,python3 scripts/build.py --unit vc7-d3dx8-jdmarker --compare --json exact 763/763,root,SHA-pinned d3dx8.lib jdmarker.obj replay
+0x0046BF2D,745,0x0046C215,sub_46BF2D,D3DX::get_sos,third_party,library,100.00,unknown,,false,docs/LIBRARY_RECOVERY.md,python3 scripts/build.py --unit vc7-d3dx8-jdmarker --compare --json exact 745/745,root,SHA-pinned d3dx8.lib jdmarker.obj replay
+0x0046C216,572,0x0046C451,sub_46C216,D3DX::get_app0,third_party,library,100.00,unknown,,false,docs/LIBRARY_RECOVERY.md,python3 scripts/build.py --unit vc7-d3dx8-jdmarker --compare --json exact 572/572,root,SHA-pinned d3dx8.lib jdmarker.obj replay
+0x0046C452,378,0x0046C5CB,sub_46C452,D3DX::get_app14,third_party,library,100.00,unknown,,false,docs/LIBRARY_RECOVERY.md,python3 scripts/build.py --unit vc7-d3dx8-jdmarker --compare --json exact 378/378,root,SHA-pinned d3dx8.lib jdmarker.obj replay
+0x0046C5CC,343,0x0046C722,sub_46C5CC,D3DX::get_dac,third_party,library,100.00,unknown,,false,docs/LIBRARY_RECOVERY.md,python3 scripts/build.py --unit vc7-d3dx8-jdmarker --compare --json exact 343/343,root,SHA-pinned d3dx8.lib jdmarker.obj replay
 0x0046C723,660,0x0046C9B6,sub_46C723,,,unclassified,0.00,unknown,,false,,,,
 0x0046C9B7,586,0x0046CC00,sub_46C9B7,,,unclassified,0.00,unknown,,false,,,,
-0x0046CC01,223,0x0046CCDF,sub_46CC01,,,unclassified,0.00,unknown,,false,,,,
-0x0046CCE0,156,0x0046CD7B,sub_46CCE0,,,unclassified,0.00,unknown,,false,,,,
-0x0046CD7C,215,0x0046CE52,sub_46CD7C,,,unclassified,0.00,unknown,,false,,,,
-0x0046CE53,152,0x0046CEEA,sub_46CE53,,,unclassified,0.00,unknown,,false,,,,
-0x0046CEEB,500,0x0046D0DE,sub_46CEEB,,,unclassified,0.00,unknown,,false,,,,
+0x0046CC01,223,0x0046CCDF,sub_46CC01,D3DX::get_dri,third_party,library,100.00,unknown,,false,docs/LIBRARY_RECOVERY.md,python3 scripts/build.py --unit vc7-d3dx8-jdmarker --compare --json exact 223/223,root,SHA-pinned d3dx8.lib jdmarker.obj replay
+0x0046CCE0,156,0x0046CD7B,sub_46CCE0,D3DX::skip_variable,third_party,library,100.00,unknown,,false,docs/LIBRARY_RECOVERY.md,python3 scripts/build.py --unit vc7-d3dx8-jdmarker --compare --json exact 156/156,root,SHA-pinned d3dx8.lib jdmarker.obj replay
+0x0046CD7C,215,0x0046CE52,sub_46CD7C,D3DX::next_marker,third_party,library,100.00,unknown,,false,docs/LIBRARY_RECOVERY.md,python3 scripts/build.py --unit vc7-d3dx8-jdmarker --compare --json exact 215/215,root,SHA-pinned d3dx8.lib jdmarker.obj replay
+0x0046CE53,152,0x0046CEEA,sub_46CE53,D3DX::first_marker,third_party,library,100.00,unknown,,false,docs/LIBRARY_RECOVERY.md,python3 scripts/build.py --unit vc7-d3dx8-jdmarker --compare --json exact 152/152,root,SHA-pinned d3dx8.lib jdmarker.obj replay
+0x0046CEEB,500,0x0046D0DE,sub_46CEEB,D3DX::read_markers,third_party,library,100.00,unknown,,false,docs/LIBRARY_RECOVERY.md,python3 scripts/build.py --unit vc7-d3dx8-jdmarker --compare --json exact 500/500,root,SHA-pinned d3dx8.lib jdmarker.obj replay
 0x0046D0DF,126,0x0046D15C,sub_46D0DF,,,unclassified,0.00,unknown,,false,,,,
 0x0046D15D,239,0x0046D24B,sub_46D15D,,,unclassified,0.00,unknown,,false,,,,
 0x0046D24C,42,0x0046D275,sub_46D24C,,,unclassified,0.00,unknown,,false,,,,
@@ -1104,9 +1104,9 @@ address,size,span_end,current_name,proposed_name,module,status,match_percent,cal
 0x004799F5,281,0x00479B0D,sub_4799F5,,,unclassified,0.00,unknown,,false,,,,
 0x00479B0E,16,0x00479B1D,sub_479B0E,,,unclassified,0.00,unknown,,false,,,,
 0x00479B1E,11,0x00479B28,sub_479B1E,,,unclassified,0.00,unknown,,false,,,,
-0x00479B29,789,0x00479E3D,sub_479B29,,,unclassified,0.00,unknown,,false,,,,
-0x00479E3E,446,0x00479FFB,sub_479E3E,,,unclassified,0.00,unknown,,false,,,,
-0x00479FFC,61,0x0047A038,sub_479FFC,,,unclassified,0.00,unknown,,false,,,,
+0x00479B29,789,0x00479E3D,sub_479B29,D3DX::jpeg_idct_4x4,third_party,library,100.00,unknown,,false,docs/LIBRARY_RECOVERY.md,python3 scripts/build.py --unit vc7-d3dx8-jidctred --compare --json exact 789/789,root,SHA-pinned d3dx8.lib jidctred.obj replay
+0x00479E3E,446,0x00479FFB,sub_479E3E,D3DX::jpeg_idct_2x2,third_party,library,100.00,unknown,,false,docs/LIBRARY_RECOVERY.md,python3 scripts/build.py --unit vc7-d3dx8-jidctred --compare --json exact 446/446,root,SHA-pinned d3dx8.lib jidctred.obj replay
+0x00479FFC,61,0x0047A038,sub_479FFC,D3DX::jpeg_idct_1x1,third_party,library,100.00,unknown,,false,docs/LIBRARY_RECOVERY.md,python3 scripts/build.py --unit vc7-d3dx8-jidctred --compare --json exact 61/61,root,SHA-pinned d3dx8.lib jidctred.obj replay
 0x0047A039,76,0x0047A084,sub_47A039,,,unclassified,0.00,unknown,,false,,,,
 0x0047A085,76,0x0047A0D0,sub_47A085,,,unclassified,0.00,unknown,,false,,,,
 0x0047A0D1,993,0x0047A4B1,sub_47A0D1,,,unclassified,0.00,unknown,,false,,,,

@@ -12,6 +12,7 @@ struct AnmManager
 
     void ReleaseAnm(int fileIndex);
     void ResetBulletAnimation(Bullet *bullet, int spriteIndex);
+    void SetAndExecuteScript(AnmVm *vm, void *script);
 };
 
 struct Chain
@@ -36,59 +37,64 @@ extern void *g_EffectsColor;
 extern u8 g_EffectsColorTable[];
 
 extern int __cdecl LoadAnm(int fileIndex, const char *path, int spriteIndexOffset);
-extern void __cdecl SetAndExecuteScript(AnmVm *vm, void *script);
 
-int __fastcall BulletManager::AddedCallback(BulletManager *inputManager)
+int __fastcall BulletManager::AddedCallback(BulletManager *manager)
 {
-    BulletManager *manager;
     int scriptForLargeBullet;
-    int shouldLoadAnm;
-    int anmManagerForDonut;
+    AnmVm *anmVmForDonut;
+    AnmManager *anmManagerForDonut;
     int scriptForDonut;
-    int anmManagerForSlow;
+    AnmVm *anmVmForSlow;
+    AnmManager *anmManagerForSlow;
     int scriptForSlow;
-    int anmManagerForNormal;
+    AnmVm *anmVmForNormal;
+    AnmManager *anmManagerForNormal;
     int scriptForNormal;
-    int anmManagerForFast;
+    AnmVm *anmVmForFast;
+    AnmManager *anmManagerForFast;
     int scriptForFast;
-    int anmManagerForBullet;
+    AnmVm *anmVmForBullet;
+    AnmManager *anmManagerForBullet;
     int scriptForBullet;
     u32 i;
 
-    manager = inputManager;
-    shouldLoadAnm = g_SupervisorState != 3 && g_SupervisorState != 11 && g_SupervisorState != 12;
-    if (shouldLoadAnm && LoadAnm(11, "data/etama.anm", 512))
+    if ((int)(g_SupervisorState != 3 && g_SupervisorState != 11 && g_SupervisorState != 12))
     {
-        return -1;
+        if (LoadAnm(11, "data/etama.anm", 512))
+        {
+            return -1;
+        }
     }
 
     for (i = 0; i < 11; i++)
     {
         scriptForBullet = g_BulletTemplateScriptIds[5 * i];
-        anmManagerForBullet = (int)g_AnmManager;
-        manager->templates[i].bullet.scriptIndex = (u16)scriptForBullet;
-        SetAndExecuteScript(&manager->templates[i].bullet,
-                            *(void **)(anmManagerForBullet + 4 * scriptForBullet + 0x28EF0));
+        anmVmForBullet = &manager->templates[i].bullet;
+        anmManagerForBullet = g_AnmManager;
+        anmVmForBullet->scriptIndex = (u16)scriptForBullet;
+        anmManagerForBullet->SetAndExecuteScript(anmVmForBullet,
+                                                  anmManagerForBullet->scripts[scriptForBullet]);
         scriptForFast = g_BulletTemplateScriptIds[5 * i + 1];
-        anmManagerForFast = (int)g_AnmManager;
-        manager->templates[i].spawnFast.scriptIndex = (u16)scriptForFast;
-        SetAndExecuteScript(&manager->templates[i].spawnFast,
-                            *(void **)(anmManagerForFast + 4 * scriptForFast + 0x28EF0));
+        anmVmForFast = &manager->templates[i].spawnFast;
+        anmManagerForFast = g_AnmManager;
+        anmVmForFast->scriptIndex = (u16)scriptForFast;
+        anmManagerForFast->SetAndExecuteScript(anmVmForFast, anmManagerForFast->scripts[scriptForFast]);
         scriptForNormal = g_BulletTemplateScriptIds[5 * i + 2];
-        anmManagerForNormal = (int)g_AnmManager;
-        manager->templates[i].spawnNormal.scriptIndex = (u16)scriptForNormal;
-        SetAndExecuteScript(&manager->templates[i].spawnNormal,
-                            *(void **)(anmManagerForNormal + 4 * scriptForNormal + 0x28EF0));
+        anmVmForNormal = &manager->templates[i].spawnNormal;
+        anmManagerForNormal = g_AnmManager;
+        anmVmForNormal->scriptIndex = (u16)scriptForNormal;
+        anmManagerForNormal->SetAndExecuteScript(anmVmForNormal,
+                                                  anmManagerForNormal->scripts[scriptForNormal]);
         scriptForSlow = g_BulletTemplateScriptIds[5 * i + 3];
-        anmManagerForSlow = (int)g_AnmManager;
-        manager->templates[i].spawnSlow.scriptIndex = (u16)scriptForSlow;
-        SetAndExecuteScript(&manager->templates[i].spawnSlow,
-                            *(void **)(anmManagerForSlow + 4 * scriptForSlow + 0x28EF0));
+        anmVmForSlow = &manager->templates[i].spawnSlow;
+        anmManagerForSlow = g_AnmManager;
+        anmVmForSlow->scriptIndex = (u16)scriptForSlow;
+        anmManagerForSlow->SetAndExecuteScript(anmVmForSlow, anmManagerForSlow->scripts[scriptForSlow]);
         scriptForDonut = g_BulletTemplateScriptIds[5 * i + 4];
-        anmManagerForDonut = (int)g_AnmManager;
-        manager->templates[i].spawnDonut.scriptIndex = (u16)scriptForDonut;
-        SetAndExecuteScript(&manager->templates[i].spawnDonut,
-                            *(void **)(anmManagerForDonut + 4 * scriptForDonut + 0x28EF0));
+        anmVmForDonut = &manager->templates[i].spawnDonut;
+        anmManagerForDonut = g_AnmManager;
+        anmVmForDonut->scriptIndex = (u16)scriptForDonut;
+        anmManagerForDonut->SetAndExecuteScript(anmVmForDonut, anmManagerForDonut->scripts[scriptForDonut]);
 
         manager->templates[i].bullet.flags |= 0x1000;
         manager->templates[i].spawnFast.flags |= 0x1000;
