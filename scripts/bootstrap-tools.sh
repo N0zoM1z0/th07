@@ -9,7 +9,7 @@ vc7_root="$tools_root/vc7"
 wine_prefix="${TH07_WINEPREFIX:-$(dirname "$repo_root")/.th07-wine-vc7}"
 th08_commit=7ad379297baf4ff07f117747ea4edf8c7ed739d4
 
-for command in git msiextract wine winepath python3; do
+for command in git msiextract wine winepath python3 flock; do
   if ! command -v "$command" >/dev/null 2>&1; then
     echo "missing required command: $command" >&2
     echo "on Ubuntu install Wine (including i386 support), msitools, and Git" >&2

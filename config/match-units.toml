@@ -141,7 +141,7 @@ symbol_base = "?SetFadeOut@MidiOutput@th07@@QAE?AW4ZunResult@2@I@Z"
 kind = "probe"
 source = "src/zwave.cpp"
 object = "build/match-units/zwave.obj"
-profile = "vc7-debug-od-no-gs"
+profile = "vc7-debug-od-no-gs-g6"
 notes = "Focused VC7 unoptimized probe aligned with the adjacent-engine DirectSound translation units."
 
 [[units.zwave.functions]]
@@ -183,6 +183,10 @@ symbol_base = "??1CStreamingSound@th07@@UAE@XZ"
 rel32_targets = ["??1CSound@th07@@UAE@XZ=0x0045D2C0"]
 
 [[units.zwave.functions]]
+address = "0x0045C7D0"
+symbol_base = "?SetPrimaryBufferFormat@CSoundManager@th07@@QAEJKKK@Z"
+
+[[units.zwave.functions]]
 address = "0x0045CF50"
 symbol_base = "??0CSound@th07@@QAE@PAPAUIDirectSoundBuffer@@KKPAVCWaveFile@1@@Z"
 rel32_targets = [
@@ -208,6 +212,15 @@ rel32_targets = [
   "??1CWaveFile@th07@@QAE@XZ=0x0045E060",
 ]
 dir32_targets = ["??_7CSound@th07@@6B@=??_7CSound@th07@@6B@"]
+
+[[units.zwave.functions]]
+address = "0x0045D3C0"
+symbol_base = "?FillBufferWithSound@CSound@th07@@QAEJPAUIDirectSoundBuffer@@H@Z"
+rel32_targets = [
+  "?RestoreBuffer@CSound@th07@@QAEJPAUIDirectSoundBuffer@@PAH@Z=0x0045D5B0",
+  "?ResetFile@CWaveFile@th07@@QAEJ_N@Z=0x0045E210",
+  "?Read@CWaveFile@th07@@QAEJPAEKPAK@Z=0x0045E360",
+]
 
 [[units.zwave.functions]]
 address = "0x0045D860"

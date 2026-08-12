@@ -66,6 +66,7 @@ def load_manifest() -> dict[str, object]:
             "vc7-default",
             "vc7-debug-od",
             "vc7-debug-od-no-gs",
+            "vc7-debug-od-no-gs-g6",
         }:
             raise ValueError(f"unknown compiler profile in unit {name}")
         functions = unit.get("functions")

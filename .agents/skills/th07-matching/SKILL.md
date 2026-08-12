@@ -31,11 +31,19 @@ profile disables the feature by omitting `/GS` while keeping `/Od /Ob1 /Op
 /G5` identical. Promote the profile only when the no-cookie object reproduces
 target bytes and the unit's previously exact functions stay exact.
 
+If no-GS fixes the frame but 16-bit arithmetic still differs as
+`mov`+`and 0xffff` versus `movzx`, A/B `/G5` against `/G6` without changing
+source. The canonical `vc7-debug-od-no-gs-g6` profile exists for this case.
+Promote it only after all previously exact functions in the focused unit remain
+exact; TH07's DirectSound unit is the reference proof for this discriminator.
+
 ## Resource-aware iteration
 
 When host CPU is constrained, serialize VC7 builds and strict comparison
 batches; workers may continue packet analysis and source drafting in parallel.
-Use `nice -n 10` for coordinator integration builds. Never run an unbounded
+The canonical compiler wrapper enforces a cross-worker `flock` and runs Wine
+at niceness 10 by default; override only through the documented task-specific
+environment variables. Never run an unbounded
 `rg --follow --no-ignore` from a workspace containing a Wine prefix: Wine's
 `dosdevices/z:` symlink points to `/`. Keep `TH07_WINEPREFIX` outside the
 workspace, as the canonical scripts do.

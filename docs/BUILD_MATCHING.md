@@ -68,10 +68,10 @@ across five probes:
 | --- | ---: | ---: |
 | `text-helper` | 11 | 2,992 / 2,992 |
 | `midi` | 11 | 725 / 725 |
-| `zwave` | 17 | 2,567 / 2,567 |
+| `zwave` | 19 | 3,316 / 3,316 |
 | `controller` | 1 | 85 / 85 |
 | `screen-effect` | 4 | 528 / 528 |
-| **Total** | **44** | **6,897 / 6,897** |
+| **Total** | **46** | **7,646 / 7,646** |
 
 The strict comparison resolves member and CRT calls; validates GDI32, WINMM,
 and KERNEL32 IAT entries; checks global, string, and vtable target bytes; and

@@ -22,8 +22,8 @@ if [[ ! -f "$cl" ]]; then
   echo "missing VC7 toolchain; run scripts/bootstrap-tools.sh" >&2
   exit 1
 fi
-if ! command -v wine >/dev/null || ! command -v winepath >/dev/null; then
-  echo "Wine and winepath are required for the VC7 probe compiler" >&2
+if ! command -v wine >/dev/null || ! command -v winepath >/dev/null || ! command -v flock >/dev/null; then
+  echo "Wine, winepath, and flock are required for the VC7 probe compiler" >&2
   exit 1
 fi
 
@@ -48,6 +48,11 @@ case "$profile" in
     # spelling is not accepted by this compiler generation.
     profile_flags=(/Od /Ob1 /Op /G5)
     ;;
+  vc7-debug-od-no-gs-g6)
+    # Diagnostic sibling for target functions whose integer code selection
+    # follows the Pentium Pro/II/III scheduler while retaining no-GS /Od.
+    profile_flags=(/Od /Ob1 /Op /G6)
+    ;;
   *)
     echo "unknown VC7 compiler profile: $profile" >&2
     exit 2
@@ -66,8 +71,10 @@ src_win="$(winepath -w "$repo_root/src")"
 runner_win="$(winepath -w "$repo_root/scripts/vc7run.bat")"
 export DEVENV_PREFIX
 DEVENV_PREFIX="$(winepath -w "$vc7_root")"
+compile_lock="${TH07_COMPILE_LOCK:-$(dirname "$repo_root")/.th07-vc7-compile.lock}"
+compile_nice="${TH07_COMPILE_NICE:-10}"
 
-wine "$runner_win" cl.exe \
+flock --exclusive "$compile_lock" nice -n "$compile_nice" wine "$runner_win" cl.exe \
   /nologo \
   /c \
   /MT \

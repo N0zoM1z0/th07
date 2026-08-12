@@ -19,3 +19,5 @@ address,name,module,confidence,evidence
 0x0044A520,ScreenEffect_set_viewport,ui,observed,Exact-target viewport writes and strict VC7 COFF comparison
 0x0044ADF0,ScreenEffect_draw_full_fade,ui,observed,Exact-target fade rectangle and strict VC7 COFF comparison
 0x0044AF30,ScreenEffect_draw_arcade_fade,ui,observed,Exact-target arcade rectangle and strict VC7 COFF comparison
+0x0045C7D0,CSoundManager_set_primary_buffer_format,sound,observed,Exact-target DirectSound calls and strict VC7 no-GS G6 COFF comparison
+0x0045D3C0,CSound_fill_buffer_with_sound,sound,observed,Exact-target wave calls and strict VC7 no-GS G6 COFF comparison
