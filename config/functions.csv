@@ -407,10 +407,10 @@ address,size,span_end,current_name,proposed_name,module,status,match_percent,cal
 0x0043B5C0,396,0x0043B74B,sub_43B5C0,,,unclassified,0.00,unknown,,false,,,,
 0x0043B750,71,0x0043B796,sub_43B750,,,unclassified,0.00,unknown,,false,,,,
 0x0043B7A0,71,0x0043B7E6,sub_43B7A0,,,unclassified,0.00,unknown,,false,,,,
-0x0043B7F0,532,0x0043BA03,sub_43B7F0,,,unclassified,0.00,unknown,,false,,,,
+0x0043B7F0,532,0x0043BA03,sub_43B7F0,Player_initialize_full,player,matching,100.00,__thiscall,PlayerBombOverlay * Player_initialize_full(PlayerBombOverlay * this),true,src/PlayerBomb.cpp,python3 scripts/build.py --unit player-bomb --compare --json; exact 532/532 VC7 no-GS G6 bytes 2026-08-12,root,Target-observed full 0xB7E78 construction and bomb-tail initialization with source-plausible VC7 aggregate-construction locals
 0x0043BA10,143,0x0043BA9E,sub_43BA10,,,unclassified,0.00,unknown,,false,,,,
-0x0043BAA0,111,0x0043BB0E,sub_43BAA0,,,unclassified,0.00,unknown,,false,,,,
-0x0043BB10,191,0x0043BBCE,sub_43BB10,,,unclassified,0.00,unknown,,false,,,,
+0x0043BAA0,111,0x0043BB0E,sub_43BAA0,PlayerBombState_initialize,player,matching,100.00,__thiscall,PlayerBombState * PlayerBombState_initialize(PlayerBombState * this),true,src/PlayerBomb.cpp,python3 scripts/build.py --unit player-bomb --compare --json; exact 111/111 VC7 no-GS G6 bytes 2026-08-12,root,Target-observed timer reset and 128-entry bomb work pool construction loop
+0x0043BB10,191,0x0043BBCE,sub_43BB10,PlayerBombWorkItem_initialize,player,matching,100.00,__thiscall,PlayerBombWorkItem * PlayerBombWorkItem_initialize(PlayerBombWorkItem * this),true,src/PlayerBomb.cpp,python3 scripts/build.py --unit player-bomb --compare --json; exact 191/191 VC7 no-GS G6 bytes 2026-08-12,root,Target-observed 32-point and eight-VM construction loops plus timer reset
 0x0043BBD0,490,0x0043BDB9,sub_43BBD0,,,unclassified,0.00,unknown,,false,,,,
 0x0043BDC0,65,0x0043BE00,sub_43BDC0,,,unclassified,0.00,unknown,,false,,,,
 0x0043BE10,312,0x0043BF47,sub_43BE10,,,unclassified,0.00,unknown,,false,,,,
@@ -441,7 +441,7 @@ address,size,span_end,current_name,proposed_name,module,status,match_percent,cal
 0x0043EDC0,143,0x0043EE4E,sub_43EDC0,Player_die,player,matching,100.00,__thiscall,i32 Player_die(Player * this),false,src/Player.cpp,python3 scripts/build.py --unit player-core --compare --json; strict VC7 COFF exact 143/143 bytes with verified effect/state/sound relocations 2026-08-12,root,Resets last-hit vector through a target-shaped pointer local
 0x0043EE50,6790,0x004408D5,sub_43EE50,,,unclassified,0.00,unknown,,false,,,,
 0x00440940,169,0x004409E8,sub_440940,,,unclassified,0.00,unknown,,false,,,,
-0x004409F0,760,0x00440CE7,sub_4409F0,,,unclassified,0.00,unknown,,false,,,,
+0x004409F0,760,0x00440CE7,sub_4409F0,Player_update_bomb,player,compiles,0.00,__thiscall,void Player_update_bomb(Player * this; int focused),false,src/PlayerBomb.cpp,python3 scripts/build.py --unit player-bomb --compare --json; focused bomb activation core compiles to 113 bytes versus target 760 2026-08-12,root,Target-observed active state and focused-unfocused calculate dispatch scaffold
 0x00440CF0,1231,0x004411BE,sub_440CF0,,,unclassified,0.00,unknown,,false,,,,
 0x004411C0,353,0x00441320,sub_4411C0,,,unclassified,0.00,unknown,,false,,,,
 0x00441330,825,0x00441668,sub_441330,,,unclassified,0.00,unknown,,false,,,,
@@ -452,10 +452,10 @@ address,size,span_end,current_name,proposed_name,module,status,match_percent,cal
 0x00441BD0,680,0x00441E77,sub_441BD0,,,unclassified,0.00,unknown,,false,,,,
 0x00441E80,290,0x00441FA1,sub_441E80,,,unclassified,0.00,unknown,,false,,,,
 0x00441FB0,247,0x004420A6,sub_441FB0,,,unclassified,0.00,unknown,,false,,,,
-0x004420B0,665,0x00442348,sub_4420B0,,,unclassified,0.00,unknown,,false,,,,
+0x004420B0,665,0x00442348,sub_4420B0,Player_draw_bomb,player,compiles,0.00,__thiscall,void Player_draw_bomb(Player * this),false,src/PlayerBomb.cpp,python3 scripts/build.py --unit player-bomb --compare --json; bomb callback draw core compiles to 63 bytes versus target 665 2026-08-12,root,Target-observed focused-unfocused draw dispatch scaffold
 0x00442350,24,0x00442367,sub_442350,,,unclassified,0.00,unknown,,false,,,,
 0x00442370,104,0x004423D7,sub_442370,,,unclassified,0.00,unknown,,false,,,,
-0x004423E0,1273,0x004428D8,sub_4423E0,,,unclassified,0.00,unknown,,false,,,,
+0x004423E0,1273,0x004428D8,sub_4423E0,Player_register_bomb_callbacks,player,compiles,0.00,__thiscall,void Player_register_bomb_callbacks(Player * this; u8 shotType),false,src/PlayerBomb.cpp,python3 scripts/build.py --unit player-bomb --compare --json; target-observed callback table binding compiles to 111 bytes under VC7 no-GS G6 2026-08-12,root,Six four-entry callback rows observed at 0x49EC50; surrounding initialization remains
 0x004428E0,232,0x004429C7,sub_4428E0,,,unclassified,0.00,unknown,,false,,,,
 0x004429D0,312,0x00442B07,sub_4429D0,,,unclassified,0.00,unknown,,false,,,,
 0x00442B10,85,0x00442B64,sub_442B10,,,unclassified,0.00,unknown,,false,,,,

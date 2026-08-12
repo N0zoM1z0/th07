@@ -1,7 +1,12 @@
 address,owner,started_utc,branch,notes
-0x0043B7F0,terra-player-bomb-1,2026-08-12T12:37:26.994465Z,main,Player bomb pool construction registration and dispatch source-only lane
-0x0043BAA0,terra-player-bomb-1,2026-08-12T12:37:26.994465Z,main,Player bomb pool construction registration and dispatch source-only lane
-0x0043BB10,terra-player-bomb-1,2026-08-12T12:37:26.994465Z,main,Player bomb pool construction registration and dispatch source-only lane
+0x0040E5B0,terra-ecl-operands-1,2026-08-12T12:47:57.500060Z,main,ECL integer and float operand resolver source-only lane
+0x0040EC00,terra-ecl-operands-1,2026-08-12T12:47:57.500060Z,main,ECL integer and float operand resolver source-only lane
+0x0040EDF0,terra-ecl-operands-1,2026-08-12T12:47:57.500060Z,main,ECL integer and float operand resolver source-only lane
+0x0040F3C0,terra-ecl-operands-1,2026-08-12T12:47:57.500060Z,main,ECL integer and float operand resolver source-only lane
+0x0040FC90,root-spell-core,2026-08-12T12:48:24.548094Z,main,Spell start finish lifecycle and GUI bonus scaffold
+0x004101A0,root-spell-core,2026-08-12T12:48:24.548094Z,main,Spell start finish lifecycle and GUI bonus scaffold
+0x00425A50,terra-bullet-update-1,2026-08-12T12:47:57.404194Z,main,BulletManager main OnUpdate loop source-only lane
+0x00427D09,root-spell-core,2026-08-12T12:48:24.548094Z,main,Spell start finish lifecycle and GUI bonus scaffold
 0x004409F0,terra-player-bomb-1,2026-08-12T12:37:26.994465Z,main,Player bomb pool construction registration and dispatch source-only lane
 0x004420B0,terra-player-bomb-1,2026-08-12T12:37:26.994465Z,main,Player bomb pool construction registration and dispatch source-only lane
 0x004423E0,terra-player-bomb-1,2026-08-12T12:37:26.994465Z,main,Player bomb pool construction registration and dispatch source-only lane

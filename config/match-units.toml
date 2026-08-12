@@ -310,6 +310,49 @@ dir32_targets = [
   "__real@41800000=__real@41800000",
 ]
 
+[units.player-bomb]
+kind = "probe"
+source = "src/PlayerBomb.cpp"
+object = "build/match-units/PlayerBomb.obj"
+profile = "vc7-debug-od-no-gs-g6"
+notes = "Focused VC7 unoptimized no-GS G6 Player bomb-tail probe over the target-observed full 0xB7E78 layout."
+
+[[units.player-bomb.functions]]
+address = "0x0043B7F0"
+symbol_base = "?Initialize@PlayerBombOverlay@th07@@QAEPAU12@XZ"
+rel32_targets = [
+  "?InitializeAnmVm@th07@@YIXPAX@Z=0x004011B0",
+  "?InitializeSecondaryAnmVm@th07@@YIXPAX@Z=0x00401170",
+  "?InitializePlayerBullet@th07@@YIXPAX@Z=0x0043BA10",
+  "?Initialize@PlayerBombState@th07@@QAEPAU12@XZ=0x0043BAA0",
+]
+
+[[units.player-bomb.functions]]
+address = "0x0043BAA0"
+symbol_base = "?Initialize@PlayerBombState@th07@@QAEPAU12@XZ"
+rel32_targets = ["?Initialize@PlayerBombWorkItem@th07@@QAEPAU12@XZ=0x0043BB10"]
+
+[[units.player-bomb.functions]]
+address = "0x0043BB10"
+symbol_base = "?Initialize@PlayerBombWorkItem@th07@@QAEPAU12@XZ"
+rel32_targets = [
+  "?InitializeAnmVm@th07@@YIXPAX@Z=0x004011B0",
+  "_memset=0x0047DBF0",
+]
+
+[[units.player-bomb.functions]]
+address = "0x004409F0"
+symbol_base = "?BeginBomb@PlayerBombOverlay@th07@@QAEXH@Z"
+
+[[units.player-bomb.functions]]
+address = "0x004420B0"
+symbol_base = "?DrawBomb@PlayerBombOverlay@th07@@QAEXXZ"
+
+[[units.player-bomb.functions]]
+address = "0x004423E0"
+symbol_base = "?RegisterBombCallbacks@PlayerBombOverlay@th07@@QAEXE@Z"
+dir32_targets = ["?g_PlayerBombCallbacks@th07@@3PAY03P6IXPAUPlayerBombOverlay@1@@ZA=?g_PlayerBombCallbacks@th07@@3PAY03P6IXPAUPlayerBombOverlay@1@@ZA"]
+
 [units.bullet-manager]
 kind = "probe"
 source = "src/BulletManager.cpp"

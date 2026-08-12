@@ -46,3 +46,6 @@ address,name,module,confidence,evidence
 0x0040E530,EclManager_call_ecl_sub,ecl,observed,Exact-target ECL subroutine context switch plus strict VC7 no-GS G6 COFF comparison
 0x00426B00,BulletManager_draw_selected_bullet_animation,bullet,observed,Exact-target selected animation VM render helper plus strict VC7 no-GS G6 COFF comparison
 0x00426C40,BulletManager_on_draw,bullet,observed,Exact-target laser item and bullet draw loops plus strict VC7 no-GS G6 COFF comparison
+0x0043B7F0,Player_initialize_full,player,observed,Exact-target full Player aggregate construction plus strict VC7 no-GS G6 COFF comparison
+0x0043BAA0,PlayerBombState_initialize,player,observed,Exact-target bomb state and 128-entry work pool construction plus strict VC7 no-GS G6 COFF comparison
+0x0043BB10,PlayerBombWorkItem_initialize,player,observed,Exact-target point VM and timer initialization plus strict VC7 no-GS G6 COFF comparison

@@ -86,5 +86,7 @@ __real@42000000,0x00498A84,00000042,0x0,Exact target float 32.0 constant used by
 ?g_RenderOffsetY@th07@@3MA,0x0062F868,00000000,0x0,Direct target zero-initialized vertical bullet render offset,literal
 __real@3fc90fdb,0x00498A9C,db0fc93f,0x0,Exact target float pi over two used by bullet sprite rotation,literal
 __real@41200000,0x00498AB4,00002041,0x0,Exact target float 10.0 used by laser endcap scaling,literal
+?g_PlayerBombCallbacks@th07@@3PAY03P6IXPAUPlayerBombOverlay@1@@ZA,0x0049EC50,10874000,0x0;0x4;0x8;0xC,Target-observed six-by-four Player bomb callback table beginning with 0x408710,address
+?g_GuiUpdateState@th07@@3HA,0x00575AB4,00000000,0x0,Target-image zero-initialized GUI update-state storage written by spellcard display helpers,literal
 ??_C@_0BK@BJPCNFPG@error?5?3?5DIERR_INPUTLOST?$AN?6?$AA@,0x00497D80,6572726f72203a2044494552525f494e5055544c4f53540d0a00,0x0,Direct target DIERR_INPUTLOST diagnostic string,literal
 ??_C@_0BN@KAGFBIKB@error?5?3?5DIERR_INPUTLOST?5?$CFd?$AN?6?$AA@,0x00497D60,6572726f72203a2044494552525f494e5055544c4f53542025640d0a00,0x0,Direct target DIERR_INPUTLOST retry diagnostic string,literal
