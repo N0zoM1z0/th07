@@ -173,8 +173,8 @@ static __forceinline f32 TimerAsFramesFloat(BulletUpdateTimer *timer)
 
 #pragma var_order(collisionState, i, hitboxThickness, bulletSchedulerIndex, hitboxSize, bullet, fadeAlpha, laser,     \
                   hitboxCenter, spawnFastOffset, spawnNormalOffset, spawnSlowOffset, despawnOffset,                 \
-                  lifetimeTimer, bulletVelocity, bulletPosition, collisionTimerCurrent,                              \
-                  spawnFastScale, spawnFastProduct, spawnFastVelocity, spawnFastPosition,                            \
+                  lifetimeTimer, bulletVelocity, bulletPosition, spawnFastScale, spawnFastProduct, spawnFastVelocity, \
+                  collisionTimerCurrent, spawnFastPosition,                                                           \
                   spawnNormalScale, spawnNormalProduct, spawnNormalVelocity, spawnNormalPosition,                    \
                   spawnSlowScale, spawnSlowProduct, spawnSlowVelocity, spawnSlowPosition,                            \
                   despawnScale, despawnProduct, despawnVelocity, despawnPosition,                                    \
@@ -339,13 +339,14 @@ int __fastcall BulletManager::OnUpdate(BulletManager *manager)
                 }
             }
 
-            collisionTimerCurrent = bullet->collisionTimer.current;
-            if (!bullet->grazeState && collisionTimerCurrent >= 16)
+            if (!bullet->grazeState &&
+                (collisionTimerCurrent = bullet->collisionTimer.current) >= 16)
             {
                 collisionState = g_Player.CheckGraze(&bullet->position, &bullet->grazeSize);
                 if (collisionState == 1)
                 {
                     bullet->grazeState = 1;
+                    goto check_bullet_kill_box;
                 }
                 if (collisionState == 2 && !(bullet->collisionFlags & 0x1000))
                 {
@@ -353,8 +354,9 @@ int __fastcall BulletManager::OnUpdate(BulletManager *manager)
                     g_ItemManager.Spawn(&bullet->position, g_BulletPointItem, 1);
                 }
             }
-            if (bullet->grazeState || collisionTimerCurrent < 16)
+            else
             {
+            check_bullet_kill_box:
                 collisionState = g_Player.CalcKillBoxCollision(&bullet->position, &bullet->grazeSize);
                 if (collisionState && (collisionState != 2 || !(bullet->collisionFlags & 0x1000)))
                 {
@@ -365,6 +367,7 @@ int __fastcall BulletManager::OnUpdate(BulletManager *manager)
                     }
                 }
             }
+
             if (bullet->animation[0].scriptActive &&
                 g_BulletUpdateAnmManager->ExecuteScript(&bullet->animation[0]))
             {
@@ -480,9 +483,9 @@ int __fastcall BulletManager::OnUpdate(BulletManager *manager)
         hitboxCenter.x = (laser->endOffset - laser->startOffset) / 2.0f + laser->startOffset + laser->position.x;
         hitboxCenter.y = laser->position.y;
         laser->primaryAnimation.scaleX = laser->width / laser->primaryAnimation.sprite->width;
-        laser->primaryAnimation.scaleY =
-            (laser->endOffset - laser->startOffset) / laser->primaryAnimation.sprite->height;
-        normalizedAngle = AddNormalizeAngle(laser->angle + 1.5707964f, 0.0f);
+        hitboxThickness = laser->endOffset - laser->startOffset;
+        laser->primaryAnimation.scaleY = hitboxThickness / laser->primaryAnimation.sprite->height;
+        normalizedAngle = AddNormalizeAngle(1.5707964f + laser->angle, 0.0f);
         laser->primaryAnimation.rotationZ = normalizedAngle;
         laser->primaryAnimation.flags |= 4;
 

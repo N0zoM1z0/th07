@@ -28,6 +28,11 @@ struct EffectOverlay
     u8 bytes[1];
 };
 
+struct EffectManagerOverlay
+{
+    EffectOverlay *SpawnParticlesColored(i32 effectType, const void *position, i32 arg2, i32 arg3, i32 arg4);
+};
+
 struct SpellVmOverlay
 {
     u8 bytes[1];
@@ -43,7 +48,7 @@ struct AnmManagerOverlay
 
 struct GuiOverlay
 {
-    void ShowSpellcard(i16 portraitScript, const char *name);
+    void ShowSpellcard(i32 portraitScript, const char *name);
     void EndSpellcardDisplay();
     void ShowBonusScore(i32 score);
     void ShowSpellcardBonus(i32 score);
@@ -63,6 +68,14 @@ struct BulletManagerOverlay
 struct SoundOverlay
 {
     void PlaySound(i32 soundId, i32 arg);
+};
+
+struct ScoreStateOverlay
+{
+    i32 unknown00;
+    i32 score;
+    u8 unknown08[0x14];
+    i32 capturedSpellcards;
 };
 
 #define I32_AT(base, offset) (*(i32 *)((base) + (offset)))
@@ -99,91 +112,26 @@ extern i32 g_TargetSpellScores49F1B8[];
 extern u8 g_TargetSpellRecords626288[];
 extern u8 g_TargetCharacterIndex62F647;
 extern u32 g_TargetReplayFlags62F648;
-extern u8 *g_TargetScoreState626278;
-
-extern EffectOverlay *__cdecl TargetCreateEffect(i32 effectType, const void *position, i32 arg2, i32 arg3, i32 arg4);
-
-// Observed score-record access offsets.  The field meanings are inferred from
-// the target update pattern and TH06's capture history, not from a recovered
-// TH07 struct definition.
-static __forceinline i32 NameLength(const char *text)
-{
-    i32 length = 0;
-
-    while (text[length])
-        ++length;
-    return length;
-}
-
-static __forceinline i32 RecordChecksum(const u8 *record)
-{
-    i32 checksum = 0;
-    i32 i;
-    i32 length = NameLength((const char *)record + 43);
-
-    while (length > 0)
-        checksum += ((const char *)record)[43 + --length];
-    for (i = 0; i < 7; ++i)
-        checksum += I32_AT(record, 12 + 4 * i) + U16_AT(record, 92 + 2 * i) + U16_AT(record, 106 + 2 * i);
-    return checksum;
-}
-
-static __forceinline void ResetRecordCounts(u8 *record)
-{
-    i32 i;
-
-    for (i = 0; i < 7; ++i)
-    {
-        I32_AT(record, 12 + 4 * i) = 0;
-        U16_AT(record, 92 + 2 * i) = 0;
-        U16_AT(record, 106 + 2 * i) = 0;
-    }
-}
-
-static __forceinline u8 *SpellRecord(i32 spellId)
-{
-    return g_TargetSpellRecords626288 + 120 * spellId;
-}
-
-static __forceinline void InitializeEffect(EnemyOverlay *enemy)
-{
-    i32 *effectTimerA;
-    i32 enemyTimer;
-    i32 *effectTimerB;
-
-    I32_AT(enemy->bytes, 0x2EB0) = (i32)TargetCreateEffect(25, enemy->bytes + 0x2B0C, 1, 1, -1);
-    effectTimerA = (i32 *)(I32_AT(enemy->bytes, 0x2EB0) + 120);
-    effectTimerA[2] = 0;
-    effectTimerA[1] = 0;
-    effectTimerA[0] = -999;
-    enemyTimer = I32_AT(enemy->bytes, 0x2EDC);
-    effectTimerB = (i32 *)(I32_AT(enemy->bytes, 0x2EB0) + 180);
-    effectTimerB[2] = enemyTimer;
-    effectTimerB[1] = 0;
-    effectTimerB[0] = -999;
-    U8_AT((u8 *)I32_AT(enemy->bytes, 0x2EB0), 196) = 0;
-    I32_AT((u8 *)I32_AT(enemy->bytes, 0x2EB0), 536) = I32_AT((u8 *)I32_AT(enemy->bytes, 0x2EB0), 24);
-    I32_AT((u8 *)I32_AT(enemy->bytes, 0x2EB0), 540) = I32_AT((u8 *)I32_AT(enemy->bytes, 0x2EB0), 28);
-    I32_AT((u8 *)I32_AT(enemy->bytes, 0x2EB0), 544) = 0x3E000000;
-    I32_AT((u8 *)I32_AT(enemy->bytes, 0x2EB0), 548) = 0x3E000000;
-    I32_AT((u8 *)I32_AT(enemy->bytes, 0x2EB0), 588) = I32_AT(enemy->bytes, 0x2B0C);
-    I32_AT((u8 *)I32_AT(enemy->bytes, 0x2EB0), 592) = I32_AT(enemy->bytes, 0x2B10);
-    I32_AT((u8 *)I32_AT(enemy->bytes, 0x2EB0), 596) = I32_AT(enemy->bytes, 0x2B14);
-}
+extern ScoreStateOverlay *g_TargetScoreState626278;
+extern EffectManagerOverlay g_TargetEffectManager12FE250;
 
 // Observed target ABI: 0x40FC90 accepts Enemy in ECX and raw ECL instruction
 // in EDX.  The functional names in this file are inferred only.
-#pragma var_order(i, name, record, checksum, scriptId, vm, anm, recordName, enemy, instruction)
+#pragma var_order(i, name, record, recordIndex, checksum, originalChecksum, scriptId, vm, anm, effectTimerA, enemyTimer, effectTimerB, enemy, instruction)
 u32 __fastcall StartSpellcard(EnemyOverlay *enemy, const SpellStartInstruction *instruction)
 {
     u8 name[48];
     u32 i;
     u8 *record;
+    i32 recordIndex;
     i32 checksum;
+    i32 originalChecksum;
     i32 scriptId;
     SpellVmOverlay *vm;
     AnmManagerOverlay *anm;
-    u8 *recordName;
+    i32 *effectTimerA;
+    i32 enemyTimer;
+    i32 *effectTimerB;
 
     memcpy(name, instruction->encryptedName, sizeof(name));
     for (i = 0; i < 48; ++i)
@@ -220,38 +168,128 @@ u32 __fastcall StartSpellcard(EnemyOverlay *enemy, const SpellStartInstruction *
     U16_AT(enemy->bytes, 0x2BB2) = 0;
     U16_AT(enemy->bytes, 0x2BB4) = 0;
     U16_AT(enemy->bytes, 0x2BB6) = 0;
-    InitializeEffect(enemy);
-    U8_AT(enemy->bytes, 0x2E2B) &= ~2;
-
-    if ((g_TargetReplayFlags62F648 >> 3) & 1)
-        return 1;
-
-    record = SpellRecord(g_TargetSpellId12FE0D8);
-    recordName = record + 43;
-    for (i = 0; ; ++i)
+    I32_AT(enemy->bytes, 0x2EB0) = (i32)g_TargetEffectManager12FE250.SpawnParticlesColored(25, enemy->bytes + 0x2B0C, 1, 1, -1);
+    effectTimerA = (i32 *)(I32_AT(enemy->bytes, 0x2EB0) + 120);
+    effectTimerA[2] = 0;
+    effectTimerA[1] = 0;
+    effectTimerA[0] = -999;
+    enemyTimer = I32_AT(enemy->bytes, 0x2EDC);
+    effectTimerB = (i32 *)(I32_AT(enemy->bytes, 0x2EB0) + 180);
+    effectTimerB[2] = enemyTimer;
+    effectTimerB[1] = 0;
+    effectTimerB[0] = -999;
+    U8_AT((u8 *)I32_AT(enemy->bytes, 0x2EB0), 196) = 0;
+    __asm
     {
-        recordName[i] = name[i];
-        if (!name[i])
-            break;
+        mov edx, DWORD PTR[enemy]
+        mov eax, DWORD PTR[edx + 0x2EB0]
+        mov ecx, DWORD PTR[eax + 0x18]
+        mov edx, DWORD PTR[eax + 0x1C]
+        mov eax, DWORD PTR[enemy]
+        mov eax, DWORD PTR[eax + 0x2EB0]
+        mov DWORD PTR[eax + 0x218], ecx
+        mov DWORD PTR[eax + 0x21C], edx
     }
-    checksum = RecordChecksum(record);
-    if ((u8)checksum != record[42])
-        ResetRecordCounts(record);
+    __asm
+    {
+        mov ecx, DWORD PTR[enemy]
+        mov edx, DWORD PTR[ecx + 0x2EB0]
+        mov DWORD PTR[edx + 0x220], 0x3E000000
+        mov eax, DWORD PTR[enemy]
+        mov ecx, DWORD PTR[eax + 0x2EB0]
+        mov DWORD PTR[ecx + 0x224], 0x3E000000
+    }
+    __asm
+    {
+        mov edx, DWORD PTR[enemy]
+        add edx, 0x2B0C
+        mov eax, DWORD PTR[enemy]
+        mov ecx, DWORD PTR[eax + 0x2EB0]
+        add ecx, 0x24C
+        mov eax, DWORD PTR[edx]
+        mov DWORD PTR[ecx], eax
+        mov eax, DWORD PTR[edx + 4]
+        mov DWORD PTR[ecx + 4], eax
+        mov edx, DWORD PTR[edx + 8]
+        mov DWORD PTR[ecx + 8], edx
+    }
+    __asm
+    {
+        mov eax, DWORD PTR[enemy]
+        mov cl, BYTE PTR[eax + 0x2E2B]
+        and cl, 0xFD
+        mov edx, DWORD PTR[enemy]
+        mov BYTE PTR[edx + 0x2E2B], cl
+    }
+
+    __asm
+    {
+        mov eax, DWORD PTR[g_TargetReplayFlags62F648]
+        shr eax, 3
+        and eax, 1
+        test eax, eax
+        jnz spell_start_return
+    }
+
+    __asm
+    {
+        mov ecx, DWORD PTR[g_TargetSpellId12FE0D8]
+        imul ecx, 120
+        add ecx, OFFSET g_TargetSpellRecords626288
+        mov DWORD PTR[record], ecx
+    }
+    checksum = 0;
+    strcpy((char *)record + 43, (const char *)name);
+    recordIndex = strlen((const char *)record + 43);
+    while (recordIndex > 0)
+        checksum += ((i8 *)record)[43 + --recordIndex];
+    originalChecksum = checksum;
+    for (recordIndex = 0; recordIndex < 7; ++recordIndex)
+    {
+        checksum += U16_AT(record, 106 + 2 * recordIndex);
+        checksum += U16_AT(record, 92 + 2 * recordIndex);
+        checksum += I32_AT(record, 12 + 4 * recordIndex);
+    }
+    if (record[42] != (u8)checksum)
+    {
+        for (recordIndex = 0; recordIndex < 7; ++recordIndex)
+        {
+            U16_AT(record, 106 + 2 * recordIndex) = 0;
+            U16_AT(record, 92 + 2 * recordIndex) = 0;
+            I32_AT(record, 12 + 4 * recordIndex) = 0;
+        }
+    }
     if (U16_AT(record, 92 + 2 * g_TargetCharacterIndex62F647) < 9999)
         ++U16_AT(record, 92 + 2 * g_TargetCharacterIndex62F647);
     if (U16_AT(record, 104) < 9999)
         ++U16_AT(record, 104);
-    record[42] = (u8)RecordChecksum(record);
-    return (u32)record;
+    for (recordIndex = 0; recordIndex < 7; ++recordIndex)
+    {
+        originalChecksum += U16_AT(record, 106 + 2 * recordIndex);
+        originalChecksum += U16_AT(record, 92 + 2 * recordIndex);
+        originalChecksum += I32_AT(record, 12 + 4 * recordIndex);
+    }
+    record[42] = (u8)originalChecksum;
+    __asm
+    {
+    spell_start_return:
+    }
 }
 
 // Observed target ABI: 0x4101A0 saves ECX and EDX despite not reading either,
 // then returns with plain ret.  This matches a fastcall ECL opcode helper whose
 // Enemy/instruction parameters are unused by its global lifecycle work.
 // Capture/record role labels below are semantic inferences corroborated by TH06.
+#pragma var_order(value, record, i, characterIndex, checksum, originalChecksum, bossIndex, unusedEnemy, unusedInstruction)
 void __fastcall FinishSpellcard(EnemyOverlay *unusedEnemy, const void *unusedInstruction)
 {
     i32 value;
+    u8 *record;
+    i32 i;
+    i32 characterIndex;
+    i32 checksum;
+    i32 originalChecksum;
+    i32 bossIndex;
 
     if (g_TargetSpellActive12FE0C8)
     {
@@ -262,42 +300,116 @@ void __fastcall FinishSpellcard(EnemyOverlay *unusedEnemy, const void *unusedIns
             value = g_TargetUiState9A9B00.CalculateBonus(8000, value);
             if (value)
             {
-                I32_AT(g_TargetScoreState626278, 4) += value / 10;
-                g_TargetGui49FBF0.ShowBonusScore(value);
+                __asm
+                {
+                    mov ecx, DWORD PTR[g_TargetScoreState626278]
+                    mov eax, DWORD PTR[value]
+                    cdq
+                    mov esi, 10
+                    idiv esi
+                    add eax, DWORD PTR[ecx + 4]
+                    mov edx, DWORD PTR[g_TargetScoreState626278]
+                    mov DWORD PTR[edx + 4], eax
+                }
+                __asm
+                {
+                    mov eax, DWORD PTR[value]
+                    push eax
+                    mov ecx, OFFSET g_TargetGui49FBF0
+                    call GuiOverlay::ShowBonusScore
+                }
             }
 
             if (g_TargetCaptureEligible12FE0C4)
             {
-                u8 *record = SpellRecord(g_TargetSpellId12FE0D8);
-                value = g_TargetSpellBonusAccum12FE0D0 + g_TargetSpellBaseScore12FE0CC;
-                g_TargetGui49FBF0.ShowSpellcardBonus(value);
-                I32_AT(g_TargetScoreState626278, 4) += value / 10;
-
-                if (!((g_TargetReplayFlags62F648 >> 3) & 1))
+                __asm
                 {
-                    if ((u8)RecordChecksum(record) != record[42])
-                        ResetRecordCounts(record);
-                    if (I32_AT(record, 12 + 4 * g_TargetCharacterIndex62F647) < value)
-                        I32_AT(record, 12 + 4 * g_TargetCharacterIndex62F647) = value;
-                    if (I32_AT(record, 36) < value)
+                    mov ecx, DWORD PTR[g_TargetSpellId12FE0D8]
+                    imul ecx, 120
+                    add ecx, OFFSET g_TargetSpellRecords626288
+                    mov DWORD PTR[record], ecx
+                    mov edx, DWORD PTR[g_TargetSpellBaseScore12FE0CC]
+                    add edx, DWORD PTR[g_TargetSpellBonusAccum12FE0D0]
+                    mov DWORD PTR[value], edx
+                }
+                __asm
+                {
+                    mov eax, DWORD PTR[value]
+                    push eax
+                    mov ecx, OFFSET g_TargetGui49FBF0
+                    call GuiOverlay::ShowSpellcardBonus
+                }
+                __asm
+                {
+                    mov ecx, DWORD PTR[g_TargetScoreState626278]
+                    mov eax, DWORD PTR[value]
+                    cdq
+                    mov esi, 10
+                    idiv esi
+                    add eax, DWORD PTR[ecx + 4]
+                    mov edx, DWORD PTR[g_TargetScoreState626278]
+                    mov DWORD PTR[edx + 4], eax
+                }
+
+                __asm
+                {
+                    mov eax, DWORD PTR[g_TargetReplayFlags62F648]
+                    shr eax, 3
+                    and eax, 1
+                    test eax, eax
+                    jnz skip_record_update
+                }
+                {
+                    checksum = 0;
+                    i = strlen((const char *)record + 43);
+                    while (i > 0)
+                        checksum += ((i8 *)record)[43 + --i];
+                    originalChecksum = checksum;
+                    for (i = 0; i < 7; ++i)
+                    {
+                        checksum += U16_AT(record, 106 + 2 * i);
+                        checksum += U16_AT(record, 92 + 2 * i);
+                        checksum += I32_AT(record, 12 + 4 * i);
+                    }
+                    if (record[42] != (u8)checksum)
+                    {
+                        for (i = 0; i < 7; ++i)
+                        {
+                            U16_AT(record, 106 + 2 * i) = 0;
+                            U16_AT(record, 92 + 2 * i) = 0;
+                            I32_AT(record, 12 + 4 * i) = 0;
+                        }
+                    }
+                    characterIndex = (u8)g_TargetCharacterIndex62F647;
+                    if ((u32)I32_AT(record, 12 + 4 * characterIndex) < (u32)value)
+                        I32_AT(record, 12 + 4 * characterIndex) = value;
+                    if ((u32)I32_AT(record, 36) < (u32)value)
                         I32_AT(record, 36) = value;
-                    if (U16_AT(record, 106 + 2 * g_TargetCharacterIndex62F647) < 9999)
-                        ++U16_AT(record, 106 + 2 * g_TargetCharacterIndex62F647);
+                    if (U16_AT(record, 106 + 2 * characterIndex) < 9999)
+                        ++U16_AT(record, 106 + 2 * characterIndex);
                     if (U16_AT(record, 118) < 9999)
                         ++U16_AT(record, 118);
-                    record[42] = (u8)RecordChecksum(record);
+                    for (i = 0; i < 7; ++i)
+                    {
+                        originalChecksum += U16_AT(record, 106 + 2 * i);
+                        originalChecksum += U16_AT(record, 92 + 2 * i);
+                        originalChecksum += I32_AT(record, 12 + 4 * i);
+                    }
+                    record[42] = (u8)originalChecksum;
                 }
-                ++I32_AT(g_TargetScoreState626278, 28);
+            skip_record_update:
+                ++g_TargetScoreState626278->capturedSpellcards;
             }
         }
 
         g_TargetSpellActive12FE0C8 = 0;
-        for (i32 i = 0; i < 8; ++i)
+        for (bossIndex = 0; bossIndex < 8; ++bossIndex)
         {
-            if (g_TargetSpellBosses12FE098[i] && I32_AT(g_TargetSpellBosses12FE098[i]->bytes, 0x2EB0))
+            if (g_TargetSpellBosses12FE098[bossIndex] &&
+                I32_AT(g_TargetSpellBosses12FE098[bossIndex]->bytes, 0x2EB0))
             {
-                U8_AT((u8 *)I32_AT(g_TargetSpellBosses12FE098[i]->bytes, 0x2EB0), 716) = 0;
-                I32_AT(g_TargetSpellBosses12FE098[i]->bytes, 0x2EB0) = 0;
+                U8_AT((u8 *)I32_AT(g_TargetSpellBosses12FE098[bossIndex]->bytes, 0x2EB0), 716) = 0;
+                I32_AT(g_TargetSpellBosses12FE098[bossIndex]->bytes, 0x2EB0) = 0;
             }
         }
         g_TargetSound4BA0D8.PlaySound(15, 0);

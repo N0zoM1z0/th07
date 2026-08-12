@@ -483,3 +483,6 @@ replay_literal_t7rp,0x00496AA8,5437525000,0x0,Target literal T7RP copied into th
 replay_literal_version_100b,0x00497228,30313030,0x0,Target literal 0100 copied into the replay header version string,literal
 replay_literal_version_100b_tail,0x00497228,6200,0x4,Target literal b terminator copied from the tail of the replay header version string,literal
 replay_literal_no_name,0x00496AA0,4e4f204e414d4500,0x0,Target literal NO NAME copied into the replay header exactly as in adjacent TH06 source,literal
+ecl_real_10018,0x00498D5C,00881c46,0x0,Target-observed float 10018.0 constant used by the ECL dispatcher,literal
+ecl_real_10019,0x00498D58,008c1c46,0x0,Target-observed float 10019.0 constant used by the ECL dispatcher,literal
+ecl_real_10020,0x00498D54,00901c46,0x0,Target-observed float 10020.0 constant used by the ECL dispatcher,literal

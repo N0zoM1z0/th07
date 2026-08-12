@@ -610,7 +610,7 @@ ZunResult EclManager::RunEcl(Enemy *enemy)
             FloatAt(rawEnemy, 0x2B1C) = ReadFloat(rawEnemy, instruction, 1);
             FloatAt(rawEnemy, 0x2B20) = ReadFloat(rawEnemy, instruction, 2);
             FloatAt(rawEnemy, 0x2B54) = FloatAt(rawEnemy, 0x2B1C);
-            ByteAt(rawEnemy, ENEMY_MOVEMENT_FLAGS) &= 0xFC;
+            rawEnemy->bytes[ENEMY_MOVEMENT_FLAGS] &= 0xFC;
             break;
 
         case 48:
@@ -640,7 +640,7 @@ ZunResult EclManager::RunEcl(Enemy *enemy)
             FloatAt(rawEnemy, 4 * 2776) = ReadFloat(rawEnemy, instruction, 5);
             FloatAt(rawEnemy, 4 * 2779) = ReadFloat(rawEnemy, instruction, 6);
             FloatAt(rawEnemy, 4 * 2780) = ReadFloat(rawEnemy, instruction, 7);
-            ByteAt(rawEnemy, ENEMY_MOVEMENT_FLAGS) |= 3;
+            rawEnemy->bytes[ENEMY_MOVEMENT_FLAGS] |= 3;
             break;
 
         case 57:
@@ -662,7 +662,7 @@ ZunResult EclManager::RunEcl(Enemy *enemy)
             break;
 
         case 60:
-            ByteAt(rawEnemy, ENEMY_MOVEMENT_FLAGS) |= 3;
+            rawEnemy->bytes[ENEMY_MOVEMENT_FLAGS] |= 3;
             IntAt(rawEnemy, 4 * 2793) = ReadInt(rawEnemy, instruction, 0);
             IntAt(rawEnemy, 4 * 2792) = IntAt(rawEnemy, 4 * 2793);
             IntAt(rawEnemy, 4 * 2791) = 0;
@@ -682,11 +682,11 @@ ZunResult EclManager::RunEcl(Enemy *enemy)
             FloatAt(rawEnemy, 4 * 2960) = ReadFloat(rawEnemy, instruction, 1);
             FloatAt(rawEnemy, 4 * 2961) = ReadFloat(rawEnemy, instruction, 2);
             FloatAt(rawEnemy, 4 * 2962) = ReadFloat(rawEnemy, instruction, 3);
-            ByteAt(rawEnemy, 11817) |= 0x80;
+            rawEnemy->bytes[11817] |= 0x80;
             break;
 
         case 63:
-            ByteAt(rawEnemy, 11817) &= ~0x80;
+            rawEnemy->bytes[11817] &= ~0x80;
             break;
 
         case 64:
@@ -733,10 +733,10 @@ ZunResult EclManager::RunEcl(Enemy *enemy)
             break;
 
         case 75:
-            ByteAt(rawEnemy, ENEMY_MOVEMENT_FLAGS) |= 0x20;
+            rawEnemy->bytes[ENEMY_MOVEMENT_FLAGS] |= 0x20;
             break;
         case 76:
-            ByteAt(rawEnemy, ENEMY_MOVEMENT_FLAGS) &= ~0x20;
+            rawEnemy->bytes[ENEMY_MOVEMENT_FLAGS] &= ~0x20;
             break;
         case 77:
             FloatAt(rawEnemy, 4 * 2806) = FloatAt(rawEnemy, 4 * 2755) + FloatAt(rawEnemy, 4 * 2781);
@@ -805,7 +805,10 @@ ZunResult EclManager::RunEcl(Enemy *enemy)
         case 88:
         {
             laser = LaserSlot(rawEnemy, ReadInt(rawEnemy, instruction, 0));
-            IntAt(rawEnemy, 4 * 572) = !laser || !*(i32 *)((u8 *)laser + 1236);
+            if (!laser || !*(i32 *)((u8 *)laser + 1236))
+                IntAt(rawEnemy, 4 * 572) = 1;
+            else
+                IntAt(rawEnemy, 4 * 572) = 0;
             break;
         }
         case 89:
@@ -1018,10 +1021,12 @@ ZunResult EclManager::RunEcl(Enemy *enemy)
                 position.y = EclOperands::g_TargetRng49FE20.RandomF32() * 128.0f - 64.0f +
                              FloatAt(rawEnemy, 4 * 2756);
                 position.z = FloatAt(rawEnemy, 4 * 2757);
-                const i32 itemType = (i32)(unsigned __int64)*(f32 *)(g_TargetScoreState626278 + 124) >= 128
-                                         ? 1
-                                         : (item ? 0 : 2);
-                g_ItemManager.Spawn(&position, itemType, 0);
+                if ((i32)(unsigned __int64)*(f32 *)(g_TargetScoreState626278 + 124) >= 128)
+                    g_ItemManager.Spawn(&position, 1, 0);
+                else if (item)
+                    g_ItemManager.Spawn(&position, 0, 0);
+                else
+                    g_ItemManager.Spawn(&position, 2, 0);
             }
             break;
         }
@@ -1373,14 +1378,16 @@ ZunResult EclManager::RunEcl(Enemy *enemy)
                 fraction = fraction * fraction * fraction * fraction;
                 break;
             case 4:
-                fraction = 1.0f - (1.0f - fraction) * (1.0f - fraction);
+                fraction = 1.0f - fraction;
+                fraction = 1.0f - fraction * fraction;
                 break;
             case 5:
-                fraction = 1.0f - (1.0f - fraction) * (1.0f - fraction) * (1.0f - fraction);
+                fraction = 1.0f - fraction;
+                fraction = 1.0f - fraction * fraction * fraction;
                 break;
             case 6:
-                fraction = 1.0f - (1.0f - fraction) * (1.0f - fraction) * (1.0f - fraction) *
-                                      (1.0f - fraction);
+                fraction = 1.0f - fraction;
+                fraction = 1.0f - fraction * fraction * fraction * fraction;
                 break;
             }
 
@@ -1422,9 +1429,9 @@ ZunResult EclManager::RunEcl(Enemy *enemy)
     {
         if ((ByteAt(rawEnemy, 0x2E2A) & 0x40) == 0)
         {
-            g_TargetSpellBaseScore12FE0CC = (i32)((f32)g_TargetSpellScores49F1B8[g_TargetSpellId12FE0D8] -
-                                                   (f32)g_TargetSpellPerTick12FE0D4 *
-                                                       ((f32)g_TargetSpellTimerSubframe12FE0E8 +
+            g_TargetSpellBaseScore12FE0CC = (i32)(g_TargetSpellScores49F1B8[g_TargetSpellId12FE0D8] -
+                                                   g_TargetSpellPerTick12FE0D4 *
+                                                       (g_TargetSpellTimerSubframe12FE0E8 +
                                                         *(f32 *)&g_TargetSpellTimerCurrent12FE0E4) /
                                                        60.0f);
             g_TargetSpellBaseScore12FE0CC -= g_TargetSpellBaseScore12FE0CC % 10;
@@ -1439,7 +1446,7 @@ ZunResult EclManager::RunEcl(Enemy *enemy)
     {
         if (g_TargetControl4D44F8 && g_TargetSpellActive12FE0C8 && g_TargetSpellId12FE0D8 >= 118)
         {
-            ByteAt(rawEnemy, 0x2E2B) |= 4;
+            rawEnemy->bytes[0x2E2B] |= 4;
             *(u16 *)(rawEnemy->bytes + 0x2E2C) = 1;
         }
         else if (*(u16 *)(rawEnemy->bytes + 0x2E2C) > 0)
@@ -1448,7 +1455,7 @@ ZunResult EclManager::RunEcl(Enemy *enemy)
         }
         else
         {
-            ByteAt(rawEnemy, 0x2E2B) &= 0xFB;
+            rawEnemy->bytes[0x2E2B] &= 0xFB;
         }
     }
 

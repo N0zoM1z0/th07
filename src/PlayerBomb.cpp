@@ -550,9 +550,12 @@ i32 PlayerBombOverlay::RegisterBombCallbacks()
         }
     }
 
-    g_TargetBossUi134DB5A[0] = 2;
-    g_TargetBossUi134DB5A[294] = 2;
-    g_TargetBossUi134DB5A[588] = 2;
+    index = 0;
+    g_TargetBossUi134DB5A[index * 294] = 2;
+    index = 1;
+    g_TargetBossUi134DB5A[index * 294] = 2;
+    index = 2;
+    g_TargetBossUi134DB5A[index * 294] = 2;
 
     if (g_BombScore >= g_PlayerBombResources->scoreFloor + 50000) {
         g_BombScore = g_PlayerBombResources->scoreFloor + 50000;
@@ -640,7 +643,7 @@ void PlayerBombOverlay::FinishDeathBomb()
     reinterpret_cast<PlayerBombInputState *>(g_PlayerCollisionFlags)->flags |= 8;
 }
 
-#pragma var_order(playerTimer, effectTimer9C, effectTimer60, effectTimerB, effectTimer78, angle, index, effect)
+#pragma var_order(effect, index, angle, effectTimer78, effectTimerB, effectTimer60, effectTimer9C, playerTimer, this, radialCos, radialSin)
 void PlayerBombOverlay::StartDeathBomb(i32)
 {
     PlayerBombTimer *playerTimer;

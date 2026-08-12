@@ -607,6 +607,9 @@ dir32_targets = [
   "__real@42800000=player_bomb_real_64",
   "__real@bc23d70a=ecl_real_neg_0_01",
   "__real@3c23d70a=ecl_real_pos_0_01",
+  "__real@461c8800=ecl_real_10018",
+  "__real@461c8c00=ecl_real_10019",
+  "__real@461c9000=ecl_real_10020",
   "??_C@_0BM@BHMNFKCI@error?5?3?5sub?5anim?5overflow?$AN?6?$AA@=ecl_string_sub_anim_overflow",
 ]
 
@@ -922,10 +925,10 @@ notes = "Target-observed spell start/capture/finish lifecycle skeleton with priv
 address = "0x0040FC90"
 symbol_base = "?StartSpellcard@SpellLifecycle@th07@@YIIPAUEnemyOverlay@12@PBUSpellStartInstruction@12@@Z"
 rel32_targets = [
-  "?ShowSpellcard@GuiOverlay@SpellLifecycle@th07@@QAEXFPBD@Z=0x00428887",
+  "?ShowSpellcard@GuiOverlay@SpellLifecycle@th07@@QAEXHPBD@Z=0x00428887",
   "?SetSpellUiState@UiStateOverlay@SpellLifecycle@th07@@QAEXH@Z=0x00424740",
   "?SetAndExecuteScript@AnmManagerOverlay@SpellLifecycle@th07@@QAEXPAX0@Z=0x0044EA20",
-  "?TargetCreateEffect@SpellLifecycle@th07@@YAPAUEffectOverlay@12@HPBXHHH@Z=0x0041C610",
+  "?SpawnParticlesColored@EffectManagerOverlay@SpellLifecycle@th07@@QAEPAUEffectOverlay@23@HPBXHHH@Z=0x0041C610",
 ]
 dir32_targets = [
   "?g_TargetGui49FBF0@SpellLifecycle@th07@@3UGuiOverlay@12@A=spell_gui_49FBF0",
@@ -936,6 +939,7 @@ dir32_targets = [
   "?g_TargetStartVmBase1348024@SpellLifecycle@th07@@3HA=spell_vm_base_1348024",
   "?g_TargetStartVms1348028@SpellLifecycle@th07@@3PAEA=spell_vms_1348028",
   "?g_TargetAnmManager4B9E44@SpellLifecycle@th07@@3PAEA=spell_anm_4B9E44",
+  "?g_TargetEffectManager12FE250@SpellLifecycle@th07@@3UEffectManagerOverlay@12@A=?g_EffectManager@th07@@3UEffectManager@1@A",
   "?g_TargetSpellActive12FE0C8@SpellLifecycle@th07@@3HA=spell_active_12FE0C8",
   "?g_TargetCaptureEligible12FE0C4@SpellLifecycle@th07@@3HA=spell_capture_12FE0C4",
   "?g_TargetSpellBaseScore12FE0CC@SpellLifecycle@th07@@3HA=spell_base_score_12FE0CC",
@@ -976,7 +980,7 @@ dir32_targets = [
   "?g_TargetSpellRecords626288@SpellLifecycle@th07@@3PAEA=spell_records_626288",
   "?g_TargetCharacterIndex62F647@SpellLifecycle@th07@@3EA=spell_character_62F647",
   "?g_TargetReplayFlags62F648@SpellLifecycle@th07@@3IA=spell_replay_62F648",
-  "?g_TargetScoreState626278@SpellLifecycle@th07@@3PAEA=spell_score_state_626278",
+  "?g_TargetScoreState626278@SpellLifecycle@th07@@3PAUScoreStateOverlay@12@A=spell_score_state_626278",
   "?g_TargetStartVisual1348014@SpellLifecycle@th07@@3HA=spell_visual_1348014",
 ]
 
@@ -1536,7 +1540,7 @@ dir32_targets = [
 kind = "probe"
 source = "src/PlayerAim.cpp"
 object = "build/match-units/PlayerAim.obj"
-profile = "vc7-debug-od-no-gs-g6"
+profile = "vc7-debug-od-no-gs-g6-no-op"
 notes = "Focused target-observed Player secondary-bullet draw callback and point-angle helper."
 
 [[units.player-aim.functions]]

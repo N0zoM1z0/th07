@@ -181,7 +181,27 @@ i32 AnmManager::ExecuteScript(AnmVm *vm)
     AnmRawInstr *instruction;
     AnmRawInstr *fallback;
     i32 i;
+    i32 opcode;
+    i32 instructionTime;
+    i32 spriteIndex;
+    i32 currentScriptTime;
+    float valueX;
+    float valueY;
+    float valueZ;
+    i32 *repeatCounter;
+    i32 repeatValue;
+    float positionX;
+    float positionY;
+    float positionZ;
     float interp;
+    AnmTimer *currentTimer;
+    AnmTimer *endTimer;
+    AnmTimer *resetTimer;
+    AnmTimer *startTimer;
+    AnmTimer *scriptTimer;
+    AnmTimer *angleTimer;
+    i32 endTime;
+    i32 jumpTime;
 
     if (VM_P(vm, 0x1e0) == 0)
         return 1;
@@ -189,9 +209,14 @@ i32 AnmManager::ExecuteScript(AnmVm *vm)
     if (VM_S(vm, 0x1c6) != 0)
         goto handle_interrupt;
 
-    while ((instruction = VM_P(vm, 0x1e0))->time <= VM_I(vm, 0x38))
+    while (1)
     {
-        switch (instruction->opcode)
+        instruction = VM_P(vm, 0x1e0);
+        instructionTime = instruction->time;
+        if (instructionTime > VM_I(vm, 0x38))
+            break;
+        opcode = instruction->opcode;
+        switch (opcode)
         {
         case -1:
         case 1:
@@ -201,8 +226,10 @@ i32 AnmManager::ExecuteScript(AnmVm *vm)
             return 1;
         case 3:
             VM_I(vm, 0x1c0) |= 1;
-            AnmManagerSetSprite(this, vm, GetInt(vm, instruction, 0));
-            VM_I(vm, 0x23c) = VM_I(vm, 0x38);
+            spriteIndex = GetInt(vm, instruction, 0);
+            AnmManagerSetSprite(this, vm, spriteIndex);
+            currentScriptTime = VM_I(vm, 0x38);
+            VM_I(vm, 0x23c) = currentScriptTime;
             break;
         case 4:
             VM_I(vm, 0x38) = instruction->args.i[1];
@@ -211,20 +238,34 @@ i32 AnmManager::ExecuteScript(AnmVm *vm)
             VM_P(vm, 0x1e0) = reinterpret_cast<AnmRawInstr *>(reinterpret_cast<u8 *>(VM_P(vm, 0x1dc)) + instruction->args.i[0]);
             continue;
         case 5:
-            --*GetIntPtr(vm, instruction, 0);
-            if (GetInt(vm, instruction, 0) > 0) {
-                VM_I(vm, 0x38) = instruction->args.i[2];
-                VM_I(vm, 0x34) = 0;
-                VM_I(vm, 0x30) = -999;
+            repeatCounter = GetIntPtr(vm, instruction, 0);
+            --*repeatCounter;
+            repeatValue = GetInt(vm, instruction, 0);
+            if (repeatValue > 0) {
+                jumpTime = instruction->args.i[2];
+                scriptTimer = TimerAt(vm, 0x30);
+                scriptTimer->current = jumpTime;
+                scriptTimer->subFrame = 0.0f;
+                scriptTimer->previous = -999;
                 VM_P(vm, 0x1e0) = reinterpret_cast<AnmRawInstr *>(reinterpret_cast<u8 *>(VM_P(vm, 0x1dc)) + instruction->args.i[1]);
                 continue;
             }
             break;
         case 6:
             if (VM_I(vm, 0x1c0) & 0x80) {
-                VM_F(vm, 0x230) = GetFloat(vm, instruction, 0); VM_F(vm, 0x234) = GetFloat(vm, instruction, 1); VM_F(vm, 0x238) = GetFloat(vm, instruction, 2);
+                valueX = GetFloat(vm, instruction, 0);
+                valueY = GetFloat(vm, instruction, 1);
+                valueZ = GetFloat(vm, instruction, 2);
+                VM_F(vm, 0x230) = valueX;
+                VM_F(vm, 0x234) = valueY;
+                VM_F(vm, 0x238) = valueZ;
             } else {
-                VM_F(vm, 0x1c8) = GetFloat(vm, instruction, 0); VM_F(vm, 0x1cc) = GetFloat(vm, instruction, 1); VM_F(vm, 0x1d0) = GetFloat(vm, instruction, 2);
+                valueX = GetFloat(vm, instruction, 0);
+                valueY = GetFloat(vm, instruction, 1);
+                valueZ = GetFloat(vm, instruction, 2);
+                VM_F(vm, 0x1c8) = valueX;
+                VM_F(vm, 0x1cc) = valueY;
+                VM_F(vm, 0x1d0) = valueZ;
             }
             break;
         case 7:
@@ -235,7 +276,13 @@ i32 AnmManager::ExecuteScript(AnmVm *vm)
         case 10: VM_I(vm, 0x1c0) ^= 0x100; VM_F(vm, 0x18) = -VM_F(vm, 0x18); VM_I(vm, 0x1c0) |= 8; break;
         case 11: VM_I(vm, 0x1c0) ^= 0x200; VM_F(vm, 0x1c) = -VM_F(vm, 0x1c); VM_I(vm, 0x1c0) |= 8; break;
         case 12:
-            VM_F(vm, 0) = GetFloat(vm, instruction, 0); VM_F(vm, 4) = GetFloat(vm, instruction, 1); VM_F(vm, 8) = GetFloat(vm, instruction, 2); VM_I(vm, 0x1c0) |= 4;
+            positionX = GetFloat(vm, instruction, 0);
+            positionY = GetFloat(vm, instruction, 1);
+            positionZ = GetFloat(vm, instruction, 2);
+            VM_F(vm, 0) = positionX;
+            VM_F(vm, 4) = positionY;
+            VM_F(vm, 8) = positionZ;
+            VM_I(vm, 0x1c0) |= 4;
             break;
         case 13:
             VM_F(vm, 12) = GetFloat(vm, instruction, 0); VM_F(vm, 16) = GetFloat(vm, instruction, 1); VM_F(vm, 20) = GetFloat(vm, instruction, 2); VM_I(vm, 0x1c0) |= 4;
@@ -280,7 +327,10 @@ i32 AnmManager::ExecuteScript(AnmVm *vm)
         case 27: VM_F(vm, 44) += GetFloat(vm, instruction, 0); WrapUnit(&VM_F(vm, 44)); break;
         case 28: VM_I(vm, 0x1c0) = (VM_I(vm, 0x1c0) & ~1) | (instruction->args.i[0] & 1); break;
         case 29:
-            VM_I(vm, 0x78) = -999; VM_I(vm, 0x7c) = 0; VM_I(vm, 0x80) = 0;
+            angleTimer = TimerAt(vm, 0x78);
+            angleTimer->current = 0;
+            angleTimer->subFrame = 0.0f;
+            angleTimer->previous = -999;
             VM_I(vm, 0xb4) = -999; VM_I(vm, 0xb8) = 0; VM_I(vm, 0xbc) = GetInt(vm, instruction, 2); vm->raw[0xc4] = 0;
             VM_F(vm, 0x218) = VM_F(vm, 0x18); VM_F(vm, 0x21c) = VM_F(vm, 0x1c); VM_F(vm, 0x220) = GetFloat(vm, instruction, 0); VM_F(vm, 0x224) = GetFloat(vm, instruction, 1); break;
         case 30: VM_I(vm, 0x1c0) = (VM_I(vm, 0x1c0) & ~0x1000) | ((instruction->args.i[0] & 1) << 12); break;
@@ -374,13 +424,18 @@ advance:
 
     for (i = 0; i < 5; ++i) {
         if (TimerAt(vm, 0x84 + i * 12)->current > 0) {
-            AdvanceTimer(TimerAt(vm, 0x48 + i * 12));
-            if (TimerAt(vm, 0x48 + i * 12)->current >= TimerAt(vm, 0x84 + i * 12)->current) {
+            currentTimer = TimerAt(vm, 0x48 + i * 12);
+            AdvanceTimer(currentTimer);
+            endTime = TimerAt(vm, 0x84 + i * 12)->current;
+            if (currentTimer->current >= endTime) {
                 interp = 1.0f;
-                ResetTimer(TimerAt(vm, 0x84 + i * 12), 0);
+                resetTimer = TimerAt(vm, 0x84 + i * 12);
+                ResetTimer(resetTimer, 0);
             } else {
-                interp = ((float)TimerAt(vm, 0x48 + i * 12)->current + TimerAt(vm, 0x48 + i * 12)->subFrame) /
-                         ((float)TimerAt(vm, 0x84 + i * 12)->current + TimerAt(vm, 0x84 + i * 12)->subFrame);
+                startTimer = TimerAt(vm, 0x48 + i * 12);
+                endTimer = TimerAt(vm, 0x84 + i * 12);
+                interp = ((float)startTimer->current + startTimer->subFrame) /
+                         ((float)endTimer->current + endTimer->subFrame);
             }
             switch (vm->raw[0xc0 + i]) { case 1: interp *= interp; break; case 2: interp = interp * interp * interp; break; case 3: interp *= interp; interp *= interp; break; case 4: interp = 1.0f - interp; interp *= interp; interp = 1.0f - interp; break; case 5: interp = 1.0f - interp; interp = interp * interp * interp; interp = 1.0f - interp; break; case 6: interp = 1.0f - interp; interp *= interp; interp *= interp; interp = 1.0f - interp; break; }
             switch (i) {

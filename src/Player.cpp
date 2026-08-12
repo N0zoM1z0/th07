@@ -59,10 +59,15 @@ extern void __fastcall RotatePlayerVector(D3DXVECTOR3 *out, D3DXVECTOR3 *relativ
 #define PLAYER_BOXES_OVERLAP(leftA, topA, rightA, bottomA, leftB, topB, rightB, bottomB)                              \
     ((leftA) <= (rightB) && (rightA) >= (leftB) && (topA) <= (bottomB) && (bottomA) >= (topB))
 
-#pragma var_order(bullet, i, enemyBottomRightY, enemyBottomRightX, bulletBottomRight, enemyTopLeftY, enemyTopLeftX, damage, bulletTopLeft)
+#pragma var_order(bullet, i, enemyBottomRightY, enemyBottomRightX, bulletBottomRight, enemyTopLeftY, enemyTopLeftX, damage, bulletTopLeft, lastEnemyHit)
 i32 Player::CalcDamageToEnemy(D3DXVECTOR3 *enemyPosition, D3DXVECTOR3 *enemySize, i32 *bombHit)
 {
-    D3DXVECTOR3 bulletTopLeft;
+    struct BulletBoundsPoint
+    {
+        f32 x;
+        f32 y;
+    };
+    BulletBoundsPoint bulletTopLeft;
     i32 damage;
     i32 *lastEnemyHit;
     i32 damageToAdd;
@@ -72,17 +77,14 @@ i32 Player::CalcDamageToEnemy(D3DXVECTOR3 *enemyPosition, D3DXVECTOR3 *enemySize
     f32 enemyTopLeftY;
     i32 i;
     PlayerBullet *bullet;
-    D3DXVECTOR3 bulletBottomRight;
+    BulletBoundsPoint bulletBottomRight;
     f32 enemyBottomRightX;
     f32 enemyBottomRightY;
 
     damage = 0;
     lastEnemyHit = &lastEnemyHitX;
-    if (lastEnemyHit[2] == lastEnemyHit[0])
+    if (lastEnemyHitZ != lastEnemyHitX)
     {
-        return 0;
-    }
-
     enemyTopLeftX = enemyPosition->x - enemySize->x * 0.5f;
     enemyTopLeftY = enemyPosition->y - enemySize->y * 0.5f;
     enemyBottomRightX = enemyPosition->x + enemySize->x * 0.5f;
@@ -177,12 +179,16 @@ i32 Player::CalcDamageToEnemy(D3DXVECTOR3 *enemyPosition, D3DXVECTOR3 *enemySize
         damageRegions[i].accumulatedDamage += damageRegions[i].damage;
         if ((++collisionParticleCounter & 3) == 0)
         {
-            g_EffectManager.SpawnParticles(i >= 96 ? 5 : 3, enemyPosition, 1, -1);
+            if (i >= 96)
+                g_EffectManager.SpawnParticles(5, enemyPosition, 1, -1);
+            else
+                g_EffectManager.SpawnParticles(3, enemyPosition, 1, -1);
         }
         if (bombIsActive && bombHit)
         {
             *bombHit = 1;
         }
+    }
     }
     return damage;
 }
@@ -431,18 +437,31 @@ void Player::ScoreGraze(D3DXVECTOR3 *center)
         mov edx, DWORD PTR[g_GameManager]
         mov DWORD PTR[edx + 4], eax
     }
-    if (grazeSoundVariant == 1)
+    __asm
     {
-        if (grazeVariant)
-        {
-            g_GrazeState.AdvanceGrazeDisplay(30);
-            g_GrazeState.FinishGrazeDisplay(30);
-        }
-        else
-        {
-            g_GrazeState.AdvanceGrazeDisplay(80);
-            g_GrazeState.FinishGrazeDisplay(80);
-        }
+        mov eax, DWORD PTR[this]
+        movsx ecx, BYTE PTR[eax + 0x240D]
+        cmp ecx, 1
+        jne graze_display_done
+        mov edx, DWORD PTR[this]
+        movsx eax, BYTE PTR[edx + 0x240B]
+        test eax, eax
+        je graze_display_80
+        push 30
+        mov ecx, OFFSET g_GrazeState
+        call GrazeState::AdvanceGrazeDisplay
+        push 30
+        mov ecx, OFFSET g_GrazeState
+        call GrazeState::FinishGrazeDisplay
+        jmp graze_display_done
+    graze_display_80:
+        push 80
+        mov ecx, OFFSET g_GrazeState
+        call GrazeState::AdvanceGrazeDisplay
+        push 80
+        mov ecx, OFFSET g_GrazeState
+        call GrazeState::FinishGrazeDisplay
+    graze_display_done:
     }
 }
 
