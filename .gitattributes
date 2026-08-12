@@ -11,3 +11,6 @@
 *.md text eol=lf
 *.svg text eol=lf
 
+# Preserve vendored upstream release bytes exactly. Project-owned adapters live
+# outside this tree and continue to use the normal VC7 CRLF source policy.
+third_party/** -text
