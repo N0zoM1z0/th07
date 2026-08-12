@@ -290,18 +290,53 @@ advance:
     if (VM_F(vm, 20) != 0.0f) { VM_F(vm, 8) = AddNormalizeAngle(VM_F(vm, 8), g_FrameMultiplier * VM_F(vm, 20)); VM_I(vm, 0x1c0) |= 4; }
 
     for (i = 0; i < 5; ++i) {
-        AnmTimer *currentTimer = TimerAt(vm, 0x48 + i * 12);
-        AnmTimer *endTimer = TimerAt(vm, 0x84 + i * 12);
-        if (endTimer->current > 0) {
-            AdvanceTimer(currentTimer);
-            if (currentTimer->current >= endTimer->current) { interp = 1.0f; ResetTimer(endTimer, 0); }
-            else interp = ((float)currentTimer->current + currentTimer->subFrame) / ((float)endTimer->current + endTimer->subFrame);
+        if (TimerAt(vm, 0x84 + i * 12)->current > 0) {
+            AdvanceTimer(TimerAt(vm, 0x48 + i * 12));
+            if (TimerAt(vm, 0x48 + i * 12)->current >= TimerAt(vm, 0x84 + i * 12)->current) {
+                interp = 1.0f;
+                ResetTimer(TimerAt(vm, 0x84 + i * 12), 0);
+            } else {
+                interp = ((float)TimerAt(vm, 0x48 + i * 12)->current + TimerAt(vm, 0x48 + i * 12)->subFrame) /
+                         ((float)TimerAt(vm, 0x84 + i * 12)->current + TimerAt(vm, 0x84 + i * 12)->subFrame);
+            }
             switch (vm->raw[0xc0 + i]) { case 1: interp *= interp; break; case 2: interp = interp * interp * interp; break; case 3: interp *= interp; interp *= interp; break; case 4: interp = 1.0f - interp; interp *= interp; interp = 1.0f - interp; break; case 5: interp = 1.0f - interp; interp = interp * interp * interp; interp = 1.0f - interp; break; case 6: interp = 1.0f - interp; interp *= interp; interp *= interp; interp = 1.0f - interp; break; }
-            if (i == 0) { const i32 out = (VM_I(vm, 0x1c0) & 0x80) ? 0x230 : 0x1c8; VM_F(vm,out)=interp*(VM_F(vm,0x1f4)-VM_F(vm,0x1e8))+VM_F(vm,0x1e8); VM_F(vm,out+4)=interp*(VM_F(vm,0x1f8)-VM_F(vm,0x1ec))+VM_F(vm,0x1ec); VM_F(vm,out+8)=interp*(VM_F(vm,0x1fc)-VM_F(vm,0x1f0))+VM_F(vm,0x1f0); }
-            else if (i == 1) { vm->raw[0x1ba] = (u8)(interp * (vm->raw[0x22e] - vm->raw[0x22a]) + vm->raw[0x22a]); vm->raw[0x1b9] = (u8)(interp * (vm->raw[0x22d] - vm->raw[0x229]) + vm->raw[0x229]); vm->raw[0x1b8] = (u8)(interp * (vm->raw[0x22c] - vm->raw[0x228]) + vm->raw[0x228]); }
-            else if (i == 2) vm->raw[0x1bb] = (u8)(interp * (vm->raw[0x22f] - vm->raw[0x22b]) + vm->raw[0x22b]);
-            else if (i == 3) { VM_F(vm,0)=AddNormalizeAngle((VM_F(vm,0x20c)-VM_F(vm,0x200))*interp,VM_F(vm,0x200)); VM_F(vm,4)=AddNormalizeAngle((VM_F(vm,0x210)-VM_F(vm,0x204))*interp,VM_F(vm,0x204)); VM_F(vm,8)=AddNormalizeAngle((VM_F(vm,0x214)-VM_F(vm,0x208))*interp,VM_F(vm,0x208)); VM_I(vm,0x1c0)|=4; }
-            else if (i == 4) { VM_F(vm,0x18)=interp*(VM_F(vm,0x220)-VM_F(vm,0x218))+VM_F(vm,0x218); VM_F(vm,0x1c)=interp*(VM_F(vm,0x224)-VM_F(vm,0x21c))+VM_F(vm,0x21c); VM_I(vm,0x1c0)|=8; }
+            switch (i) {
+            case 0: {
+                if (VM_I(vm, 0x1c0) & 0x80) {
+                    VM_F(vm, 0x230) = interp * (VM_F(vm, 0x1f4) - VM_F(vm, 0x1e8)) + VM_F(vm, 0x1e8);
+                    VM_F(vm, 0x234) = interp * (VM_F(vm, 0x1f8) - VM_F(vm, 0x1ec)) + VM_F(vm, 0x1ec);
+                    VM_F(vm, 0x238) = interp * (VM_F(vm, 0x1fc) - VM_F(vm, 0x1f0)) + VM_F(vm, 0x1f0);
+                } else {
+                    VM_F(vm, 0x1c8) = interp * (VM_F(vm, 0x1f4) - VM_F(vm, 0x1e8)) + VM_F(vm, 0x1e8);
+                    VM_F(vm, 0x1cc) = interp * (VM_F(vm, 0x1f8) - VM_F(vm, 0x1ec)) + VM_F(vm, 0x1ec);
+                    VM_F(vm, 0x1d0) = interp * (VM_F(vm, 0x1fc) - VM_F(vm, 0x1f0)) + VM_F(vm, 0x1f0);
+                }
+                break;
+            }
+            case 1:
+            {
+                vm->raw[0x1ba] = (u8)(interp * (vm->raw[0x22e] - vm->raw[0x22a]) + vm->raw[0x22a]);
+                vm->raw[0x1b9] = (u8)(interp * (vm->raw[0x22d] - vm->raw[0x229]) + vm->raw[0x229]);
+                vm->raw[0x1b8] = (u8)(interp * (vm->raw[0x22c] - vm->raw[0x228]) + vm->raw[0x228]);
+                break;
+            }
+            case 2:
+            {
+                vm->raw[0x1bb] = (u8)(interp * (vm->raw[0x22f] - vm->raw[0x22b]) + vm->raw[0x22b]);
+                break;
+            }
+            case 3:
+                VM_F(vm, 0) = AddNormalizeAngle((VM_F(vm, 0x20c) - VM_F(vm, 0x200)) * interp, VM_F(vm, 0x200));
+                VM_F(vm, 4) = AddNormalizeAngle((VM_F(vm, 0x210) - VM_F(vm, 0x204)) * interp, VM_F(vm, 0x204));
+                VM_F(vm, 8) = AddNormalizeAngle((VM_F(vm, 0x214) - VM_F(vm, 0x208)) * interp, VM_F(vm, 0x208));
+                VM_I(vm, 0x1c0) |= 4;
+                break;
+            case 4:
+                VM_F(vm, 0x18) = interp * (VM_F(vm, 0x220) - VM_F(vm, 0x218)) + VM_F(vm, 0x218);
+                VM_F(vm, 0x1c) = interp * (VM_F(vm, 0x224) - VM_F(vm, 0x21c)) + VM_F(vm, 0x21c);
+                VM_I(vm, 0x1c0) |= 8;
+                break;
+            }
         }
     }
     if (VM_F(vm, 36) != 0.0f) { VM_F(vm, 28) += g_FrameMultiplier * VM_F(vm, 36); VM_I(vm, 0x1c0) |= 8; }

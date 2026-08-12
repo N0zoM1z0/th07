@@ -34,6 +34,11 @@ struct TargetRngOverlay
     u32 RandomU32();
     f32 RandomF32();
 
+    u32 RandomU32InRange(u32 range)
+    {
+        return range != 0 ? RandomU32() % range : 0;
+    }
+
     f32 RandomF32InRange(f32 range)
     {
         return RandomF32() * range;
@@ -72,14 +77,14 @@ extern TargetRngOverlay g_TargetRng49FE20;
 // Observed: target 0x0040E5B0 receives Enemy in ECX and the raw i32 operand
 // in EDX, then resolves the ECL variable IDs 0x2710..0x2759.  Meanings of
 // individual offsets remain intentionally unnamed pending their owner lanes.
-#pragma var_order(lengthVector, range, delta, position, remainder)
+#pragma var_order(lengthVector, range, delta, position, valueType)
 i32 __fastcall ResolveInt(EnemyOverlay *enemy, i32 operand)
 {
     Vector3 lengthVector;
     u32 range;
     Vector3 delta;
     Vector3 *position;
-    u32 remainder;
+    i32 valueType;
 
     switch (operand)
     {
@@ -148,11 +153,7 @@ i32 __fastcall ResolveInt(EnemyOverlay *enemy, i32 operand)
     case 0x2747: return g_TargetRng49FE20.RandomU32();
     case 0x2748:
         range = *IntField(enemy, 0x744);
-        if (range)
-            remainder = g_TargetRng49FE20.RandomU32() % range;
-        else
-            remainder = 0;
-        return *IntField(enemy, 0x748) + remainder;
+        return g_TargetRng49FE20.RandomU32InRange(range) + *IntField(enemy, 0x748);
     case 0x274D: return *IntField(enemy, 0x2E4C);
     case 0x274E: return *(u8 *)(enemy->bytes + 0x2E17);
     case 0x2756: return *IntField(enemy, 0x2E10);
@@ -206,13 +207,14 @@ i32 *__fastcall ResolveIntLValue(EnemyOverlay *enemy, i32 *operand, u16 flags, i
 
 // Observed: target 0x0040EDF0 receives Enemy in ECX and a raw float operand
 // on the stack.  TH06 supports the interpretation as the float rvalue path.
-#pragma var_order(lengthVector, randomRange, delta, position)
+#pragma var_order(lengthVector, randomRange, delta, position, valueType)
 f32 EnemyOverlay::ResolveFloat(f32 operand)
 {
     Vector3 lengthVector;
     f32 randomRange;
     Vector3 delta;
     Vector3 *position;
+    i32 valueType;
 
     switch ((i32)operand)
     {

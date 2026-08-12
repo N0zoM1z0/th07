@@ -102,3 +102,10 @@ requires = ["frame_mismatch", "adjacent_named_locals", "equal_object_tail"]
 confidence = "observed_pattern"
 recommendation = "When adjacent ZUN source keeps same-typed results in separate mutually exclusive branch locals, preserve both declarations and the inner retry lifetime before var_order shaping; coalescing them can shrink the frame while leaving the tail deceptively equal."
 evidence = "Controller::GetControllerInput 0x004303F0 required distinct WinMM/DirectInput shot results and scoped retry count before target var_order yielded strict exact 1488 bytes"
+
+[[rules]]
+id = "zun-legacy-type-local-hole"
+requires = ["frame_mismatch", "unaccessed_dword_slot", "adjacent_type_flow_local"]
+confidence = "observed_pattern"
+recommendation = "If an otherwise target-complete ZUN resolver is one dword short, the target frame has an unaccessed named slot, and adjacent source carries a real value/type-flow local for the same resolver family, retain a semantically named legacy local in var_order; never generalize this to anonymous filler or arrays."
+evidence = "ECL ResolveInt 0x0040E5B0 and ResolveFloat 0x0040EDF0 both moved from frame 0x30/first mismatch +5 to strict exact 1310 and 1178 bytes when the adjacent-supported legacy valueType local occupied the target's sole unaccessed dword slot"

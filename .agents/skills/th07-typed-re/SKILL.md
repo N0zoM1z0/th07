@@ -37,6 +37,10 @@ the coordinator to create the canonical entry before matching iterations.
   locals, or side effects; do not add inert padding or fake behavior.
 - Diagnose frame mismatches by declaration order and lifetime before changing
   semantics. Diagnose tail mismatches by missing or redundant behavior first.
+- A target frame hole may represent a legacy ZUN source local, but retain one
+  only when exact stack evidence and adjacent source identify its semantic role.
+  Use a named scalar and the smallest `var_order` probe; anonymous filler,
+  padding arrays, and frame-only guesses remain forbidden.
 - If target loads a fixed global address into ECX before a call and performs no
   caller cleanup, model the callee as a member of that global overlay. A known
   destination address does not justify a cdecl/free-function prototype that

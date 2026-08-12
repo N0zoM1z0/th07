@@ -129,6 +129,11 @@ player_update_real_neg_0_94247782,0x00498D08,3a4671bf,0x0,Exact target player ro
 player_update_real_neg_2_1991148,0x00498D0C,4cbe0cc0,0x0,Exact target player rotation lower clamp,literal
 player_update_real_pi_over_25,0x00498BEC,fdad803d,0x0,Exact target positive player rotation step,literal
 ecl_real_0_3,0x00498A88,9a99993e,0x0,Exact target float 0.3 used by ECL projectile parameters,literal
+ecl_real_96,0x00498C54,0000c042,0x0,Exact target float 96 used by ECL constrained random heading,literal
+ecl_real_288,0x00498C78,00009043,0x0,Exact target float 288 used by ECL constrained random heading,literal
+ecl_real_pi_over_4,0x00498CD0,db0f493f,0x0,Exact target float pi over four used by ECL constrained random heading,literal
+ecl_real_three_pi_over_4,0x00498D18,e4cb1640,0x0,Exact target float three pi over four used by ECL constrained random heading,literal
+ecl_string_sub_anim_overflow,0x004986C8,6572726f72203a2073756220616e696d206f766572666c6f770d0a00,0x0,Exact target ECL sub-animation overflow diagnostic string,literal
 player_update_real_5,0x00498B3C,0000a040,0x0,Exact target float 5 used by Player state motion,literal
 player_update_real_pi_over_100,0x00498BE8,fdad003d,0x0,Exact target player rotation settling threshold,literal
 player_update_real_neg_pi_over_25,0x00498D00,fdad80bd,0x0,Exact target negative player rotation step,literal
@@ -151,6 +156,21 @@ spell_vm_base_1348024,0x01348024,00000000,0x0,Target-observed zero-initialized s
 spell_vms_1348028,0x01348028,00000000,0x0,Target-observed zero-initialized spell VM array base,literal
 spell_anm_4B9E44,0x004B9E44,00000000,0x0;0x28EF0,Target-observed animation manager pointer storage and script-table addend used by spell VM setup,address
 spell_active_12FE0C8,0x012FE0C8,00000000,0x0,Target-observed zero-initialized spell active state,literal
+player_update_real_pi_over_14,0x00498D10,fac8653e,0x0,Target-observed Player orb rotation spread constant 0.22439948f verified through exact IDA target bytes,literal
+spell_control_12FE0F0,0x012FE0F0,00000000,0x0,Target-observed zero-initialized spell control state written by ECL opcode 0x93,literal
+spell_float_12FE25C,0x012FE25C,00000000,0x0,Target-observed zero-initialized spell float state written by ECL opcode 0x8C operand 0,literal
+spell_float_12FE260,0x012FE260,00000000,0x0,Target-observed zero-initialized spell float state written by ECL opcode 0x8C operand 1,literal
+spell_float_12FE264,0x012FE264,00000000,0x0,Target-observed zero-initialized spell float state written by ECL opcode 0x8C operand 2,literal
+spell_float_12FE268,0x012FE268,00000000,0x0,Target-observed zero-initialized spell float state written by ECL opcode 0x8C operand 3,literal
+ecl_slot_float_y_49FC44,0x0049FC44,00000000,0x0,Target-observed zero-initialized eight-entry ECL slot Y array base used by opcode 0x6E,literal
+ecl_slot_float_x_49FC24,0x0049FC24,00000000,0x0,Target-observed zero-initialized eight-entry ECL slot X array base used by opcode 0x6E,literal
+ecl_slot_value_49FC64,0x0049FC64,00000000,0x0,Target-observed zero-initialized eight-entry ECL slot integer array base written by opcode 0x8B,literal
+ecl_global_134CBF4,0x0134CBF4,00000000,0x0,Target-observed zero-initialized ECL global written by opcode 0x7D,literal
+ecl_global_49FC08,0x0049FC08,00000000,0x0,Target-observed zero-initialized ECL global written by opcode 0x7E,literal
+ecl_global_62F898,0x0062F898,00000000,0x0,Target-observed zero-initialized ECL accumulator advanced by opcode 0x7E,literal
+ecl_boss_present_49FC14,0x0049FC14,00,0x0,Target-observed ECL boss-presence byte written by opcode 0x63,literal
+ecl_boss_health_49FC18,0x0049FC18,00000000,0x0,Target-observed ECL boss-health float written by opcode 0x63,literal
+ecl_boss_ui_134DB5A,0x0134DB5A,0000,0x0,Target-observed ECL boss UI state array base written by opcode 0x63,literal
 spell_capture_12FE0C4,0x012FE0C4,00000000,0x0,Target-observed zero-initialized spell capture eligibility state,literal
 spell_base_score_12FE0CC,0x012FE0CC,00000000,0x0,Target-observed zero-initialized spell base score,literal
 spell_bonus_accum_12FE0D0,0x012FE0D0,00000000,0x0,Target-observed zero-initialized spell bonus accumulator,literal
@@ -164,7 +184,7 @@ spell_scores_49F1B8,0x0049F1B8,80841e00,0x0,Target-observed non-uniform spell ba
 spell_records_626288,0x00626288,00000000,0x0,Target-observed zero-initialized persistent spell record array base,literal
 spell_character_62F647,0x0062F647,00,0x0,Target-observed zero-initialized character index used by spell records,literal
 spell_replay_62F648,0x0062F648,00000000,0x0,Target-observed zero-initialized replay flags used by spell record gating,literal
-spell_score_state_626278,0x00626278,00000000,0x0,Target-observed zero-initialized score state pointer storage used by spell capture accounting,literal
+spell_score_state_626278,0x00626278,00000000,0x0;0x7C,Target-observed zero-initialized score state base and exact +0x7C score field used by spell capture accounting and ECL opcode 0x77,literal
 player_bomb_input,0x004B9E50,0000,0x0,Target-observed input word used by Player bomb activation,literal
 player_bomb_resources,0x00626278,00000000,0x0,Target-observed player resource pointer storage used by bomb logic,literal
 player_bomb_score_update,0x0062F88C,00000000,0x0,Target-observed bomb score storage used by the update path,literal

@@ -2,6 +2,8 @@
 
 #include <math.h>
 
+#pragma intrinsic(sin, cos)
+
 namespace th07
 {
 /*
@@ -235,9 +237,6 @@ static __forceinline void UpdateStraightOrbs(PlayerUpdateOverlay *player)
 
 static __forceinline void UpdateRotatingOrbs(PlayerUpdateOverlay *player)
 {
-    const f32 piOverTwo = 1.5707964f;
-    const f32 spread = 0.22439948f;
-    f32 angle = player->rotationAngle;
     f32 x;
     f32 y;
 
@@ -256,8 +255,11 @@ static __forceinline void UpdateRotatingOrbs(PlayerUpdateOverlay *player)
             player->orbAnimation = g_EffectManager.SpawnParticlesColored(24, &player->position, 2, 1, -1);
             goto focused;
         }
-        x = cos(angle + piOverTwo) * 24.0f;
-        y = sin(angle + piOverTwo) * 24.0f;
+        {
+            f32 orbitAngle = player->rotationAngle + 1.5707964f;
+            x = (f32)cos(orbitAngle) * 24.0f;
+            y = (f32)sin(orbitAngle) * 24.0f;
+        }
         player->orbPosition[0].x -= x;
         player->orbPosition[1].x += x;
         player->orbPosition[0].y -= y;
@@ -269,12 +271,18 @@ static __forceinline void UpdateRotatingOrbs(PlayerUpdateOverlay *player)
         AdvanceTimer(&player->orbTimer);
         {
             f32 t = ((f32)player->orbTimer.current + player->orbTimer.subFrame) / 8.0f;
-            f32 centerX = cos(angle + piOverTwo) * 24.0f;
-            f32 centerY = sin(angle + piOverTwo) * 24.0f;
-            f32 outX = cos(angle + spread) * 24.0f;
-            f32 outY = sin(angle + spread) * 24.0f;
-            f32 inX = cos(angle - spread) * 24.0f;
-            f32 inY = sin(angle - spread) * 24.0f;
+            f32 centerXAngle = player->rotationAngle + 1.5707964f;
+            f32 centerX = (f32)cos(centerXAngle) * 24.0f;
+            f32 centerYAngle = player->rotationAngle + 1.5707964f;
+            f32 centerY = (f32)sin(centerYAngle) * 24.0f;
+            f32 outXAngle = player->rotationAngle + 0.22439948f;
+            f32 outX = (f32)cos(outXAngle) * 24.0f;
+            f32 outYAngle = player->rotationAngle + 0.22439948f;
+            f32 outY = (f32)sin(outYAngle) * 24.0f;
+            f32 inXAngle = player->rotationAngle - 0.22439948f;
+            f32 inX = (f32)cos(inXAngle) * 24.0f;
+            f32 inYAngle = player->rotationAngle - 0.22439948f;
+            f32 inY = (f32)sin(inYAngle) * 24.0f;
             player->orbPosition[1].x += (outX - centerX) * t + centerX;
             player->orbPosition[1].y += (outY - centerY) * t + centerY;
             player->orbPosition[0].x += (inX + centerX) * t - centerX;
@@ -294,10 +302,12 @@ static __forceinline void UpdateRotatingOrbs(PlayerUpdateOverlay *player)
         ResetTimer(&player->orbTimer);
         if (player->focused)
         {
-            player->orbPosition[1].x += cos(angle + spread) * 24.0f;
-            player->orbPosition[1].y += sin(angle + spread) * 24.0f;
-            player->orbPosition[0].x += cos(angle - spread) * 24.0f;
-            player->orbPosition[0].y += sin(angle - spread) * 24.0f;
+            f32 outerAngle = player->rotationAngle + 0.22439948f;
+            f32 innerAngle = player->rotationAngle - 0.22439948f;
+            player->orbPosition[1].x += (f32)cos(outerAngle) * 24.0f;
+            player->orbPosition[1].y += (f32)sin(outerAngle) * 24.0f;
+            player->orbPosition[0].x += (f32)cos(innerAngle) * 24.0f;
+            player->orbPosition[0].y += (f32)sin(innerAngle) * 24.0f;
             return;
         }
         player->orbState = 4;
@@ -318,12 +328,15 @@ static __forceinline void UpdateRotatingOrbs(PlayerUpdateOverlay *player)
         AdvanceTimer(&player->orbTimer);
         {
             f32 t = 1.0f - ((f32)player->orbTimer.current + player->orbTimer.subFrame) / 8.0f;
-            f32 centerX = cos(angle + piOverTwo) * 24.0f;
-            f32 centerY = sin(angle + piOverTwo) * 24.0f;
-            f32 outX = cos(angle + spread) * 24.0f;
-            f32 outY = sin(angle + spread) * 24.0f;
-            f32 inX = cos(angle - spread) * 24.0f;
-            f32 inY = sin(angle - spread) * 24.0f;
+            f32 centerAngle = player->rotationAngle + 1.5707964f;
+            f32 centerX = (f32)cos(centerAngle) * 24.0f;
+            f32 centerY = (f32)sin(centerAngle) * 24.0f;
+            f32 outerAngle = player->rotationAngle + 0.22439948f;
+            f32 outX = (f32)cos(outerAngle) * 24.0f;
+            f32 outY = (f32)sin(outerAngle) * 24.0f;
+            f32 innerAngle = player->rotationAngle - 0.22439948f;
+            f32 inX = (f32)cos(innerAngle) * 24.0f;
+            f32 inY = (f32)sin(innerAngle) * 24.0f;
             player->orbPosition[1].x += (outX - centerX) * t + centerX;
             player->orbPosition[1].y += (outY - centerY) * t + centerY;
             player->orbPosition[0].x += (inX + centerX) * t - centerX;
@@ -338,11 +351,13 @@ static __forceinline void UpdateRotatingOrbs(PlayerUpdateOverlay *player)
     }
 }
 
+#pragma var_order(previousDirection, vertical, horizontal)
 int __fastcall Player::OnUpdate(Player *playerBase)
 {
-    PlayerUpdateOverlay *player = reinterpret_cast<PlayerUpdateOverlay *>(playerBase);
+#define player reinterpret_cast<PlayerUpdateOverlay *>(playerBase)
     f32 horizontal = 0.0f;
     f32 vertical = 0.0f;
+    i32 previousDirection = player->inputDirection;
 
     player->inputDirection = 0;
     if (g_PlayerInputButtons & 0x10)
@@ -369,21 +384,37 @@ int __fastcall Player::OnUpdate(Player *playerBase)
             player->inputDirection = 4;
     }
 
-    player->focused = (g_PlayerInputButtons & 4) != 0;
-    f32 axisSpeed = player->focused ? player->movement->focusedAxisSpeed : player->movement->unfocusedAxisSpeed;
-    f32 diagonalSpeed = player->focused ? player->movement->focusedDiagonalSpeed
-                                        : player->movement->unfocusedDiagonalSpeed;
-    switch (player->inputDirection)
+    if (g_PlayerInputButtons & 4)
     {
-    case 1: vertical = -axisSpeed; break;
-    case 2: vertical = axisSpeed; break;
-    case 3: horizontal = -axisSpeed; break;
-    case 4: horizontal = axisSpeed; break;
-    case 5: horizontal = vertical = -diagonalSpeed; break;
-    case 6: horizontal = diagonalSpeed; vertical = -diagonalSpeed; break;
-    case 7: horizontal = -diagonalSpeed; vertical = diagonalSpeed; break;
-    case 8: horizontal = vertical = diagonalSpeed; break;
-    default: break;
+        player->focused = 1;
+        switch (player->inputDirection)
+        {
+        case 1: vertical = player->movement->focusedAxisSpeed; break;
+        case 2: vertical = -player->movement->focusedAxisSpeed; break;
+        case 3: horizontal = -player->movement->focusedAxisSpeed; break;
+        case 4: horizontal = player->movement->focusedAxisSpeed; break;
+        case 5: horizontal = vertical = -player->movement->focusedDiagonalSpeed; break;
+        case 6: horizontal = player->movement->focusedDiagonalSpeed; vertical = -horizontal; break;
+        case 7: horizontal = -player->movement->focusedDiagonalSpeed; vertical = -horizontal; break;
+        case 8: horizontal = vertical = player->movement->focusedDiagonalSpeed; break;
+        default: break;
+        }
+    }
+    else
+    {
+        player->focused = 0;
+        switch (player->inputDirection)
+        {
+        case 1: vertical = player->movement->unfocusedAxisSpeed; break;
+        case 2: vertical = -player->movement->unfocusedAxisSpeed; break;
+        case 3: horizontal = -player->movement->unfocusedAxisSpeed; break;
+        case 4: horizontal = player->movement->unfocusedAxisSpeed; break;
+        case 5: horizontal = vertical = -player->movement->unfocusedDiagonalSpeed; break;
+        case 6: horizontal = player->movement->unfocusedDiagonalSpeed; vertical = -horizontal; break;
+        case 7: horizontal = -player->movement->unfocusedDiagonalSpeed; vertical = -horizontal; break;
+        case 8: horizontal = vertical = player->movement->unfocusedDiagonalSpeed; break;
+        default: break;
+        }
     }
 
     SelectMovementAnimation(player, horizontal);
@@ -445,5 +476,6 @@ int __fastcall Player::OnUpdate(Player *playerBase)
         }
     }
     return 0;
+#undef player
 }
 } // namespace th07

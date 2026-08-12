@@ -1,5 +1,6 @@
 #include "EclManager.hpp"
 
+#include <d3dx8math.h>
 #include <math.h>
 #include <string.h>
 
@@ -10,8 +11,46 @@ namespace th07
 extern u8 g_TargetDifficultyMask626284;
 extern EclManager g_TargetEclManager1347938;
 extern i32 g_TargetSpellActive12FE0C8;
+// Target-observed ECL spell-control word at 0x00413CEF (opcode 0x93).
+extern i32 g_TargetSpellControl12FE0F0;
+// Target-observed opcode 0x8C float control words at 0x00416106--0x004161BC.
+extern f32 g_TargetSpellFloat12FE25C;
+extern f32 g_TargetSpellFloat12FE260;
+extern f32 g_TargetSpellFloat12FE264;
+extern f32 g_TargetSpellFloat12FE268;
+// Target-observed ECL presentation/control globals.
+extern f32 g_TargetEclSlotFloatX49FC24[8];
+extern f32 g_TargetEclSlotFloatY49FC44[8];
+extern i32 g_TargetEclSlotValue49FC64[8];
+extern i32 g_TargetEclControl134CBF4;
+extern i32 g_TargetEclControl49FC08;
+extern i32 g_TargetEclTimer62F898;
+extern u8 g_TargetScoreState626278[];
+// Target-observed boss control/UI globals used by opcode 0x63.
+extern u8 g_TargetBossPresent49FC14;
+extern f32 g_TargetBossHealth49FC18;
+extern i16 g_TargetBossUi134DB5A[];
 extern i32 g_TargetRank62F8A4;
 extern u8 g_TargetBulletManager62F958[];
+struct EffectManager
+{
+    void *SpawnParticles(i32 effect, D3DXVECTOR3 *position, i32 count, i32 color);
+};
+extern EffectManager g_EffectManager;
+extern void *g_EffectsColor[];
+
+// ABI corroborated by the target-pinned BulletUpdate unit (0x004326F0).
+struct BulletUpdateVec3
+{
+    f32 x;
+    f32 y;
+    f32 z;
+};
+struct BulletUpdateItemManager
+{
+    void Spawn(BulletUpdateVec3 *position, i32 itemType, i32 count);
+};
+extern BulletUpdateItemManager g_ItemManager;
 
 namespace EclOperands
 {
@@ -41,10 +80,12 @@ struct TargetPlayerOverlay
 struct TargetRngOverlay
 {
     u32 RandomU32();
+    f32 RandomF32();
 };
 
 extern TargetPlayerOverlay g_TargetPlayer4BDAD8;
 extern TargetRngOverlay g_TargetRng49FE20;
+extern f32 g_TargetFloat4BE408;
 
 i32 __fastcall ResolveInt(EnemyOverlay *enemy, i32 operand);
 i32 *__fastcall ResolveIntLValue(EnemyOverlay *enemy, i32 *operand, u16 flags, i32 flagIndex);
@@ -62,16 +103,33 @@ void __cdecl Target44C930(i32 soundId, i32 parameter);
 void __cdecl Target439401(i32 value);
 void __cdecl Target424C00(f32 *position, f32 value);
 void __cdecl Target42F5A2(i32 value);
+void __cdecl DebugPrint(const char *format, ...);
 
 namespace SpellLifecycle
 {
 struct EnemyOverlay
 {
     u8 bytes[1];
+
+    void UnregisterBoss();
+};
+struct SpellVmOverlay
+{
+    u8 bytes[1];
+
+    void SetAndExecuteScript(void *script);
+};
+struct AnmManagerOverlay
+{
+    u8 bytes[1];
+
+    void ConfigureBoss(EnemyOverlay *enemy, void *source, i32 value);
 };
 struct SpellStartInstruction;
 u32 __fastcall StartSpellcard(EnemyOverlay *enemy, const SpellStartInstruction *instruction);
 void __fastcall FinishSpellcard(EnemyOverlay *enemy, const void *instruction);
+extern u8 *g_TargetAnmManager4B9E44;
+extern EnemyOverlay *g_TargetSpellBosses12FE098[8];
 } // namespace SpellLifecycle
 
 namespace
@@ -380,6 +438,40 @@ ZunResult EclManager::RunEcl(Enemy *enemy)
             *WriteFloat(rawEnemy, instruction) = ReadFloat(rawEnemy, instruction, 1);
             break;
 
+        case 6:
+        {
+            const i32 limit = ReadInt(rawEnemy, instruction, 1);
+            *WriteInt(rawEnemy, instruction) = limit ? EclOperands::g_TargetRng49FE20.RandomU32() % limit : 0;
+            break;
+        }
+        case 7:
+        {
+            const i32 limit = ReadInt(rawEnemy, instruction, 1);
+            *WriteInt(rawEnemy, instruction) =
+                ReadInt(rawEnemy, instruction, 2) +
+                (limit ? EclOperands::g_TargetRng49FE20.RandomU32() % limit : 0);
+            break;
+        }
+        case 8:
+            *WriteFloat(rawEnemy, instruction) =
+                EclOperands::g_TargetRng49FE20.RandomF32() * ReadFloat(rawEnemy, instruction, 1);
+            break;
+        case 9:
+            *WriteFloat(rawEnemy, instruction) = EclOperands::g_TargetRng49FE20.RandomF32() *
+                                                     ReadFloat(rawEnemy, instruction, 1) +
+                                                 ReadFloat(rawEnemy, instruction, 2);
+            break;
+        case 10:
+            *WriteInt(rawEnemy, instruction) =
+                ReadInt(rawEnemy, instruction, 1) *
+                ((EclOperands::g_TargetRng49FE20.RandomU32() & 1) ? 1 : -1);
+            break;
+        case 11:
+            *WriteFloat(rawEnemy, instruction) =
+                ((EclOperands::g_TargetRng49FE20.RandomU32() & 1) ? 1.0f : -1.0f) *
+                ReadFloat(rawEnemy, instruction, 1);
+            break;
+
         // 0x0c--0x10: target integer ALU block.  The order of operands is
         // taken from the target stores, rather than from the TH06 enum.
         case 12:
@@ -473,6 +565,11 @@ ZunResult EclManager::RunEcl(Enemy *enemy)
             break;
         case 39:
             if (ReadFloat(rawEnemy, instruction, 0) >= ReadFloat(rawEnemy, instruction, 1)) { ConditionalJump(rawEnemy, instruction); continue; }
+            break;
+
+        case 40:
+            *WriteFloat(rawEnemy, instruction) =
+                TargetAddNormalizeAngle(ReadFloat(rawEnemy, instruction, 0), 0.0f);
             break;
 
         // 0x2d--0x3f are target-observed direct Enemy state transitions.  No
@@ -723,6 +820,14 @@ ZunResult EclManager::RunEcl(Enemy *enemy)
         case 94:
             TargetEffect423090(8000, 0);
             break;
+        case 95:
+        {
+            const i32 scriptId = ReadInt(rawEnemy, instruction, 0) + 2304;
+            *(i16 *)(rawEnemy->bytes + 472) = (i16)scriptId;
+            ((SpellLifecycle::SpellVmOverlay *)rawEnemy)->SetAndExecuteScript(
+                *(void **)(SpellLifecycle::g_TargetAnmManager4B9E44 + 0x28EF0 + 4 * scriptId));
+            break;
+        }
         case 96:
             *(i16 *)(rawEnemy->bytes + 2 * 5912) = *(const i16 *)((const u8 *)instruction + 12);
             *(i16 *)(rawEnemy->bytes + 2 * 5913) = *(const i16 *)((const u8 *)instruction + 14);
@@ -731,11 +836,70 @@ ZunResult EclManager::RunEcl(Enemy *enemy)
             *(i16 *)(rawEnemy->bytes + 2 * 5916) = *(const i16 *)((const u8 *)instruction + 20);
             ByteAt(rawEnemy, 11822) = 0xFF;
             break;
+        case 97:
+        {
+            const i32 slot = ReadInt(rawEnemy, instruction, 0);
+            const i32 scriptId = ReadInt(rawEnemy, instruction, 1);
+            if (slot >= 2)
+                DebugPrint("error : sub anim overflow\r\n");
+
+            if (scriptId < 0)
+            {
+                *(i16 *)(rawEnemy->bytes + 4 * (147 * slot + 265)) = -1;
+            }
+            else
+            {
+                const i32 targetScript = scriptId + 2304;
+                *(i16 *)(rawEnemy->bytes + 4 * (147 * slot + 265)) = (i16)targetScript;
+                ((SpellLifecycle::SpellVmOverlay *)(rawEnemy->bytes + 4 * (147 * slot + 147)))
+                    ->SetAndExecuteScript(*(void **)(SpellLifecycle::g_TargetAnmManager4B9E44 +
+                                                      0x28EF0 + 4 * targetScript));
+            }
+            break;
+        }
         case 98:
             ByteAt(rawEnemy, 11796) = *((const u8 *)instruction + 12);
             ByteAt(rawEnemy, 11797) = *((const u8 *)instruction + 13);
             ByteAt(rawEnemy, 11798) = *((const u8 *)instruction + 14);
             break;
+        case 99:
+        {
+            const i32 bossId = ReadInt(rawEnemy, instruction, 0);
+            if (bossId < 0)
+            {
+                const u8 currentBossId = ByteAt(rawEnemy, 11799);
+                if (currentBossId < 4)
+                    g_TargetBossPresent49FC14 = 0;
+                SpellLifecycle::g_TargetSpellBosses12FE098[currentBossId] = 0;
+                ByteAt(rawEnemy, 11817) &= ~0x40;
+                g_TargetBossUi134DB5A[294 * currentBossId] = 2;
+                ((SpellLifecycle::EnemyOverlay *)rawEnemy)->UnregisterBoss();
+            }
+            else
+            {
+                SpellLifecycle::g_TargetSpellBosses12FE098[bossId] =
+                    (SpellLifecycle::EnemyOverlay *)rawEnemy;
+                g_TargetBossPresent49FC14 = 1;
+                g_TargetBossHealth49FC18 = 1.0f;
+                ByteAt(rawEnemy, 11817) |= 0x40;
+                const u8 assignedBossId = (u8)ReadInt(rawEnemy, instruction, 0);
+                ByteAt(rawEnemy, 11799) = assignedBossId;
+                g_TargetBossUi134DB5A[294 * assignedBossId] = 1;
+            }
+            break;
+        }
+        case 100:
+        {
+            void *effect = g_EffectManager.SpawnParticles(
+                13, (D3DXVECTOR3 *)(rawEnemy->bytes + 4 * 2755), 1,
+                (i32)g_EffectsColor[RawI32(instruction, 12)]);
+            *(i32 *)((u8 *)effect + 660) = RawI32(instruction, 16);
+            *(i32 *)((u8 *)effect + 664) = RawI32(instruction, 20);
+            *(i32 *)((u8 *)effect + 668) = RawI32(instruction, 24);
+            IntAt(rawEnemy, 4 * 2990) = RawI32(instruction, 28);
+            ++IntAt(rawEnemy, 4 * 2989);
+            break;
+        }
         case 101:
             FloatAt(rawEnemy, 4 * 2767) = ReadFloat(rawEnemy, instruction, 0);
             FloatAt(rawEnemy, 4 * 2768) = ReadFloat(rawEnemy, instruction, 1);
@@ -770,6 +934,21 @@ ZunResult EclManager::RunEcl(Enemy *enemy)
         case 109:
             IntAt(rawEnemy, 4 * 2754) = ReadInt(rawEnemy, instruction, 0);
             break;
+        case 110:
+        {
+            const i32 value = ReadInt(rawEnemy, instruction, 0);
+            IntAt(rawEnemy, 4 * 2799) = value;
+            IntAt(rawEnemy, 4 * 2798) = value;
+            if (ByteAt(rawEnemy, 11799) == 0 && (ByteAt(rawEnemy, 11817) & 0x40))
+            {
+                for (i32 slot = 0; slot < 8; ++slot)
+                {
+                    g_TargetEclSlotFloatY49FC44[slot] = 0;
+                    g_TargetEclSlotFloatX49FC24[slot] = 0;
+                }
+            }
+            break;
+        }
         case 111:
             IntAt(rawEnemy, 4 * 2803) = ReadInt(rawEnemy, instruction, 0);
             IntAt(rawEnemy, 4 * 2802) = 0;
@@ -794,10 +973,36 @@ ZunResult EclManager::RunEcl(Enemy *enemy)
             ByteAt(rawEnemy, 11817) = (ByteAt(rawEnemy, 11817) & 0xFE) |
                                       (*((const u8 *)instruction + 12) & 1);
             break;
+        case 117:
+            g_EffectManager.SpawnParticles(
+                ReadInt(rawEnemy, instruction, 0),
+                (D3DXVECTOR3 *)(rawEnemy->bytes + 4 * 2755),
+                ReadInt(rawEnemy, instruction, 1),
+                *EclOperands::ResolveIntLValue(rawEnemy, &instruction->operand[2],
+                                                instruction->operandFlags, 2));
+            break;
         case 120:
             ByteAt(rawEnemy, 11818) = (ByteAt(rawEnemy, 11818) & 0xEF) |
                                       (16 * (*((const u8 *)instruction + 12) & 1));
             break;
+        case 119:
+        {
+            const i32 itemCount = ReadInt(rawEnemy, instruction, 0);
+            for (i32 item = 0; item < itemCount; ++item)
+            {
+                BulletUpdateVec3 position;
+                position.x = EclOperands::g_TargetRng49FE20.RandomF32() * 128.0f - 64.0f +
+                             FloatAt(rawEnemy, 4 * 2755);
+                position.y = EclOperands::g_TargetRng49FE20.RandomF32() * 128.0f - 64.0f +
+                             FloatAt(rawEnemy, 4 * 2756);
+                position.z = FloatAt(rawEnemy, 4 * 2757);
+                const i32 itemType = (i32)(unsigned __int64)*(f32 *)(g_TargetScoreState626278 + 124) >= 128
+                                         ? 1
+                                         : (item ? 0 : 2);
+                g_ItemManager.Spawn(&position, itemType, 0);
+            }
+            break;
+        }
         case 128:
             *(i16 *)(rawEnemy->bytes + 2 * 227) =
                 (i16)ReadInt(rawEnemy, instruction, 0);
@@ -845,8 +1050,49 @@ ZunResult EclManager::RunEcl(Enemy *enemy)
             ByteAt(rawEnemy, 11818) = (ByteAt(rawEnemy, 11818) & 0x7F) |
                                       ((*((const u8 *)instruction + 12) & 1) << 7);
             break;
+        case 138:
+        {
+            ByteAt(rawEnemy, 20272) = *((const u8 *)instruction + 12);
+            *(i16 *)(rawEnemy->bytes + 20274) = (i16)ReadInt(rawEnemy, instruction, 1);
+            *(i16 *)(rawEnemy->bytes + 20276) = (i16)ReadInt(rawEnemy, instruction, 2);
+            *(i16 *)(rawEnemy->bytes + 20278) = (i16)ReadInt(rawEnemy, instruction, 3);
+            if (IntAt(rawEnemy, 4 * 5068) & 8)
+            {
+                ((SpellLifecycle::AnmManagerOverlay *)SpellLifecycle::g_TargetAnmManager4B9E44)->ConfigureBoss(
+                    (SpellLifecycle::EnemyOverlay *)rawEnemy, rawEnemy->bytes + 4 * 3710,
+                    2 * (*(i16 *)(rawEnemy->bytes + 20274) / *(i16 *)(rawEnemy->bytes + 20278)));
+            }
+            break;
+        }
+        case 139:
+        {
+            const i32 slot = ReadInt(rawEnemy, instruction, 0);
+            g_TargetEclSlotFloatY49FC44[slot] =
+                (f32)((f64)ReadInt(rawEnemy, instruction, 1) / (f64)IntAt(rawEnemy, 4 * 2799));
+            g_TargetEclSlotFloatX49FC24[slot] =
+                (f32)((f64)ReadInt(rawEnemy, instruction, 2) / (f64)IntAt(rawEnemy, 4 * 2799));
+            g_TargetEclSlotValue49FC64[slot] = ReadInt(rawEnemy, instruction, 3);
+            break;
+        }
         case 123:
             Target439401(ReadInt(rawEnemy, instruction, 0));
+            break;
+        case 124:
+            g_ItemManager.Spawn((BulletUpdateVec3 *)(rawEnemy->bytes + 4 * 2755),
+                                ReadInt(rawEnemy, instruction, 0), 0);
+            break;
+        case 125:
+            g_TargetEclControl134CBF4 = ReadInt(rawEnemy, instruction, 0);
+            break;
+        case 126:
+            g_TargetEclControl49FC08 = ReadInt(rawEnemy, instruction, 0);
+            g_TargetEclTimer62F898 += 1800;
+            break;
+        case 140:
+            g_TargetSpellFloat12FE25C = ReadFloat(rawEnemy, instruction, 0);
+            g_TargetSpellFloat12FE260 = ReadFloat(rawEnemy, instruction, 1);
+            g_TargetSpellFloat12FE264 = ReadFloat(rawEnemy, instruction, 2);
+            g_TargetSpellFloat12FE268 = ReadFloat(rawEnemy, instruction, 3);
             break;
         case 142:
             IntAt(rawEnemy, 4 * 5072) = ReadInt(rawEnemy, instruction, 0);
@@ -866,8 +1112,19 @@ ZunResult EclManager::RunEcl(Enemy *enemy)
             IntAt(rawEnemy, 4 * 3031) = -999;
             memcpy(rawEnemy->bytes + 4 * 3002, rawEnemy->bytes + 4 * 447, 0x68);
             break;
+        case 145:
+            if (SpellLifecycle::g_TargetSpellBosses12FE098[ReadInt(rawEnemy, instruction, 0)])
+            {
+                *(i32 *)(SpellLifecycle::g_TargetSpellBosses12FE098[ReadInt(rawEnemy, instruction, 0)]
+                             ->bytes +
+                         11016) = ReadInt(rawEnemy, instruction, 1);
+            }
+            break;
         case 146:
             TargetClearBullets(g_TargetBulletManager62F958, 0);
+            break;
+        case 147:
+            g_TargetSpellControl12FE0F0 = ReadInt(rawEnemy, instruction, 0);
             break;
         case 148:
             IntAt(rawEnemy, 4 * (2991 + ReadInt(rawEnemy, instruction, 0))) =
@@ -911,6 +1168,21 @@ ZunResult EclManager::RunEcl(Enemy *enemy)
             FloatAt(rawEnemy, 4 * 2771) = ReadFloat(rawEnemy, instruction, 1);
             FloatAt(rawEnemy, 4 * 2772) = ReadFloat(rawEnemy, instruction, 2);
             break;
+        case 154:
+        {
+            const i32 itemCount = ReadInt(rawEnemy, instruction, 0);
+            for (i32 item = 0; item < itemCount; ++item)
+            {
+                BulletUpdateVec3 position;
+                position.x = EclOperands::g_TargetRng49FE20.RandomF32() * 128.0f - 64.0f +
+                             FloatAt(rawEnemy, 4 * 2755);
+                position.y = EclOperands::g_TargetRng49FE20.RandomF32() * 128.0f - 64.0f +
+                             FloatAt(rawEnemy, 4 * 2756);
+                position.z = FloatAt(rawEnemy, 4 * 2757);
+                g_ItemManager.Spawn(&position, 1, 0);
+            }
+            break;
+        }
         case 156:
         {
             laser = LaserSlot(rawEnemy, ReadInt(rawEnemy, instruction, 0));
@@ -935,19 +1207,38 @@ ZunResult EclManager::RunEcl(Enemy *enemy)
             }
             break;
         }
+        case 159:
+            *WriteFloat(rawEnemy, instruction) =
+                (ReadFloat(rawEnemy, instruction, 1) - ReadFloat(rawEnemy, instruction, 2)) *
+                    ReadFloat(rawEnemy, instruction, 3) +
+                ReadFloat(rawEnemy, instruction, 2);
+            break;
         case 161:
             ByteAt(rawEnemy, 11819) = (ByteAt(rawEnemy, 11819) & 0xF7) |
                                       (8 * (ReadInt(rawEnemy, instruction, 0) & 1));
+            break;
+        case 155:
+            if ((EclOperands::g_TargetFloat4BE408 >= FloatAt(rawEnemy, 4 * 2755) ||
+                 FloatAt(rawEnemy, 4 * 2755) <= 96.0f) &&
+                FloatAt(rawEnemy, 4 * 2755) <= 288.0f)
+            {
+                *WriteFloat(rawEnemy, instruction) =
+                    EclOperands::g_TargetRng49FE20.RandomF32() * 1.5707964f - 0.78539819f;
+            }
+            else
+            {
+                *WriteFloat(rawEnemy, instruction) = TargetAddNormalizeAngle(
+                    EclOperands::g_TargetRng49FE20.RandomF32() * 1.5707964f + 2.3561945f, 0.0f);
+            }
             break;
         case 160:
             Target42F5A2(ReadInt(rawEnemy, instruction, 0));
             break;
 
         default:
-            // Engine-facing opcodes access not-yet-attested Enemy, ANM,
-            // bullet, GUI, and script-stack layouts.  Reporting an ECL error
-            // is deliberate: silently advancing would be a fabricated body.
-            return ZUN_ERROR;
+            // The exact target falls through to the common instruction
+            // advance for opcode values with no switch case.
+            break;
         }
 
         Advance(instruction);
