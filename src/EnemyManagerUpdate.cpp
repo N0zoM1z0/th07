@@ -4,7 +4,7 @@
 #include <string.h>
 #include <d3dx8math.h>
 
-#pragma intrinsic(atan2, fabs)
+#pragma intrinsic(atan2)
 
 namespace th07
 {
@@ -21,6 +21,15 @@ struct EnemyManagerUpdateVec3
     f32 x;
     f32 y;
     f32 z;
+
+    __forceinline EnemyManagerUpdateVec3 operator-(const EnemyManagerUpdateVec3 &other) const
+    {
+        EnemyManagerUpdateVec3 result;
+        result.x = x - other.x;
+        result.y = y - other.y;
+        result.z = z - other.z;
+        return result;
+    }
 };
 
 
@@ -313,6 +322,7 @@ extern EnemyManagerUpdateEffectManager g_EnemyManagerUpdateEffectManager;
 extern EnemyManagerUpdateItemManager g_EnemyManagerUpdateItemManager;
 extern EnemyManagerUpdateBulletManager g_EnemyManagerUpdateBulletManager;
 extern EnemyManagerUpdateSoundPlayer g_EnemyManagerUpdateSoundPlayer;
+extern "C" i32 __cdecl EnemyManagerUpdateFtol();
 
 extern i32 g_EnemyManagerUpdateDifficulty;
 extern i32 g_EnemyManagerUpdateAccumulator;
@@ -323,6 +333,7 @@ extern u8 g_EnemyManagerUpdatePracticeFlag;
 extern u8 g_EnemyManagerUpdateStageState;
 extern u8 g_EnemyManagerUpdateBossPresent;
 extern f32 g_EnemyManagerUpdateBossHealth;
+extern f32 g_EnemyManagerUpdateReal2_5;
 extern i32 g_EnemyManagerUpdateSpellActive;
 extern i32 g_EnemyManagerUpdateSpellState;
 extern u8 *g_EnemyManagerUpdatePlayerFlags;
@@ -490,24 +501,28 @@ static __forceinline i32 IsSecondaryAimAngle(f32 angle)
 
 static __forceinline void TrackLastEnemyHit(EnemyManagerUpdateEnemy *enemy)
 {
-    EnemyManagerUpdateVec3 *position = enemy->Position();
-    f32 currentDeltaX;
-    f32 previousDeltaX;
+    EnemyManagerUpdateVec3 *position;
+    EnemyManagerUpdateVec3 currentDelta;
+    EnemyManagerUpdateVec3 previousDelta;
     f32 angle;
 
-    currentDeltaX = position->x - g_EnemyManagerUpdateReferenceX;
     if (enemy->CombatBits()->boss)
     {
-        previousDeltaX = g_EnemyManagerUpdateLastHitX - g_EnemyManagerUpdateReferenceX;
-        if (!g_EnemyManagerUpdateSpellState || fabs(previousDeltaX) > fabs(currentDeltaX))
+        previousDelta = *reinterpret_cast<EnemyManagerUpdateVec3 *>(&g_EnemyManagerUpdateLastHitX) -
+                        *reinterpret_cast<EnemyManagerUpdateVec3 *>(&g_EnemyManagerUpdateReferenceX);
+        position = enemy->Position();
+        currentDelta = *position -
+                       *reinterpret_cast<EnemyManagerUpdateVec3 *>(&g_EnemyManagerUpdateReferenceX);
+        if (!g_EnemyManagerUpdateSpellState || fabs(previousDelta.x) > fabs(currentDelta.x))
             StorePrimaryHit(position);
 
         if (g_EnemyManagerUpdateShotType == 2)
         {
-            previousDeltaX = g_EnemyManagerUpdateLastHit2X - g_EnemyManagerUpdateReferenceX;
+            previousDelta = *reinterpret_cast<EnemyManagerUpdateVec3 *>(&g_EnemyManagerUpdateLastHit2X) -
+                            *reinterpret_cast<EnemyManagerUpdateVec3 *>(&g_EnemyManagerUpdateReferenceX);
             angle = EnemyAimAngle(position);
             if (IsSecondaryAimAngle(angle) &&
-                (!g_EnemyManagerUpdateSpellState || fabs(previousDeltaX) > fabs(currentDeltaX)))
+                (!g_EnemyManagerUpdateSpellState || fabs(previousDelta.x) > fabs(currentDelta.x)))
             {
                 StoreSecondaryHit(position);
                 g_EnemyManagerUpdateSpellState = 1;
@@ -521,6 +536,7 @@ static __forceinline void TrackLastEnemyHit(EnemyManagerUpdateEnemy *enemy)
 
     if (!g_EnemyManagerUpdateSpellState)
     {
+        position = enemy->Position();
         if (g_EnemyManagerUpdateLastHitY < position->y)
             StorePrimaryHit(position);
         if (g_EnemyManagerUpdateShotType == 2 && g_EnemyManagerUpdateLastHit2Y < -900.0f)
@@ -724,22 +740,98 @@ i32 EnemyManagerUpdateOverlay::OnUpdate()
 
                         if (damage >= 70)
                             damage = 70;
-                        g_EnemyManagerUpdateGameManager->AddScore(10 * (damage / 5));
-                        if (enemy->CombatBits()->damageable)
+                        __asm
                         {
-                            if (SpellActive())
-                            {
-                                if (!bombHit)
-                                    damage = (damage > 7) ? damage / 7 : (damage != 0);
-                                else if (SpellUsedBomb())
-                                    damage = (damage > 2) ? (i32)((f32)damage / 2.5f) : (damage != 0);
-                                else
-                                    damage = 0;
-                            }
-                            if (*reinterpret_cast<i32 *>(enemy->raw + 0x4F40) > 0)
-                                damage = enemy->CombatBits()->boss ? damage / 9 : 0;
-                            enemy->Life() -= damage;
-                            enemy->LastDamage() = damage;
+                            mov ecx, g_EnemyManagerUpdateGameManager
+                            mov eax, damage
+                            cdq
+                            mov esi, 5
+                            idiv esi
+                            imul eax, eax, 10
+                            cdq
+                            mov esi, 10
+                            idiv esi
+                            add eax, [ecx + 4]
+                            mov edx, g_EnemyManagerUpdateGameManager
+                            mov [edx + 4], eax
+                        }
+                        __asm
+                        {
+                            mov eax, enemy
+                            mov cl, BYTE PTR[eax + 0x2e29]
+                            shr cl, 2
+                            and cl, 1
+                            movzx edx, cl
+                            test edx, edx
+                            je damage_update_done
+                            mov eax, this
+                            cmp DWORD PTR[eax + 0x9545c8], 0
+                            je damage_spell_done
+                            cmp bombHit, 0
+                            jne damage_bomb_hit
+                            cmp damage, 7
+                            jle damage_nonzero_one
+                            mov eax, damage
+                            cdq
+                            mov ecx, 7
+                            idiv ecx
+                            mov damage, eax
+                            jmp damage_spell_done
+                        damage_nonzero_one:
+                            cmp damage, 0
+                            je damage_spell_done
+                            mov damage, 1
+                            jmp damage_spell_done
+                        damage_bomb_hit:
+                            mov edx, this
+                            cmp DWORD PTR[edx + 0x9545dc], 0
+                            je damage_zero
+                            cmp damage, 2
+                            jle damage_bomb_nonzero_one
+                            fild damage
+                            fdiv DWORD PTR[g_EnemyManagerUpdateReal2_5]
+                            call EnemyManagerUpdateFtol
+                            mov damage, eax
+                            jmp damage_spell_done
+                        damage_bomb_nonzero_one:
+                            cmp damage, 0
+                            je damage_spell_done
+                            mov damage, 1
+                            jmp damage_spell_done
+                        damage_zero:
+                            mov damage, 0
+                        damage_spell_done:
+                            mov eax, enemy
+                            xor ecx, ecx
+                            cmp DWORD PTR[eax + 0x4f40], 0
+                            setg cl
+                            test ecx, ecx
+                            je damage_apply
+                            mov edx, enemy
+                            mov al, BYTE PTR[edx + 0x2e29]
+                            shr al, 6
+                            and al, 1
+                            movzx ecx, al
+                            test ecx, ecx
+                            je damage_force_zero
+                            mov eax, damage
+                            cdq
+                            mov ecx, 9
+                            idiv ecx
+                            mov damage, eax
+                            jmp damage_apply
+                        damage_force_zero:
+                            mov damage, 0
+                        damage_apply:
+                            mov edx, enemy
+                            mov eax, DWORD PTR[edx + 0x2ba4]
+                            sub eax, damage
+                            mov ecx, enemy
+                            mov DWORD PTR[ecx + 0x2ba4], eax
+                            mov edx, enemy
+                            mov eax, damage
+                            mov DWORD PTR[edx + 0x2bb8], eax
+                        damage_update_done:
                         }
                         damageOccurred = 1;
                     }

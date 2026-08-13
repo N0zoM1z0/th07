@@ -201,6 +201,12 @@ static __forceinline i32 &ScriptTime(EclOperands::EnemyOverlay *enemy)
     return *(i32 *)(enemy->bytes + ENEMY_SCRIPT_TIME);
 }
 
+static __forceinline i32 InstructionDue(EclOperands::EnemyOverlay *enemy,
+                                        const RunEclInstruction *instruction)
+{
+    return !(ScriptTime(enemy) - instruction->time);
+}
+
 static __forceinline i32 &IntAt(EclOperands::EnemyOverlay *enemy, i32 offset)
 {
     return *(i32 *)(enemy->bytes + offset);
@@ -465,22 +471,21 @@ run_ecl_top:
         goto post_ecl_dispatch;
     }
 
-    // The target's common advance returns to this signed timeline predicate;
-    // ending the loop on a future instruction naturally lowers to its
-    // 0x004106D7 boolean materialization.
-    while (!(ScriptTime(rawEnemy) - instruction->time < 0))
+    // Observed at 0x004106D7: subtract, neg, sbb, inc, and test materialize
+    // a zero difference before the dispatcher.  Keep that arithmetic form:
+    // it is both target-faithful and preserves the VC7 boolean topology.
+    while (InstructionDue(rawEnemy, instruction))
     {
         void *laser;
 
         // 0x004106EC tests the instruction difficulty byte before dispatch.
         // A clear bit means that this instruction is skipped but still
         // consumes its encoded extent.
-        if ((instruction->difficultyMask & g_TargetDifficultyMask626284) == 0)
-        {
-            Advance(instruction);
-            CurrentInstruction(rawEnemy) = instruction;
-            continue;
-        }
+        // The target performs a dword mask load at 0x004106F9.  Retain the
+        // established symbol declaration while expressing that observed
+        // access width locally.
+        if ((instruction->difficultyMask & *(const i32 *)&g_TargetDifficultyMask626284) == 0)
+            goto advance_instruction;
 
         switch (instruction->opcode)
         {
@@ -1351,8 +1356,8 @@ run_script_interrupt:
             break;
         }
 
+advance_instruction:
         Advance(instruction);
-        CurrentInstruction(rawEnemy) = instruction;
     }
 
 post_ecl_dispatch:

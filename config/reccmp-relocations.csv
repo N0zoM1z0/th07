@@ -508,7 +508,7 @@ enemy_update_special_damage_4bfee3,0x004BFEE3,00000000,0x0,Target zero-initializ
 enemy_update_pause_4bfee0,0x004BFEE0,00000000,0x0,Target zero-initialized Enemy update pause-mode byte read at 0x00420844,address
 enemy_update_random_items_49efa0,0x0049EFA0,0000010001000007010100000701010001000100010001000100070101010002,0x0,Target 32-byte Enemy random item sequence indexed by the death-item path,literal
 enemy_update_last_hit2_4bff0c,0x004BFF0C,00000000,0x0;0x4;0x8,Target zero-initialized secondary enemy-position selection vector,address
-enemy_update_last_hit_x_4bff00,0x004BFF00,00000000,0x0,Target zero-initialized primary selected enemy position X,literal
+enemy_update_last_hit_x_4bff00,0x004BFF00,00000000,0x0;0x4;0x8,Target zero-initialized primary enemy-position selection vector,address
 enemy_update_last_hit_y_4bff04,0x004BFF04,00000000,0x0,Target zero-initialized primary selected enemy position Y,literal
 enemy_update_last_hit_z_4bff08,0x004BFF08,00000000,0x0,Target zero-initialized primary selected enemy position Z,literal
 enemy_update_last_hit2_y_4bff10,0x004BFF10,00000000,0x0,Target zero-initialized secondary selected enemy position Y,literal

@@ -137,7 +137,7 @@ class BulletSpawnManager
     i32 SpawnOne(BulletSpawnRequest *request, i32 column, i32 row, f32 baseAngle);
 };
 
-#pragma var_order(slot, i, speed, angle, source, sourceAuxiliary, destinationAuxiliary)
+#pragma var_order(slot, i, speed, angle, source)
 i32 BulletSpawnManager::SpawnOne(BulletSpawnRequest *request, i32 column, i32 row, f32 baseAngle)
 {
     BulletSpawnSlot *slot;
@@ -148,6 +148,7 @@ i32 BulletSpawnManager::SpawnOne(BulletSpawnRequest *request, i32 column, i32 ro
     f32 angle;
     i32 i;
 
+    i = 0;
     slot = *(BulletSpawnSlot **)(reinterpret_cast<u8 *>(this) + 0x37A15C);
     for (i = 0; i < 1024; i++)
     {
@@ -168,6 +169,7 @@ i32 BulletSpawnManager::SpawnOne(BulletSpawnRequest *request, i32 column, i32 ro
         return 1;
     }
 
+    angle = 0.0f;
     if (request->rows > 1)
     {
         speed = request->speedStart -
@@ -178,7 +180,6 @@ i32 BulletSpawnManager::SpawnOne(BulletSpawnRequest *request, i32 column, i32 ro
         speed = request->speedStart;
     }
 
-    angle = 0.0f;
     switch (request->layoutMode)
     {
     case 0:
@@ -227,18 +228,35 @@ i32 BulletSpawnManager::SpawnOne(BulletSpawnRequest *request, i32 column, i32 ro
         break;
 
     case 6:
-        angle = g_BulletSpawnRng.RandomF32() * (request->angleOffset - request->angleStep) + request->angleStep;
+        {
+            f32 randomAngleRange;
+
+            randomAngleRange = request->angleOffset - request->angleStep;
+            angle = g_BulletSpawnRng.RandomF32() * randomAngleRange + request->angleStep;
+        }
         break;
 
     case 7:
-        speed = g_BulletSpawnRng.RandomF32() * (request->speedStart - request->speedEnd) + request->speedEnd;
+        {
+            f32 randomSpeedRange;
+
+            randomSpeedRange = request->speedStart - request->speedEnd;
+            speed = g_BulletSpawnRng.RandomF32() * randomSpeedRange + request->speedEnd;
+        }
         angle += column * 6.2831855f / request->columns;
         angle += row * request->angleStep + request->angleOffset;
         break;
 
     case 8:
-        angle = g_BulletSpawnRng.RandomF32() * (request->angleOffset - request->angleStep) + request->angleStep;
-        speed = g_BulletSpawnRng.RandomF32() * (request->speedStart - request->speedEnd) + request->speedEnd;
+        {
+            f32 randomAngleRange;
+            f32 randomSpeedRange;
+
+            randomAngleRange = request->angleOffset - request->angleStep;
+            angle = g_BulletSpawnRng.RandomF32() * randomAngleRange + request->angleStep;
+            randomSpeedRange = request->speedStart - request->speedEnd;
+            speed = g_BulletSpawnRng.RandomF32() * randomSpeedRange + request->speedEnd;
+        }
         break;
     }
 
@@ -311,6 +329,9 @@ i32 BulletSpawnManager::SpawnOne(BulletSpawnRequest *request, i32 column, i32 ro
     }
     else if (request->flags & 4)
     {
+        BulletSpawnVm *sourceAuxiliary;
+        BulletSpawnVm *destinationAuxiliary;
+
         sourceAuxiliary = &source->animation[2];
         destinationAuxiliary = &slot->animation[2];
         if (destinationAuxiliary->scriptIndex != sourceAuxiliary->scriptIndex || sourceAuxiliary->forceCopy)
@@ -332,6 +353,9 @@ i32 BulletSpawnManager::SpawnOne(BulletSpawnRequest *request, i32 column, i32 ro
     }
     else if (request->flags & 8)
     {
+        BulletSpawnVm *sourceAuxiliary;
+        BulletSpawnVm *destinationAuxiliary;
+
         sourceAuxiliary = &source->animation[3];
         destinationAuxiliary = &slot->animation[3];
         if (destinationAuxiliary->scriptIndex != sourceAuxiliary->scriptIndex || sourceAuxiliary->forceCopy)
