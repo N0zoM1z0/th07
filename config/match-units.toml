@@ -1484,6 +1484,10 @@ profile = "vc7-debug-od-no-gs-g6-no-op"
 notes = "TH07 target-bounded EnemyManager core update: ECL, movement/trails, ANM, collision/damage/death, effects, timers, and draw-list rebuild."
 
 [[units.enemy-manager-update.functions]]
+address = "0x0041A350"
+symbol_base = "?ClearObservedStorage@EnemyManagerUpdateOverlay@th07@@QAEXXZ"
+
+[[units.enemy-manager-update.functions]]
 address = "0x00420620"
 symbol_base = "?OnUpdate@EnemyManagerUpdateOverlay@th07@@QAEHXZ"
 rel32_targets = [

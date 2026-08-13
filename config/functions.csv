@@ -120,7 +120,7 @@ address,size,span_end,current_name,proposed_name,module,status,match_percent,cal
 0x00419FF0,542,0x0041A20D,sub_419FF0,,,unclassified,0.00,unknown,,false,,,,
 0x0041A210,218,0x0041A2E9,sub_41A210,,,unclassified,0.00,unknown,,false,,,,
 0x0041A2F0,91,0x0041A34A,sub_41A2F0,,,unclassified,0.00,unknown,,false,,,,
-0x0041A350,25,0x0041A368,sub_41A350,,,unclassified,0.00,unknown,,false,,,,
+0x0041A350,25,0x0041A368,sub_41A350,EnemyManager_clear_observed_storage,enemy,matching,100.00,__thiscall,void EnemyManager_clear_observed_storage(EnemyManagerUpdateOverlay * this),false,src/EnemyManagerUpdate.cpp,python3 scripts/build.py --unit enemy-manager-update --compare --json; strict exact 25/25 target and object SHA 2eb8abd8ff607cf137ae66e38398f62f5cbf8d16c05e9cd1602645d8239f4997 2026-08-13,root,Provisional behavior name. Target ECX receiver and 0x496A8 byte span are direct observations; source uses target-confirmed VC7 inline rep stosd lowering while full EnemyManager layout remains unresolved.
 0x0041ADF0,153,0x0041AE88,sub_41ADF0,,,unclassified,0.00,unknown,,false,,,,
 0x0041AE90,86,0x0041AEE5,sub_41AE90,,,unclassified,0.00,unknown,,false,,,,
 0x0041C1B0,16,0x0041C1BF,unknown_libname_1,,,unclassified,0.00,unknown,,false,,,,

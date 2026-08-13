@@ -277,7 +277,7 @@ def analyze(address: str, compare: bool) -> dict[str, Any]:
 
     for index, insn in enumerate(instructions):
         mnemonic = insn.mnemonic
-        if mnemonic in {"movzx", "movsx", "idiv"}:
+        if mnemonic in {"movzx", "movsx", "idiv", "rep stosd"}:
             features.add(mnemonic)
         if mnemonic.startswith("set"):
             features.add("setcc")
@@ -580,6 +580,8 @@ def main() -> int:
             ecl_find_large_features = ecl_find_large["inferences"]["features"]
             ecl_sprite_counter = analyze("0x004199C0", False)
             ecl_sprite_counter_features = ecl_sprite_counter["inferences"]["features"]
+            clear_storage = analyze("0x0041A350", False)
+            clear_storage_features = clear_storage["inferences"]["features"]
             failures = []
             if aux_observed["frame_size"] != 0x44:
                 failures.append("0x0043E0A0 frame regression")
@@ -610,6 +612,8 @@ def main() -> int:
                 failures.append("0x00418120 x87 threshold-branch regression")
             if "loop_continue_guard" not in ecl_sprite_counter_features:
                 failures.append("0x004199C0 loop-continue-guard regression")
+            if "rep stosd" not in clear_storage_features:
+                failures.append("0x0041A350 rep-stosd regression")
             same_shape = compare_instruction_shapes(
                 bytes.fromhex("55 8b ec 83 ec 08 89 4d fc 6a 01"),
                 bytes.fromhex("55 8b ec 83 ec 10 89 4d f8 6a 7f"),
@@ -664,7 +668,7 @@ def main() -> int:
                 failures.append("COFF alignment-padding trim regression")
             if failures:
                 raise ValueError("; ".join(failures))
-            print("typed reconstruction facts OK: 6 target-pinned regressions plus shape/branch/resync fixtures")
+            print("typed reconstruction facts OK: 7 target-pinned regressions plus shape/branch/resync fixtures")
             return 0
         if not args.address:
             parser.error("address is required unless --check is selected")

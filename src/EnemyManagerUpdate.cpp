@@ -414,8 +414,14 @@ struct EnemyManagerUpdateOverlay
         return reinterpret_cast<EnemyManagerUpdateEnemy **>(raw + 0x954700);
     }
 
+    void ClearObservedStorage();
     i32 OnUpdate();
 };
+
+void EnemyManagerUpdateOverlay::ClearObservedStorage()
+{
+    memset(this, 0, 0x496A8);
+}
 
 static __forceinline void AdvanceEnemyTimer(EnemyManagerUpdateTimer *timer)
 {

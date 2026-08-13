@@ -62,6 +62,13 @@ recommendation = "When target conditionally skips a direct backward jump to a lo
 evidence = "ECL sprite-636 counter 0x004199C0 reached strict exact 144/144 bytes only after preserving the first inactive-bullet test as an early continue and the following C08/sprite tests as nested accepted-path conditions; equivalent compound or all-continue forms changed VC7 branch topology."
 
 [[rules]]
+id = "vc7-inline-rep-stosd-clear"
+requires = ["rep stosd", "register_home"]
+confidence = "observed_pattern"
+recommendation = "For a fixed dword-aligned target clear whose exact body saves EDI, homes ECX, loads an immediate dword count, zeros EAX, and uses rep stosd, probe memset(this, 0, byte_count) before hand-writing a loop. Preserve the observed object span and confirm the resulting lowering with the canonical comparator."
+evidence = "EnemyManager storage clear 0x0041A350 reached strict exact 25/25 bytes with memset(this, 0, 0x496A8), producing the target EDI save, ECX home, EAX zero, and rep stosd sequence."
+
+[[rules]]
 id = "vc7-nonfolded-idiv"
 requires = ["idiv"]
 confidence = "observed_pattern"
