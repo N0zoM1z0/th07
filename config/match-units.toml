@@ -1314,6 +1314,12 @@ address = "0x0043A18D"
 symbol_base = "?IsSlowModeEnabled@th07@@YIHXZ"
 dir32_targets = ["?g_TargetGameManager626274@th07@@3PAUSupervisorGameState@1@A=replay_game_manager"]
 
+[[units.supervisor-helpers.functions]]
+address = "0x0043A24E"
+symbol_base = "?SetRenderState@SupervisorRenderState@th07@@QAEHHH@Z"
+rel32_targets = ["_Target44F5C0=0x0044F5C0"]
+dir32_targets = ["?g_AnmManager@th07@@3PAXA=?g_AnmManager@th07@@3PAUAnmManager@1@A"]
+
 [units.bullet-update]
 kind = "probe"
 source = "src/BulletUpdate.cpp"
