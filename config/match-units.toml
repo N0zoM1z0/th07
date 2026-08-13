@@ -1235,6 +1235,18 @@ dir32_targets = [
   "__imp__QueryPerformanceCounter@4=__imp__QueryPerformanceCounter@4",
 ]
 
+[units.midi-timer-helpers]
+kind = "probe"
+source = "src/MidiTimerHelpers.cpp"
+object = "build/match-units/MidiTimerHelpers.obj"
+profile = "vc7-debug-od-no-gs-g6"
+notes = "Real-C++ default MIDI timer start wrapper on the target-attested global MidiOutput receiver."
+
+[[units.midi-timer-helpers.functions]]
+address = "0x004378D0"
+symbol_base = "?StartDefaultTimer@MidiOutput@th07@@QAEIXZ"
+rel32_targets = ["?StartTimer@MidiTimer@th07@@QAEIIP6GXIIKKK@ZK@Z=0x00436300"]
+
 [units.gui-text-teardown]
 kind = "probe"
 source = "src/GuiTextTeardown.cpp"

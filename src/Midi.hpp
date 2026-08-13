@@ -65,6 +65,7 @@ struct MidiOutput : MidiTimer
 
     virtual void OnTimerElapsed();
 
+    UINT StartDefaultTimer();
     ZunResult StopPlayback();
     void ClearTracks();
     ZunResult ReadFileData(u32 fileIndex, char *path);
