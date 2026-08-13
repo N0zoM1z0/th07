@@ -319,6 +319,22 @@ void __fastcall EclOp121FindLargeBullet(EclOperands::EnemyOverlay *enemy,
     }
 }
 
+void __fastcall EclOp121CopyPrimaryBossState(EclOperands::EnemyOverlay *enemy,
+                                             const EclOp121InstructionOverlay *instruction)
+{
+    SpellLifecycle::EnemyOverlay *boss;
+    i32 returnValue;
+
+    boss = SpellLifecycle::g_TargetSpellBosses12FE098[0];
+    *reinterpret_cast<EclOperands::Vector3 *>(enemy->bytes + 0x2B8C) =
+        *reinterpret_cast<const EclOperands::Vector3 *>(boss->bytes + 0x2B0C);
+    *reinterpret_cast<i32 *>(enemy->bytes + 0x2B6C) =
+        *reinterpret_cast<const i32 *>(boss->bytes + 0x2B6C);
+    *reinterpret_cast<i32 *>(enemy->bytes + 0x2B60) =
+        *reinterpret_cast<const i32 *>(boss->bytes + 0x2B60);
+    returnValue = *reinterpret_cast<i32 *>(boss->bytes + 0x72C);
+}
+
 #pragma var_order(modeForSwitch, instructionMode, squaredDistance, sqrtTemporary, \
                   distance, radius, bullet, i, request)
 void __fastcall EclOp121CancelBulletsInRadius(EclOperands::EnemyOverlay *enemy,

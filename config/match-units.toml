@@ -640,6 +640,13 @@ dir32_targets = [
 ]
 
 [[units.ecl-run.functions]]
+address = "0x00418260"
+symbol_base = "?EclOp121CopyPrimaryBossState@th07@@YIXPAUEnemyOverlay@EclOperands@1@PBUEclOp121InstructionOverlay@1@@Z"
+dir32_targets = [
+  "?g_TargetSpellBosses12FE098@SpellLifecycle@th07@@3PAPAUEnemyOverlay@12@A=spell_bosses_12FE098",
+]
+
+[[units.ecl-run.functions]]
 address = "0x00417C30"
 symbol_base = "?EclOp121RotateBullets@th07@@YIXPAUEnemyOverlay@EclOperands@1@PBUEclOp121InstructionOverlay@1@@Z"
 rel32_targets = [

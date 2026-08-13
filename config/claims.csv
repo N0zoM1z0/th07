@@ -1,2 +1,3 @@
 address,owner,started_utc,branch,notes
 0x00417E50,root,2026-08-13T07:20:44.712511Z,main,P0 opcode-121 cancel bullets in radius helper; coordinator-owned EclRun integration
+0x00418260,root,2026-08-13T07:47:16.183549Z,main,Opcode-121 neighboring boss-state copy helper semantic packet and exact-match assessment
