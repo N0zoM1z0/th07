@@ -5,6 +5,9 @@
 #include <math.h>
 #include <string.h>
 
+extern "C" f64 __cdecl _CIatan2();
+#pragma intrinsic(atan2)
+
 namespace th07
 {
 // The active difficulty bitmask is read at 0x004106EC.  Its owner and public
@@ -95,6 +98,7 @@ struct TargetPlayerOverlay
 
 struct TargetRngOverlay
 {
+    u16 GetRandomU16();
     u32 RandomU32();
     f32 RandomF32();
 };
@@ -598,10 +602,23 @@ run_ecl_top:
         }
         case 7:
         {
-            const i32 limit = ReadInt(rawEnemy, instruction, 1);
-            *WriteInt(rawEnemy, instruction) =
-                ReadInt(rawEnemy, instruction, 2) +
-                (limit ? EclOperands::g_TargetRng49FE20.RandomU32() % limit : 0);
+            i32 limit;
+            i32 base;
+            i32 randomValue;
+            if (instruction->operandFlags & 2)
+                limit = EclOperands::ResolveInt(rawEnemy, instruction->operand[1]);
+            else
+                limit = instruction->operand[1];
+            if (instruction->operandFlags & 4)
+                base = EclOperands::ResolveInt(rawEnemy, instruction->operand[2]);
+            else
+                base = instruction->operand[2];
+            if (limit)
+                randomValue = EclOperands::g_TargetRng49FE20.RandomU32() % limit;
+            else
+                randomValue = 0;
+            *EclOperands::ResolveIntLValue(rawEnemy, &instruction->operand[0], instruction->operandFlags, 0) =
+                randomValue + base;
             break;
         }
         case 8:
@@ -618,75 +635,312 @@ run_ecl_top:
             break;
         }
         case 9:
-            *WriteFloat(rawEnemy, instruction) = EclOperands::g_TargetRng49FE20.RandomF32() *
-                                                     ReadFloat(rawEnemy, instruction, 1) +
-                                                 ReadFloat(rawEnemy, instruction, 2);
+        {
+            f32 multiplier;
+            f32 addend;
+            f32 value;
+            if (instruction->operandFlags & 2)
+                multiplier = rawEnemy->ResolveFloat(*(const f32 *)&instruction->operand[1]);
+            else
+                multiplier = *(const f32 *)&instruction->operand[1];
+            if (instruction->operandFlags & 4)
+                addend = rawEnemy->ResolveFloat(*(const f32 *)&instruction->operand[2]);
+            else
+                addend = *(const f32 *)&instruction->operand[2];
+            value = EclOperands::g_TargetRng49FE20.RandomF32() * multiplier + addend;
+            *EclOperands::ResolveFloatLValue(rawEnemy, (f32 *)&instruction->operand[0],
+                                              instruction->operandFlags, 0) = value;
             break;
+        }
         case 10:
-            *WriteInt(rawEnemy, instruction) =
-                ReadInt(rawEnemy, instruction, 1) *
-                ((EclOperands::g_TargetRng49FE20.RandomU32() & 1) ? 1 : -1);
+        {
+            i32 multiplier;
+            if (instruction->operandFlags & 2)
+                multiplier = EclOperands::ResolveInt(rawEnemy, instruction->operand[1]);
+            else
+                multiplier = instruction->operand[1];
+            *EclOperands::ResolveIntLValue(rawEnemy, &instruction->operand[0], instruction->operandFlags, 0) =
+                ((EclOperands::g_TargetRng49FE20.GetRandomU16() & 1) ? 1 : -1) * multiplier;
             break;
+        }
         case 11:
-            *WriteFloat(rawEnemy, instruction) =
-                ((EclOperands::g_TargetRng49FE20.RandomU32() & 1) ? 1.0f : -1.0f) *
-                ReadFloat(rawEnemy, instruction, 1);
+        {
+            f32 multiplier;
+            f32 sign;
+            if (EclOperands::g_TargetRng49FE20.GetRandomU16() & 1)
+                sign = 1.0f;
+            else
+                sign = -1.0f;
+            if (instruction->operandFlags & 2)
+                multiplier = rawEnemy->ResolveFloat(*(const f32 *)&instruction->operand[1]);
+            else
+                multiplier = *(const f32 *)&instruction->operand[1];
+            *EclOperands::ResolveFloatLValue(rawEnemy, (f32 *)&instruction->operand[0],
+                                              instruction->operandFlags, 0) = sign * multiplier;
             break;
+        }
+        case 17:
+            ++*EclOperands::ResolveIntLValue(rawEnemy, &instruction->operand[0], instruction->operandFlags, 0);
+            break;
+        case 18:
+            --*EclOperands::ResolveIntLValue(rawEnemy, &instruction->operand[0], instruction->operandFlags, 0);
+            break;
+        case 43:
+        {
+            i32 bossIndex;
+            i32 value;
+            if (instruction->operandFlags & 2)
+            {
+                if (instruction->operandFlags & 4)
+                    bossIndex = EclOperands::ResolveInt(rawEnemy, instruction->operand[2]);
+                else
+                    bossIndex = instruction->operand[2];
+                value = EclOperands::ResolveInt(
+                    (EclOperands::EnemyOverlay *)SpellLifecycle::g_TargetSpellBosses12FE098[bossIndex],
+                    instruction->operand[1]);
+            }
+            else
+            {
+                value = instruction->operand[1];
+            }
+            *EclOperands::ResolveIntLValue(rawEnemy, &instruction->operand[0], instruction->operandFlags, 0) = value;
+            break;
+        }
+        case 44:
+        {
+            i32 bossIndex;
+            f32 value;
+            if (instruction->operandFlags & 2)
+            {
+                if (instruction->operandFlags & 4)
+                    bossIndex = EclOperands::ResolveInt(rawEnemy, instruction->operand[2]);
+                else
+                    bossIndex = instruction->operand[2];
+                value = ((EclOperands::EnemyOverlay *)SpellLifecycle::g_TargetSpellBosses12FE098[bossIndex])
+                            ->ResolveFloat(*(const f32 *)&instruction->operand[1]);
+            }
+            else
+            {
+                value = *(const f32 *)&instruction->operand[1];
+            }
+            *EclOperands::ResolveFloatLValue(rawEnemy, (f32 *)&instruction->operand[0],
+                                              instruction->operandFlags, 0) = value;
+            break;
+        }
 
         // 0x0c--0x10: target integer ALU block.  The order of operands is
         // taken from the target stores, rather than from the TH06 enum.
         case 12:
-            *WriteInt(rawEnemy, instruction) = ReadInt(rawEnemy, instruction, 1) + ReadInt(rawEnemy, instruction, 2);
+        {
+            i32 left;
+            i32 right;
+            if (instruction->operandFlags & 2)
+                left = EclOperands::ResolveInt(rawEnemy, instruction->operand[1]);
+            else
+                left = instruction->operand[1];
+            if (instruction->operandFlags & 4)
+                right = EclOperands::ResolveInt(rawEnemy, instruction->operand[2]);
+            else
+                right = instruction->operand[2];
+            *EclOperands::ResolveIntLValue(rawEnemy, &instruction->operand[0], instruction->operandFlags, 0) =
+                left + right;
             break;
-        case 13:
-            *WriteInt(rawEnemy, instruction) = ReadInt(rawEnemy, instruction, 1) - ReadInt(rawEnemy, instruction, 2);
-            break;
-        case 14:
-            *WriteInt(rawEnemy, instruction) = ReadInt(rawEnemy, instruction, 1) * ReadInt(rawEnemy, instruction, 2);
-            break;
-        case 15:
-            *WriteInt(rawEnemy, instruction) = ReadInt(rawEnemy, instruction, 1) / ReadInt(rawEnemy, instruction, 2);
-            break;
-        case 16:
-            *WriteInt(rawEnemy, instruction) = ReadInt(rawEnemy, instruction, 1) % ReadInt(rawEnemy, instruction, 2);
-            break;
-        case 17:
-            ++*WriteInt(rawEnemy, instruction);
-            break;
-        case 18:
-            --*WriteInt(rawEnemy, instruction);
-            break;
-
-        // 0x13--0x19: target float ALU block.  The direct Ecl_ResolveFloat
-        // and Ecl_ResolveFloatLValue calls are recorded in the cached packet.
+        }
         case 19:
-            *WriteFloat(rawEnemy, instruction) = ReadFloat(rawEnemy, instruction, 1) + ReadFloat(rawEnemy, instruction, 2);
+        {
+            f32 left;
+            f32 right;
+            if (instruction->operandFlags & 2)
+                left = rawEnemy->ResolveFloat(*(const f32 *)&instruction->operand[1]);
+            else
+                left = *(const f32 *)&instruction->operand[1];
+            if (instruction->operandFlags & 4)
+                right = rawEnemy->ResolveFloat(*(const f32 *)&instruction->operand[2]);
+            else
+                right = *(const f32 *)&instruction->operand[2];
+            *EclOperands::ResolveFloatLValue(rawEnemy, (f32 *)&instruction->operand[0],
+                                              instruction->operandFlags, 0) = left + right;
             break;
+        }
+        case 13:
+        {
+            i32 left;
+            i32 right;
+            if (instruction->operandFlags & 2)
+                left = EclOperands::ResolveInt(rawEnemy, instruction->operand[1]);
+            else
+                left = instruction->operand[1];
+            if (instruction->operandFlags & 4)
+                right = EclOperands::ResolveInt(rawEnemy, instruction->operand[2]);
+            else
+                right = instruction->operand[2];
+            *EclOperands::ResolveIntLValue(rawEnemy, &instruction->operand[0], instruction->operandFlags, 0) =
+                left - right;
+            break;
+        }
         case 20:
-            *WriteFloat(rawEnemy, instruction) = ReadFloat(rawEnemy, instruction, 1) - ReadFloat(rawEnemy, instruction, 2);
+        {
+            f32 left;
+            f32 right;
+            if (instruction->operandFlags & 2)
+                left = rawEnemy->ResolveFloat(*(const f32 *)&instruction->operand[1]);
+            else
+                left = *(const f32 *)&instruction->operand[1];
+            if (instruction->operandFlags & 4)
+                right = rawEnemy->ResolveFloat(*(const f32 *)&instruction->operand[2]);
+            else
+                right = *(const f32 *)&instruction->operand[2];
+            *EclOperands::ResolveFloatLValue(rawEnemy, (f32 *)&instruction->operand[0],
+                                              instruction->operandFlags, 0) = left - right;
             break;
+        }
+        case 14:
+        {
+            i32 left;
+            i32 right;
+            if (instruction->operandFlags & 2)
+                left = EclOperands::ResolveInt(rawEnemy, instruction->operand[1]);
+            else
+                left = instruction->operand[1];
+            if (instruction->operandFlags & 4)
+                right = EclOperands::ResolveInt(rawEnemy, instruction->operand[2]);
+            else
+                right = instruction->operand[2];
+            *EclOperands::ResolveIntLValue(rawEnemy, &instruction->operand[0], instruction->operandFlags, 0) =
+                left * right;
+            break;
+        }
         case 21:
-            *WriteFloat(rawEnemy, instruction) = ReadFloat(rawEnemy, instruction, 1) * ReadFloat(rawEnemy, instruction, 2);
+        {
+            f32 left;
+            f32 right;
+            if (instruction->operandFlags & 2)
+                left = rawEnemy->ResolveFloat(*(const f32 *)&instruction->operand[1]);
+            else
+                left = *(const f32 *)&instruction->operand[1];
+            if (instruction->operandFlags & 4)
+                right = rawEnemy->ResolveFloat(*(const f32 *)&instruction->operand[2]);
+            else
+                right = *(const f32 *)&instruction->operand[2];
+            *EclOperands::ResolveFloatLValue(rawEnemy, (f32 *)&instruction->operand[0],
+                                              instruction->operandFlags, 0) = left * right;
             break;
+        }
+        case 15:
+        {
+            i32 left;
+            i32 right;
+            if (instruction->operandFlags & 2)
+                left = EclOperands::ResolveInt(rawEnemy, instruction->operand[1]);
+            else
+                left = instruction->operand[1];
+            if (instruction->operandFlags & 4)
+                right = EclOperands::ResolveInt(rawEnemy, instruction->operand[2]);
+            else
+                right = instruction->operand[2];
+            *EclOperands::ResolveIntLValue(rawEnemy, &instruction->operand[0], instruction->operandFlags, 0) =
+                left / right;
+            break;
+        }
         case 22:
-            *WriteFloat(rawEnemy, instruction) = ReadFloat(rawEnemy, instruction, 1) / ReadFloat(rawEnemy, instruction, 2);
+        {
+            f32 left;
+            f32 right;
+            if (instruction->operandFlags & 2)
+                left = rawEnemy->ResolveFloat(*(const f32 *)&instruction->operand[1]);
+            else
+                left = *(const f32 *)&instruction->operand[1];
+            if (instruction->operandFlags & 4)
+                right = rawEnemy->ResolveFloat(*(const f32 *)&instruction->operand[2]);
+            else
+                right = *(const f32 *)&instruction->operand[2];
+            *EclOperands::ResolveFloatLValue(rawEnemy, (f32 *)&instruction->operand[0],
+                                              instruction->operandFlags, 0) = left / right;
             break;
+        }
+        case 16:
+        {
+            i32 left;
+            i32 right;
+            if (instruction->operandFlags & 2)
+                left = EclOperands::ResolveInt(rawEnemy, instruction->operand[1]);
+            else
+                left = instruction->operand[1];
+            if (instruction->operandFlags & 4)
+                right = EclOperands::ResolveInt(rawEnemy, instruction->operand[2]);
+            else
+                right = instruction->operand[2];
+            *EclOperands::ResolveIntLValue(rawEnemy, &instruction->operand[0], instruction->operandFlags, 0) =
+                left % right;
+            break;
+        }
         case 23:
-            *WriteFloat(rawEnemy, instruction) = (f32)fmod(ReadFloat(rawEnemy, instruction, 1),
-                                                            ReadFloat(rawEnemy, instruction, 2));
+        {
+            f32 left;
+            f32 right;
+            if (instruction->operandFlags & 2)
+                left = rawEnemy->ResolveFloat(*(const f32 *)&instruction->operand[1]);
+            else
+                left = *(const f32 *)&instruction->operand[1];
+            if (instruction->operandFlags & 4)
+                right = rawEnemy->ResolveFloat(*(const f32 *)&instruction->operand[2]);
+            else
+                right = *(const f32 *)&instruction->operand[2];
+            *EclOperands::ResolveFloatLValue(rawEnemy, (f32 *)&instruction->operand[0],
+                                              instruction->operandFlags, 0) = (f32)fmod(left, right);
             break;
-        case 24:
-            *WriteFloat(rawEnemy, instruction) = (f32)sin(ReadFloat(rawEnemy, instruction, 1));
-            break;
-        case 25:
-            *WriteFloat(rawEnemy, instruction) = (f32)cos(ReadFloat(rawEnemy, instruction, 1));
-            break;
+        }
 
-        // The cached target at 0x004114DA resolves the four float operands
-        // before calling the atan helper.  Its exact helper ABI is still an
-        // owner-lane dependency, so do not substitute a host-library atan2.
+        case 24:
+        {
+            f32 value;
+            if (instruction->operandFlags & 2)
+                value = rawEnemy->ResolveFloat(*(const f32 *)&instruction->operand[1]);
+            else
+                value = *(const f32 *)&instruction->operand[1];
+            *EclOperands::ResolveFloatLValue(rawEnemy, (f32 *)&instruction->operand[0],
+                                              instruction->operandFlags, 0) = (f32)sin(value);
+            break;
+        }
+        case 25:
+        {
+            f32 value;
+            if (instruction->operandFlags & 2)
+                value = rawEnemy->ResolveFloat(*(const f32 *)&instruction->operand[1]);
+            else
+                value = *(const f32 *)&instruction->operand[1];
+            *EclOperands::ResolveFloatLValue(rawEnemy, (f32 *)&instruction->operand[0],
+                                              instruction->operandFlags, 0) = (f32)cos(value);
+            break;
+        }
+
         case 26:
-            return ZUN_ERROR;
+        {
+            f32 operand3;
+            f32 operand1;
+            f32 operand4;
+            f32 operand2;
+            if (instruction->operandFlags & 8)
+                operand3 = rawEnemy->ResolveFloat(*(const f32 *)&instruction->operand[3]);
+            else
+                operand3 = *(const f32 *)&instruction->operand[3];
+            if (instruction->operandFlags & 2)
+                operand1 = rawEnemy->ResolveFloat(*(const f32 *)&instruction->operand[1]);
+            else
+                operand1 = *(const f32 *)&instruction->operand[1];
+            if (instruction->operandFlags & 16)
+                operand4 = rawEnemy->ResolveFloat(*(const f32 *)&instruction->operand[4]);
+            else
+                operand4 = *(const f32 *)&instruction->operand[4];
+            if (instruction->operandFlags & 4)
+                operand2 = rawEnemy->ResolveFloat(*(const f32 *)&instruction->operand[2]);
+            else
+                operand2 = *(const f32 *)&instruction->operand[2];
+            *EclOperands::ResolveFloatLValue(rawEnemy, (f32 *)&instruction->operand[0],
+                                              instruction->operandFlags, 0) =
+                (f32)atan2(operand3 - operand1, operand4 - operand2);
+            break;
+        }
 
         // Conditional jumps 0x1c--0x27 update the instruction time from +0x14
         // and branch by the signed +0x18 displacement.  Their comparison

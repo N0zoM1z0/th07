@@ -541,6 +541,7 @@ rel32_targets = [
   "?Decrement@ZunTimer@th07@@QAEXH@Z=0x004394C7",
   "?Target424C00@th07@@YAXPAMM@Z=0x00424C00",
   "?Target42F5A2@th07@@YAXH@Z=0x0042F5A2",
+  "?GetRandomU16@TargetRngOverlay@EclOperands@th07@@QAEGXZ=0x00431870",
   "?RandomU32@TargetRngOverlay@EclOperands@th07@@QAEIXZ=0x004318D0",
   "?RandomF32@TargetRngOverlay@EclOperands@th07@@QAEMXZ=0x00431900",
   "?AngleToPlayer@TargetPlayerOverlay@EclOperands@th07@@QAEMPBUVector3@23@@Z=0x00442370",
@@ -602,6 +603,7 @@ dir32_targets = [
   "__real@3f490fdb=ecl_real_pi_over_4",
   "__real@4016cbe4=ecl_real_three_pi_over_4",
   "__real@00000000=__real@00000000",
+  "__real@42700000=ecl_real_60",
   "__real@42c00000=ecl_real_96",
   "__real@43900000=ecl_real_288",
   "__real@43000000=vc7_auto_00498B24_00000000",
@@ -620,6 +622,10 @@ source = "src/BulletRender.cpp"
 object = "build/match-units/BulletRender.obj"
 profile = "vc7-debug-od-no-gs-g6"
 notes = "Focused VC7 unoptimized no-GS G6 bullet and laser renderer probe over target-observed private overlays."
+
+[[units.bullet-render.functions]]
+address = "0x00417AF0"
+symbol_base = "?CalculateSinCos@th07@@YIXPAM0M@Z"
 
 [[units.bullet-render.functions]]
 address = "0x00426B00"

@@ -500,7 +500,12 @@ i32 AnmManager::ExecuteScript(AnmVm *vm)
         case 55: *GetIntPtr(vm, instruction, 0) = GetInt(vm, instruction, 1) / GetInt(vm, instruction, 2); break;
         case 56: *GetFloatPtr(vm, instruction, 0) = GetFloat(vm, instruction, 1) / GetFloat(vm, instruction, 2); break;
         case 57: *GetIntPtr(vm, instruction, 0) = GetInt(vm, instruction, 1) % GetInt(vm, instruction, 2); break;
-        case 58: *GetFloatPtr(vm, instruction, 0) = fmod(GetFloat(vm, instruction, 1), GetFloat(vm, instruction, 2)); break;
+        case 58:
+        {
+            float fmodResult = fmod(GetFloat(vm, instruction, 1), GetFloat(vm, instruction, 2));
+            *GetFloatPtr(vm, instruction, 0) = fmodResult;
+            break;
+        }
         case 39: *GetIntPtr(vm, instruction, 0) += GetInt(vm, instruction, 1); break;
         case 40: *GetFloatPtr(vm, instruction, 0) += GetFloat(vm, instruction, 1); break;
         case 41: *GetIntPtr(vm, instruction, 0) -= GetInt(vm, instruction, 1); break;
@@ -510,7 +515,12 @@ i32 AnmManager::ExecuteScript(AnmVm *vm)
         case 45: *GetIntPtr(vm, instruction, 0) /= GetInt(vm, instruction, 1); break;
         case 46: *GetFloatPtr(vm, instruction, 0) /= GetFloat(vm, instruction, 1); break;
         case 47: *GetIntPtr(vm, instruction, 0) %= GetInt(vm, instruction, 1); break;
-        case 48: *GetFloatPtr(vm, instruction, 0) = (float)fmod(GetFloat(vm, instruction, 0), GetFloat(vm, instruction, 1)); break;
+        case 48:
+        {
+            float fmodResult = (float)fmod(GetFloat(vm, instruction, 0), GetFloat(vm, instruction, 1));
+            *GetFloatPtr(vm, instruction, 0) = fmodResult;
+            break;
+        }
         case 59: { i32 range = GetInt(vm, instruction, 1); *GetIntPtr(vm, instruction, 0) = range ? g_AnmRng.RandomU32() % range : 0; break; }
         case 60: *GetFloatPtr(vm, instruction, 0) = g_AnmRng.RandomF32() * GetFloat(vm, instruction, 1); break;
         case 61: *GetFloatPtr(vm, instruction, 0) = (float)sin(GetFloat(vm, instruction, 1)); break;

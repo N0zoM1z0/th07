@@ -129,6 +129,7 @@ player_update_real_neg_0_94247782,0x00498D08,3a4671bf,0x0,Exact target player ro
 player_update_real_neg_2_1991148,0x00498D0C,4cbe0cc0,0x0,Exact target player rotation lower clamp,literal
 player_update_real_pi_over_25,0x00498BEC,fdad803d,0x0,Exact target positive player rotation step,literal
 ecl_real_0_3,0x00498A88,9a99993e,0x0,Exact target float 0.3 used by ECL projectile parameters,literal
+ecl_real_60,0x00498A48,00007042,0x0,Exact target float 60 used by RunEcl timer conversion at 0x00417748,literal
 ecl_real_96,0x00498C54,0000c042,0x0,Exact target float 96 used by ECL constrained random heading,literal
 ecl_real_288,0x00498C78,00009043,0x0,Exact target float 288 used by ECL constrained random heading,literal
 ecl_real_pi_over_4,0x00498CD0,db0f493f,0x0,Exact target float pi over four used by ECL constrained random heading,literal

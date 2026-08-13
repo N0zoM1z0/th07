@@ -70,7 +70,18 @@ struct BulletRenderLaser
 typedef char BulletRenderLaser_size[(sizeof(BulletRenderLaser) == 0x4EC) ? 1 : -1];
 
 // 0x417AF0: fsincos stores sine through ECX and cosine through EDX.
-extern void __fastcall CalculateSinCos(f32 *sine, f32 *cosine, f32 angle);
+void __fastcall CalculateSinCos(f32 *sine, f32 *cosine, f32 angle)
+{
+    __asm
+    {
+        fld angle
+        fsincos
+        mov eax, cosine
+        fstp DWORD PTR[eax]
+        mov eax, sine
+        fstp DWORD PTR[eax]
+    }
+}
 extern f32 __stdcall AddNormalizeAngle(f32 first, f32 second);
 
 struct BulletRenderAnmManager
