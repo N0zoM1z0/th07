@@ -87,3 +87,4 @@ address,name,module,confidence,evidence
 0x0045F960,PbgArchive_read_decompress_entry,pbg,observed,Exact target archive read decode and temporary ownership flow plus strict VC7 comparison
 0x0045F710,PbgArchive_load,pbg,observed,Exact target archive open parse ownership and SEH cleanup flow plus strict VC7 comparison
 0x0045FB50,PbgArchive_parse_header,pbg,observed,Exact target raw PBG4 header parse decode entry allocation and cleanup flow plus strict VC7 comparison
+0x0045FDE0,PbgArchive_alloc_entries,pbg,observed,Exact target archive entry vector allocation raw-table cursor and failure ownership flow plus strict VC7 comparison

@@ -15,6 +15,11 @@ struct PbgArchiveEntry
     u32 decompressedSize;
     u32 unknown;
 
+    PbgArchiveEntry()
+    {
+        filename = NULL;
+    }
+
     ~PbgArchiveEntry()
     {
         if (filename != NULL)
@@ -40,6 +45,18 @@ class PbgArchive
     bool ParseHeader(const char *filename);
     PbgArchiveEntry *AllocEntries(void *entryBuffer, i32 count, u32 dataOffset);
     void *ReadDecompressEntry(const char *filename, void *outBuffer);
+
+    static inline i32 SeekPastInt(void **cursor)
+    {
+        *cursor = (i32 *)*cursor + 1;
+        return *(i32 *)*cursor;
+    }
+
+    static inline void *SeekPastString(void **cursor)
+    {
+        *cursor = (char *)*cursor + strlen((char *)*cursor) + 1;
+        return *cursor;
+    }
 
   private:
     PbgArchiveEntry *m_entries;

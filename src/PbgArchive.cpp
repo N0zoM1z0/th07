@@ -220,6 +220,45 @@ parseError:
     return false;
 }
 
+#pragma var_order(entryData, index, entries)
+PbgArchiveEntry *PbgArchive::AllocEntries(void *entryBuffer, i32 count, u32 dataOffset)
+{
+    void *entryData;
+    i32 index;
+    PbgArchiveEntry *entries = NULL;
+
+    entries = new PbgArchiveEntry[count + 1]();
+    if (entries == NULL)
+    {
+        goto allocationError;
+    }
+
+    entryData = entryBuffer;
+    for (index = 0; index < count; ++index)
+    {
+        entries[index].filename = CopyFileName((const char *)entryData);
+        SeekPastString(&entryData);
+        entries[index].dataOffset = *(u32 *)entryData;
+        SeekPastInt(&entryData);
+        entries[index].decompressedSize = *(u32 *)entryData;
+        SeekPastInt(&entryData);
+        entries[index].unknown = *(u32 *)entryData;
+        SeekPastInt(&entryData);
+    }
+
+    entries[count].dataOffset = dataOffset;
+    entries[count].decompressedSize = 0;
+    return entries;
+
+allocationError:
+    if (entries != NULL)
+    {
+        delete[] entries;
+        entries = NULL;
+    }
+    return NULL;
+}
+
 #pragma var_order(entry, decompressedSize, decompressedData, compressedData, compressedSize)
 void *PbgArchive::ReadDecompressEntry(const char *filename, void *outBuffer)
 {
