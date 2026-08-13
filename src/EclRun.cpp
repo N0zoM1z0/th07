@@ -182,6 +182,13 @@ void __fastcall EclOp121CopyBossTransform(EclOperands::EnemyOverlay *enemy,
     reinterpret_cast<EclOp121MovementBits *>(enemy->bytes + 0x2E2B)->copyTransform = 1;
 }
 
+// Target 0x00418110 is an intentional empty opcode-121 table entry.  The
+// unoptimized VC7 parameter homes are part of its observed 16-byte body.
+void __fastcall EclOp121NoOp(EclOperands::EnemyOverlay *enemy,
+                             const EclOp121InstructionOverlay *instruction)
+{
+}
+
 namespace
 {
 
@@ -1161,19 +1168,53 @@ run_ecl_top:
         // complete Enemy type is implied: each store below is an attested
         // offset in this dispatcher.
         case 46:
-            FloatAt(rawEnemy, 0x2B0C) = ReadFloat(rawEnemy, instruction, 0);
-            FloatAt(rawEnemy, 0x2B10) = ReadFloat(rawEnemy, instruction, 1);
-            FloatAt(rawEnemy, 0x2B14) = ReadFloat(rawEnemy, instruction, 2);
+        {
+            f32 x;
+            f32 y;
+            f32 z;
+            if (instruction->operandFlags & 1)
+                x = rawEnemy->ResolveFloat(*(const f32 *)&instruction->operand[0]);
+            else
+                x = *(const f32 *)&instruction->operand[0];
+            if (instruction->operandFlags & 2)
+                y = rawEnemy->ResolveFloat(*(const f32 *)&instruction->operand[1]);
+            else
+                y = *(const f32 *)&instruction->operand[1];
+            if (instruction->operandFlags & 4)
+                z = rawEnemy->ResolveFloat(*(const f32 *)&instruction->operand[2]);
+            else
+                z = *(const f32 *)&instruction->operand[2];
+            FloatAt(rawEnemy, 0x2B0C) = x;
+            FloatAt(rawEnemy, 0x2B10) = y;
+            FloatAt(rawEnemy, 0x2B14) = z;
             TargetClampEnemy(rawEnemy);
             break;
+        }
 
         case 47:
-            FloatAt(rawEnemy, 0x2B18) = ReadFloat(rawEnemy, instruction, 0);
-            FloatAt(rawEnemy, 0x2B1C) = ReadFloat(rawEnemy, instruction, 1);
-            FloatAt(rawEnemy, 0x2B20) = ReadFloat(rawEnemy, instruction, 2);
+        {
+            f32 x;
+            f32 y;
+            f32 z;
+            if (instruction->operandFlags & 1)
+                x = rawEnemy->ResolveFloat(*(const f32 *)&instruction->operand[0]);
+            else
+                x = *(const f32 *)&instruction->operand[0];
+            if (instruction->operandFlags & 2)
+                y = rawEnemy->ResolveFloat(*(const f32 *)&instruction->operand[1]);
+            else
+                y = *(const f32 *)&instruction->operand[1];
+            if (instruction->operandFlags & 4)
+                z = rawEnemy->ResolveFloat(*(const f32 *)&instruction->operand[2]);
+            else
+                z = *(const f32 *)&instruction->operand[2];
+            FloatAt(rawEnemy, 0x2B18) = x;
+            FloatAt(rawEnemy, 0x2B1C) = y;
+            FloatAt(rawEnemy, 0x2B20) = z;
             FloatAt(rawEnemy, 0x2B54) = FloatAt(rawEnemy, 0x2B1C);
             rawEnemy->bytes[ENEMY_MOVEMENT_FLAGS] &= 0xFC;
             break;
+        }
 
         case 48:
             FloatAt(rawEnemy, 0x2B58) = ReadFloat(rawEnemy, instruction, 0);

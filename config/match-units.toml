@@ -623,6 +623,10 @@ dir32_targets = [
   "?g_TargetSpellBosses12FE098@SpellLifecycle@th07@@3PAPAUEnemyOverlay@12@A=spell_bosses_12FE098",
 ]
 
+[[units.ecl-run.functions]]
+address = "0x00418110"
+symbol_base = "?EclOp121NoOp@th07@@YIXPAUEnemyOverlay@EclOperands@1@PBUEclOp121InstructionOverlay@1@@Z"
+
 [units.bullet-render]
 kind = "probe"
 source = "src/BulletRender.cpp"
