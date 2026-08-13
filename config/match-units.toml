@@ -1152,6 +1152,28 @@ dir32_targets = [
   "?g_EnemyCombatTemplate@th07@@3UEnemyCombatTemplate@1@A=enemy_combat_template_9ac6dc",
 ]
 
+[[units.enemy-callbacks.functions]]
+address = "0x0041FF80"
+symbol_base = "?HandleTimerCallback@EnemyCallbackOverlay@th07@@QAEHXZ"
+rel32_targets = [
+  "?CallEclSub@EclManagerCallbackOverlay@th07@@QAEXPAXF@Z=0x0040E530",
+  "?ClearBullets@BulletManagerCallbackOverlay@th07@@QAEXH@Z=0x00424740",
+  "__ftol2=0x0048B8A0",
+]
+dir32_targets = [
+  "?g_EclManagerCallbacks@th07@@3UEclManagerCallbackOverlay@1@A=ecl_manager_1347938",
+  "?g_EnemyCallbackPool@th07@@3PAUEnemyCallbackOverlay@1@A=enemy_callback_pool_9aea50",
+  "?g_EnemyCombatTemplate@th07@@3UEnemyCombatTemplate@1@A=enemy_combat_template_9ac6dc",
+  "?g_BulletManagerCallbacks@th07@@3UBulletManagerCallbackOverlay@1@A=spell_bullet_manager_62F958",
+  "?g_GameManagerCallbacks@th07@@3PAUGameManagerCallbackOverlay@1@A=?g_GameManager@th07@@3PAUGameManager@1@A",
+  "?g_SpellcardSeconds@th07@@3HA=enemy_spell_seconds_49fc0c",
+  "?g_SpellCaptureEligible@th07@@3HA=spell_capture_12FE0C4",
+  "?g_SpellActive@th07@@3HA=spell_active_12FE0C8",
+  "?g_SpellBaseScore@th07@@3HA=spell_base_score_12FE0CC",
+  "?g_RankValue@th07@@3HA=?g_RankValue@th07@@3HA",
+  "?g_EnemyRankFactor@th07@@3MB=enemy_real_0_25",
+]
+
 [units.enemy-spawn]
 kind = "probe"
 source = "src/EnemySpawn.cpp"

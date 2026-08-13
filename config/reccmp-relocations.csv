@@ -493,6 +493,8 @@ enemy_collision_real_0_7,0x00498B1C,3333333f,0x0,Target Enemy collision graze-bo
 enemy_collision_real_1_5,0x00498BDC,0000c03f,0x0,Target Enemy collision kill-box divisor 1.5,literal
 enemy_callback_pool_9aea50,0x009AEA50,00000000,0x0,Target zero-initialized EnemyManager 480-slot pool base used by both life and timer callbacks,literal
 enemy_combat_template_9ac6dc,0x009AC6DC,00000000,0x0,Target zero-initialized 0xD4-byte Enemy combat reset template,literal
+enemy_spell_seconds_49fc0c,0x0049FC0C,00000000,0x0,Target zero-initialized boss spell seconds display value,literal
+enemy_real_0_25,0x00498CC4,0000803e,0x0,Target float 0.25 rank decrease factor used by Enemy timer callback,literal
 ecl_real_10018,0x00498D5C,00881c46,0x0,Target-observed float 10018.0 constant used by the ECL dispatcher,literal
 ecl_real_10019,0x00498D58,008c1c46,0x0,Target-observed float 10019.0 constant used by the ECL dispatcher,literal
 ecl_real_10020,0x00498D54,00901c46,0x0,Target-observed float 10020.0 constant used by the ECL dispatcher,literal
