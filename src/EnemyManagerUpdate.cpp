@@ -423,10 +423,8 @@ static __forceinline void AdvanceEnemyTimer(EnemyManagerUpdateTimer *timer)
     g_EnemyManagerUpdateTimerManager.Advance(&timer->current, &timer->subFrameBits);
 }
 
-static __forceinline void PushTrailSample(EnemyManagerUpdateEnemy *enemy)
+static __forceinline void PushTrailSample(EnemyManagerUpdateEnemy *enemy, i32 &index)
 {
-    i32 index;
-
     if (enemy->TrailFlags())
     {
         for (index = enemy->TrailHistoryCount() - 1; index > 0; --index)
@@ -483,10 +481,8 @@ static __forceinline i32 EnemyTrailIsInBounds(EnemyManagerUpdateEnemy *enemy)
         enemy->PrimaryVm()->sprite->width, enemy->PrimaryVm()->sprite->height);
 }
 
-static __forceinline void ResetEnemyCombatState(EnemyManagerUpdateEnemy *enemy)
+static __forceinline void ResetEnemyCombatState(EnemyManagerUpdateEnemy *enemy, i32 &i)
 {
-    i32 i;
-
     *reinterpret_cast<f32 *>(enemy->raw + 0x2BA8) = -0.5f;
     *reinterpret_cast<f32 *>(enemy->raw + 0x2BAC) = 0.5f;
     *reinterpret_cast<i16 *>(enemy->raw + 0x2BB0) = 0;
@@ -706,7 +702,7 @@ static __forceinline void TrackLastEnemyHit(EnemyManagerUpdateEnemy *enemy)
     }
 }
 
-#pragma var_order(difficultyScale, extraDamage, bombHit, damage, enemyIndex, vmIndex, rewardScore, trailIndex, oldLife, enemy, bossHealthRatio, managerTimer, timelineInstruction)
+#pragma var_order(difficultyScale, extraDamage, bombHit, damage, enemyIndex, vmIndex, rewardScore, trailIndex, oldLife, enemy, resetIndex, bossHealthRatio, managerTimer, timelineInstruction)
 i32 EnemyManagerUpdateOverlay::OnUpdate()
 {
     EnemyManagerUpdateEnemy *enemy;
@@ -722,6 +718,7 @@ i32 EnemyManagerUpdateOverlay::OnUpdate()
     i32 bombHit;
     i32 timerCurrent;
     i32 enemyDeathScore;
+    i32 resetIndex;
     f32 bossHealthRatio;
     EnemyManagerUpdateTimer *managerTimer;
     void *timelineInstruction;
@@ -788,7 +785,7 @@ i32 EnemyManagerUpdateOverlay::OnUpdate()
                 InterpolateFollowTarget(enemy);
             }
 
-            PushTrailSample(enemy);
+            PushTrailSample(enemy, trailIndex);
 
             if (!enemy->PrimaryVm()->sprite)
                 enemy->SetNoSprite();
@@ -1174,7 +1171,7 @@ i32 EnemyManagerUpdateOverlay::OnUpdate()
                     }
                     if (enemy->DeathCallbackSub() >= 0)
                     {
-                        ResetEnemyCombatState(enemy);
+                        ResetEnemyCombatState(enemy, resetIndex);
                         g_EnemyManagerUpdateEclManager.CallEclSub(enemy->raw + 0x6E4,
                             (i16)enemy->DeathCallbackSub());
                         enemy->DeathCallbackSub() = -1;

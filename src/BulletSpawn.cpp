@@ -204,7 +204,7 @@ i32 BulletSpawnManager::SpawnOne(BulletSpawnRequest *request, i32 column, i32 ro
         break;
 
     case 2:
-        angle += request->angleStep;
+        angle += baseAngle;
         angle += column * 6.2831855f / request->columns;
         angle += row * request->angleStep + request->angleOffset;
         break;
@@ -215,7 +215,7 @@ i32 BulletSpawnManager::SpawnOne(BulletSpawnRequest *request, i32 column, i32 ro
         break;
 
     case 4:
-        angle += request->angleStep;
+        angle += baseAngle;
         angle += 3.1415927f / request->columns;
         angle += column * 6.2831855f / request->columns;
         angle += request->angleOffset;
