@@ -82,6 +82,7 @@ struct EnemyManagerLifecycle
     i32 OnDrawHighPriority();
     i32 OnDrawLowPriority();
     void Initialize();
+    i32 ReleaseAnmSlots17To20();
     i32 AddedCallback();
     i32 DeletedCallback();
 };
@@ -124,6 +125,15 @@ i32 __fastcall EnemyManagerLifecycle::RegisterChain(const char *enemyAnm, const 
     g_EnemyDrawLowChain.arg = manager;
     if (g_Chain.AddToDrawChain(&g_EnemyDrawLowChain, 7))
         return -1;
+    return 0;
+}
+
+i32 EnemyManagerLifecycle::ReleaseAnmSlots17To20()
+{
+    g_EnemyAnmManager->ReleaseAnm(17);
+    g_EnemyAnmManager->ReleaseAnm(18);
+    g_EnemyAnmManager->ReleaseAnm(19);
+    g_EnemyAnmManager->ReleaseAnm(20);
     return 0;
 }
 

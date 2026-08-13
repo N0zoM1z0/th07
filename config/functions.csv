@@ -131,7 +131,7 @@ address,size,span_end,current_name,proposed_name,module,status,match_percent,cal
 0x0041CA10,354,0x0041CB71,sub_41CA10,,,unclassified,0.00,unknown,,false,,,,
 0x0041CB80,596,0x0041CDD3,sub_41CB80,,,unclassified,0.00,unknown,,false,,,,
 0x0041CDE0,581,0x0041D024,sub_41CDE0,,,unclassified,0.00,unknown,,false,,,,
-0x0041D050,65,0x0041D090,sub_41D050,,,unclassified,0.00,unknown,,false,,,,
+0x0041D050,65,0x0041D090,sub_41D050,EnemyManager_release_anm_slots_17_to_20,enemy,matching,100.00,__thiscall,i32 EnemyManager_release_anm_slots_17_to_20(EnemyManagerLifecycle * this),false,src/EnemyLifecycle.cpp,python3 scripts/build.py --unit enemy-lifecycle --compare --json; strict exact 65/65 target and object SHA 0fc2b5fc03ae40c0662048427b9cd6ae2261e34e79b7ab52a6baae932ab88ce6 2026-08-13,root,Provisional behavior name. Target directly establishes the ECX receiver home global ANM manager member ABI slot sequence and zero return; caller table ownership remains unresolved.
 0x0041D0A0,165,0x0041D144,sub_41D0A0,,,unclassified,0.00,unknown,,false,,,,
 0x0041D150,35,0x0041D172,sub_41D150,Chain_cut_observed_reset_elements,chain,matching,100.00,__fastcall,void Chain_cut_observed_reset_elements(),false,src/Chain.cpp,python3 scripts/build.py --unit chain --compare --json; strict exact 35/35 target and object SHA 2d272aa4bca50a0044414891c58051c94869cf08762183dbeb993f78f5fbdc01 2026-08-13,root,Provisional behavior name. Target directly establishes both BSS element addresses the global Chain receiver and member-call ABI; no-argument target code cannot distinguish the source free-function convention.
 0x0041D180,357,0x0041D2E4,sub_41D180,,,unclassified,0.00,unknown,,false,,,,

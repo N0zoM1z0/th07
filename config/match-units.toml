@@ -1408,6 +1408,12 @@ dir32_targets = [
 ]
 
 [[units.enemy-lifecycle.functions]]
+address = "0x0041D050"
+symbol_base = "?ReleaseAnmSlots17To20@EnemyManagerLifecycle@th07@@QAEHXZ"
+rel32_targets = ["?ReleaseAnm@EnemyAnmManager@th07@@QAEXH@Z=0x0044E4E0"]
+dir32_targets = ["?g_EnemyAnmManager@th07@@3PAUEnemyAnmManager@1@A=?g_AnmManager@th07@@3PAUAnmManager@1@A"]
+
+[[units.enemy-lifecycle.functions]]
 address = "0x00422F40"
 symbol_base = "?RegisterChain@EnemyManagerLifecycle@th07@@SIHPBD0@Z"
 rel32_targets = [
