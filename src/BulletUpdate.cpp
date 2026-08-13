@@ -171,6 +171,19 @@ static __forceinline void ResetTimer(BulletUpdateTimer *timer)
     timer->previous = -999;
 }
 
+#pragma var_order(lifetimeTimer, collisionTimer)
+void BulletUpdateBullet::Clear()
+{
+    BulletUpdateTimer *lifetimeTimer;
+    BulletUpdateTimer *collisionTimer;
+
+    state = 0;
+    lifetimeTimer = &lifetime;
+    ResetTimer(lifetimeTimer);
+    collisionTimer = &this->collisionTimer;
+    ResetTimer(collisionTimer);
+}
+
 static __forceinline f32 TimerAsFramesFloat(BulletUpdateTimer *timer)
 {
     return (f32)timer->current + timer->subFrame;

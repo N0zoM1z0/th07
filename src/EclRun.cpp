@@ -946,41 +946,185 @@ run_ecl_top:
         // and branch by the signed +0x18 displacement.  Their comparison
         // polarity is target-observed at 0x00411945--0x00411F1B.
         case 28:
-            if (ReadInt(rawEnemy, instruction, 0) == ReadInt(rawEnemy, instruction, 1)) { ConditionalJump(rawEnemy, instruction); continue; }
+        {
+            i32 left;
+            i32 right;
+            if (instruction->operandFlags & 1)
+                left = EclOperands::ResolveInt(rawEnemy, instruction->operand[0]);
+            else
+                left = instruction->operand[0];
+            if (instruction->operandFlags & 2)
+                right = EclOperands::ResolveInt(rawEnemy, instruction->operand[1]);
+            else
+                right = instruction->operand[1];
+            if (left == right) { ConditionalJump(rawEnemy, instruction); continue; }
             break;
+        }
         case 29:
-            if (ReadFloat(rawEnemy, instruction, 0) == ReadFloat(rawEnemy, instruction, 1)) { ConditionalJump(rawEnemy, instruction); continue; }
+        {
+            f32 left;
+            f32 right;
+            if (instruction->operandFlags & 1)
+                left = rawEnemy->ResolveFloat(*(const f32 *)&instruction->operand[0]);
+            else
+                left = *(const f32 *)&instruction->operand[0];
+            if (instruction->operandFlags & 2)
+                right = rawEnemy->ResolveFloat(*(const f32 *)&instruction->operand[1]);
+            else
+                right = *(const f32 *)&instruction->operand[1];
+            if (left == right) { ConditionalJump(rawEnemy, instruction); continue; }
             break;
+        }
         case 30:
-            if (ReadInt(rawEnemy, instruction, 0) != ReadInt(rawEnemy, instruction, 1)) { ConditionalJump(rawEnemy, instruction); continue; }
+        {
+            i32 left;
+            i32 right;
+            if (instruction->operandFlags & 1)
+                left = EclOperands::ResolveInt(rawEnemy, instruction->operand[0]);
+            else
+                left = instruction->operand[0];
+            if (instruction->operandFlags & 2)
+                right = EclOperands::ResolveInt(rawEnemy, instruction->operand[1]);
+            else
+                right = instruction->operand[1];
+            if (left != right) { ConditionalJump(rawEnemy, instruction); continue; }
             break;
+        }
         case 31:
-            if (ReadFloat(rawEnemy, instruction, 0) != ReadFloat(rawEnemy, instruction, 1)) { ConditionalJump(rawEnemy, instruction); continue; }
+        {
+            f32 left;
+            f32 right;
+            if (instruction->operandFlags & 1)
+                left = rawEnemy->ResolveFloat(*(const f32 *)&instruction->operand[0]);
+            else
+                left = *(const f32 *)&instruction->operand[0];
+            if (instruction->operandFlags & 2)
+                right = rawEnemy->ResolveFloat(*(const f32 *)&instruction->operand[1]);
+            else
+                right = *(const f32 *)&instruction->operand[1];
+            if (left != right) { ConditionalJump(rawEnemy, instruction); continue; }
             break;
+        }
         case 32:
-            if (ReadInt(rawEnemy, instruction, 0) < ReadInt(rawEnemy, instruction, 1)) { ConditionalJump(rawEnemy, instruction); continue; }
+        {
+            i32 left;
+            i32 right;
+            if (instruction->operandFlags & 1)
+                left = EclOperands::ResolveInt(rawEnemy, instruction->operand[0]);
+            else
+                left = instruction->operand[0];
+            if (instruction->operandFlags & 2)
+                right = EclOperands::ResolveInt(rawEnemy, instruction->operand[1]);
+            else
+                right = instruction->operand[1];
+            if (left < right) { ConditionalJump(rawEnemy, instruction); continue; }
             break;
+        }
         case 33:
-            if (ReadFloat(rawEnemy, instruction, 0) < ReadFloat(rawEnemy, instruction, 1)) { ConditionalJump(rawEnemy, instruction); continue; }
+        {
+            f32 left;
+            f32 right;
+            if (instruction->operandFlags & 1)
+                left = rawEnemy->ResolveFloat(*(const f32 *)&instruction->operand[0]);
+            else
+                left = *(const f32 *)&instruction->operand[0];
+            if (instruction->operandFlags & 2)
+                right = rawEnemy->ResolveFloat(*(const f32 *)&instruction->operand[1]);
+            else
+                right = *(const f32 *)&instruction->operand[1];
+            if (left < right) { ConditionalJump(rawEnemy, instruction); continue; }
             break;
+        }
         case 34:
-            if (ReadInt(rawEnemy, instruction, 0) > ReadInt(rawEnemy, instruction, 1)) { ConditionalJump(rawEnemy, instruction); continue; }
+        {
+            i32 left;
+            i32 right;
+            if (instruction->operandFlags & 1)
+                left = EclOperands::ResolveInt(rawEnemy, instruction->operand[0]);
+            else
+                left = instruction->operand[0];
+            if (instruction->operandFlags & 2)
+                right = EclOperands::ResolveInt(rawEnemy, instruction->operand[1]);
+            else
+                right = instruction->operand[1];
+            if (left > right) { ConditionalJump(rawEnemy, instruction); continue; }
             break;
+        }
         case 35:
-            if (ReadFloat(rawEnemy, instruction, 0) > ReadFloat(rawEnemy, instruction, 1)) { ConditionalJump(rawEnemy, instruction); continue; }
+        {
+            f32 left;
+            f32 right;
+            if (instruction->operandFlags & 1)
+                left = rawEnemy->ResolveFloat(*(const f32 *)&instruction->operand[0]);
+            else
+                left = *(const f32 *)&instruction->operand[0];
+            if (instruction->operandFlags & 2)
+                right = rawEnemy->ResolveFloat(*(const f32 *)&instruction->operand[1]);
+            else
+                right = *(const f32 *)&instruction->operand[1];
+            if (left > right) { ConditionalJump(rawEnemy, instruction); continue; }
             break;
+        }
         case 36:
-            if (ReadInt(rawEnemy, instruction, 0) <= ReadInt(rawEnemy, instruction, 1)) { ConditionalJump(rawEnemy, instruction); continue; }
+        {
+            i32 left;
+            i32 right;
+            if (instruction->operandFlags & 1)
+                left = EclOperands::ResolveInt(rawEnemy, instruction->operand[0]);
+            else
+                left = instruction->operand[0];
+            if (instruction->operandFlags & 2)
+                right = EclOperands::ResolveInt(rawEnemy, instruction->operand[1]);
+            else
+                right = instruction->operand[1];
+            if (left <= right) { ConditionalJump(rawEnemy, instruction); continue; }
             break;
+        }
         case 37:
-            if (ReadFloat(rawEnemy, instruction, 0) <= ReadFloat(rawEnemy, instruction, 1)) { ConditionalJump(rawEnemy, instruction); continue; }
+        {
+            f32 left;
+            f32 right;
+            if (instruction->operandFlags & 1)
+                left = rawEnemy->ResolveFloat(*(const f32 *)&instruction->operand[0]);
+            else
+                left = *(const f32 *)&instruction->operand[0];
+            if (instruction->operandFlags & 2)
+                right = rawEnemy->ResolveFloat(*(const f32 *)&instruction->operand[1]);
+            else
+                right = *(const f32 *)&instruction->operand[1];
+            if (left <= right) { ConditionalJump(rawEnemy, instruction); continue; }
             break;
+        }
         case 38:
-            if (ReadInt(rawEnemy, instruction, 0) >= ReadInt(rawEnemy, instruction, 1)) { ConditionalJump(rawEnemy, instruction); continue; }
+        {
+            i32 left;
+            i32 right;
+            if (instruction->operandFlags & 1)
+                left = EclOperands::ResolveInt(rawEnemy, instruction->operand[0]);
+            else
+                left = instruction->operand[0];
+            if (instruction->operandFlags & 2)
+                right = EclOperands::ResolveInt(rawEnemy, instruction->operand[1]);
+            else
+                right = instruction->operand[1];
+            if (left >= right) { ConditionalJump(rawEnemy, instruction); continue; }
             break;
+        }
         case 39:
-            if (ReadFloat(rawEnemy, instruction, 0) >= ReadFloat(rawEnemy, instruction, 1)) { ConditionalJump(rawEnemy, instruction); continue; }
+        {
+            f32 left;
+            f32 right;
+            if (instruction->operandFlags & 1)
+                left = rawEnemy->ResolveFloat(*(const f32 *)&instruction->operand[0]);
+            else
+                left = *(const f32 *)&instruction->operand[0];
+            if (instruction->operandFlags & 2)
+                right = rawEnemy->ResolveFloat(*(const f32 *)&instruction->operand[1]);
+            else
+                right = *(const f32 *)&instruction->operand[1];
+            if (left >= right) { ConditionalJump(rawEnemy, instruction); continue; }
             break;
+        }
 
         // 0x2d--0x3f are target-observed direct Enemy state transitions.  No
         // complete Enemy type is implied: each store below is an attested

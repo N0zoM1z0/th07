@@ -1001,6 +1001,10 @@ profile = "vc7-debug-od-no-gs-g6-no-op"
 notes = "High-leverage target-observed BulletManager main update skeleton covering 1024 bullets and 64 lasers; canonical comparison tracks structural convergence."
 
 [[units.bullet-update.functions]]
+address = "0x00417B20"
+symbol_base = "?Clear@BulletUpdateBullet@th07@@QAEXXZ"
+
+[[units.bullet-update.functions]]
 address = "0x00425A50"
 symbol_base = "?OnUpdate@BulletManager@th07@@SIHPAV12@@Z"
 rel32_targets = [
