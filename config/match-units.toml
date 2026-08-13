@@ -2653,6 +2653,16 @@ dir32_targets = [
   "??1PbgArchiveEntry@th07@@QAE@XZ=0x0045F680",
 ]
 
+[[units.pbg-archive.functions]]
+address = "0x0045FAB0"
+symbol_base = "?GetEntryDecompressedSize@PbgArchive@th07@@QAEIPBD@Z"
+rel32_targets = ["?FindEntry@PbgArchive@th07@@QAEPAUPbgArchiveEntry@2@PBD@Z=0x0045FAE0"]
+
+[[units.pbg-archive.functions]]
+address = "0x0045FAE0"
+symbol_base = "?FindEntry@PbgArchive@th07@@QAEPAUPbgArchiveEntry@2@PBD@Z"
+rel32_targets = ["__stricmp=0x00489E45"]
+
 [[units.pbg-file.functions]]
 address = "0x0045E590"
 symbol_base = "??_GCPbgFile@th07@@UAEPAXI@Z"

@@ -81,3 +81,5 @@ address,name,module,confidence,evidence
 0x0045F6F0,PbgArchive_dtor,pbg,observed,Exact target Release delegation and strict VC7 comparison
 0x0045F800,PbgArchive_release,pbg,observed,Exact target archive ownership release and strict VC7 comparison
 0x0045F8D0,PbgArchiveEntry_vector_deleting_dtor,pbg,observed,Exact target VC7 entry array deletion paths and strict comparison
+0x0045FAB0,PbgArchive_get_entry_decompressed_size,pbg,observed,Exact target entry lookup plus decompressed-size field read and strict VC7 comparison
+0x0045FAE0,PbgArchive_find_entry,pbg,observed,Exact target 16-byte entry search and case-insensitive name comparison plus strict VC7 comparison

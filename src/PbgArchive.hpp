@@ -33,6 +33,8 @@ class PbgArchive
     PbgArchive();
     ~PbgArchive();
     void Release();
+    u32 GetEntryDecompressedSize(const char *filename);
+    PbgArchiveEntry *FindEntry(const char *filename);
 
   private:
     PbgArchiveEntry *m_entries;
