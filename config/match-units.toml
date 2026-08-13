@@ -1245,6 +1245,18 @@ dir32_targets = [
   "?g_GuiUpdateState@th07@@3HA=?g_GuiUpdateState@th07@@3HA",
 ]
 
+[units.gui-text-teardown]
+kind = "probe"
+source = "src/GuiTextTeardown.cpp"
+object = "build/match-units/GuiTextTeardown.obj"
+profile = "vc7-debug-od-no-gs-g6"
+notes = "TH07 target-observed GUI text-resource teardown wrapper."
+
+[[units.gui-text-teardown.functions]]
+address = "0x0042D03A"
+symbol_base = "?Destroy@GuiTextTeardown@th07@@QAEXXZ"
+rel32_targets = ["?Target428B19@GuiTextTeardown@th07@@QAEXXZ=0x00428B19"]
+
 [units.bullet-update]
 kind = "probe"
 source = "src/BulletUpdate.cpp"

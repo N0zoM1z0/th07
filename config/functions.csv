@@ -231,7 +231,7 @@ address,size,span_end,current_name,proposed_name,module,status,match_percent,cal
 0x0042ADAB,2136,0x0042B602,sub_42ADAB,,,unclassified,0.00,unknown,,false,,,,
 0x0042B603,3956,0x0042C576,sub_42B603,,,unclassified,0.00,unknown,,false,,,,
 0x0042C577,2755,0x0042D039,sub_42C577,,,unclassified,0.00,unknown,,false,,,,
-0x0042D03A,17,0x0042D04A,sub_42D03A,,,unclassified,0.00,unknown,,false,,,,
+0x0042D03A,17,0x0042D04A,sub_42D03A,Gui_text_teardown_destroy,gui,matching,100.00,__thiscall,void Gui_text_teardown_destroy(GuiTextTeardown * this),false,src/GuiTextTeardown.cpp,python3 scripts/build.py --unit gui-text-teardown --compare --json; strict exact 17/17 target and object SHA c65f666c3f0ac4d3ad93a476dab31c0098701672958ebfd8b775286cb6e60814 2026-08-13,root,Target invokes 0x00428B19 on its receiver then returns. TH06 uniquely related function labels its counterpart TextHelper destructor; TH07 owner name remains provisional.
 0x0042D04B,235,0x0042D135,sub_42D04B,,,unclassified,0.00,unknown,,false,,,,
 0x0042D136,279,0x0042D24C,sub_42D136,,,unclassified,0.00,unknown,,false,,,,
 0x0042D24D,536,0x0042D464,sub_42D24D,,,unclassified,0.00,unknown,,false,,,,
