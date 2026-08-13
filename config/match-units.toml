@@ -674,6 +674,19 @@ rel32_targets = [
 ]
 
 [[units.ecl-run.functions]]
+address = "0x00419610"
+symbol_base = "?EclOp121AdvanceStateOneBullets@th07@@YIXPAUEnemyOverlay@EclOperands@1@PBUEclOp121InstructionOverlay@1@@Z"
+rel32_targets = [
+  "?Target44B310@th07@@YIXHHHHH@Z=0x0044B310",
+  "?AngleToPlayer@TargetPlayerOverlay@EclOperands@th07@@QAEMPBUVector3@23@@Z=0x00442370",
+  "?QueueStateCommand@EclOp121Bullet@th07@@QAEXHHHMM@Z=0x004279A0",
+]
+dir32_targets = [
+  "?g_TargetPlayer4BDAD8@EclOperands@th07@@3UTargetPlayerOverlay@12@A=ecl_player_4BDAD8",
+  "__real@3cda740e=ecl_op121_real_0_026666667",
+]
+
+[[units.ecl-run.functions]]
 address = "0x004199C0"
 symbol_base = "?EclOp121CountSprite636@th07@@YIXPAUEnemyOverlay@EclOperands@1@PBUEclOp121InstructionOverlay@1@@Z"
 

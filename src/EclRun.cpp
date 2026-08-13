@@ -199,12 +199,33 @@ void __fastcall EclOp121NoOp(EclOperands::EnemyOverlay *enemy,
 // These overlays deliberately remain local to the opcode-121 helpers.  They
 // express only fields and member-call ABIs directly observed in their target
 // bodies; BulletManager's public layout remains owned by the bullet lane.
+struct EclOp121BulletCommand
+{
+    f32 unknown00;
+    u8 unknown04[0x14];
+};
+typedef char EclOp121BulletCommand_size[sizeof(EclOp121BulletCommand) == 0x18 ? 1 : -1];
+
 struct EclOp121Bullet
 {
-    u8 bytes[1];
+    union
+    {
+        u8 bytes[1];
+        struct
+        {
+            u8 unknown000[0xC24];
+            EclOp121BulletCommand commands[2];
+        };
+    };
 
     void QueueRotationCommand(f32 speedDelta, f32 unusedDelta, i32 duration,
                               f32 angularStep, f32 interval);
+    void QueueStateCommand(i32 unknown0, i32 unknown1, i32 duration,
+                           f32 parameter, f32 angle);
+    __forceinline EclOp121BulletCommand &CommandAt(i32 index)
+    {
+        return commands[index];
+    }
     void Clear();
 };
 
@@ -356,6 +377,31 @@ void __fastcall EclOp121CallTarget44B310(EclOperands::EnemyOverlay *enemy,
                                          const EclOp121InstructionOverlay *instruction)
 {
     Target44B310(3, instruction->rawParameter10, 1, 0xD0CFCFFF, 0);
+}
+
+#pragma var_order(i, bullet)
+void __fastcall EclOp121AdvanceStateOneBullets(EclOperands::EnemyOverlay *enemy,
+                                               const EclOp121InstructionOverlay *instruction)
+{
+    EclOp121Bullet *bullet;
+    i32 i;
+
+    bullet = reinterpret_cast<EclOp121Bullet *>(0x0063B218);
+    Target44B310(3, 16, 1, 0x50CFCFFF, 0);
+    for (i = 0; i < 1024; i++, bullet = reinterpret_cast<EclOp121Bullet *>(bullet->bytes + 0xD68))
+    {
+        if (*(u16 *)(bullet->bytes + 0xBFC) == 0)
+            continue;
+        if (*(i32 *)(bullet->bytes + 0xC08) == 1)
+        {
+            bullet->QueueStateCommand(
+                0, 0, 90, 0.026666667f,
+                EclOperands::g_TargetPlayer4BDAD8.AngleToPlayer(
+                    reinterpret_cast<const EclOperands::Vector3 *>(bullet->bytes + 0xB8C)));
+            bullet->CommandAt(1).unknown00 = 0.0f;
+            *(i32 *)(bullet->bytes + 0xC08) = 2;
+        }
+    }
 }
 
 #pragma var_order(i, bullet)
