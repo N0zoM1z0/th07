@@ -251,6 +251,10 @@ struct EnemyManagerUpdateGameManager
     u8 unknown008[0x54];
     f32 livesRemaining;
 
+    __forceinline void AddScore(i32 points)
+    {
+        score += points / 10;
+    }
 };
 
 struct EnemyManagerUpdateGrazeState
@@ -720,9 +724,7 @@ i32 EnemyManagerUpdateOverlay::OnUpdate()
 
                         if (damage >= 70)
                             damage = 70;
-                        register EnemyManagerUpdateGameManager *scoreManager =
-                            g_EnemyManagerUpdateGameManager;
-                        scoreManager->score += 10 * (damage / 5) / 10;
+                        g_EnemyManagerUpdateGameManager->AddScore(10 * (damage / 5));
                         if (enemy->CombatBits()->damageable)
                         {
                             if (SpellActive())

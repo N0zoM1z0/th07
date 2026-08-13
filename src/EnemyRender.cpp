@@ -99,6 +99,16 @@ struct EnemyRenderEnemy
     f32 &Angle() { return *reinterpret_cast<f32 *>(raw + 0x2B54); }
     u8 &DeathFlags() { return *reinterpret_cast<u8 *>(raw + 0x2E2A); }
     u8 &UpdateFlags() { return *reinterpret_cast<u8 *>(raw + 0x2E2B); }
+    i32 RotateVms()
+    {
+        struct Flags { u8 unknown0 : 4; u8 rotate : 1; };
+        return reinterpret_cast<Flags *>(raw + 0x2E2A)->rotate;
+    }
+    i32 SkipPrimaryDraw()
+    {
+        struct Flags { u8 unknown0 : 2; u8 skip : 1; };
+        return reinterpret_cast<Flags *>(raw + 0x2E2B)->skip;
+    }
     EnemyRenderTrailSample *TrailSample(i32 index)
     {
         return reinterpret_cast<EnemyRenderTrailSample *>(raw + 0x2F78 + 0x1C * index);
@@ -178,79 +188,106 @@ i32 EnemyManagerRenderOverlay::OnDrawLowPriority()
     return DrawImpl(2, 4);
 }
 
-#pragma var_order(vertexCount, widthFactor, u, previousAngle, color, oldScaleY, oldScaleX, sampleIndex, vmIndex, enemy, drawGroup)
-i32 __fastcall EnemyManagerRenderOverlay::DrawImpl(i32 drawGroup, i32 groupEnd)
+#pragma var_order(vertexCount, widthFactor, u, nextAngle, previousAngle, lastAngle, color, oldScaleY, oldScaleX, rotation, renderPosition, drawPosition, enemyPosition, vmOffset, vm, sampleIndex, vmIndex, enemy, drawGroup)
+i32 __fastcall EnemyManagerRenderOverlay::DrawImpl(i32 groupBegin, i32 groupEnd)
 {
+    i32 drawGroup;
     EnemyRenderEnemy *enemy;
     i32 vmIndex;
     i32 sampleIndex;
+    EnemyRenderVm *vm;
+    EnemyRenderVec3 *vmOffset;
+    EnemyRenderVec3 *enemyPosition;
+    EnemyRenderVec3 drawPosition;
+    EnemyRenderVec3 renderPosition;
+    f32 rotation;
     f32 oldScaleX;
     f32 oldScaleY;
     u32 color;
+    f32 lastAngle;
     f32 previousAngle;
+    f32 nextAngle;
     f32 u;
     f32 widthFactor;
     f32 halfWidth;
     i32 vertexCount;
     VertexDiffuseXyzrhw *vertex;
 
+    drawGroup = groupBegin;
     for (; drawGroup < groupEnd; ++drawGroup)
     {
         enemy = DrawHeads()[drawGroup];
         while (enemy)
         {
             // The first auxiliary VM precedes the primary VM in the target.
-            for (vmIndex = 0; vmIndex < 1; ++vmIndex)
+            for (vm = reinterpret_cast<EnemyRenderVm *>(enemy->raw + 0x24C), vmIndex = 0;
+                 vmIndex < 1; ++vmIndex, ++vm)
             {
-                EnemyRenderVm *vm = enemy->AuxiliaryVm(vmIndex);
                 if (vm->scriptIndex >= 0)
                 {
                     if (vm->rotationEnabled)
                     {
-                        vm->rotationZ = enemy->Angle();
+                        rotation = enemy->Angle();
+                        vm->rotationZ = rotation;
                         vm->flags |= 4;
                     }
-                    vm->position.x = enemy->Position()->x + vm->positionOffset.x + g_EnemyRenderOffsetX;
-                    vm->position.y = enemy->Position()->y + vm->positionOffset.y + g_EnemyRenderOffsetY;
-                    vm->position.z = enemy->Position()->z + vm->positionOffset.z;
+                    vmOffset = &vm->positionOffset;
+                    enemyPosition = enemy->Position();
+                    drawPosition.z = enemyPosition->z + vmOffset->z;
+                    drawPosition.y = enemyPosition->y + vmOffset->y;
+                    drawPosition.x = enemyPosition->x + vmOffset->x;
+                    renderPosition = drawPosition;
+                    vm->position = renderPosition;
                     vm->position.z = 0.3f;
+                    vm->position.x += g_EnemyRenderOffsetX;
+                    vm->position.y += g_EnemyRenderOffsetY;
                     g_EnemyRenderAnmManager->Draw3(vm);
                 }
             }
 
-            if (enemy->DeathFlags() & 0x10)
+            if (enemy->RotateVms())
             {
-                enemy->PrimaryVm()->rotationZ = enemy->Angle();
+                rotation = enemy->Angle();
+                enemy->PrimaryVm()->rotationZ = rotation;
                 enemy->PrimaryVm()->flags |= 4;
             }
 
-            enemy->PrimaryVm()->position.x =
-                enemy->Position()->x + enemy->PrimaryVm()->positionOffset.x;
-            enemy->PrimaryVm()->position.y =
-                enemy->Position()->y + enemy->PrimaryVm()->positionOffset.y;
+            vmOffset = &enemy->PrimaryVm()->positionOffset;
+            enemyPosition = enemy->Position();
+            drawPosition.z = enemyPosition->z + vmOffset->z;
+            drawPosition.y = enemyPosition->y + vmOffset->y;
+            drawPosition.x = enemyPosition->x + vmOffset->x;
+            renderPosition = drawPosition;
+            enemy->PrimaryVm()->position = renderPosition;
             enemy->PrimaryVm()->position.z = 0.29f;
-            if ((enemy->TrailFlags() & 0x10) == 0 && (enemy->UpdateFlags() & 4) == 0)
+            if ((enemy->TrailFlags() & 0x10) == 0 && !enemy->SkipPrimaryDraw())
             {
                 enemy->PrimaryVm()->position.x += g_EnemyRenderOffsetX;
                 enemy->PrimaryVm()->position.y += g_EnemyRenderOffsetY;
+                g_EnemyRenderAnmManager->Draw3(enemy->PrimaryVm());
             }
-            g_EnemyRenderAnmManager->Draw3(enemy->PrimaryVm());
 
             // The second auxiliary VM is rotated in the opposite direction.
-            for (vmIndex = 1; vmIndex < 2; ++vmIndex)
+            for (vmIndex = 1; vmIndex < 2; ++vmIndex, ++vm)
             {
-                EnemyRenderVm *vm = enemy->AuxiliaryVm(vmIndex);
                 if (vm->scriptIndex >= 0)
                 {
                     if (vm->rotationEnabled)
                     {
-                        vm->rotationZ = -enemy->Angle();
+                        rotation = -enemy->Angle();
+                        vm->rotationZ = rotation;
                         vm->flags |= 4;
                     }
-                    vm->position.x = enemy->Position()->x + vm->positionOffset.x + g_EnemyRenderOffsetX;
-                    vm->position.y = enemy->Position()->y + vm->positionOffset.y + g_EnemyRenderOffsetY;
-                    vm->position.z = enemy->Position()->z + vm->positionOffset.z;
+                    vmOffset = &vm->positionOffset;
+                    enemyPosition = enemy->Position();
+                    drawPosition.z = enemyPosition->z + vmOffset->z;
+                    drawPosition.y = enemyPosition->y + vmOffset->y;
+                    drawPosition.x = enemyPosition->x + vmOffset->x;
+                    renderPosition = drawPosition;
+                    vm->position = renderPosition;
                     vm->position.z = 0.3f;
+                    vm->position.x += g_EnemyRenderOffsetX;
+                    vm->position.y += g_EnemyRenderOffsetY;
                     g_EnemyRenderAnmManager->Draw3(vm);
                 }
             }
@@ -267,31 +304,38 @@ i32 __fastcall EnemyManagerRenderOverlay::DrawImpl(i32 drawGroup, i32 groupEnd)
                          sampleIndex += enemy->TrailStep())
                     {
                         EnemyRenderTrailSample *sample = enemy->TrailSample(sampleIndex);
-                        if (sample->position.x < -990.0f)
-                            break;
-
-                        if (enemy->DeathFlags() & 0x10)
+                        if (sample->position.x >= -990.0f)
                         {
-                            enemy->PrimaryVm()->rotationZ = sample->angle;
-                            enemy->PrimaryVm()->flags |= 4;
-                        }
-                        if (enemy->TrailFlags() & 2)
-                            enemy->PrimaryVm()->scaleX = oldScaleX -
-                                oldScaleX * (f32)sampleIndex / (f32)enemy->TrailHistoryCount();
-                        if (enemy->TrailFlags() & 4)
-                        {
-                            u8 alpha = static_cast<u8>(color >> 24);
-                            alpha = static_cast<u8>(alpha -
-                                alpha * sampleIndex / enemy->TrailHistoryCount());
-                            enemy->PrimaryVm()->color = (color & 0x00FFFFFF) | (static_cast<u32>(alpha) << 24);
-                        }
+                            if (enemy->RotateVms())
+                            {
+                                rotation = sample->angle;
+                                enemy->PrimaryVm()->rotationZ = rotation;
+                                enemy->PrimaryVm()->flags |= 4;
+                            }
+                            if (enemy->TrailFlags() & 2)
+                                enemy->PrimaryVm()->scaleX = oldScaleX -
+                                    oldScaleX * (f32)sampleIndex / (f32)enemy->TrailHistoryCount();
+                            if (enemy->TrailFlags() & 4)
+                            {
+                                u8 alpha = static_cast<u8>(color >> 24);
+                                alpha = static_cast<u8>(alpha -
+                                    alpha * sampleIndex / enemy->TrailHistoryCount());
+                                enemy->PrimaryVm()->color =
+                                    (color & 0x00FFFFFF) | (static_cast<u32>(alpha) << 24);
+                            }
 
-                        enemy->PrimaryVm()->position.x = sample->position.x +
-                            enemy->PrimaryVm()->positionOffset.x + g_EnemyRenderOffsetX;
-                        enemy->PrimaryVm()->position.y = sample->position.y +
-                            enemy->PrimaryVm()->positionOffset.y + g_EnemyRenderOffsetY;
-                        enemy->PrimaryVm()->position.z = 0.3f;
-                        g_EnemyRenderAnmManager->Draw3(enemy->PrimaryVm());
+                            vmOffset = &enemy->PrimaryVm()->positionOffset;
+                            enemyPosition = &sample->position;
+                            drawPosition.z = enemyPosition->z + vmOffset->z;
+                            drawPosition.y = enemyPosition->y + vmOffset->y;
+                            drawPosition.x = enemyPosition->x + vmOffset->x;
+                            renderPosition = drawPosition;
+                            enemy->PrimaryVm()->position = renderPosition;
+                            enemy->PrimaryVm()->position.z = 0.3f;
+                            enemy->PrimaryVm()->position.x += g_EnemyRenderOffsetX;
+                            enemy->PrimaryVm()->position.y += g_EnemyRenderOffsetY;
+                            g_EnemyRenderAnmManager->Draw3(enemy->PrimaryVm());
+                        }
                     }
                 }
                 else
@@ -310,7 +354,7 @@ i32 __fastcall EnemyManagerRenderOverlay::DrawImpl(i32 drawGroup, i32 groupEnd)
                         widthFactor = (vertexCount + 1) / 2 - 1;
                         widthFactor /= enemy->PrimaryVm()->sprite->uvRight -
                             enemy->PrimaryVm()->sprite->uvLeft;
-                        halfWidth = enemy->PrimaryVm()->sprite->trailVOffset * oldScaleY / 2.0f;
+                        halfWidth = enemy->PrimaryVm()->sprite->trailUOffset * oldScaleY / 2.0f;
                         u = enemy->PrimaryVm()->sprite->uvRight +
                             enemy->PrimaryVm()->textureUOffset;
                         vertex = enemy->TrailVertices();
@@ -327,11 +371,34 @@ i32 __fastcall EnemyManagerRenderOverlay::DrawImpl(i32 drawGroup, i32 groupEnd)
                             if (sample->position.x < -990.0f)
                                 break;
 
-                            if (sampleIndex == 0 || (enemy->TrailFlags() & 2) == 0)
+                            if (sampleIndex == 0)
                                 angle = sample->angle;
                             else
-                                angle = InterpolateWrappedAngle(previousAngle, sample->angle, 0.5f);
+                                angle = InterpolateWrappedAngle(
+                                    enemy->TrailSample(sampleIndex - 1)->angle, sample->angle, 0.5f);
                             previousAngle = angle;
+
+                            if ((enemy->TrailFlags() & 2) && sampleIndex > 0 &&
+                                sampleIndex + enemy->TrailStep() < enemy->TrailHistoryCount())
+                            {
+                                nextAngle = InterpolateWrappedAngle(
+                                    enemy->TrailSample(enemy->TrailStep())->angle,
+                                    enemy->TrailSample(sampleIndex + enemy->TrailStep() - 1)->angle,
+                                    0.5f);
+                                f32 firstDifference = lastAngle - previousAngle;
+                                f32 secondDifference = previousAngle - nextAngle;
+                                if (firstDifference < 0.0f)
+                                    firstDifference = -firstDifference;
+                                if (secondDifference < 0.0f)
+                                    secondDifference = -secondDifference;
+                                if (firstDifference <= 0.00001f &&
+                                    secondDifference <= 0.00001f)
+                                {
+                                    vertexCount -= 2;
+                                    continue;
+                                }
+                            }
+                            lastAngle = previousAngle;
 
                             sine = static_cast<f32>(sin(angle));
                             cosine = static_cast<f32>(cos(angle));
@@ -339,20 +406,27 @@ i32 __fastcall EnemyManagerRenderOverlay::DrawImpl(i32 drawGroup, i32 groupEnd)
                             if (enemy->TrailFlags() & 2)
                                 fade = 1.0f - (f32)sampleIndex / (f32)enemy->TrailHistoryCount();
 
-                            vertex[0].x = sample->position.x + 32.0f - sine * (halfWidth * fade);
-                            vertex[0].y = sample->position.y + 16.0f + cosine * (halfWidth * fade);
-                            vertex[0].z = 0.0f;
-                            vertex[0].rhw = 1.0f;
-                            vertex[0].diffuse = color;
+                            vertex[0].x = sample->position.x + 32.0f + cosine * fade - sine * halfWidth;
+                            vertex[0].y = sample->position.y + 16.0f + sine * fade + cosine * halfWidth;
+                            vertex[0].z = sample->position.z;
+                            vertex[1].diffuse = color;
+                            vertex[0].diffuse = vertex[1].diffuse;
+                            if (enemy->TrailFlags() & 4)
+                            {
+                                u8 alpha = static_cast<u8>(color >> 24);
+                                alpha = static_cast<u8>(alpha -
+                                    alpha * sampleIndex / enemy->TrailHistoryCount());
+                                vertex[1].diffuse = (color & 0x00FFFFFF) |
+                                    (static_cast<u32>(alpha) << 24);
+                                vertex[0].diffuse = vertex[1].diffuse;
+                            }
                             vertex[0].u = u;
                             vertex[0].v = enemy->PrimaryVm()->sprite->uvTop +
                                 enemy->PrimaryVm()->textureVOffset;
 
-                            vertex[1].x = sample->position.x + 32.0f + sine * (halfWidth * fade);
-                            vertex[1].y = sample->position.y + 16.0f - cosine * (halfWidth * fade);
-                            vertex[1].z = 0.0f;
-                            vertex[1].rhw = 1.0f;
-                            vertex[1].diffuse = color;
+                            vertex[1].x = sample->position.x + 32.0f + cosine * fade + sine * halfWidth;
+                            vertex[1].y = sample->position.y + 16.0f + sine * fade - cosine * halfWidth;
+                            vertex[1].z = sample->position.z;
                             vertex[1].u = u;
                             vertex[1].v = enemy->PrimaryVm()->sprite->uvBottom +
                                 enemy->PrimaryVm()->textureVOffset;

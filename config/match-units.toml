@@ -1424,6 +1424,37 @@ dir32_targets = [
   "__real@c4610000=enemy_update_real_neg900",
 ]
 
+[units.bullet-spawn]
+kind = "probe"
+source = "src/BulletSpawn.cpp"
+object = "build/match-units/BulletSpawn.obj"
+profile = "vc7-debug-od-no-gs-g6"
+notes = "Target-bounded core 1024-slot bullet generator called by the public ECL spawn wrapper."
+
+[[units.bullet-spawn.functions]]
+address = "0x00423730"
+symbol_base = "?SpawnOne@BulletSpawnManager@th07@@QAEHPAUBulletSpawnRequest@2@HHM@Z"
+rel32_targets = [
+  "?RandomF32@BulletSpawnRng@th07@@QAEMXZ=0x00431900",
+  "?AddNormalizeAngle@th07@@YGMMM@Z=0x00431930",
+  "?CopyVm@th07@@YIXPAUBulletSpawnVm@1@0HH@Z=0x00423660",
+  "?InitializeSpawnCommands@BulletSpawnSlot@th07@@QAEXXZ=0x00424290",
+  "?SetSprite@BulletSpawnAnmManager@th07@@QAEXPAUBulletSpawnVm@2@H@Z=0x0044E8E0",
+  "?VectorFromAngle@BulletSpawnVec2@th07@@QAEXMM@Z=0x004325C0",
+]
+dir32_targets = [
+  "?g_BulletSpawnRng@th07@@3UBulletSpawnRng@1@A=ecl_rng_49FE20",
+  "?g_BulletSpawnAnmManager@th07@@3PAUBulletSpawnAnmManager@1@A=?g_AnmManager@th07@@3PAUAnmManager@1@A",
+  "?g_BulletSpawnFrameMultiplier@th07@@3MA=bullet_update_frame_multiplier",
+  "__real@3f000000=__real@3f000000",
+  "__real@40c90fdb=ecl_real_40c90fdb",
+  "__real@40490fdb=ecl_real_40490fdb",
+  "__real@40800000=__real@40800000",
+  "__real@41800000=__real@41800000",
+  "__real@42000000=__real@42000000",
+  "__real@bf800000=player_deathbomb_real_neg_1",
+]
+
 [units.enemy-render-wrappers]
 kind = "probe"
 source = "src/EnemyRender.cpp"
@@ -1743,6 +1774,7 @@ dir32_targets = [
   "?g_AnmRng@th07@@3UAnmRngOverlay@1@A=ecl_rng_49FE20",
   "?g_FrameMultiplier@th07@@3MA=bullet_update_frame_multiplier",
   "?g_AnmTimerManager@th07@@3UAnmTimerManager@1@A=bullet_update_timer_manager",
+  "__real@bf800000=player_deathbomb_real_neg_1",
 ]
 
 [[units.player-core.functions]]

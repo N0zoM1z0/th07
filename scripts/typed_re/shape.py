@@ -8,6 +8,7 @@ to registers, operand widths, memory topology, and instruction order.
 from __future__ import annotations
 
 from collections import Counter
+from difflib import SequenceMatcher
 from typing import Any
 
 from capstone import Cs, CS_ARCH_X86, CS_MODE_32
@@ -86,6 +87,54 @@ def _internal_branch_edges(instructions: list[Any]) -> dict[int, int]:
     return edges
 
 
+def _resynchronized_shape_blocks(
+    target_instructions: list[Any], object_instructions: list[Any], address: int
+) -> tuple[list[dict[str, Any]], int, bool]:
+    """Find ordered exact-shape islands after local insertions/deletions.
+
+    A single spill or rematerialized temporary can end the strict shared
+    prefix even when later source phases return to the target topology.  The
+    blocks are diagnostic only: instruction shapes abstract constants and
+    displacements, and short repeated x86 sequences are not strong evidence.
+    Requiring at least three instructions suppresses the noisiest one-opcode
+    coincidences while retaining useful basic-block-sized anchors.
+    """
+    target_shapes = [instruction_shape(item) for item in target_instructions]
+    object_shapes = [instruction_shape(item) for item in object_instructions]
+    # Giant dispatchers contain thousands of repeated `mov`/`test` shapes;
+    # treating every occurrence as an anchor can become quadratic and consume
+    # a full core for little gain. Preserve the more precise alignment for
+    # ordinary large callbacks and enable difflib's popularity filter above a
+    # conservative 2500-instruction bound.
+    bounded_autojunk = max(len(target_shapes), len(object_shapes)) > 2500
+    matcher = SequenceMatcher(
+        None, target_shapes, object_shapes, autojunk=bounded_autojunk
+    )
+    retained = [block for block in matcher.get_matching_blocks() if block.size >= 3]
+    records = []
+    for block in retained[:64]:
+        records.append(
+            {
+                "target_instruction_index": block.a,
+                "object_instruction_index": block.b,
+                "instruction_count": block.size,
+                "target_start": _instruction_record(
+                    target_instructions[block.a], address
+                ),
+                "object_start": _instruction_record(
+                    object_instructions[block.b], address
+                ),
+                "target_end": _instruction_record(
+                    target_instructions[block.a + block.size - 1], address
+                ),
+                "object_end": _instruction_record(
+                    object_instructions[block.b + block.size - 1], address
+                ),
+            }
+        )
+    return records, sum(block.size for block in retained), bounded_autojunk
+
+
 def compare_instruction_shapes(
     target: bytes, object_code: bytes, address: int
 ) -> dict[str, Any]:
@@ -149,6 +198,11 @@ def compare_instruction_shapes(
 
     target_edges = _internal_branch_edges(target_instructions)
     object_edges = _internal_branch_edges(object_instructions)
+    (
+        resynchronized_blocks,
+        resynchronized_count,
+        resynchronized_popularity_filter,
+    ) = _resynchronized_shape_blocks(target_instructions, object_instructions, address)
     branch_mismatches = []
     for index in sorted(set(target_edges) | set(object_edges)):
         target_destination = target_edges.get(index)
@@ -181,6 +235,12 @@ def compare_instruction_shapes(
         "shared_shape_prefix": prefix,
         "topology_exact": topology_exact,
         "first_shape_mismatch": first_mismatch,
+        "resynchronized_shape_instruction_count": resynchronized_count,
+        "resynchronized_target_coverage_percent": round(
+            100.0 * resynchronized_count / len(target_instructions), 2
+        ) if target_instructions else 100.0,
+        "resynchronized_popularity_filter": resynchronized_popularity_filter,
+        "resynchronized_shape_blocks": resynchronized_blocks,
         "target_internal_branch_count": len(target_edges),
         "object_internal_branch_count": len(object_edges),
         "branch_target_mismatch_count": len(branch_mismatches),

@@ -28,6 +28,12 @@ target observations, compiler inferences, and source hypotheses separate.
    `topology_exact` is true, inspect `stack_slot_pairs` and instruction sizes
    before changing behavior: the remaining problem is usually constants,
    relocations, local order, or lifetime shaping.
+   For giant functions, also inspect `resynchronized_shape_blocks` and
+   `resynchronized_target_coverage_percent`. These ordered exact-shape islands
+   recover useful downstream anchors after a local spill/insertion ends the
+   prefix. Prefer long blocks whose target/object indices remain close; short
+   repeated x86 sequences can align coincidentally and never count as match
+   evidence.
    Then inspect `first_branch_target_mismatch`: equal instruction shapes can
    still send a `continue`, `break`, or `goto` to the wrong shared label.
 6. Accept a result only through the canonical unit's strict 100% comparison.

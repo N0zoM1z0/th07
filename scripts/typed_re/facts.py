@@ -569,6 +569,11 @@ def main() -> int:
                 bytes.fromhex("74 01 90 90 c3"),
                 0x00401000,
             )
+            resynchronized_shape = compare_instruction_shapes(
+                bytes.fromhex("55 8b ec 8b 45 08 83 c0 01 89 45 fc 5d c3"),
+                bytes.fromhex("55 8b ec 33 c9 8b 45 08 83 c0 01 89 45 fc 5d c3"),
+                0x00401000,
+            )
             bullet_body = load_target()[0].read(0x00425A50, 4237)
             bullet_graph = compare_instruction_shapes(
                 bullet_body, bullet_body, 0x00425A50
@@ -586,13 +591,21 @@ def main() -> int:
             ):
                 failures.append("instruction branch-graph regression")
             if (
+                resynchronized_shape["shared_shape_prefix"] != 2
+                or resynchronized_shape["resynchronized_shape_instruction_count"] != 5
+                or len(resynchronized_shape["resynchronized_shape_blocks"]) != 1
+                or resynchronized_shape["resynchronized_shape_blocks"][0]["target_instruction_index"] != 2
+                or resynchronized_shape["resynchronized_shape_blocks"][0]["object_instruction_index"] != 3
+            ):
+                failures.append("instruction resynchronization regression")
+            if (
                 not bullet_graph["control_flow_exact"]
                 or bullet_graph["target_internal_branch_count"] != 86
             ):
                 failures.append("0x00425A50 branch-graph regression")
             if failures:
                 raise ValueError("; ".join(failures))
-            print("typed reconstruction facts OK: 6 target-pinned regressions plus shape/branch fixtures")
+            print("typed reconstruction facts OK: 6 target-pinned regressions plus shape/branch/resync fixtures")
             return 0
         if not args.address:
             parser.error("address is required unless --check is selected")
