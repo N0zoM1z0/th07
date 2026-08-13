@@ -133,7 +133,7 @@ static __forceinline f32 AdvanceTimer(PlayerUpdateTimer *timer)
 
 static __forceinline void SelectMovementAnimation(PlayerUpdateOverlay *player, f32 horizontal)
 {
-    if (horizontal < 0.0f)
+    if (horizontal < 0.0f && player->previousInputX >= 0.0f)
     {
         player->movementAnimation = 1025;
         g_PlayerBombAnmManager->SetAndExecute(player, g_PlayerBombAnmManager->scripts[1025]);
@@ -143,7 +143,7 @@ static __forceinline void SelectMovementAnimation(PlayerUpdateOverlay *player, f
         player->movementAnimation = 1026;
         g_PlayerBombAnmManager->SetAndExecute(player, g_PlayerBombAnmManager->scripts[1026]);
     }
-    if (horizontal > 0.0f)
+    if (horizontal > 0.0f && player->previousInputX <= 0.0f)
     {
         player->movementAnimation = 1027;
         g_PlayerBombAnmManager->SetAndExecute(player, g_PlayerBombAnmManager->scripts[1027]);
@@ -351,13 +351,15 @@ static __forceinline void UpdateRotatingOrbs(PlayerUpdateOverlay *player)
     }
 }
 
-#pragma var_order(previousDirection, vertical, horizontal)
+#pragma var_order(previousDirection, vertical, horizontal, verticalOrbOffset, horizontalOrbOffset)
 int __fastcall Player::OnUpdate(Player *playerBase)
 {
 #define player reinterpret_cast<PlayerUpdateOverlay *>(playerBase)
     f32 horizontal = 0.0f;
     f32 vertical = 0.0f;
     i32 previousDirection = player->inputDirection;
+    f32 horizontalOrbOffset;
+    f32 verticalOrbOffset;
 
     player->inputDirection = 0;
     if (g_PlayerInputButtons & 0x10)
@@ -389,14 +391,14 @@ int __fastcall Player::OnUpdate(Player *playerBase)
         player->focused = 1;
         switch (player->inputDirection)
         {
-        case 1: vertical = player->movement->focusedAxisSpeed; break;
-        case 2: vertical = -player->movement->focusedAxisSpeed; break;
-        case 3: horizontal = -player->movement->focusedAxisSpeed; break;
         case 4: horizontal = player->movement->focusedAxisSpeed; break;
-        case 5: horizontal = vertical = -player->movement->focusedDiagonalSpeed; break;
+        case 3: horizontal = -player->movement->focusedAxisSpeed; break;
+        case 1: vertical = -player->movement->focusedAxisSpeed; break;
+        case 2: vertical = player->movement->focusedAxisSpeed; break;
+        case 5: vertical = horizontal = -player->movement->focusedDiagonalSpeed; break;
+        case 7: vertical = player->movement->focusedDiagonalSpeed; horizontal = -vertical; break;
         case 6: horizontal = player->movement->focusedDiagonalSpeed; vertical = -horizontal; break;
-        case 7: horizontal = -player->movement->focusedDiagonalSpeed; vertical = -horizontal; break;
-        case 8: horizontal = vertical = player->movement->focusedDiagonalSpeed; break;
+        case 8: vertical = horizontal = player->movement->focusedDiagonalSpeed; break;
         default: break;
         }
     }
@@ -405,14 +407,14 @@ int __fastcall Player::OnUpdate(Player *playerBase)
         player->focused = 0;
         switch (player->inputDirection)
         {
-        case 1: vertical = player->movement->unfocusedAxisSpeed; break;
-        case 2: vertical = -player->movement->unfocusedAxisSpeed; break;
-        case 3: horizontal = -player->movement->unfocusedAxisSpeed; break;
         case 4: horizontal = player->movement->unfocusedAxisSpeed; break;
-        case 5: horizontal = vertical = -player->movement->unfocusedDiagonalSpeed; break;
+        case 3: horizontal = -player->movement->unfocusedAxisSpeed; break;
+        case 1: vertical = -player->movement->unfocusedAxisSpeed; break;
+        case 2: vertical = player->movement->unfocusedAxisSpeed; break;
+        case 5: vertical = horizontal = -player->movement->unfocusedDiagonalSpeed; break;
+        case 7: vertical = player->movement->unfocusedDiagonalSpeed; horizontal = -vertical; break;
         case 6: horizontal = player->movement->unfocusedDiagonalSpeed; vertical = -horizontal; break;
-        case 7: horizontal = -player->movement->unfocusedDiagonalSpeed; vertical = -horizontal; break;
-        case 8: horizontal = vertical = player->movement->unfocusedDiagonalSpeed; break;
+        case 8: vertical = horizontal = player->movement->unfocusedDiagonalSpeed; break;
         default: break;
         }
     }
@@ -442,10 +444,86 @@ int __fastcall Player::OnUpdate(Player *playerBase)
     player->orbPosition[0] = player->position;
     player->orbPosition[1] = player->position;
 
+    verticalOrbOffset = 0.0f;
+    horizontalOrbOffset = verticalOrbOffset;
     if (*reinterpret_cast<u8 *>(&g_PlayerGameMode) == 2 && g_PlayerShotType == 1)
         UpdateRotatingOrbs(player);
     else
-        UpdateStraightOrbs(player);
+    {
+        switch (player->orbState)
+        {
+        case 0:
+            ResetTimer(&player->orbTimer);
+            break;
+        case 1:
+            horizontalOrbOffset = 24.0f;
+            ResetTimer(&player->orbTimer);
+            if (player->focused)
+            {
+                player->orbState = 2;
+                player->orbAnimation = g_EffectManager.SpawnParticlesColored(24, &player->position, 2, 1, -1);
+                goto straightFocused;
+            }
+            break;
+        case 2:
+        straightFocused:
+            player->orbTimer.previous = player->orbTimer.current;
+            AdvanceTimer(&player->orbTimer);
+            {
+                f32 t = ((f32)player->orbTimer.current + player->orbTimer.subFrame) / 8.0f;
+                verticalOrbOffset = (1.0f - t) * 32.0f - 32.0f;
+                horizontalOrbOffset = 24.0f - 16.0f * t * t;
+                if (player->orbTimer.current >= 8)
+                    player->orbState = 3;
+                if (!player->focused)
+                {
+                    i32 remaining = 8 - player->orbTimer.current;
+                    player->orbState = 4;
+                    ResetTimer(&player->orbTimer);
+                    player->orbTimer.current = remaining;
+                }
+            }
+            break;
+        case 3:
+            horizontalOrbOffset = 8.0f;
+            verticalOrbOffset = -32.0f;
+            ResetTimer(&player->orbTimer);
+            if (!player->focused)
+            {
+                player->orbState = 4;
+                if (player->orbAnimation)
+                    *reinterpret_cast<i16 *>(reinterpret_cast<u8 *>(player->orbAnimation) + 454) = 1;
+            }
+            break;
+        case 4:
+            if (player->focused)
+            {
+                i32 remaining = 8 - player->orbTimer.current;
+                player->orbState = 2;
+                ResetTimer(&player->orbTimer);
+                player->orbTimer.current = remaining;
+                player->orbAnimation = g_EffectManager.SpawnParticlesColored(24, &player->position, 2, 1, -1);
+                goto straightFocused;
+            }
+            player->orbTimer.previous = player->orbTimer.current;
+            AdvanceTimer(&player->orbTimer);
+            {
+                f32 t = ((f32)player->orbTimer.current + player->orbTimer.subFrame) / 8.0f;
+                verticalOrbOffset = 32.0f * t - 32.0f;
+                horizontalOrbOffset = 24.0f - 16.0f * (1.0f - t * t);
+                if (player->orbTimer.current >= 8)
+                    player->orbState = 1;
+            }
+            break;
+        default:
+            break;
+        }
+
+        player->orbPosition[0].x -= horizontalOrbOffset;
+        player->orbPosition[1].x += horizontalOrbOffset;
+        player->orbPosition[0].y += verticalOrbOffset;
+        player->orbPosition[1].y += verticalOrbOffset;
+    }
 
     if ((g_PlayerInputButtons & 1) && !g_PlayerBombGuiState49FBF0.IsBombInputBlocked())
     {
