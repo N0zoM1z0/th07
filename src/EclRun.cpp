@@ -266,6 +266,22 @@ struct EclOp121HugeCommand
     i32 value08;
 };
 
+struct EclOp121Target427AE0State
+{
+    u8 unknown0000[0x7004];
+    u32 flags7004;
+    u8 unknown7008[0x10];
+    i16 signed7018;
+};
+
+struct EclOp121Target427AE0Manager
+{
+    u8 unknown00[8];
+    EclOp121Target427AE0State *state;
+
+    i32 IsGateActive();
+};
+
 struct EclOp121Bullet
 {
     union
@@ -343,6 +359,19 @@ extern EclOp121AnmManager *g_TargetAnmManager4B9E44;
 extern f32 g_TargetFrameMultiplier575AC8;
 extern f32 g_TargetRealOne498A54;
 extern EclOp121TimerManager g_TargetTimerManager575950;
+
+#pragma optimize("s", on)
+i32 EclOp121Target427AE0Manager::IsGateActive()
+{
+    i32 result;
+
+    if (state->signed7018 >= 0 && ((state->flags7004 >> 13) & 1) != 0)
+        result = 1;
+    else
+        result &= 0;
+    return result;
+}
+#pragma optimize("s", off)
 
 void EclOp121Bullet::QueueRotationCommand(f32 speedDelta, f32 unusedDelta, i32 duration,
                                            f32 angularStep, f32 interval)

@@ -10,11 +10,11 @@ Generated from `config/functions.csv`. Only verified 100% comparisons count as r
 
 | Status | Functions |
 | --- | ---: |
-| `unclassified` | 842 |
+| `unclassified` | 841 |
 | `identified` | 0 |
 | `decompiled` | 0 |
 | `implemented` | 0 |
-| `compiles` | 8 |
+| `compiles` | 9 |
 | `matching` | 173 |
 | `library` | 504 |
 | `blocked` | 0 |
