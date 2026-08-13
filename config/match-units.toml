@@ -1279,6 +1279,18 @@ address = "0x004378F0"
 symbol_base = "?Destroy@GuiTimerTeardown@th07@@QAEHXZ"
 rel32_targets = ["?Target436380@GuiTimerTeardown@th07@@QAEHXZ=0x00436380"]
 
+[units.gui-resource-teardown]
+kind = "probe"
+source = "src/GuiResourceTeardown.cpp"
+object = "build/match-units/GuiResourceTeardown.obj"
+profile = "vc7-debug-od-no-gs-g6"
+notes = "Target-observed GUI resource teardown wrapper."
+
+[[units.gui-resource-teardown.functions]]
+address = "0x0045C4C8"
+symbol_base = "?Destroy@GuiResourceTeardown@th07@@QAEXXZ"
+rel32_targets = ["?Target45BF15@GuiResourceTeardown@th07@@QAEXXZ=0x0045BF15"]
+
 [units.bullet-update]
 kind = "probe"
 source = "src/BulletUpdate.cpp"

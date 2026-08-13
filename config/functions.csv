@@ -600,7 +600,7 @@ address,size,span_end,current_name,proposed_name,module,status,match_percent,cal
 0x0045BC63,265,0x0045BD6B,sub_45BC63,,,unclassified,0.00,unknown,,false,,,,
 0x0045BD6C,425,0x0045BF14,sub_45BD6C,,,unclassified,0.00,unknown,,false,,,,
 0x0045BF15,1459,0x0045C4C7,sub_45BF15,,,unclassified,0.00,unknown,,false,,,,
-0x0045C4C8,17,0x0045C4D8,sub_45C4C8,,,unclassified,0.00,unknown,,false,,,,
+0x0045C4C8,17,0x0045C4D8,sub_45C4C8,Gui_resource_teardown_destroy,gui,matching,100.00,__thiscall,void Gui_resource_teardown_destroy(GuiResourceTeardown * this),false,src/GuiResourceTeardown.cpp,python3 scripts/build.py --unit gui-resource-teardown --compare --json; strict exact 17/17 target and object SHA cf656843fb57f415539803ab71e09582ad53464f027341f4e431e1bae1afd454 2026-08-13,root,Observed wrapper forwards this to 0x0045BF15 then returns. Target vtable xref 0x0045C662 corroborates resource teardown role; full owner remains unresolved.
 0x0045C4D9,109,0x0045C545,sub_45C4D9,,,unclassified,0.00,unknown,,false,,,,
 0x0045C546,138,0x0045C5CF,sub_45C546,,,unclassified,0.00,unknown,,false,,,,
 0x0045C5D0,273,0x0045C6E0,sub_45C5D0,,,unclassified,0.00,unknown,,false,,,,
