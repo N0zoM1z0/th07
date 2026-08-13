@@ -26,6 +26,31 @@ PbgArchive::~PbgArchive()
     Release();
 }
 
+bool PbgArchive::Load(const char *filename)
+{
+    Release();
+    DebugPrint("info : %s open arcfile\r\n", filename);
+
+    m_file = new CPbgFile();
+    if (m_file == NULL)
+    {
+        return false;
+    }
+
+    if (ParseHeader(filename))
+    {
+        m_filename = CopyFileName(filename);
+        if (m_filename != NULL)
+        {
+            return true;
+        }
+    }
+
+    DebugPrint("info : %s not found\r\n", filename);
+    Release();
+    return false;
+}
+
 void PbgArchive::Release()
 {
     DebugPrint("info : %s close arcfile\r\n", m_filename);

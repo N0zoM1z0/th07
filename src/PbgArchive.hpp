@@ -32,10 +32,12 @@ class PbgArchive
   public:
     PbgArchive();
     ~PbgArchive();
+    bool Load(const char *filename);
     void Release();
     u32 GetEntryDecompressedSize(const char *filename);
     PbgArchiveEntry *FindEntry(const char *filename);
     char *CopyFileName(const char *filename);
+    bool ParseHeader(const char *filename);
     void *ReadDecompressEntry(const char *filename, void *outBuffer);
 
   private:

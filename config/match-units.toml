@@ -2683,6 +2683,19 @@ dir32_targets = [
   "?g_TargetPbgOpenReadMode@th07@@3PBDB=?g_TargetPbgOpenReadMode@th07@@3PBDB",
 ]
 
+[[units.pbg-archive.functions]]
+address = "0x0045F710"
+symbol_base = "?Load@PbgArchive@th07@@QAE_NPBD@Z"
+rel32_targets = [
+  "?Release@PbgArchive@th07@@QAEXXZ=0x0045F800",
+  "?DebugPrint@th07@@YAXPBDZZ=0x0045E4F0",
+  "??2@YAPAXI@Z=0x0047D441",
+  "??0CPbgFile@th07@@QAE@XZ=0x0045E550",
+  "?ParseHeader@PbgArchive@th07@@QAE_NPBD@Z=0x0045FB50",
+  "?CopyFileName@PbgArchive@th07@@QAEPADPBD@Z=0x0045FFC0",
+]
+dir32_targets = ["$L54572=pbg_archive_load_eh_handler"]
+
 [[units.pbg-file.functions]]
 address = "0x0045E590"
 symbol_base = "??_GCPbgFile@th07@@UAEPAXI@Z"

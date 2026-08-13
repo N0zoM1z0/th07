@@ -85,3 +85,4 @@ address,name,module,confidence,evidence
 0x0045FAE0,PbgArchive_find_entry,pbg,observed,Exact target 16-byte entry search and case-insensitive name comparison plus strict VC7 comparison
 0x0045FFC0,PbgArchive_copy_file_name,pbg,observed,Exact target GlobalAlloc string copy member helper and strict VC7 comparison
 0x0045F960,PbgArchive_read_decompress_entry,pbg,observed,Exact target archive read decode and temporary ownership flow plus strict VC7 comparison
+0x0045F710,PbgArchive_load,pbg,observed,Exact target archive open parse ownership and SEH cleanup flow plus strict VC7 comparison
