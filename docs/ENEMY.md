@@ -20,6 +20,7 @@ stable layer below the large manager callbacks:
 | `0x0041FF80` | handle enemy timer/spell threshold | 847 |
 | `0x004202D0` | despawn and unlink an enemy | 210 |
 | `0x004203B0` | conditionally clamp enemy position | 213 |
+| `0x00420490` | bridge enemy graze and player kill-box collision | 386 |
 | `0x004220F0` | interpolate a wrapped angle | 114 |
 | `0x00422CA0` | high-priority draw adapter | 23 |
 | `0x00422CC0` | low-priority draw adapter | 26 |
@@ -30,10 +31,9 @@ stable layer below the large manager callbacks:
 | `0x004232A0` | test whether an active boss exists | 64 |
 | `0x004552D0` | draw the enemy trail triangle fan | 298 |
 
-`0x00420490` is the direct player-collision helper. Its target frame is
-`0x4C`; the current implementation has the exact frame and receiver home but
-still differs in VC7 local-variable allocation. It must not be promoted to
-`matching` until the strict report reaches 100 percent.
+`0x00420490` is the exact direct player-collision helper. Its inlined timer
+`HasTicked` call preserves the target `0x4C` frame and the temporary lifetimes
+around both D3DX vector divisions.
 
 ## EnemyManager update (`0x00420620`)
 
@@ -78,11 +78,10 @@ roles, but the listed layout and branches are TH07 observations.
 
 The highest-leverage sequence is:
 
-1. finish the compiler shaping of `0x00420490`;
-2. recover the still-unmatched effect/death helpers called by the update body;
-3. implement the update body by its target basic-block phases while preserving
+1. recover the still-unmatched effect/death helpers called by the update body;
+2. implement the update body by its target basic-block phases while preserving
    the `0x210` frame and VC7 local allocation;
-4. use the same exact-helper-first approach for the render body at
+3. use the same exact-helper-first approach for the render body at
    `0x00422170`.
 
 ## EnemyManager render (`0x00422170`)

@@ -10,6 +10,11 @@ struct EnemyCollisionTimer
     i32 previous;
     i32 subFrameBits;
     i32 current;
+
+    i32 HasTicked()
+    {
+        return (current != previous) ? 1 : 0;
+    }
 };
 
 struct EnemyCollisionOverlay
@@ -31,17 +36,15 @@ struct EnemyCollisionOverlay
     void CheckPlayerCollision(D3DXVECTOR3 *center, D3DXVECTOR3 *size);
 };
 
-#pragma var_order(grazeScale, grazeProduct, hitboxSize, killScale, killProduct, timer)
+#pragma var_order(grazeScale, grazeProduct, hitboxSize, killScale, killProduct)
 void EnemyCollisionOverlay::CheckPlayerCollision(D3DXVECTOR3 *center, D3DXVECTOR3 *size)
 {
-    EnemyCollisionTimer *timer;
     D3DXVECTOR3 hitboxSize;
 
     hitboxSize = *size / 0.7f;
     if (suppressDirectCollision)
     {
-        timer = &grazeTimer;
-        if (((timer->current != timer->previous) ? 1 : 0) && grazeTimer.current % 6 == 0)
+        if (grazeTimer.HasTicked() && grazeTimer.current % 6 == 0)
             g_Player.CheckGraze(center, &hitboxSize);
     }
 
