@@ -289,6 +289,7 @@ struct EclOp121Target427AE0Manager
 
     i32 IsGateActive();
     void SetStateWords();
+    void ResetTransientState();
 };
 
 struct EclOp121Bullet
@@ -379,6 +380,16 @@ i32 EclOp121Target427AE0Manager::IsGateActive()
     else
         result &= 0;
     return result;
+}
+#pragma optimize("s", off)
+
+#pragma optimize("s", on)
+void EclOp121Target427AE0Manager::ResetTransientState()
+{
+    *reinterpret_cast<i16 *>(reinterpret_cast<u8 *>(state) + 0x7018) |= -1;
+    *reinterpret_cast<i16 *>(reinterpret_cast<u8 *>(state) + 0x7264) |= -1;
+    *reinterpret_cast<i16 *>(reinterpret_cast<u8 *>(state) + 0x74B0) |= -1;
+    *reinterpret_cast<i32 *>(reinterpret_cast<u8 *>(state) + 0x1FBA0) &= 0;
 }
 #pragma optimize("s", off)
 

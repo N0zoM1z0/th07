@@ -783,6 +783,10 @@ address = "0x00427B21"
 symbol_base = "?SetStateWords@EclOp121Target427AE0Manager@th07@@QAEXXZ"
 
 [[units.ecl-run.functions]]
+address = "0x00427BA2"
+symbol_base = "?ResetTransientState@EclOp121Target427AE0Manager@th07@@QAEXXZ"
+
+[[units.ecl-run.functions]]
 address = "0x00417E50"
 symbol_base = "?EclOp121CancelBulletsInRadius@th07@@YIXPAUEnemyOverlay@EclOperands@1@PBUEclOp121InstructionOverlay@1@@Z"
 rel32_targets = [
