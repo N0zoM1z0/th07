@@ -687,6 +687,16 @@ dir32_targets = [
 ]
 
 [[units.ecl-run.functions]]
+address = "0x00419D70"
+symbol_base = "?EclOp121ApplyTimer3@th07@@YIXPAUEnemyOverlay@EclOperands@1@PBUEclOp121InstructionOverlay@1@@Z"
+rel32_targets = [
+  "?ApplyTime@EclOp121TimerManager@th07@@QAEXM@Z=0x0043A0D6",
+]
+dir32_targets = [
+  "?g_TargetTimerManager575950@th07@@3UEclOp121TimerManager@1@A=bullet_update_timer_manager",
+]
+
+[[units.ecl-run.functions]]
 address = "0x004199C0"
 symbol_base = "?EclOp121CountSprite636@th07@@YIXPAUEnemyOverlay@EclOperands@1@PBUEclOp121InstructionOverlay@1@@Z"
 

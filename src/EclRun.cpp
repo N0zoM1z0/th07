@@ -263,9 +263,15 @@ struct EclOp121AnmManager
     void ResetBulletAnimation(EclOp121Bullet *bullet, i32 spriteIndex);
 };
 
+struct EclOp121TimerManager
+{
+    void ApplyTime(f32 value);
+};
+
 extern EclOp121AnmManager *g_TargetAnmManager4B9E44;
 extern f32 g_TargetFrameMultiplier575AC8;
 extern f32 g_TargetRealOne498A54;
+extern EclOp121TimerManager g_TargetTimerManager575950;
 
 void __fastcall Target44B310(i32 first, i32 second, i32 third, i32 fourth, i32 fifth);
 void __cdecl Target41AE90();
@@ -377,6 +383,12 @@ void __fastcall EclOp121CallTarget44B310(EclOperands::EnemyOverlay *enemy,
                                          const EclOp121InstructionOverlay *instruction)
 {
     Target44B310(3, instruction->rawParameter10, 1, 0xD0CFCFFF, 0);
+}
+
+void __fastcall EclOp121ApplyTimer3(EclOperands::EnemyOverlay *enemy,
+                                    const EclOp121InstructionOverlay *instruction)
+{
+    g_TargetTimerManager575950.ApplyTime(3.0f);
 }
 
 #pragma var_order(i, bullet)
