@@ -268,10 +268,18 @@ struct EclOp121HugeCommand
 
 struct EclOp121Target427AE0State
 {
-    u8 unknown0000[0x7004];
+    u8 unknown0000[0x66DA];
+    i16 word66DA;
+    u8 unknown66DC[0x1328];
     u32 flags7004;
     u8 unknown7008[0x10];
     i16 signed7018;
+};
+
+struct EclOp121Target427B21Substate
+{
+    u8 unknown000[0x1C6];
+    i16 word1C6;
 };
 
 struct EclOp121Target427AE0Manager
@@ -280,6 +288,7 @@ struct EclOp121Target427AE0Manager
     EclOp121Target427AE0State *state;
 
     i32 IsGateActive();
+    void SetStateWords();
 };
 
 struct EclOp121Bullet
@@ -370,6 +379,18 @@ i32 EclOp121Target427AE0Manager::IsGateActive()
     else
         result &= 0;
     return result;
+}
+#pragma optimize("s", off)
+
+#pragma optimize("s", on)
+void EclOp121Target427AE0Manager::SetStateWords()
+{
+    EclOp121Target427B21Substate *substate;
+
+    state->word66DA = 1;
+    substate = reinterpret_cast<EclOp121Target427B21Substate *>(
+        reinterpret_cast<u8 *>(state) + 0x69AC);
+    substate->word1C6 = 2;
 }
 #pragma optimize("s", off)
 
