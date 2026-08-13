@@ -1257,6 +1257,18 @@ address = "0x0042D03A"
 symbol_base = "?Destroy@GuiTextTeardown@th07@@QAEXXZ"
 rel32_targets = ["?Target428B19@GuiTextTeardown@th07@@QAEXXZ=0x00428B19"]
 
+[units.gui-sound-teardown]
+kind = "probe"
+source = "src/GuiSoundTeardown.cpp"
+object = "build/match-units/GuiSoundTeardown.obj"
+profile = "vc7-debug-od-no-gs-g6"
+notes = "Target-observed resource teardown wrapper with residual callee return ABI."
+
+[[units.gui-sound-teardown.functions]]
+address = "0x00438FEF"
+symbol_base = "?Destroy@GuiSoundTeardown@th07@@QAEHXZ"
+rel32_targets = ["?Target4362D0@GuiSoundTeardown@th07@@QAEHXZ=0x004362D0"]
+
 [units.bullet-update]
 kind = "probe"
 source = "src/BulletUpdate.cpp"
