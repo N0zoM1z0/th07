@@ -1220,6 +1220,21 @@ address = "0x004378F0"
 symbol_base = "?Destroy@GuiTimerTeardown@th07@@QAEHXZ"
 rel32_targets = ["?Target436380@GuiTimerTeardown@th07@@QAEHXZ=0x00436380"]
 
+[units.performance-counter]
+kind = "probe"
+source = "src/PerformanceCounter.cpp"
+object = "build/match-units/PerformanceCounter.obj"
+profile = "vc7-debug-od-no-gs-g6"
+notes = "Target-pinned QueryPerformanceCounter sampling callback with an unresolved owning class."
+
+[[units.performance-counter.functions]]
+address = "0x004378B0"
+symbol_base = "?SamplePerformanceCounter@PerformanceCounterBootstrap@th07@@QAEHXZ"
+dir32_targets = [
+  "?g_PerformanceCount@th07@@3T_LARGE_INTEGER@@A=?g_PerformanceCount@th07@@3T_LARGE_INTEGER@@A",
+  "__imp__QueryPerformanceCounter@4=__imp__QueryPerformanceCounter@4",
+]
+
 [units.gui-text-teardown]
 kind = "probe"
 source = "src/GuiTextTeardown.cpp"
