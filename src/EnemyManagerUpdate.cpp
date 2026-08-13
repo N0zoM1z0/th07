@@ -66,11 +66,13 @@ struct EnemyManagerUpdateAnmVm
         } flashColor;
     };
     u32 flags;
-    u8 unknown1C4[0x14];
+    u8 unknown1C4[0x10];
     i16 scriptIndex;
-    u8 unknown1DA[0xA];
+    u8 unknown1D6[0xE];
     EnemyManagerUpdateSprite *sprite;
     u8 unknown1E8[0x64];
+
+    EnemyManagerUpdateAnmVm *Initialize();
 };
 typedef char EnemyManagerUpdateAnmVm_size[(sizeof(EnemyManagerUpdateAnmVm) == 0x24C) ? 1 : -1];
 
@@ -91,6 +93,23 @@ struct EnemyManagerUpdateTimer
 
     void Decrement(i32 amount);
 };
+
+extern void __fastcall InitializeAnmVm(void *vm);
+
+EnemyManagerUpdateAnmVm *EnemyManagerUpdateAnmVm::Initialize()
+{
+    EnemyManagerUpdateTimer *timer;
+
+    InitializeAnmVm(this);
+    memset(this, 0, sizeof(EnemyManagerUpdateAnmVm));
+    scriptIndex = -1;
+    timer = reinterpret_cast<EnemyManagerUpdateTimer *>(
+        reinterpret_cast<u8 *>(this) + 0x2B8);
+    timer->current = 0;
+    timer->previous = -999;
+    timer->subFrameBits = 0;
+    return this;
+}
 
 struct EnemyManagerUpdateSlotFlagBits
 {

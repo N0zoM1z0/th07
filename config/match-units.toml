@@ -1488,6 +1488,11 @@ address = "0x0041A350"
 symbol_base = "?ClearObservedStorage@EnemyManagerUpdateOverlay@th07@@QAEXXZ"
 
 [[units.enemy-manager-update.functions]]
+address = "0x0041A2F0"
+symbol_base = "?Initialize@EnemyManagerUpdateAnmVm@th07@@QAEPAU12@XZ"
+rel32_targets = ["?InitializeAnmVm@th07@@YIXPAX@Z=0x004011B0"]
+
+[[units.enemy-manager-update.functions]]
 address = "0x00420620"
 symbol_base = "?OnUpdate@EnemyManagerUpdateOverlay@th07@@QAEHXZ"
 rel32_targets = [
