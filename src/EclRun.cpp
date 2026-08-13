@@ -352,6 +352,12 @@ void __fastcall EclOp121ResetBulletFamily(EclOperands::EnemyOverlay *enemy,
     Target41AE90();
 }
 
+void __fastcall EclOp121CallTarget44B310(EclOperands::EnemyOverlay *enemy,
+                                         const EclOp121InstructionOverlay *instruction)
+{
+    Target44B310(3, instruction->rawParameter10, 1, 0xD0CFCFFF, 0);
+}
+
 #pragma var_order(i, bullet, multiplier, velocity)
 void __fastcall EclOp121ScaleBullets(EclOperands::EnemyOverlay *enemy,
                                      const EclOp121InstructionOverlay *instruction)
