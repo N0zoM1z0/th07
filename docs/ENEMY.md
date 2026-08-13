@@ -120,11 +120,15 @@ VM slots of `0x24C` bytes. Active VMs have a nonnegative script index at
 `+0x230`, and the global render offsets. The primary VM uses Z `0.29`, while
 the surrounding slots use Z `0.3`, before calling the rotated ANM draw helper
 at `0x0044F9A0`. A later branch temporarily changes primary scale/color for a
-trail or triangle-fan effect and then restores them. The body compiles but is
-not yet a strict match: the current object uses a `0x11C` frame and 2947-byte
-tail versus target `0xFC` and 2863 bytes. Its typed shape prefix is 333
-instructions and resynchronized coverage is 549/739, or 74.29%; four
-companion functions remain exact. TH06 only corroborates phase order.
+trail or triangle-fan effect and then restores them. The full emitted body now
+reproduces all 739 target instruction shapes and the complete internal control
+flow graph. This recovery corrected the UV-width ratio, wrapped-angle endpoint
+order, x87 sine/cosine stores, vertex construction order, and the required
+post-collinearity `vertexCount > 2` gate. The no-`/Op` VC7 profile preserves
+all four strict-exact companion functions. The body itself is not yet a strict
+match: its 2920 bytes and `0x108` frame remain above the target's 2863 bytes and
+`0xFC` frame, leaving local-lifetime, displacement, and relocation shaping.
+TH06 only corroborates phase order.
 
 The reproducible compiler packet is generated with:
 

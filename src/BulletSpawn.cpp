@@ -186,11 +186,11 @@ i32 BulletSpawnManager::SpawnOne(BulletSpawnRequest *request, i32 column, i32 ro
     case 1:
         if (request->columns & 1)
         {
-            angle = ((column + 1) / 2) * request->angleStep;
+            angle += ((column + 1) / 2) * request->angleStep;
         }
         else
         {
-            angle = (column / 2) * request->angleStep + request->angleStep * 0.5f;
+            angle += (column / 2) * request->angleStep + request->angleStep * 0.5f;
         }
         if (column & 1)
         {

@@ -605,9 +605,18 @@ run_ecl_top:
             break;
         }
         case 8:
-            *WriteFloat(rawEnemy, instruction) =
-                EclOperands::g_TargetRng49FE20.RandomF32() * ReadFloat(rawEnemy, instruction, 1);
+        {
+            f32 multiplier;
+            f32 value;
+            if (instruction->operandFlags & 2)
+                multiplier = rawEnemy->ResolveFloat(*(const f32 *)&instruction->operand[1]);
+            else
+                multiplier = *(const f32 *)&instruction->operand[1];
+            value = EclOperands::g_TargetRng49FE20.RandomF32() * multiplier;
+            *EclOperands::ResolveFloatLValue(rawEnemy, (f32 *)&instruction->operand[0],
+                                              instruction->operandFlags, 0) = value;
             break;
+        }
         case 9:
             *WriteFloat(rawEnemy, instruction) = EclOperands::g_TargetRng49FE20.RandomF32() *
                                                      ReadFloat(rawEnemy, instruction, 1) +

@@ -1465,8 +1465,8 @@ dir32_targets = [
 kind = "probe"
 source = "src/EnemyRender.cpp"
 object = "build/match-units/EnemyRender.obj"
-profile = "vc7-debug-od-no-gs-g6"
-notes = "Target-confirmed EnemyManager draw-chain adapters corroborated by the unique TH08 high-priority clone."
+profile = "vc7-debug-od-no-gs-g6-no-op"
+notes = "Target-confirmed EnemyManager renderer uses the no-/Op G6 profile; four exact draw-chain companions guard the profile and TH08 corroborates the high-priority adapter."
 
 [[units.enemy-render-wrappers.functions]]
 address = "0x00422CA0"
