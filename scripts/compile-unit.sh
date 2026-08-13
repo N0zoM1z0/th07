@@ -95,6 +95,26 @@ else
   compile_lock_fd=9
 fi
 
+# VC7 launched through Wine can report a successful process status even after
+# cl.exe printed a fatal compile error.  Move the previous object aside so a
+# missing fresh output cannot be mistaken for a successful cached build.
+stale_output=""
+if [[ -f "$output_path" ]]; then
+  stale_output="${output_path}.stale.$$"
+  mv -- "$output_path" "$stale_output"
+fi
+restore_previous_output() {
+  status=$?
+  if [[ -n "$stale_output" && -f "$stale_output" ]]; then
+    rm -f -- "$output_path"
+    mv -- "$stale_output" "$output_path"
+  elif [[ $status -ne 0 ]]; then
+    rm -f -- "$output_path"
+  fi
+  return "$status"
+}
+trap restore_previous_output EXIT
+
 nice -n "$compile_nice" wine "$runner_win" cl.exe \
     /nologo \
     /c \
@@ -112,5 +132,15 @@ nice -n "$compile_nice" wine "$runner_win" cl.exe \
   "/Fd$pdb_win" \
   "/Fo$output_win" \
   "$source_win"
+
+if [[ ! -s "$output_path" ]]; then
+  echo "VC7 did not produce a fresh object: $output_path" >&2
+  exit 1
+fi
+
+if [[ -n "$stale_output" ]]; then
+  rm -f -- "$stale_output"
+fi
+trap - EXIT
 
 flock --unlock "$compile_lock_fd"
