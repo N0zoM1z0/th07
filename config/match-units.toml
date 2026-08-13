@@ -1232,6 +1232,18 @@ address = "0x0042D03A"
 symbol_base = "?Destroy@GuiTextTeardown@th07@@QAEHXZ"
 rel32_targets = ["?Target428B19@GuiTextTeardown@th07@@QAEHXZ=0x00428B19"]
 
+[units.gui-sound-forward]
+kind = "probe"
+source = "src/GuiSoundForward.cpp"
+object = "build/match-units/GuiSoundForward.obj"
+profile = "vc7-default"
+notes = "Real-C++ GUI sound teardown forwarding its receiver to 0x004362D0."
+
+[[units.gui-sound-forward.functions]]
+address = "0x00438FEF"
+symbol_base = "?Destroy@GuiSoundTeardown@th07@@QAEHXZ"
+rel32_targets = ["?Target4362D0@GuiSoundTeardown@th07@@QAEHXZ=0x004362D0"]
+
 [units.wave-file]
 kind = "probe"
 source = "src/WaveFile.cpp"
