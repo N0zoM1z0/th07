@@ -1194,6 +1194,15 @@ dir32_targets = [
   "?g_GuiUpdateState@SpellLifecycle@th07@@3HA=?g_GuiUpdateState@th07@@3HA",
 ]
 
+[[units.spell-lifecycle.functions]]
+address = "0x00427C81"
+symbol_base = "?ShowSecondaryBonus@GuiOverlay@SpellLifecycle@th07@@QAEXHH@Z"
+dir32_targets = [
+  "__real@43d00000=__real@43d00000",
+  "__real@43280000=__real@43280000",
+  "?g_GuiUpdateState@SpellLifecycle@th07@@3HA=?g_GuiUpdateState@th07@@3HA",
+]
+
 [units.bullet-update]
 kind = "probe"
 source = "src/BulletUpdate.cpp"

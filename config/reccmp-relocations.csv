@@ -66,6 +66,7 @@ __real@41000000,0x00498A7C,00000041,0x0,Exact target float 8.0 divisor used by P
 __real@41a00000,0x00498B84,0000a041,0x0,Exact target float 20.0 graze expansion constant,literal
 __real@42400000,0x00498B34,00004042,0x0,Exact target float 48.0 laser graze expansion constant,literal
 __real@43d00000,0x00498A74,0000d043,0x0,Exact target float 416.0 GUI score-popup position constant,literal
+__real@43280000,0x00498B30,00002843,0x0,Exact target float 168.0 GUI secondary-popup position constant,literal
 ?g_PlayerCollisionFlags@th07@@3HA,0x004B9E48,00000000,0x0,Direct target pointer storage referenced by Player collision flag updates,literal
 ?g_PlayerAnimationData@th07@@3PAHA,0x004B9E44,00000000,0x0,Direct target animation-manager pointer storage used to resolve player bullet scripts,literal
 ?g_HideGrazeCounter@th07@@3HA,0x004D44F8,00000000,0x0,Direct target zero-initialized flag suppressing graze counter updates,literal

@@ -95,6 +95,7 @@ struct GuiStateOverlay
 {
     u8 unknown0000[0x209C0];
     GuiBonusScoreState bonusScore;
+    GuiBonusScoreState secondaryBonus;
 };
 
 struct GuiOverlay
@@ -105,6 +106,7 @@ struct GuiOverlay
     void ShowSpellcard(i32 portraitScript, const char *name);
     void EndSpellcardDisplay();
     void ShowBonusScore(i32 score);
+    void ShowSecondaryBonus(i32 value, i32 isShown);
     void ShowSpellcardBonus(i32 score);
 };
 
@@ -189,6 +191,17 @@ void GuiOverlay::ShowBonusScore(i32 score)
     state->bonusScore.isShown = 1;
     state->bonusScore.timer.InitializeForPopup();
     state->bonusScore.value = score;
+    g_GuiUpdateState = 2;
+}
+#pragma optimize("s", off)
+
+#pragma optimize("s", on)
+void GuiOverlay::ShowSecondaryBonus(i32 value, i32 isShown)
+{
+    state->secondaryBonus.position = GuiBonusPosition(416.0f, 168.0f, 0.0f);
+    state->secondaryBonus.isShown = isShown;
+    state->secondaryBonus.timer.InitializeForPopup();
+    state->secondaryBonus.value = value;
     g_GuiUpdateState = 2;
 }
 #pragma optimize("s", off)
