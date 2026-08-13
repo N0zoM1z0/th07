@@ -1280,6 +1280,18 @@ symbol_base = "?ActivateRenderState@SupervisorRenderState@th07@@QAEHXZ"
 rel32_targets = ["?PrepareRenderState@AnmManager@th07@@QAEXXZ=0x0044F5C0"]
 dir32_targets = ["?g_AnmManager@th07@@3PAUAnmManager@1@A=?g_AnmManager@th07@@3PAUAnmManager@1@A"]
 
+[units.supervisor-slow-mode]
+kind = "probe"
+source = "src/SupervisorSlowMode.cpp"
+object = "build/match-units/SupervisorSlowMode.obj"
+profile = "vc7-debug-od-no-gs-g6"
+notes = "Real-C++ Supervisor member slow-mode predicate with target-attested unused this home."
+
+[[units.supervisor-slow-mode.functions]]
+address = "0x0043A18D"
+symbol_base = "?IsSlowModeEnabled@Supervisor@th07@@QAEHXZ"
+dir32_targets = ["?g_TargetGameManager626274@th07@@3PAUSupervisorGameState@1@A=replay_game_manager"]
+
 [units.bullet-update]
 kind = "probe"
 source = "src/BulletUpdate.cpp"

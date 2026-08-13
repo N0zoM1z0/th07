@@ -2,4 +2,3 @@ address,owner,started_utc,branch,notes
 0x00417E50,root,2026-08-13T07:20:44.712511Z,main,P0 opcode-121 cancel bullets in radius helper; coordinator-owned EclRun integration
 0x00418260,root,2026-08-13T07:47:16.183549Z,main,Opcode-121 neighboring boss-state copy helper semantic packet and exact-match assessment
 0x00418EB0,root,2026-08-13T07:55:07.773591Z,main,Opcode-121 neighboring bullet-scaling helper semantic packet and exact-match assessment
-0x0043A1BD,root,2026-08-13T10:45:30.922617Z,main,Recover Supervisor activation helper as real C++ only; no whole-function assembly.
