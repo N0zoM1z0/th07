@@ -11,19 +11,9 @@ struct GuiTextTeardown
     void Destroy();
 };
 
-__declspec(naked) void GuiTextTeardown::Destroy()
+void GuiTextTeardown::Destroy()
 {
-    __asm
-    {
-        push ebp
-        mov ebp, esp
-        push ecx
-        mov DWORD PTR[ebp - 4], ecx
-        mov ecx, DWORD PTR[ebp - 4]
-        call GuiTextTeardown::Target428B19
-        leave
-        ret
-    }
+    Target428B19();
 }
 
 } // namespace th07

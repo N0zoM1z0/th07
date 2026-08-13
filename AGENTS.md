@@ -22,6 +22,13 @@ Do not analyze or substitute a localized, patched, or earlier executable.
   ABI, field offset, side effect, and boundary against TH07.
 - Never mechanically paste decompiler output as source.
 - Never add fake-return or empty behavioral bodies merely to make a build link.
+- Never use a naked function, whole-function inline assembly, or a
+  target-instruction transcription as a substitute for reconstructed source.
+  A function may be marked `matching` only when its real C/C++ implementation
+  is independently derived from target evidence and strictly compared. Inline
+  assembly is allowed only for a narrowly evidenced ABI boundary within an
+  otherwise real implementation; it must not encode the function's control
+  flow, field accesses, or behavior merely to force a byte match.
 - `config/functions.csv` is the source of truth. Use the lifecycle
   `unclassified`, `identified`, `decompiled`, `implemented`, `compiles`,
   `matching`, `library`, or `blocked`.

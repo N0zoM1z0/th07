@@ -10,19 +10,9 @@ struct GuiSoundTeardown
     i32 Destroy();
 };
 
-__declspec(naked) i32 GuiSoundTeardown::Destroy()
+i32 GuiSoundTeardown::Destroy()
 {
-    __asm
-    {
-        push ebp
-        mov ebp, esp
-        push ecx
-        mov DWORD PTR[ebp - 4], ecx
-        mov ecx, DWORD PTR[ebp - 4]
-        call GuiSoundTeardown::Target4362D0
-        leave
-        ret
-    }
+    return Target4362D0();
 }
 
 struct GuiTimerTeardown
