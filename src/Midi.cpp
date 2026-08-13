@@ -11,6 +11,11 @@ MidiDevice::MidiDevice()
     deviceId = 0;
 }
 
+MidiDevice::~MidiDevice()
+{
+    Close();
+}
+
 BOOL MidiDevice::OpenDevice(UINT newDeviceId)
 {
     if (handle != NULL)

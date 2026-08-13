@@ -254,6 +254,11 @@ address = "0x00436110"
 symbol_base = "??0MidiDevice@th07@@QAE@XZ"
 
 [[units.midi.functions]]
+address = "0x00436140"
+symbol_base = "??1MidiDevice@th07@@QAE@XZ"
+rel32_targets = ["?Close@MidiDevice@th07@@QAE?AW4ZunResult@2@XZ=0x004361C0"]
+
+[[units.midi.functions]]
 address = "0x00436160"
 symbol_base = "?OpenDevice@MidiDevice@th07@@QAEHI@Z"
 rel32_targets = ["?Close@MidiDevice@th07@@QAE?AW4ZunResult@2@XZ=0x004361C0"]
