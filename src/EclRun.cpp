@@ -237,6 +237,15 @@ struct EclOp121BulletManager
     void Spawn(EclOp121BulletSpawnRequest *request);
 };
 
+struct EclOp121AnmManager
+{
+    void ResetBulletAnimation(EclOp121Bullet *bullet, i32 spriteIndex);
+};
+
+extern EclOp121AnmManager *g_TargetAnmManager4B9E44;
+extern f32 g_TargetFrameMultiplier575AC8;
+extern f32 g_TargetRealOne498A54;
+
 void __fastcall Target44B310(i32 first, i32 second, i32 third, i32 fourth, i32 fifth);
 void __cdecl Target41AE90();
 
@@ -341,6 +350,40 @@ void __fastcall EclOp121ResetBulletFamily(EclOperands::EnemyOverlay *enemy,
 {
     Target44B310(1, 0x50, 8, 0, 0);
     Target41AE90();
+}
+
+#pragma var_order(i, bullet, multiplier, velocity)
+void __fastcall EclOp121ScaleBullets(EclOperands::EnemyOverlay *enemy,
+                                     const EclOp121InstructionOverlay *instruction)
+{
+    EclOperands::Vector3 *velocity;
+    f32 multiplier;
+    EclOp121Bullet *bullet;
+    i32 i;
+
+    __asm {
+        mov eax, instruction
+        fild dword ptr [eax + 10h]
+        fdivr dword ptr [g_TargetRealOne498A54]
+        fstp dword ptr [g_TargetFrameMultiplier575AC8]
+    }
+    *reinterpret_cast<i16 *>(0x013481EE) = 2;
+    *reinterpret_cast<i16 *>(0x0134843A) = 2;
+    bullet = reinterpret_cast<EclOp121Bullet *>(0x0063B218);
+    for (i = 0; i < 1024; i++, bullet = reinterpret_cast<EclOp121Bullet *>(bullet->bytes + 0xD68))
+    {
+        if (*(u16 *)(bullet->bytes + 0xBFC) == 0)
+            continue;
+
+        multiplier = g_TargetFrameMultiplier575AC8;
+        velocity = reinterpret_cast<EclOperands::Vector3 *>(bullet->bytes + 0xB98);
+        velocity->x = multiplier * velocity->x;
+        velocity->y = multiplier * velocity->y;
+        velocity->z = multiplier * velocity->z;
+        *(i16 *)(bullet->bytes + 0x1D6) = *(i16 *)(bullet->bytes + 0x1D4);
+        if (*(i16 *)(bullet->bytes + 0x1D4) >= 608 && *(i16 *)(bullet->bytes + 0x1D4) <= 623)
+            g_TargetAnmManager4B9E44->ResetBulletAnimation(bullet, 623);
+    }
 }
 
 #pragma var_order(modeForSwitch, instructionMode, squaredDistance, sqrtTemporary, \

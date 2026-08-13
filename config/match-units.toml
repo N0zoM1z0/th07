@@ -655,6 +655,18 @@ rel32_targets = [
 ]
 
 [[units.ecl-run.functions]]
+address = "0x00418EB0"
+symbol_base = "?EclOp121ScaleBullets@th07@@YIXPAUEnemyOverlay@EclOperands@1@PBUEclOp121InstructionOverlay@1@@Z"
+rel32_targets = [
+  "?ResetBulletAnimation@EclOp121AnmManager@th07@@QAEXPAUEclOp121Bullet@2@H@Z=0x0044E8E0",
+]
+dir32_targets = [
+  "?g_TargetAnmManager4B9E44@th07@@3PAUEclOp121AnmManager@1@A=?g_AnmManager@th07@@3PAUAnmManager@1@A",
+  "?g_TargetFrameMultiplier575AC8@th07@@3MA=bullet_update_frame_multiplier",
+  "?g_TargetRealOne498A54@th07@@3MA=__real@3f800000",
+]
+
+[[units.ecl-run.functions]]
 address = "0x00417C30"
 symbol_base = "?EclOp121RotateBullets@th07@@YIXPAUEnemyOverlay@EclOperands@1@PBUEclOp121InstructionOverlay@1@@Z"
 rel32_targets = [
