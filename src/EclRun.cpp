@@ -6,6 +6,7 @@
 #include <string.h>
 
 extern "C" f64 __cdecl _CIatan2();
+extern "C" f32 __cdecl TargetCISqrt();
 #pragma intrinsic(atan2)
 
 namespace th07
@@ -46,6 +47,12 @@ extern f32 g_TargetBossHealth49FC18;
 extern i16 g_TargetBossUi134DB5A[];
 extern i32 g_TargetRank62F8A4;
 extern u8 g_TargetBulletManager62F958[];
+// The target reads this game-configuration word in the opcode-121 rotation
+// handler.  Its wider ownership remains with the ECL operand lane.
+namespace EclOperands
+{
+extern i32 g_TargetInt626280;
+}
 struct EclTailTimerManager
 {
     void Advance(i32 *current, i32 *subFrame);
@@ -154,7 +161,7 @@ extern EnemyOverlay *g_TargetSpellBosses12FE098[8];
 struct EclOp121InstructionOverlay
 {
     u8 raw00[0x10];
-    i32 bossIndex;
+    i32 rawParameter10;
 };
 
 struct EclOp121MovementBits
@@ -169,7 +176,7 @@ void __fastcall EclOp121CopyBossTransform(EclOperands::EnemyOverlay *enemy,
 {
     i32 bossIndex;
 
-    bossIndex = instruction->bossIndex;
+    bossIndex = instruction->rawParameter10;
     *reinterpret_cast<EclOperands::Vector3 *>(enemy->bytes + 0x2B0C) =
         *reinterpret_cast<const EclOperands::Vector3 *>(
             SpellLifecycle::g_TargetSpellBosses12FE098[bossIndex]->bytes + 0x2B0C);
@@ -187,6 +194,172 @@ void __fastcall EclOp121CopyBossTransform(EclOperands::EnemyOverlay *enemy,
 void __fastcall EclOp121NoOp(EclOperands::EnemyOverlay *enemy,
                              const EclOp121InstructionOverlay *instruction)
 {
+}
+
+// These overlays deliberately remain local to the opcode-121 helpers.  They
+// express only fields and member-call ABIs directly observed in their target
+// bodies; BulletManager's public layout remains owned by the bullet lane.
+struct EclOp121Bullet
+{
+    u8 bytes[1];
+
+    void QueueRotationCommand(f32 speedDelta, f32 unusedDelta, i32 duration,
+                              f32 angularStep, f32 interval);
+    void Clear();
+};
+
+struct EclOp121BulletSpawnRequest
+{
+    i16 templateIndex;
+    i16 baseSpriteIndex;
+    EclOperands::Vector3 position;
+    f32 angleOffset;
+    f32 angleStep;
+    f32 speedStart;
+    u8 unknown1C[0xA0];
+    i16 columns;
+    i16 rows;
+    u16 layoutMode;
+    u16 unknownC2;
+    i32 flags;
+    u8 unknownC8[4];
+    i32 commandOwner;
+    u8 unknownD0[4];
+
+    void QueueSpawnCommand(i32 unused0, i32 unused1, i32 duration,
+                           f32 angle, f32 angularStep);
+};
+typedef char EclOp121BulletSpawnRequest_size[
+    sizeof(EclOp121BulletSpawnRequest) == 0xD4 ? 1 : -1];
+
+struct EclOp121BulletManager
+{
+    void Spawn(EclOp121BulletSpawnRequest *request);
+};
+
+void __fastcall Target44B310(i32 first, i32 second, i32 third, i32 fourth, i32 fifth);
+
+#pragma var_order(i, bullet, angularStep)
+void __fastcall EclOp121RotateBullets(EclOperands::EnemyOverlay *enemy,
+                                      const EclOp121InstructionOverlay *instruction)
+{
+    f32 angularStep;
+    EclOp121Bullet *bullet;
+    i32 i;
+
+    bullet = reinterpret_cast<EclOp121Bullet *>(0x0063B218);
+    Target44B310(1, 30, 12, 0, 0);
+    Target44B310(3, 4, 3, 0x80FFCFCF, 0);
+
+    for (i = 0; i < 1024; i++, bullet = reinterpret_cast<EclOp121Bullet *>(bullet->bytes + 0xD68))
+    {
+        if (*(u16 *)(bullet->bytes + 0xBFC) == 0 || *(u16 *)(bullet->bytes + 0xBFC) == 5)
+            continue;
+        if (*(void **)(bullet->bytes + 0x1E4) != 0 && *(i32 *)(bullet->bytes + 0xC08) == 0)
+        {
+            if (instruction->rawParameter10 == 1 && *(i16 *)(bullet->bytes + 0xBF8) != 8)
+                continue;
+            if (instruction->rawParameter10 == 2 && *(i16 *)(bullet->bytes + 0xBF8) != 4)
+                continue;
+
+            if (*(i16 *)(bullet->bytes + 0xBF8) == 2)
+                angularStep = -3.1415927f /
+                              (EclOperands::g_TargetRng49FE20.RandomF32() * 60.0f + 180.0f);
+            else if (*(i16 *)(bullet->bytes + 0xBF8) == 6)
+                angularStep = 3.1415927f /
+                              (EclOperands::g_TargetRng49FE20.RandomF32() * 60.0f + 180.0f);
+            else if (*(i16 *)(bullet->bytes + 0xBF8) == 8)
+                angularStep = 3.1415927f /
+                              (EclOperands::g_TargetRng49FE20.RandomF32() * 60.0f + 180.0f);
+            else if (*(i16 *)(bullet->bytes + 0xBF8) == 4)
+                angularStep = -3.1415927f /
+                              (EclOperands::g_TargetRng49FE20.RandomF32() * 60.0f + 180.0f);
+
+            *(f32 *)(bullet->bytes + 0xBB0) = 0.3f;
+            memset(bullet->bytes + 0xC14, 0, 0x78);
+            if (EclOperands::g_TargetInt626280 < 3)
+                bullet->QueueRotationCommand(0.0f, 0.0f, 60, angularStep, 0.016666668f);
+            else
+                bullet->QueueRotationCommand(0.0f, 0.0f, 240, angularStep, 0.0052631579f);
+            *(i32 *)(bullet->bytes + 0xC08) = 1;
+        }
+    }
+}
+
+#pragma var_order(modeForSwitch, instructionMode, squaredDistance, sqrtTemporary, \
+                  distance, radius, bullet, i, request)
+void __fastcall EclOp121CancelBulletsInRadius(EclOperands::EnemyOverlay *enemy,
+                                              const EclOp121InstructionOverlay *instruction)
+{
+    i32 modeForSwitch;
+    i32 instructionMode;
+    f32 squaredDistance;
+    f32 sqrtTemporary;
+    f32 distance;
+    f32 radius;
+    EclOp121Bullet *bullet;
+    i32 i;
+    EclOp121BulletSpawnRequest request = {0};
+
+    bullet = reinterpret_cast<EclOp121Bullet *>(0x0063B218);
+    request.commandOwner = -1;
+    instructionMode = instruction->rawParameter10;
+    modeForSwitch = instructionMode;
+    switch ((u32)modeForSwitch)
+    {
+    case 0:
+        Target44B310(1, 0x20, 12, 0, 0);
+        Target44B310(3, 4, 1, 0x80CFCFFF, 0);
+        radius = 128.0f;
+        break;
+    case 1:
+        radius = 192.0f;
+        break;
+    case 2:
+        radius = 256.0f;
+        break;
+    case 3:
+        radius = 999.0f;
+        break;
+    }
+
+    for (i = 0; i < 1024; i++, bullet = reinterpret_cast<EclOp121Bullet *>(bullet->bytes + 0xD68))
+    {
+        if (*(u16 *)(bullet->bytes + 0xBFC) == 0 || *(u16 *)(bullet->bytes + 0xBFC) == 5)
+            continue;
+        if (*(void **)(bullet->bytes + 0x1E4) == 0)
+            continue;
+        if (*(i16 *)(bullet->bytes + 0xBF8) != 2)
+            continue;
+
+        squaredDistance =
+            (*(f32 *)(enemy->bytes + 0x2B10) - *(f32 *)(bullet->bytes + 0xB90)) *
+                (*(f32 *)(enemy->bytes + 0x2B10) - *(f32 *)(bullet->bytes + 0xB90)) +
+            (*(f32 *)(enemy->bytes + 0x2B0C) - *(f32 *)(bullet->bytes + 0xB8C)) *
+                (*(f32 *)(enemy->bytes + 0x2B0C) - *(f32 *)(bullet->bytes + 0xB8C));
+        sqrtTemporary = TargetCISqrt();
+        distance = sqrtTemporary;
+        if (!(distance < radius))
+            continue;
+
+        request.position.x = *(f32 *)(bullet->bytes + 0xB8C);
+        request.position.y = *(f32 *)(bullet->bytes + 0xB90);
+        request.position.z = *(f32 *)(bullet->bytes + 0xB94);
+        request.templateIndex = 0;
+        request.baseSpriteIndex = 6;
+        request.angleOffset = 0.0f;
+        request.angleStep = -3.1415927f;
+        request.speedStart = 0.7f;
+        request.columns = 2;
+        request.rows = 1;
+        request.layoutMode = 6;
+        request.flags = 2;
+        request.QueueSpawnCommand(0, 0, 180,
+                                  EclOperands::g_TargetRng49FE20.RandomF32() * 0.005f + 0.013f,
+                                  1.5707964f);
+        reinterpret_cast<EclOp121BulletManager *>(g_TargetBulletManager62F958)->Spawn(&request);
+        bullet->Clear();
+    }
 }
 
 namespace

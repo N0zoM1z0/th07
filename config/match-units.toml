@@ -627,6 +627,42 @@ dir32_targets = [
 address = "0x00418110"
 symbol_base = "?EclOp121NoOp@th07@@YIXPAUEnemyOverlay@EclOperands@1@PBUEclOp121InstructionOverlay@1@@Z"
 
+[[units.ecl-run.functions]]
+address = "0x00417C30"
+symbol_base = "?EclOp121RotateBullets@th07@@YIXPAUEnemyOverlay@EclOperands@1@PBUEclOp121InstructionOverlay@1@@Z"
+rel32_targets = [
+  "?Target44B310@th07@@YIXHHHHH@Z=0x0044B310",
+  "?RandomF32@TargetRngOverlay@EclOperands@th07@@QAEMXZ=0x00431900",
+  "?QueueRotationCommand@EclOp121Bullet@th07@@QAEXMMHMM@Z=0x00427960",
+]
+dir32_targets = [
+  "?g_TargetRng49FE20@EclOperands@th07@@3UTargetRngOverlay@12@A=ecl_rng_49FE20",
+  "?g_TargetInt626280@EclOperands@th07@@3HA=ecl_global_626280",
+  "?g_TargetBulletManager62F958@th07@@3PAEA=spell_bullet_manager_62F958",
+  "__real@42700000=ecl_real_60",
+  "__real@43340000=ecl_op121_real_180",
+  "__real@c0490fdb=rng_real_neg_pi",
+  "__real@40490fdb=ecl_real_40490fdb",
+]
+
+[[units.ecl-run.functions]]
+address = "0x00417E50"
+symbol_base = "?EclOp121CancelBulletsInRadius@th07@@YIXPAUEnemyOverlay@EclOperands@1@PBUEclOp121InstructionOverlay@1@@Z"
+rel32_targets = [
+  "?Target44B310@th07@@YIXHHHHH@Z=0x0044B310",
+  "_TargetCISqrt=0x0048BCC0",
+  "?RandomF32@TargetRngOverlay@EclOperands@th07@@QAEMXZ=0x00431900",
+  "?QueueSpawnCommand@EclOp121BulletSpawnRequest@th07@@QAEXHHHMM@Z=0x00427A70",
+  "?Spawn@EclOp121BulletManager@th07@@QAEXPAUEclOp121BulletSpawnRequest@2@@Z=0x00424D20",
+  "?Clear@EclOp121Bullet@th07@@QAEXXZ=0x00417B20",
+]
+dir32_targets = [
+  "?g_TargetRng49FE20@EclOperands@th07@@3UTargetRngOverlay@12@A=ecl_rng_49FE20",
+  "?g_TargetBulletManager62F958@th07@@3PAEA=spell_bullet_manager_62F958",
+  "__real@3ba3d70a=ecl_op121_real_0_005",
+  "__real@3c54fdf4=ecl_op121_real_0_013",
+]
+
 [units.bullet-render]
 kind = "probe"
 source = "src/BulletRender.cpp"
