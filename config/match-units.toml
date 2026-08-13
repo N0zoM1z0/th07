@@ -2598,6 +2598,41 @@ object = "build/match-units/PbgFileDestructor.obj"
 profile = "vc7-debug-od-no-gs-g6"
 notes = "Focused VC7 probe for the exact IPbgFile virtual base destructor; the PBG interface order is target-attested by the adjacent CPbgFile vtable."
 
+[units.pbg-file]
+kind = "probe"
+source = "src/PbgFile.cpp"
+object = "build/match-units/PbgFile.obj"
+profile = "vc7-debug-od-no-gs-g6"
+notes = "Focused VC7 probe for the CPbgFile constructor; the 0x0C object layout and virtual table order are target-attested by the PBG method cluster."
+
+[[units.pbg-file.functions]]
+address = "0x0045E550"
+symbol_base = "??0CPbgFile@th07@@QAE@XZ"
+dir32_targets = [
+  "??_7IPbgFile@th07@@6B@=??_7IPbgFile@th07@@6B@",
+  "??_7CPbgFile@th07@@6B@=??_7CPbgFile@th07@@6B@",
+]
+
+[[units.pbg-file.functions]]
+address = "0x0045E770"
+symbol_base = "?Close@CPbgFile@th07@@UAEXXZ"
+dir32_targets = ["__imp__CloseHandle@4=__imp__CloseHandle@4"]
+
+[[units.pbg-file.functions]]
+address = "0x0045E850"
+symbol_base = "?Tell@CPbgFile@th07@@UAEIXZ"
+dir32_targets = ["__imp__SetFilePointer@16=__imp__SetFilePointer@16"]
+
+[[units.pbg-file.functions]]
+address = "0x0045E880"
+symbol_base = "?GetSize@CPbgFile@th07@@UAEIXZ"
+dir32_targets = ["__imp__GetFileSize@8=__imp__GetFileSize@8"]
+
+[[units.pbg-file.functions]]
+address = "0x0045E8B0"
+symbol_base = "?Seek@CPbgFile@th07@@UAE_NHI@Z"
+dir32_targets = ["__imp__SetFilePointer@16=__imp__SetFilePointer@16"]
+
 [[units.pbg-file-destructor.functions]]
 address = "0x0045E500"
 symbol_base = "??1IPbgFile@th07@@UAE@XZ"
