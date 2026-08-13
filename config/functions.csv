@@ -634,7 +634,7 @@ address,size,span_end,current_name,proposed_name,module,status,match_percent,cal
 0x0045E080,163,0x0045E122,sub_45E080,,,unclassified,0.00,unknown,,false,,,,
 0x0045E130,84,0x0045E183,sub_45E130,,,unclassified,0.00,unknown,,false,,,,
 0x0045E190,92,0x0045E1EB,sub_45E190,,,unclassified,0.00,unknown,,false,,,,
-0x0045E1F0,17,0x0045E200,unknown_libname_5,,,unclassified,0.00,unknown,,false,,,,
+0x0045E1F0,17,0x0045E200,unknown_libname_5,WaveFile_get_size,sound,matching,100.00,__thiscall,i32 WaveFile_get_size(WaveFile * this),false,src/WaveFile.cpp,python3 scripts/build.py --unit wave-file --compare --json; strict exact 17/17 target and object SHA 43e665e8b882fde68ac77d1eeda5dc83c975429712f94b4e53e6ecdbd92b314e 2026-08-13,root,TH07 target directly returns i32 at receiver+0x2C. Unique exact TH08 clone 0x004733C0 named CWaveFile GetSize corroborates role.
 0x0045E210,328,0x0045E357,sub_45E210,,,unclassified,0.00,unknown,,false,,,,
 0x0045E360,328,0x0045E4A7,sub_45E360,,,unclassified,0.00,unknown,,false,,,,
 0x0045E4B0,51,0x0045E4E2,sub_45E4B0,,,unclassified,0.00,unknown,,false,,,,
