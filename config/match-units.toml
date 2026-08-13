@@ -2668,6 +2668,21 @@ address = "0x0045FFC0"
 symbol_base = "?CopyFileName@PbgArchive@th07@@QAEPADPBD@Z"
 dir32_targets = ["__imp__GlobalAlloc@8=__imp__GlobalAlloc@8"]
 
+[[units.pbg-archive.functions]]
+address = "0x0045F960"
+symbol_base = "?ReadDecompressEntry@PbgArchive@th07@@QAEPAXPBDPAX@Z"
+rel32_targets = [
+  "?FindEntry@PbgArchive@th07@@QAEPAUPbgArchiveEntry@2@PBD@Z=0x0045FAE0",
+  "?DebugPrint@th07@@YAXPBDZZ=0x0045E4F0",
+  "?LzssDecode@th07@@YIPAXPAXI0I@Z=0x0045EF00",
+]
+dir32_targets = [
+  "__imp__GlobalAlloc@8=__imp__GlobalAlloc@8",
+  "__imp__GlobalFree@4=__imp__GlobalFree@4",
+  "?g_TargetPbgSeekBegin@th07@@3IA=?g_TargetPbgSeekBegin@th07@@3IA",
+  "?g_TargetPbgOpenReadMode@th07@@3PBDB=?g_TargetPbgOpenReadMode@th07@@3PBDB",
+]
+
 [[units.pbg-file.functions]]
 address = "0x0045E590"
 symbol_base = "??_GCPbgFile@th07@@UAEPAXI@Z"

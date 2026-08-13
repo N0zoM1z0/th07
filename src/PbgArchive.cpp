@@ -2,6 +2,14 @@
 
 namespace th07
 {
+// These target-owned constants are loaded through globals rather than folded
+// into call sites.  Keeping that storage indirection is required by the VC7
+// code shape for archive entry reads.
+extern u32 g_TargetPbgSeekBegin;
+extern const char *g_TargetPbgOpenReadMode;
+extern void *__fastcall LzssDecode(void *compressedData, u32 compressedSize, void *outBuffer,
+                                  u32 decompressedSize);
+
 // Target 0x0045E4F0 is the build's deliberately compiled-out diagnostic
 // hook.  It accepts the archive format strings but has no side effects.
 void __cdecl DebugPrint(const char *format, ...)
@@ -75,5 +83,63 @@ char *PbgArchive::CopyFileName(const char *filename)
         strcpy(copy, filename);
     }
     return copy;
+}
+
+#pragma var_order(entry, decompressedSize, decompressedData, compressedData, compressedSize)
+void *PbgArchive::ReadDecompressEntry(const char *filename, void *outBuffer)
+{
+    void *decompressedData;
+    HGLOBAL compressedData = NULL;
+    u32 compressedSize;
+    u32 decompressedSize;
+
+    if (m_file == NULL)
+    {
+        return NULL;
+    }
+
+    PbgArchiveEntry *entry = FindEntry(filename);
+    if (entry == NULL)
+    {
+        goto entryReadError;
+    }
+
+    if (!m_file->Open(m_filename, g_TargetPbgOpenReadMode))
+    {
+        goto entryReadError;
+    }
+
+    compressedSize = entry[1].dataOffset - entry->dataOffset;
+    decompressedSize = entry->decompressedSize;
+    compressedData = GlobalAlloc(0, compressedSize);
+    if (compressedData == NULL)
+    {
+        goto entryReadError;
+    }
+    if (!m_file->Seek(entry->dataOffset, g_TargetPbgSeekBegin))
+    {
+        goto entryReadError;
+    }
+    if (m_file->Read(compressedData, compressedSize) == 0)
+    {
+        goto entryReadError;
+    }
+
+    decompressedData = LzssDecode(compressedData, compressedSize, outBuffer, decompressedSize);
+    if (compressedData != NULL)
+    {
+        GlobalFree(compressedData);
+        compressedData = NULL;
+    }
+    return decompressedData;
+
+entryReadError:
+    DebugPrint("info : %s error\r\n", m_filename);
+    if (compressedData != NULL)
+    {
+        GlobalFree(compressedData);
+        compressedData = NULL;
+    }
+    return NULL;
 }
 } // namespace th07

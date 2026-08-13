@@ -16,3 +16,5 @@ address,name,module,confidence,evidence
 0x00626270,g_GrazeState,player,observed,Exact target this pointer used by Player death-state call
 0x012FE250,g_EffectManager,player,observed,Exact target this pointer used by Player particle calls
 0x004BA0D8,g_SoundPlayer,sound,observed,Exact target this pointer used by Player death sound call
+0x00495120,g_TargetPbgSeekBegin,pbg,observed,Target-owned zero seek-origin value loaded by CPbgFile and PbgArchive entry read paths
+0x0049EA70,g_TargetPbgOpenReadMode,pbg,observed,Target-owned pointer global loaded before IPbgFile Open in PbgArchive ReadDecompressEntry; its observed pointee is the r mode literal
