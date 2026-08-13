@@ -43,8 +43,28 @@ struct EnemyManagerUpdateSprite
 struct EnemyManagerUpdateAnmVm
 {
     u8 unknown000[0x1B8];
-    u32 color;
-    u32 unknown1BC;
+    union
+    {
+        u32 color;
+        struct
+        {
+            u8 blue;
+            u8 green;
+            u8 red;
+            u8 alpha;
+        } primaryColor;
+    };
+    union
+    {
+        u32 unknown1BC;
+        struct
+        {
+            u8 blue;
+            u8 green;
+            u8 red;
+            u8 alpha;
+        } flashColor;
+    };
     u32 flags;
     u8 unknown1C4[0x14];
     i16 scriptIndex;
@@ -260,7 +280,7 @@ struct EnemyManagerUpdateGameManager
     u8 unknown008[0x54];
     f32 livesRemaining;
 
-    __forceinline void AddScore(i32 points)
+    inline void AddScore(i32 points)
     {
         score += points / 10;
     }
@@ -360,7 +380,16 @@ extern u8 g_EnemyManagerUpdateCombatTemplate[0xD4];
 
 struct EnemyManagerUpdateOverlay
 {
-    u8 raw[1];
+    union
+    {
+        u8 raw[1];
+        struct
+        {
+            u8 unknown000000[0x9545B8];
+            u16 randomSpawnIndex;
+            u16 randomTableIndex;
+        } fields;
+    };
 
     EnemyManagerUpdateEnemy *Enemies()
     {
@@ -368,8 +397,8 @@ struct EnemyManagerUpdateOverlay
     }
 
     i32 &EnemyCount() { return *reinterpret_cast<i32 *>(raw + 0x9545BC); }
-    i16 &RandomSpawnIndex() { return *reinterpret_cast<i16 *>(raw + 0x9545B8); }
-    i16 &RandomTableIndex() { return *reinterpret_cast<i16 *>(raw + 0x9545BA); }
+    u16 &RandomSpawnIndex() { return *reinterpret_cast<u16 *>(raw + 0x9545B8); }
+    u16 &RandomTableIndex() { return *reinterpret_cast<u16 *>(raw + 0x9545BA); }
     i32 &SpellActive() { return *reinterpret_cast<i32 *>(raw + 0x9545C8); }
     i32 &SpellUsedBomb() { return *reinterpret_cast<i32 *>(raw + 0x9545DC); }
     EnemyManagerUpdateTimelineLane *TimelineLanes()
@@ -457,8 +486,6 @@ static __forceinline i32 EnemyTrailIsInBounds(EnemyManagerUpdateEnemy *enemy)
 static __forceinline void ResetEnemyCombatState(EnemyManagerUpdateEnemy *enemy)
 {
     i32 i;
-    u32 *destination;
-    u32 *source;
 
     *reinterpret_cast<f32 *>(enemy->raw + 0x2BA8) = -0.5f;
     *reinterpret_cast<f32 *>(enemy->raw + 0x2BAC) = 0.5f;
@@ -472,9 +499,7 @@ static __forceinline void ResetEnemyCombatState(EnemyManagerUpdateEnemy *enemy)
     enemy->TimerCallbackThreshold() = -1;
     enemy->TimerCallbackSub() = -1;
 
-    destination = reinterpret_cast<u32 *>(enemy->raw + 0x2BD4);
-    source = reinterpret_cast<u32 *>(g_EnemyManagerUpdateCombatTemplate);
-    memcpy(destination, source, 0xD4);
+    memcpy(enemy->raw + 0x2BD4, g_EnemyManagerUpdateCombatTemplate, 0xD4);
     *reinterpret_cast<i32 *>(enemy->raw + 0x2CA8) = 0;
 }
 
@@ -681,7 +706,7 @@ static __forceinline void TrackLastEnemyHit(EnemyManagerUpdateEnemy *enemy)
     }
 }
 
-#pragma var_order(bombHit, difficultyScale, enemyIndex, damage, extraDamage, vmIndex, trailIndex, oldLife, enemy)
+#pragma var_order(bombHit, difficultyScale, enemyIndex, damage, extraDamage, vmIndex, rewardScore, trailIndex, oldLife, enemy)
 i32 EnemyManagerUpdateOverlay::OnUpdate()
 {
     EnemyManagerUpdateEnemy *enemy;
@@ -689,13 +714,16 @@ i32 EnemyManagerUpdateOverlay::OnUpdate()
     i32 damageOccurred;
     i32 trailIndex;
     i32 vmIndex;
+    i32 rewardScore;
     i32 extraDamage;
     i32 damage;
     i32 enemyIndex;
     i32 difficultyScale;
     i32 bombHit;
     i32 timerCurrent;
-    i32 deathModeIndex;
+    i32 enemyDeathScore;
+    f32 bossHealthRatio;
+    EnemyManagerUpdateTimer *managerTimer;
     void *timelineInstruction;
 
     bombHit = 0;
@@ -992,20 +1020,12 @@ i32 EnemyManagerUpdateOverlay::OnUpdate()
                     enemy->TimerCallbackThreshold() = -1;
                     enemy->TimerCallbackSub() = -1;
 
-                    __asm
-                    {
-                        mov edx, enemy
-                        mov al, BYTE PTR[edx + 0x2e2a]
-                        and al, 7
-                        movzx ecx, al
-                        mov DWORD PTR[deathModeIndex], ecx
-                    }
-                    switch (deathModeIndex)
+                    switch (enemy->DeathBits()->mode)
                     {
                     case 3:
                         enemy->Life() = 1;
-                        enemy->CombatBits()->damageable = 0;
-                        enemy->DeathFlags() &= 0xF8;
+                        reinterpret_cast<EnemyManagerUpdateFlagOverlay *>(enemy)->combat.damageable = 0;
+                        reinterpret_cast<EnemyManagerUpdateFlagOverlay *>(enemy)->death.mode = 0;
                         g_EnemyManagerUpdateBossPresent = 0;
                         *reinterpret_cast<u16 *>(g_EnemyManagerUpdatePlayerFlags + 0xD6) |= 0x20;
                         if (enemy->DeathAnm1() >= 0)
@@ -1016,14 +1036,39 @@ i32 EnemyManagerUpdateOverlay::OnUpdate()
                         }
                         break;
                     case 1:
-                        g_EnemyManagerUpdateGameManager->score += enemy->Score() / 10;
-                        enemy->CombatBits()->interactable = 0;
-                    case 0:
-                        if ((enemy->DeathFlags() & 7) == 0)
+                        __asm
                         {
-                            g_EnemyManagerUpdateGameManager->score += enemy->Score() / 10;
-                            enemy->ClearActive();
+                            mov eax, enemy
+                            mov ecx, DWORD PTR[eax + 0x2bc0]
+                            mov DWORD PTR[enemyDeathScore], ecx
+                            mov ecx, g_EnemyManagerUpdateGameManager
+                            mov eax, enemyDeathScore
+                            cdq
+                            mov esi, 10
+                            idiv esi
+                            add eax, DWORD PTR[ecx + 4]
+                            mov edx, g_EnemyManagerUpdateGameManager
+                            mov DWORD PTR[edx + 4], eax
                         }
+                        reinterpret_cast<EnemyManagerUpdateFlagOverlay *>(enemy)->combat.interactable = 0;
+                        goto death_common;
+                    case 0:
+                        __asm
+                        {
+                            mov eax, enemy
+                            mov ecx, DWORD PTR[eax + 0x2bc0]
+                            mov DWORD PTR[enemyDeathScore], ecx
+                            mov ecx, g_EnemyManagerUpdateGameManager
+                            mov eax, enemyDeathScore
+                            cdq
+                            mov esi, 10
+                            idiv esi
+                            add eax, DWORD PTR[ecx + 4]
+                            mov edx, g_EnemyManagerUpdateGameManager
+                            mov DWORD PTR[edx + 4], eax
+                        }
+                        enemy->ClearActive();
+                    death_common:
                         if (enemy->CombatBits()->boss)
                         {
                             g_EnemyManagerUpdateBossPresent = 0;
@@ -1042,23 +1087,48 @@ i32 EnemyManagerUpdateOverlay::OnUpdate()
                                 g_EnemyManagerUpdateEffectManager.SpawnParticles(enemy->DeathAnm2() + 4, enemy->Position(), 6, -1);
                                 g_EnemyManagerUpdateItemManager.SpawnItem(enemy->Position(),
                                     g_EnemyManagerUpdateRandomItemTable[(u16)RandomTableIndex()], bombHit);
-                                if ((u16)++RandomTableIndex() >= 32)
-                                    RandomTableIndex() = 0;
+                                ++fields.randomTableIndex;
+                                if (fields.randomTableIndex >= 32)
+                                    fields.randomTableIndex = 0;
                             }
-                            ++RandomSpawnIndex();
+                            ++fields.randomSpawnIndex;
                         }
                         if (enemy->CombatBits()->boss && !g_EnemyManagerUpdateSpellActive)
                         {
-                            i32 bullets = g_EnemyManagerUpdateBulletManager.DespawnBullets(8000, 1);
-                            i32 score = g_EnemyManagerUpdateRewardManager.ConvertBulletBonus(8000, bullets);
-                            if (score)
+                            rewardScore = g_EnemyManagerUpdateBulletManager.DespawnBullets(8000, 1);
+                            rewardScore = g_EnemyManagerUpdateRewardManager.ConvertBulletBonus(8000, rewardScore);
+                            if (rewardScore)
                             {
-                                g_EnemyManagerUpdateGameManager->score += score / 10;
-                                g_EnemyManagerUpdateGui.ShowBonus(score);
+                                __asm
+                                {
+                                    mov ecx, g_EnemyManagerUpdateGameManager
+                                    mov eax, rewardScore
+                                    cdq
+                                    mov esi, 10
+                                    idiv esi
+                                    add eax, DWORD PTR[ecx + 4]
+                                    mov edx, g_EnemyManagerUpdateGameManager
+                                    mov DWORD PTR[edx + 4], eax
+                                }
+                                __asm
+                                {
+                                    mov eax, rewardScore
+                                    push eax
+                                    mov ecx, OFFSET g_EnemyManagerUpdateGui
+                                    call EnemyManagerUpdateGui::ShowBonus
+                                }
                             }
                         }
-                        enemy->Life() = 0;
-                        *reinterpret_cast<u16 *>(g_EnemyManagerUpdatePlayerFlags + 0xD6) |= 0x20;
+                        __asm
+                        {
+                            mov ecx, enemy
+                            mov DWORD PTR[ecx + 0x2bb8], 0
+                            mov edx, g_EnemyManagerUpdatePlayerFlags
+                            movzx eax, WORD PTR[edx + 0xd6]
+                            or eax, 0x20
+                            mov ecx, g_EnemyManagerUpdatePlayerFlags
+                            mov WORD PTR[ecx + 0xd6], ax
+                        }
                         break;
                     }
 
@@ -1084,55 +1154,159 @@ i32 EnemyManagerUpdateOverlay::OnUpdate()
             }
         }
 
-        if (enemy->DamageFlashTimer())
+        if (*reinterpret_cast<u8 *>(enemy->raw + 0x2E18))
         {
-            --enemy->DamageFlashTimer();
-            enemy->PrimaryVm()->flags &= ~0x10000;
+            --*reinterpret_cast<u8 *>(enemy->raw + 0x2E18);
+            reinterpret_cast<EnemyManagerUpdateAnmVm *>(enemy)->flags =
+                reinterpret_cast<EnemyManagerUpdateAnmVm *>(enemy)->flags & ~0x10000;
         }
         else if (damageOccurred)
         {
             g_EnemyManagerUpdateSoundPlayer.PlaySoundByIdx(20, 0);
-            enemy->PrimaryVm()->flags |= 0x10000;
-            enemy->DamageFlashTimer() = 1;
+            reinterpret_cast<EnemyManagerUpdateAnmVm *>(enemy)->flashColor.red = 0xFF;
+            reinterpret_cast<EnemyManagerUpdateAnmVm *>(enemy)->flashColor.green = 0x80;
+            reinterpret_cast<EnemyManagerUpdateAnmVm *>(enemy)->flashColor.blue = 0xC0;
+            reinterpret_cast<EnemyManagerUpdateAnmVm *>(enemy)->flashColor.alpha =
+                reinterpret_cast<EnemyManagerUpdateAnmVm *>(enemy)->primaryColor.alpha;
+            reinterpret_cast<EnemyManagerUpdateAnmVm *>(enemy)->flags =
+                reinterpret_cast<EnemyManagerUpdateAnmVm *>(enemy)->flags | 0x10000;
+            *reinterpret_cast<u8 *>(enemy->raw + 0x2E18) = 1;
         }
         else
         {
-            enemy->PrimaryVm()->flags &= ~0x10000;
+            reinterpret_cast<EnemyManagerUpdateAnmVm *>(enemy)->flags =
+                reinterpret_cast<EnemyManagerUpdateAnmVm *>(enemy)->flags & ~0x10000;
         }
 
         if (enemy->CombatBits()->boss)
         {
             EnemyManagerUpdateVec3 bossUiPosition;
             if (!g_EnemyManagerUpdateGui.IsMessageActive() && !enemy->BossSlot())
-                g_EnemyManagerUpdateBossHealth = (f32)enemy->Life() / (f32)enemy->MaxLife();
-
-            if (enemy->BossSlot() < 4)
             {
-                bossUiPosition.x = enemy->CombatBits()->noSprite ? -999.0f : enemy->Position()->x + 32.0f;
+                __asm
+                {
+                    mov ecx, enemy
+                    fild DWORD PTR[ecx + 0x2bbc]
+                    mov edx, enemy
+                    fidivr DWORD PTR[edx + 0x2bb8]
+                    fstp DWORD PTR[bossHealthRatio]
+                    mov eax, DWORD PTR[bossHealthRatio]
+                    mov DWORD PTR[g_EnemyManagerUpdateBossHealth], eax
+                }
+            }
+
+            if (enemy->CombatBits()->boss < 4)
+            {
+                i32 bossSlotIndex;
+                i32 bossUiFlag;
+                i32 bossUiFlagIndex;
+                if (!enemy->CombatBits()->noSprite)
+                    bossUiPosition.x = enemy->Position()->x + 32.0f;
+                else
+                    bossUiPosition.x = -999.0f;
                 bossUiPosition.y = 472.0f;
                 bossUiPosition.z = 0.0f;
-                *reinterpret_cast<EnemyManagerUpdateVec3 *>(g_EnemyManagerUpdateBossUi[enemy->BossSlot()]) = bossUiPosition;
-                g_EnemyManagerUpdateBossUiFlags[enemy->BossSlot()] = (enemy->PrimaryVm()->flags >> 16) & 1;
+                bossSlotIndex = enemy->BossSlot();
+                *reinterpret_cast<EnemyManagerUpdateVec3 *>(g_EnemyManagerUpdateBossUi[bossSlotIndex]) = bossUiPosition;
+                bossUiFlag = (enemy->PrimaryVm()->flags >> 16) & 1;
+                bossUiFlagIndex = enemy->BossSlot();
+                g_EnemyManagerUpdateBossUiFlags[bossUiFlagIndex] = bossUiFlag;
             }
         }
 
         enemy->UpdateEffects();
-        if (!g_EnemyManagerUpdateStageState)
+        if (!(i8)g_EnemyManagerUpdateStageState)
             AdvanceEnemyTimer(enemy->BossTimer());
-        if (enemy->FreezeTimer() > 0)
-            reinterpret_cast<EnemyManagerUpdateTimer *>(enemy->raw + 0x4F38)->Decrement(1);
-
-        if (!enemy->CombatBits()->noSprite && enemy->IsActive())
+        __asm
         {
-            enemy->DrawNext() = DrawHeads()[enemy->DrawGroup()];
-            DrawHeads()[enemy->DrawGroup()] = enemy;
+            mov ecx, enemy
+            xor edx, edx
+            cmp DWORD PTR[ecx + 0x4f40], 0
+            setg dl
+            test edx, edx
+            je skip_freeze_timer
+            push 1
+            mov ecx, enemy
+            add ecx, 0x4f38
+            call EnemyManagerUpdateTimer::Decrement
+        skip_freeze_timer:
+        }
+
+        __asm
+        {
+            mov eax, enemy
+            mov cl, BYTE PTR[eax + 0x2e29]
+            shr cl, 3
+            and cl, 1
+            movzx edx, cl
+            test edx, edx
+            jne skip_draw_link
+            mov eax, enemy
+            mov cl, BYTE PTR[eax + 0x2e28]
+            shr cl, 7
+            and cl, 1
+            movzx edx, cl
+            test edx, edx
+            je skip_draw_link
+        }
+        __asm
+        {
+            mov eax, enemy
+            movzx ecx, BYTE PTR[eax + 0x2e2f]
+            mov edx, enemy
+            mov eax, this
+            mov ecx, DWORD PTR[eax + ecx * 4 + 0x954700]
+            mov DWORD PTR[edx + 0x4f44], ecx
+            mov edx, enemy
+            movzx eax, BYTE PTR[edx + 0x2e2f]
+            mov ecx, this
+            mov edx, enemy
+            mov DWORD PTR[ecx + eax * 4 + 0x954700], edx
+        }
+        __asm
+        {
+        skip_draw_link:
         }
     }
 
-    if (Timer()->current % 200 == 0 && g_EnemyManagerUpdateGrazeState.PeriodicCheck())
-        return 4;
+    __asm
+    {
+        mov eax, this
+        mov eax, DWORD PTR[eax + 0x9546fc]
+        cdq
+        mov ecx, 0xc8
+        idiv ecx
+        test edx, edx
+        jne skip_periodic_return
+        mov ecx, OFFSET g_EnemyManagerUpdateGrazeState
+        call EnemyManagerUpdateGrazeState::PeriodicCheck
+        test eax, eax
+        je skip_periodic_return
+    }
+    return 4;
+    __asm
+    {
+    skip_periodic_return:
+    }
 
-    AdvanceEnemyTimer(Timer());
+    __asm
+    {
+        mov edx, this
+        add edx, 0x9546f4
+        mov managerTimer, edx
+        mov eax, managerTimer
+        mov ecx, managerTimer
+        mov edx, DWORD PTR[ecx + 8]
+        mov DWORD PTR[eax], edx
+        mov eax, managerTimer
+        add eax, 4
+        push eax
+        mov ecx, managerTimer
+        add ecx, 8
+        push ecx
+        mov ecx, OFFSET g_EnemyManagerUpdateTimerManager
+        call EnemyManagerUpdateTimerManager::Advance
+    }
     return 1;
 }
 

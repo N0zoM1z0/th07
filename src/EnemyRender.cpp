@@ -2,7 +2,7 @@
 
 #include <math.h>
 
-#pragma intrinsic(sin, cos)
+#pragma intrinsic(sin, cos, fabs)
 
 namespace th07
 {
@@ -23,6 +23,18 @@ struct EnemyRenderScale
 {
     f32 x;
     f32 y;
+};
+
+union EnemyRenderColor
+{
+    u32 value;
+    struct
+    {
+        u8 blue;
+        u8 green;
+        u8 red;
+        u8 alpha;
+    } channels;
 };
 
 struct EnemyRenderSprite
@@ -77,7 +89,7 @@ struct VertexDiffuseXyzrhw
     f32 y;
     f32 z;
     f32 rhw;
-    u32 diffuse;
+    EnemyRenderColor diffuse;
     f32 u;
     f32 v;
 };
@@ -217,7 +229,7 @@ i32 EnemyManagerRenderOverlay::OnDrawLowPriority()
     return DrawImpl(2, 4);
 }
 
-#pragma var_order(drawGroup, vm, vmIndex, enemy, sampleIndex, oldScale, color, lastAngle, previousAngle, nextAngle, u, widthFactor, vertexCount)
+#pragma var_order(drawGroup, vm, vmIndex, enemy, sampleIndex, oldScale, color, lastAngle, previousAngle, nextAngle, u, widthFactor, spriteWidth, vertexCount)
 i32 __fastcall EnemyManagerRenderOverlay::DrawImpl(i32 groupBegin, i32 groupEnd)
 {
     i32 drawGroup;
@@ -226,12 +238,13 @@ i32 __fastcall EnemyManagerRenderOverlay::DrawImpl(i32 groupBegin, i32 groupEnd)
     i32 sampleIndex;
     EnemyRenderVm *vm;
     EnemyRenderScale oldScale;
-    u32 color;
+    EnemyRenderColor color;
     f32 lastAngle;
     f32 previousAngle;
     f32 nextAngle;
     f32 u;
     f32 widthFactor;
+    f32 spriteWidth;
     f32 halfWidth;
     i32 vertexCount;
     VertexDiffuseXyzrhw *vertex;
@@ -338,7 +351,7 @@ i32 __fastcall EnemyManagerRenderOverlay::DrawImpl(i32 groupBegin, i32 groupEnd)
             if (enemy->TrailFlags())
             {
                 oldScale = enemy->primary.primaryVmScale;
-                color = enemy->primary.primaryColor.primaryVmColor;
+                color.value = enemy->primary.primaryColor.primaryVmColor;
 
                 if ((enemy->TrailFlags() & 8) == 0)
                 {
@@ -362,14 +375,13 @@ i32 __fastcall EnemyManagerRenderOverlay::DrawImpl(i32 groupBegin, i32 groupEnd)
                             }
                             if (enemy->TrailFlags() & 2)
                                 enemy->PrimaryVm()->scaleX = oldScale.x -
-                                    oldScale.x * sampleIndex / enemy->TrailHistoryCount();
+                                    static_cast<f32>(sampleIndex) * oldScale.x /
+                                    enemy->TrailHistoryCount();
                             if (enemy->TrailFlags() & 4)
-                            {
-                                u8 alpha = static_cast<u8>(color >> 24);
-                                alpha = static_cast<u8>(alpha -
-                                    alpha * sampleIndex / enemy->TrailHistoryCount());
-                                enemy->primary.primaryColor.color.primaryVmColorAlpha = alpha;
-                            }
+                                enemy->primary.primaryColor.color.primaryVmColorAlpha =
+                                    static_cast<u8>(color.channels.alpha -
+                                        color.channels.alpha * sampleIndex /
+                                        enemy->TrailHistoryCount());
 
                             trailVmOffset = &enemy->PrimaryVm()->positionOffset;
                             trailEnemyPosition = &enemy->TrailSample(sampleIndex)->position;
@@ -398,9 +410,9 @@ i32 __fastcall EnemyManagerRenderOverlay::DrawImpl(i32 groupBegin, i32 groupEnd)
 
                     if (vertexCount > 2)
                     {
-                        widthFactor = (vertexCount + 1) / 2 - 1;
-                        widthFactor /= enemy->PrimaryVm()->sprite->uvRight -
+                        spriteWidth = enemy->PrimaryVm()->sprite->uvRight -
                             enemy->PrimaryVm()->sprite->uvLeft;
+                        widthFactor = (f32)((vertexCount + 1) / 2 - 1) / spriteWidth;
                         halfWidth = enemy->PrimaryVm()->sprite->trailUOffset * oldScale.y / 2.0f;
                         u = enemy->PrimaryVm()->sprite->uvRight +
                             enemy->PrimaryVm()->textureUOffset;
@@ -432,12 +444,8 @@ i32 __fastcall EnemyManagerRenderOverlay::DrawImpl(i32 groupBegin, i32 groupEnd)
                                     enemy->TrailSample(enemy->TrailStep())->angle,
                                     enemy->TrailSample(sampleIndex + enemy->TrailStep() - 1)->angle,
                                     0.5f);
-                                f32 firstDifference = lastAngle - previousAngle;
-                                f32 secondDifference = previousAngle - nextAngle;
-                                if (firstDifference < 0.0f)
-                                    firstDifference = -firstDifference;
-                                if (secondDifference < 0.0f)
-                                    secondDifference = -secondDifference;
+                                f32 firstDifference = static_cast<f32>(fabs(lastAngle - previousAngle));
+                                f32 secondDifference = static_cast<f32>(fabs(previousAngle - nextAngle));
                                 if (firstDifference <= 0.00001f &&
                                     secondDifference <= 0.00001f)
                                 {
@@ -449,23 +457,26 @@ i32 __fastcall EnemyManagerRenderOverlay::DrawImpl(i32 groupBegin, i32 groupEnd)
 
                             sine = static_cast<f32>(sin(angle));
                             cosine = static_cast<f32>(cos(angle));
-                            fade = 1.0f;
+                            fade = 0.0f;
                             if (enemy->TrailFlags() & 2)
-                                fade = 1.0f - (f32)sampleIndex / (f32)enemy->TrailHistoryCount();
+                            {
+                                f32 fadeScale = 1.0f - (f32)sampleIndex /
+                                    enemy->TrailHistoryCount();
+                                fade *= fadeScale;
+                                halfWidth *= fadeScale;
+                            }
 
                             vertex[0].x = sample->position.x + 32.0f + cosine * fade - sine * halfWidth;
                             vertex[0].y = sample->position.y + 16.0f + sine * fade + cosine * halfWidth;
                             vertex[0].z = sample->position.z;
-                            vertex[1].diffuse = color;
-                            vertex[0].diffuse = vertex[1].diffuse;
+                            vertex[1].diffuse.value = color.value;
+                            vertex[0].diffuse.value = vertex[1].diffuse.value;
                             if (enemy->TrailFlags() & 4)
                             {
-                                u8 alpha = static_cast<u8>(color >> 24);
-                                alpha = static_cast<u8>(alpha -
-                                    alpha * sampleIndex / enemy->TrailHistoryCount());
-                                vertex[1].diffuse = (color & 0x00FFFFFF) |
-                                    (static_cast<u32>(alpha) << 24);
-                                vertex[0].diffuse = vertex[1].diffuse;
+                                vertex[1].diffuse.channels.alpha = static_cast<u8>(color.channels.alpha -
+                                    color.channels.alpha * sampleIndex /
+                                    enemy->TrailHistoryCount());
+                                vertex[0].diffuse.channels.alpha = vertex[1].diffuse.channels.alpha;
                             }
                             vertex[0].u = u;
                             vertex[0].v = enemy->PrimaryVm()->sprite->uvTop +
@@ -484,7 +495,7 @@ i32 __fastcall EnemyManagerRenderOverlay::DrawImpl(i32 groupBegin, i32 groupEnd)
                 }
 
                 enemy->primary.primaryVmScale = oldScale;
-                enemy->primary.primaryColor.primaryVmColor = color;
+                enemy->primary.primaryColor.primaryVmColor = color.value;
             }
 
             enemy = enemy->DrawNext();

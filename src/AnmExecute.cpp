@@ -143,9 +143,9 @@ static __forceinline AnmTimer *TimerAt(AnmVm *vm, i32 offset)
 
 static __forceinline void ResetTimer(AnmTimer *timer, i32 current)
 {
-    timer->previous = -999;
-    timer->subFrame = 0.0f;
     timer->current = current;
+    timer->subFrame = 0.0f;
+    timer->previous = -999;
 }
 
 static __forceinline void AdvanceTimer(AnmTimer *timer)
@@ -545,7 +545,7 @@ advance:
     if (VM_F(vm, 20) != 0.0f) { VM_F(vm, 8) = AddNormalizeAngle(VM_F(vm, 8), g_FrameMultiplier * VM_F(vm, 20)); VM_I(vm, 0x1c0) |= 4; }
 
     for (i = 0; i < 5; ++i) {
-        if (TimerAt(vm, 0x84 + i * 12)->current > 0) {
+        if (TimerAt(vm, 0x84 + i * 12)->current > 0 ? 1 : 0) {
             currentTimer = TimerAt(vm, 0x48 + i * 12);
             AdvanceTimer(currentTimer);
             endTime = TimerAt(vm, 0x84 + i * 12)->current;
@@ -559,17 +559,17 @@ advance:
                 interp = ((float)startTimer->current + startTimer->subFrame) /
                          ((float)endTimer->current + endTimer->subFrame);
             }
-            switch (vm->raw[0xc0 + i]) { case 1: interp *= interp; break; case 2: interp = interp * interp * interp; break; case 3: interp *= interp; interp *= interp; break; case 4: interp = 1.0f - interp; interp *= interp; interp = 1.0f - interp; break; case 5: interp = 1.0f - interp; interp = interp * interp * interp; interp = 1.0f - interp; break; case 6: interp = 1.0f - interp; interp *= interp; interp *= interp; interp = 1.0f - interp; break; }
+            switch (vm->raw[0xc0 + i]) { case 1: interp *= interp; break; case 2: interp = interp * interp * interp; break; case 3: interp = interp * interp * interp; break; case 4: interp = 1.0f - interp; interp *= interp; interp = 1.0f - interp; break; case 5: interp = 1.0f - interp; interp = interp * interp * interp; interp = 1.0f - interp; break; case 6: interp = 1.0f - interp; interp = interp * interp * interp; interp = 1.0f - interp; break; }
             switch (i) {
             case 0: {
-                if (VM_I(vm, 0x1c0) & 0x80) {
-                    VM_F(vm, 0x230) = interp * (VM_F(vm, 0x1f4) - VM_F(vm, 0x1e8)) + VM_F(vm, 0x1e8);
-                    VM_F(vm, 0x234) = interp * (VM_F(vm, 0x1f8) - VM_F(vm, 0x1ec)) + VM_F(vm, 0x1ec);
-                    VM_F(vm, 0x238) = interp * (VM_F(vm, 0x1fc) - VM_F(vm, 0x1f0)) + VM_F(vm, 0x1f0);
-                } else {
+                if (!((VM_I(vm, 0x1c0) >> 7) & 1)) {
                     VM_F(vm, 0x1c8) = interp * (VM_F(vm, 0x1f4) - VM_F(vm, 0x1e8)) + VM_F(vm, 0x1e8);
                     VM_F(vm, 0x1cc) = interp * (VM_F(vm, 0x1f8) - VM_F(vm, 0x1ec)) + VM_F(vm, 0x1ec);
                     VM_F(vm, 0x1d0) = interp * (VM_F(vm, 0x1fc) - VM_F(vm, 0x1f0)) + VM_F(vm, 0x1f0);
+                } else {
+                    VM_F(vm, 0x230) = interp * (VM_F(vm, 0x1f4) - VM_F(vm, 0x1e8)) + VM_F(vm, 0x1e8);
+                    VM_F(vm, 0x234) = interp * (VM_F(vm, 0x1f8) - VM_F(vm, 0x1ec)) + VM_F(vm, 0x1ec);
+                    VM_F(vm, 0x238) = interp * (VM_F(vm, 0x1fc) - VM_F(vm, 0x1f0)) + VM_F(vm, 0x1f0);
                 }
                 break;
             }
@@ -601,7 +601,16 @@ advance:
     }
     if (VM_F(vm, 36) != 0.0f) { VM_F(vm, 28) += g_FrameMultiplier * VM_F(vm, 36); VM_I(vm, 0x1c0) |= 8; }
     if (VM_F(vm, 32) != 0.0f) { VM_F(vm, 24) += g_FrameMultiplier * VM_F(vm, 32); VM_I(vm, 0x1c0) |= 8; VM_I(vm, 0x1c0) |= 4; }
-    VM_F(vm, 40) += VM_F(vm, 0xf0); WrapUnit(&VM_F(vm, 40)); VM_F(vm, 44) += VM_F(vm, 0xf4); WrapUnit(&VM_F(vm, 44));
+    VM_F(vm, 40) += VM_F(vm, 0xf0);
+    if (VM_F(vm, 40) >= 1.0f)
+        VM_F(vm, 40) -= 1.0f;
+    else if (VM_F(vm, 40) < 0.0f)
+        VM_F(vm, 40) += 1.0f;
+    VM_F(vm, 44) += VM_F(vm, 0xf4);
+    if (VM_F(vm, 44) >= 1.0f)
+        VM_F(vm, 44) -= 1.0f;
+    else if (VM_F(vm, 44) < 0.0f)
+        VM_F(vm, 44) += 1.0f;
     AdvanceTimer(TimerAt(vm, 0x30));
     ++*reinterpret_cast<i32 *>(reinterpret_cast<u8 *>(this) + 12);
     return 0;

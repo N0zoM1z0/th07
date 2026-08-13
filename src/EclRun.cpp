@@ -520,30 +520,80 @@ run_ecl_top:
                 remaining = EclOperands::ResolveInt(rawEnemy, instruction->operand[2]);
             else
                 remaining = instruction->operand[2];
-            if (remaining > 0)
-                goto decrement_jump;
-            goto advance_instruction;
-decrement_jump:
-            Jump(rawEnemy, instruction);
-            continue;
+            // Target 0x0041081C keeps the positive path as fallthrough into
+            // the shared Jump body, with the non-positive path taking the
+            // long advance exit.  A forwarding label reverses this topology
+            // under VC7 (`jle` plus a short jump), despite equivalent state.
+            if (remaining <= 0)
+                goto advance_instruction;
         }
 
+        // The target switch table enters opcode 2 at the same Jump body that
+        // opcode 3 falls through to when its decremented value remains
+        // positive (0x00410823).  Preserve that physical sharing.
         case 2: // jump: time at +0x0c, byte displacement at +0x10
             Jump(rawEnemy, instruction);
             continue;
 
         case 4: // integer assignment
-            *WriteInt(rawEnemy, instruction) = ReadInt(rawEnemy, instruction, 1);
+        {
+            // Target 0x00410843 uses the literal operand-1 flag bit (0x2),
+            // then retains the resolved value in a stack temporary for the
+            // following operand-0 lvalue store.
+            i32 value;
+            if (instruction->operandFlags & 2)
+                value = EclOperands::ResolveInt(rawEnemy, instruction->operand[1]);
+            else
+                value = instruction->operand[1];
+            *EclOperands::ResolveIntLValue(rawEnemy, &instruction->operand[0], instruction->operandFlags, 0) = value;
             break;
+        }
 
         case 5: // float assignment
-            *WriteFloat(rawEnemy, instruction) = ReadFloat(rawEnemy, instruction, 1);
+        {
+            // As with opcode 4, target 0x00410898 uses the fixed operand-1
+            // flag bit and retains the resolved scalar for the operand-0
+            // lvalue write.
+            f32 value;
+            if (instruction->operandFlags & 2)
+                value = rawEnemy->ResolveFloat(*(const f32 *)&instruction->operand[1]);
+            else
+                value = *(const f32 *)&instruction->operand[1];
+            *EclOperands::ResolveFloatLValue(rawEnemy, (f32 *)&instruction->operand[0],
+                                              instruction->operandFlags, 0) = value;
             break;
+        }
+
+        // The target emits this operand-0 angle-normalization handler between
+        // opcodes 5 and 6 (0x004108EE--0x00410953), irrespective of its
+        // numeric opcode value.
+        case 40:
+        {
+            f32 angle;
+            f32 normalizedAngle;
+            if (instruction->operandFlags & 1)
+                angle = rawEnemy->ResolveFloat(*(const f32 *)&instruction->operand[0]);
+            else
+                angle = *(const f32 *)&instruction->operand[0];
+            normalizedAngle = TargetAddNormalizeAngle(angle, 0.0f);
+            *EclOperands::ResolveFloatLValue(rawEnemy, (f32 *)&instruction->operand[0],
+                                              instruction->operandFlags, 0) = normalizedAngle;
+            break;
+        }
 
         case 6:
         {
-            const i32 limit = ReadInt(rawEnemy, instruction, 1);
-            *WriteInt(rawEnemy, instruction) = limit ? EclOperands::g_TargetRng49FE20.RandomU32() % limit : 0;
+            i32 limit;
+            i32 value;
+            if (instruction->operandFlags & 2)
+                limit = EclOperands::ResolveInt(rawEnemy, instruction->operand[1]);
+            else
+                limit = instruction->operand[1];
+            if (limit)
+                value = EclOperands::g_TargetRng49FE20.RandomU32() % limit;
+            else
+                value = 0;
+            *EclOperands::ResolveIntLValue(rawEnemy, &instruction->operand[0], instruction->operandFlags, 0) = value;
             break;
         }
         case 7:
@@ -667,11 +717,6 @@ decrement_jump:
             break;
         case 39:
             if (ReadFloat(rawEnemy, instruction, 0) >= ReadFloat(rawEnemy, instruction, 1)) { ConditionalJump(rawEnemy, instruction); continue; }
-            break;
-
-        case 40:
-            *WriteFloat(rawEnemy, instruction) =
-                TargetAddNormalizeAngle(ReadFloat(rawEnemy, instruction, 0), 0.0f);
             break;
 
         // 0x2d--0x3f are target-observed direct Enemy state transitions.  No

@@ -68,12 +68,15 @@ Typed instruction-shape comparison proved especially useful on this body. It
 exposed the ECL manager's first dword as a pointer to timeline metadata, the
 signed pause byte at `0x4BFEE0`, and several VC7 expression/bitfield shapes.
 Successive source corrections extended the exact instruction-topology prefix
-from 8 to 844 of 1661 target instructions. In particular, the collision/trail
-vector expression, combat bitfields, signed special-damage byte, and rank
-branch order now follow the target. An A/B compiler probe also demonstrated
-that this translation unit was built without `/Op`; removing forced x87
-precision stores crossed the secondary-hit damage expression. This remains a
-compiler-shaping diagnostic only and does not grant matching status.
+from 8 to 1647 of 1661 target instructions, with 99.16% resynchronized target
+coverage. In particular, the collision/trail vector expression, combat
+bitfields, signed special-damage byte, rank branch order, death callback reset,
+damage-flash channels, boss HP/UI publication, freeze timer, draw-list rebuild,
+and periodic return tail now follow one contiguous target topology. The object
+is 6891 bytes with a `0x1D0` frame versus the 6840-byte, `0x210`-frame target;
+strict comparison still fails at the frame allocation and the remaining work
+is chiefly VC7 local-lifetime and instruction-size shaping. This diagnostic
+coverage does not grant matching status.
 
 Three large update dependencies are now strict exact matches. `0x0041F6F0` runs one 16-byte
 timeline lane with a `0x84` frame. Its 13 target opcodes cover enemy spawning
@@ -91,8 +94,8 @@ roles, but the listed layout and branches are TH07 observations.
 
 The highest-leverage sequence is:
 
-1. converge the update body's remaining collision/death-tail branches and
-   preserve the target `0x210` local allocation;
+1. converge the update body's frame/local lifetimes and instruction sizes
+   without disturbing its now-contiguous tail topology;
 2. use the same exact-helper-first approach for the render body at
    `0x00422170`.
 
@@ -115,8 +118,10 @@ VM slots of `0x24C` bytes. Active VMs have a nonnegative script index at
 the surrounding slots use Z `0.3`, before calling the rotated ANM draw helper
 at `0x0044F9A0`. A later branch temporarily changes primary scale/color for a
 trail or triangle-fan effect and then restores them. The body compiles but is
-not yet a strict match: the current object uses a `0x88` frame and 2054-byte
-body versus target `0xFC` and 2863 bytes. TH06 only corroborates phase order.
+not yet a strict match: the current object uses a `0x11C` frame and 2947-byte
+tail versus target `0xFC` and 2863 bytes. Its typed shape prefix is 333
+instructions and resynchronized coverage is 549/739, or 74.29%; four
+companion functions remain exact. TH06 only corroborates phase order.
 
 The reproducible compiler packet is generated with:
 
