@@ -187,7 +187,16 @@ def coff_symbol_bytes(
             "section": struct.unpack_from("<h", data, offset + 12)[0],
         }
         symbols[index] = symbol
-        if symbol["name"] == symbol_name:
+        # A class vtable can create an undefined reference to a deleting
+        # destructor before the same object contributes that destructor's
+        # COMDAT definition.  A function comparison must select the defined
+        # .text symbol rather than rejecting this ordinary COFF layout as an
+        # ambiguous name.
+        if (
+            symbol["name"] == symbol_name
+            and 0 < int(symbol["section"]) <= len(sections)
+            and bytes(sections[int(symbol["section"]) - 1]["name"]).startswith(b".text")
+        ):
             if selected is not None:
                 raise ValueError(f"multiple COFF symbols named {symbol_name}")
             selected = symbol

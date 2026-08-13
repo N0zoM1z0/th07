@@ -71,4 +71,5 @@ address,name,module,confidence,evidence
 0x0042F736,GrazeState_finish_graze_display,player,observed,Exact-target ECX receiver 0x00626270 argument return-value and callee-cleanup call shape from Player score-graze
 0x0042F789,GrazeState_advance_graze_display,player,observed,Exact-target ECX receiver 0x00626270 argument and callee-cleanup call shape from Player score-graze
 0x0045E620,CPbgFile_open,pbg,observed,Exact target mode parser file-handle writes and strict VC7 comparison
+0x0045E590,CPbgFile_scalar_deleting_dtor,pbg,observed,Exact target CPbgFile vtable slot and strict VC7 scalar deleting destructor comparison
 0x0045E9D0,CPbgFile_get_full_file_path,pbg,observed,Exact target fastcall path resolver and strict VC7 comparison

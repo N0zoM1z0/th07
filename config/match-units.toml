@@ -2614,6 +2614,14 @@ dir32_targets = [
 ]
 
 [[units.pbg-file.functions]]
+address = "0x0045E590"
+symbol_base = "??_GCPbgFile@th07@@UAEPAXI@Z"
+rel32_targets = [
+  "??1CPbgFile@th07@@UAE@XZ=0x0045E5C0",
+  "??3@YAXPAX@Z=0x0047D43C",
+]
+
+[[units.pbg-file.functions]]
 address = "0x0045E620"
 symbol_base = "?Open@CPbgFile@th07@@UAE_NPBD0@Z"
 rel32_targets = ["?GetFullFilePath@CPbgFile@th07@@SIXPADPBD@Z=0x0045E9D0"]
