@@ -1177,6 +1177,10 @@ dir32_targets = [
   "?g_TargetStartVisual1348014@SpellLifecycle@th07@@3HA=spell_visual_1348014",
 ]
 
+[[units.spell-lifecycle.functions]]
+address = "0x00427B54"
+symbol_base = "?EndSpellcardDisplay@GuiOverlay@SpellLifecycle@th07@@QAEXXZ"
+
 [units.bullet-update]
 kind = "probe"
 source = "src/BulletUpdate.cpp"

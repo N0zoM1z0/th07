@@ -46,8 +46,17 @@ struct AnmManagerOverlay
     void SetAndExecuteScript(void *vm, void *script);
 };
 
+struct GuiEndSubstate
+{
+    u8 unknown000[0x1C6];
+    i16 word1C6;
+};
+
 struct GuiOverlay
 {
+    u8 unknown00[8];
+    u8 *state;
+
     void ShowSpellcard(i32 portraitScript, const char *name);
     void EndSpellcardDisplay();
     void ShowBonusScore(i32 score);
@@ -114,6 +123,18 @@ extern u8 g_TargetCharacterIndex62F647;
 extern u32 g_TargetReplayFlags62F648;
 extern ScoreStateOverlay *g_TargetScoreState626278;
 extern EffectManagerOverlay g_TargetEffectManager12FE250;
+
+void GuiOverlay::EndSpellcardDisplay()
+{
+    GuiEndSubstate *first;
+    GuiEndSubstate *second;
+
+    *reinterpret_cast<i16 *>(state + 0x6926) = 1;
+    first = reinterpret_cast<GuiEndSubstate *>(state + 0x6BF8);
+    *reinterpret_cast<i16 *>(reinterpret_cast<u8 *>(first) + 0x1C6) = 2;
+    second = reinterpret_cast<GuiEndSubstate *>(state + 0x7774);
+    *reinterpret_cast<i16 *>(reinterpret_cast<u8 *>(second) + 0x1C6) = 2;
+}
 
 // Observed target ABI: 0x40FC90 accepts Enemy in ECX and raw ECL instruction
 // in EDX.  The functional names in this file are inferred only.
