@@ -251,6 +251,15 @@ struct EclOp121WideCommand
 };
 typedef char EclOp121WideCommand_size[sizeof(EclOp121WideCommand) == 0x80 ? 1 : -1];
 
+struct EclOp121SpawnCommand
+{
+    f32 angle;
+    f32 angularStep;
+    i32 duration;
+    u8 unknown0C[4];
+};
+typedef char EclOp121SpawnCommand_size[sizeof(EclOp121SpawnCommand) == 0x10 ? 1 : -1];
+
 struct EclOp121Bullet
 {
     union
@@ -300,6 +309,7 @@ struct EclOp121BulletSpawnRequest
 
     void QueueSpawnCommand(i32 unused0, i32 unused1, i32 duration,
                            f32 angle, f32 angularStep);
+    EclOp121SpawnCommand *ReserveSpawnCommand(i32 unused0, i32 unused1, i32 size);
 };
 typedef char EclOp121BulletSpawnRequest_size[
     sizeof(EclOp121BulletSpawnRequest) == 0xD4 ? 1 : -1];
@@ -369,6 +379,17 @@ void EclOp121Bullet::QueueStateCommand(i32 unknown0, i32 unknown1, i32 duration,
     command->duration = duration;
     command->parameter = parameter;
     command->angle = angle;
+}
+
+void EclOp121BulletSpawnRequest::QueueSpawnCommand(i32 unused0, i32 unused1, i32 duration,
+                                                     f32 angle, f32 angularStep)
+{
+    EclOp121SpawnCommand *command;
+
+    command = ReserveSpawnCommand(unused0, unused1, 0x10);
+    command->duration = duration;
+    command->angle = angle;
+    command->angularStep = angularStep;
 }
 
 void __fastcall Target44B310(i32 first, i32 second, i32 third, i32 fourth, i32 fifth);
