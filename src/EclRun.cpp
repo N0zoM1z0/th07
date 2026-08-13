@@ -266,6 +266,8 @@ struct EclOp121AnmManager
 struct EclOp121TimerManager
 {
     void ApplyTime(f32 value);
+    i32 SelectBgm(i32 index);
+    void PlayBgm(const char *path);
 };
 
 extern EclOp121AnmManager *g_TargetAnmManager4B9E44;
@@ -389,6 +391,13 @@ void __fastcall EclOp121ApplyTimer3(EclOperands::EnemyOverlay *enemy,
                                     const EclOp121InstructionOverlay *instruction)
 {
     g_TargetTimerManager575950.ApplyTime(3.0f);
+}
+
+void __fastcall EclOp121PlayBgm13B(EclOperands::EnemyOverlay *enemy,
+                                   const EclOp121InstructionOverlay *instruction)
+{
+    if (g_TargetTimerManager575950.SelectBgm(2))
+        g_TargetTimerManager575950.PlayBgm("bgm/th07_13b.mid");
 }
 
 #pragma var_order(i, bullet)

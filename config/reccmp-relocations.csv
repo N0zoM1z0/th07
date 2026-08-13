@@ -73,6 +73,7 @@ __real@42400000,0x00498B34,00004042,0x0,Exact target float 48.0 laser graze expa
 ?g_BulletTemplateScriptIds@th07@@3PAIA,0x00495160,00020000,0x0;0x4;0x8;0xC;0x10,Direct target script-id table references used by BulletManager AddedCallback,address
 ?g_ItemManager@th07@@3PAEA,0x00575C70,00000000,0x0,Direct target destination of BulletManager AddedCallback item-manager clear,literal
 ??_C@_0P@ONBKABHC@data?1etama?4anm?$AA@,0x00498524,646174612f6574616d612e616e6d00,0x0,Direct target bullet animation archive path,literal
+??_C@_0BB@EPPGLFGM@bgm?1th07_13b?4mid?$AA@,0x004986B4,62676d2f746830375f3133622e6d696400,0x0,Direct target ECL BGM path literal at 0x004986B4,literal
 __real@41800000,0x00498A80,00008041,0x0,Exact target float 16.0 constant used by BulletManager size classification,literal
 __real@42000000,0x00498A84,00000042,0x0,Exact target float 32.0 constant used by BulletManager size classification,literal
 ?g_Keyboard@th07@@3PAUIDirectInputDevice8A@@A,0x00575960,00000000,0x0,Direct target absolute reference to DirectInput keyboard device storage,literal
