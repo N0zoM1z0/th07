@@ -1374,6 +1374,7 @@ rel32_targets = [
   "?PeriodicCheck@EnemyManagerUpdateGrazeState@th07@@QAEHXZ=0x00404FE0",
   "__ftol2=0x0048B8A0",
   "_EnemyManagerUpdateFtol=0x0048B8A0",
+  "_EnemyManagerUpdateAtan2=0x0048BCAA",
   "__CIatan2=0x0048BCAA",
 ]
 dir32_targets = [
@@ -1382,6 +1383,9 @@ dir32_targets = [
   "?g_EnemyManagerUpdatePlayer@th07@@3UEnemyManagerUpdatePlayer@1@A=bullet_update_player",
   "?g_EnemyManagerUpdateGameManager@th07@@3PAUEnemyManagerUpdateGameManager@1@A=?g_GameManager@th07@@3PAUGameManager@1@A",
   "?g_EnemyManagerUpdateReal2_5@th07@@3MA=bullet_update_real_2_5",
+  "?g_EnemyManagerUpdateAngleLower@th07@@3MA=enemy_update_angle_neg_2pi_3",
+  "?g_EnemyManagerUpdateAngleUpper@th07@@3MA=enemy_update_angle_neg_pi_3",
+  "?g_EnemyManagerUpdateNeg900@th07@@3MA=enemy_update_real_neg900",
   "?g_EnemyManagerUpdateGrazeState@th07@@3UEnemyManagerUpdateGrazeState@1@A=?g_GrazeState@th07@@3UGrazeState@1@A",
   "?g_EnemyManagerUpdateGui@th07@@3UEnemyManagerUpdateGui@1@A=spell_gui_49FBF0",
   "?g_EnemyManagerUpdateRewardManager@th07@@3UEnemyManagerUpdateRewardManager@1@A=enemy_manager_global",

@@ -19,6 +19,12 @@ struct EnemyRenderVec3
     f32 z;
 };
 
+struct EnemyRenderScale
+{
+    f32 x;
+    f32 y;
+};
+
 struct EnemyRenderSprite
 {
     u8 unknown00[0x1C];
@@ -84,7 +90,19 @@ struct EnemyRenderEnemy
         u8 raw[0x4F48];
         struct
         {
-            u8 unknown00[0x1C0];
+            u8 unknown00[0x18];
+            EnemyRenderScale primaryVmScale;
+            u8 unknown20[0x198];
+            union
+            {
+                u32 primaryVmColor;
+                struct
+                {
+                    u8 primaryVmColorRgb[3];
+                    u8 primaryVmColorAlpha;
+                } color;
+            } primaryColor;
+            u8 unknown1BC[4];
             u32 primaryVmFlags;
             i16 primaryVmRotationEnabled;
             u8 unknown1C6[2];
@@ -199,7 +217,7 @@ i32 EnemyManagerRenderOverlay::OnDrawLowPriority()
     return DrawImpl(2, 4);
 }
 
-#pragma var_order(drawGroup, vm, vmIndex, enemy, sampleIndex, oldScaleX, oldScaleY, color, lastAngle, previousAngle, nextAngle, u, widthFactor, vertexCount)
+#pragma var_order(drawGroup, vm, vmIndex, enemy, sampleIndex, oldScale, color, lastAngle, previousAngle, nextAngle, u, widthFactor, vertexCount)
 i32 __fastcall EnemyManagerRenderOverlay::DrawImpl(i32 groupBegin, i32 groupEnd)
 {
     i32 drawGroup;
@@ -207,8 +225,7 @@ i32 __fastcall EnemyManagerRenderOverlay::DrawImpl(i32 groupBegin, i32 groupEnd)
     i32 vmIndex;
     i32 sampleIndex;
     EnemyRenderVm *vm;
-    f32 oldScaleX;
-    f32 oldScaleY;
+    EnemyRenderScale oldScale;
     u32 color;
     f32 lastAngle;
     f32 previousAngle;
@@ -320,17 +337,16 @@ i32 __fastcall EnemyManagerRenderOverlay::DrawImpl(i32 groupBegin, i32 groupEnd)
 
             if (enemy->TrailFlags())
             {
-                oldScaleX = enemy->PrimaryVm()->scaleX;
-                oldScaleY = enemy->PrimaryVm()->scaleY;
-                color = enemy->PrimaryVm()->color;
+                oldScale = enemy->primary.primaryVmScale;
+                color = enemy->primary.primaryColor.primaryVmColor;
 
                 if ((enemy->TrailFlags() & 8) == 0)
                 {
                     for (sampleIndex = enemy->TrailStep(); sampleIndex < enemy->TrailHistoryCount();
                          sampleIndex += enemy->TrailStep())
                     {
-                        EnemyRenderTrailSample *sample = enemy->TrailSample(sampleIndex);
-                        if (sample->position.x >= -990.0f)
+                        if (enemy->TrailSample(sampleIndex)->position.x < -990.0f)
+                            continue;
                         {
                             f32 trailRotation;
                             EnemyRenderVec3 *trailVmOffset;
@@ -340,32 +356,31 @@ i32 __fastcall EnemyManagerRenderOverlay::DrawImpl(i32 groupBegin, i32 groupEnd)
 
                             if (enemy->RotateVms())
                             {
-                                trailRotation = sample->angle;
+                                trailRotation = enemy->TrailSample(sampleIndex)->angle;
                                 enemy->PrimaryVm()->rotationZ = trailRotation;
-                                enemy->PrimaryVm()->flags |= 4;
+                                enemy->primary.primaryVmFlags |= 4;
                             }
                             if (enemy->TrailFlags() & 2)
-                                enemy->PrimaryVm()->scaleX = oldScaleX -
-                                    oldScaleX * (f32)sampleIndex / (f32)enemy->TrailHistoryCount();
+                                enemy->PrimaryVm()->scaleX = oldScale.x -
+                                    oldScale.x * sampleIndex / enemy->TrailHistoryCount();
                             if (enemy->TrailFlags() & 4)
                             {
                                 u8 alpha = static_cast<u8>(color >> 24);
                                 alpha = static_cast<u8>(alpha -
                                     alpha * sampleIndex / enemy->TrailHistoryCount());
-                                enemy->PrimaryVm()->color =
-                                    (color & 0x00FFFFFF) | (static_cast<u32>(alpha) << 24);
+                                enemy->primary.primaryColor.color.primaryVmColorAlpha = alpha;
                             }
 
                             trailVmOffset = &enemy->PrimaryVm()->positionOffset;
-                            trailEnemyPosition = &sample->position;
+                            trailEnemyPosition = &enemy->TrailSample(sampleIndex)->position;
                             trailDrawPosition.z = trailEnemyPosition->z + trailVmOffset->z;
                             trailDrawPosition.y = trailEnemyPosition->y + trailVmOffset->y;
                             trailDrawPosition.x = trailEnemyPosition->x + trailVmOffset->x;
                             trailRenderPosition = trailDrawPosition;
                             enemy->PrimaryVm()->position = trailRenderPosition;
                             enemy->PrimaryVm()->position.z = 0.3f;
-                            enemy->PrimaryVm()->position.x += g_EnemyRenderOffsetX;
-                            enemy->PrimaryVm()->position.y += g_EnemyRenderOffsetY;
+                            enemy->primary.primaryVmPosition.x += g_EnemyRenderOffsetX;
+                            enemy->primary.primaryVmPosition.y += g_EnemyRenderOffsetY;
                             g_EnemyRenderAnmManager->Draw3(enemy->PrimaryVm());
                         }
                     }
@@ -386,7 +401,7 @@ i32 __fastcall EnemyManagerRenderOverlay::DrawImpl(i32 groupBegin, i32 groupEnd)
                         widthFactor = (vertexCount + 1) / 2 - 1;
                         widthFactor /= enemy->PrimaryVm()->sprite->uvRight -
                             enemy->PrimaryVm()->sprite->uvLeft;
-                        halfWidth = enemy->PrimaryVm()->sprite->trailUOffset * oldScaleY / 2.0f;
+                        halfWidth = enemy->PrimaryVm()->sprite->trailUOffset * oldScale.y / 2.0f;
                         u = enemy->PrimaryVm()->sprite->uvRight +
                             enemy->PrimaryVm()->textureUOffset;
                         vertex = enemy->TrailVertices();
@@ -468,9 +483,8 @@ i32 __fastcall EnemyManagerRenderOverlay::DrawImpl(i32 groupBegin, i32 groupEnd)
                     }
                 }
 
-                enemy->PrimaryVm()->scaleX = oldScaleX;
-                enemy->PrimaryVm()->scaleY = oldScaleY;
-                enemy->PrimaryVm()->color = color;
+                enemy->primary.primaryVmScale = oldScale;
+                enemy->primary.primaryColor.primaryVmColor = color;
             }
 
             enemy = enemy->DrawNext();

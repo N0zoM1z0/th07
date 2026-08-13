@@ -492,22 +492,45 @@ run_ecl_top:
         case 1: // target 0x00410744
             return ZUN_ERROR;
 
-        case 2: // jump: time at +0x0c, byte displacement at +0x10
-            Jump(rawEnemy, instruction);
-            continue;
+        // Target 0x00410749--0x004107AF: schedule the script-delay timer.
+        // This case is physically emitted before the jump handlers in the
+        // original dispatcher even though its opcode value is 0x2d.
+        case 45:
+        {
+            i32 timerLimit;
+            if (instruction->operandFlags & 1)
+                timerLimit = EclOperands::ResolveInt(rawEnemy, instruction->operand[0]);
+            else
+                timerLimit = instruction->operand[0];
+            ZunTimer *const scriptTimer =
+                (ZunTimer *)(rawEnemy->bytes + ENEMY_SCRIPT_TIMER_PREVIOUS);
+            scriptTimer->current = timerLimit;
+            scriptTimer->subFrame = 0.0f;
+            scriptTimer->previous = -999;
+            break;
+        }
 
         case 3: // decrement an integer lvalue, then jump while it remains positive
         {
             i32 *const value = EclOperands::ResolveIntLValue(rawEnemy, &instruction->operand[2],
                                                               instruction->operandFlags, 2);
             --*value;
-            if (ReadInt(rawEnemy, instruction, 2) > 0)
-            {
-                Jump(rawEnemy, instruction);
-                continue;
-            }
-            break;
+            i32 remaining;
+            if (instruction->operandFlags & (1 << 2))
+                remaining = EclOperands::ResolveInt(rawEnemy, instruction->operand[2]);
+            else
+                remaining = instruction->operand[2];
+            if (remaining > 0)
+                goto decrement_jump;
+            goto advance_instruction;
+decrement_jump:
+            Jump(rawEnemy, instruction);
+            continue;
         }
+
+        case 2: // jump: time at +0x0c, byte displacement at +0x10
+            Jump(rawEnemy, instruction);
+            continue;
 
         case 4: // integer assignment
             *WriteInt(rawEnemy, instruction) = ReadInt(rawEnemy, instruction, 1);
@@ -654,12 +677,6 @@ run_ecl_top:
         // 0x2d--0x3f are target-observed direct Enemy state transitions.  No
         // complete Enemy type is implied: each store below is an attested
         // offset in this dispatcher.
-        case 45:
-            IntAt(rawEnemy, ENEMY_SCRIPT_TIMER_LIMIT) = ReadInt(rawEnemy, instruction, 0);
-            IntAt(rawEnemy, ENEMY_SCRIPT_TIMER_CURRENT) = 0;
-            IntAt(rawEnemy, ENEMY_SCRIPT_TIMER_PREVIOUS) = -999;
-            break;
-
         case 46:
             FloatAt(rawEnemy, 0x2B0C) = ReadFloat(rawEnemy, instruction, 0);
             FloatAt(rawEnemy, 0x2B10) = ReadFloat(rawEnemy, instruction, 1);

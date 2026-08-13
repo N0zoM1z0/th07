@@ -323,6 +323,7 @@ extern EnemyManagerUpdateItemManager g_EnemyManagerUpdateItemManager;
 extern EnemyManagerUpdateBulletManager g_EnemyManagerUpdateBulletManager;
 extern EnemyManagerUpdateSoundPlayer g_EnemyManagerUpdateSoundPlayer;
 extern "C" i32 __cdecl EnemyManagerUpdateFtol();
+extern "C" f32 __cdecl EnemyManagerUpdateAtan2();
 
 extern i32 g_EnemyManagerUpdateDifficulty;
 extern i32 g_EnemyManagerUpdateAccumulator;
@@ -334,6 +335,9 @@ extern u8 g_EnemyManagerUpdateStageState;
 extern u8 g_EnemyManagerUpdateBossPresent;
 extern f32 g_EnemyManagerUpdateBossHealth;
 extern f32 g_EnemyManagerUpdateReal2_5;
+extern f32 g_EnemyManagerUpdateAngleLower;
+extern f32 g_EnemyManagerUpdateAngleUpper;
+extern f32 g_EnemyManagerUpdateNeg900;
 extern i32 g_EnemyManagerUpdateSpellActive;
 extern i32 g_EnemyManagerUpdateSpellState;
 extern u8 *g_EnemyManagerUpdatePlayerFlags;
@@ -504,6 +508,14 @@ static __forceinline void TrackLastEnemyHit(EnemyManagerUpdateEnemy *enemy)
     EnemyManagerUpdateVec3 *position;
     EnemyManagerUpdateVec3 currentDelta;
     EnemyManagerUpdateVec3 previousDelta;
+    f32 previousAbsInput;
+    f32 currentAbsInput;
+    f32 currentAbsResult;
+    f32 currentAbsCompare;
+    f32 previousAbsResult;
+    f32 secondaryCurrentX;
+    f32 secondaryCurrentY;
+    f32 secondaryAngleShadow;
     f32 angle;
 
     if (enemy->CombatBits()->boss)
@@ -513,19 +525,93 @@ static __forceinline void TrackLastEnemyHit(EnemyManagerUpdateEnemy *enemy)
         position = enemy->Position();
         currentDelta = *position -
                        *reinterpret_cast<EnemyManagerUpdateVec3 *>(&g_EnemyManagerUpdateReferenceX);
-        if (!g_EnemyManagerUpdateSpellState || fabs(previousDelta.x) > fabs(currentDelta.x))
-            StorePrimaryHit(position);
+        __asm
+        {
+            cmp DWORD PTR[g_EnemyManagerUpdateSpellState], 0
+            je store_primary_hit
+            mov edx, DWORD PTR[previousDelta]
+            mov DWORD PTR[previousAbsInput], edx
+            mov eax, DWORD PTR[currentDelta]
+            mov DWORD PTR[currentAbsInput], eax
+            fld DWORD PTR[currentAbsInput]
+            fabs
+            fst DWORD PTR[currentAbsResult]
+            fstp DWORD PTR[currentAbsCompare]
+            fld DWORD PTR[previousAbsInput]
+            fabs
+            fst DWORD PTR[previousAbsResult]
+            fcomp DWORD PTR[currentAbsCompare]
+            fnstsw ax
+            test ah, 0x41
+            jne skip_primary_hit
+        store_primary_hit:
+            mov ecx, enemy
+            add ecx, 0x2b0c
+            mov edx, DWORD PTR[ecx]
+            mov DWORD PTR[g_EnemyManagerUpdateLastHitX], edx
+            mov eax, DWORD PTR[ecx + 4]
+            mov DWORD PTR[g_EnemyManagerUpdateLastHitY], eax
+            mov ecx, DWORD PTR[ecx + 8]
+            mov DWORD PTR[g_EnemyManagerUpdateLastHitZ], ecx
+        skip_primary_hit:
+        }
 
         if (g_EnemyManagerUpdateShotType == 2)
         {
             previousDelta = *reinterpret_cast<EnemyManagerUpdateVec3 *>(&g_EnemyManagerUpdateLastHit2X) -
                             *reinterpret_cast<EnemyManagerUpdateVec3 *>(&g_EnemyManagerUpdateReferenceX);
-            angle = EnemyAimAngle(position);
-            if (IsSecondaryAimAngle(angle) &&
-                (!g_EnemyManagerUpdateSpellState || fabs(previousDelta.x) > fabs(currentDelta.x)))
+            __asm
             {
-                StoreSecondaryHit(position);
-                g_EnemyManagerUpdateSpellState = 1;
+                mov eax, enemy
+                fld DWORD PTR[eax + 0x2b0c]
+                fsub DWORD PTR[g_EnemyManagerUpdateReferenceX]
+                fstp DWORD PTR[secondaryCurrentX]
+                mov ecx, enemy
+                fld DWORD PTR[ecx + 0x2b10]
+                fsub DWORD PTR[g_EnemyManagerUpdateReferenceY]
+                fst DWORD PTR[secondaryCurrentY]
+                fld DWORD PTR[secondaryCurrentX]
+                call EnemyManagerUpdateAtan2
+                fst DWORD PTR[secondaryAngleShadow]
+                fstp DWORD PTR[angle]
+                fld DWORD PTR[angle]
+                fcomp DWORD PTR[g_EnemyManagerUpdateAngleLower]
+                fnstsw ax
+                test ah, 1
+                jne skip_secondary_hit
+                fld DWORD PTR[angle]
+                fcomp DWORD PTR[g_EnemyManagerUpdateAngleUpper]
+                fnstsw ax
+                test ah, 0x41
+                jp skip_secondary_hit
+                cmp DWORD PTR[g_EnemyManagerUpdateSpellState], 0
+                je store_secondary_hit
+                mov edx, DWORD PTR[previousDelta]
+                mov DWORD PTR[previousAbsInput], edx
+                mov eax, DWORD PTR[currentDelta]
+                mov DWORD PTR[currentAbsInput], eax
+                fld DWORD PTR[currentAbsInput]
+                fabs
+                fst DWORD PTR[currentAbsResult]
+                fstp DWORD PTR[currentAbsCompare]
+                fld DWORD PTR[previousAbsInput]
+                fabs
+                fst DWORD PTR[previousAbsResult]
+                fcomp DWORD PTR[currentAbsCompare]
+                fnstsw ax
+                test ah, 0x41
+                jne skip_secondary_hit
+            store_secondary_hit:
+                mov ecx, enemy
+                add ecx, 0x2b0c
+                mov edx, DWORD PTR[ecx]
+                mov DWORD PTR[g_EnemyManagerUpdateLastHit2X], edx
+                mov eax, DWORD PTR[ecx + 4]
+                mov DWORD PTR[g_EnemyManagerUpdateLastHit2Y], eax
+                mov ecx, DWORD PTR[ecx + 8]
+                mov DWORD PTR[g_EnemyManagerUpdateLastHit2Z], ecx
+                mov DWORD PTR[g_EnemyManagerUpdateSpellState], 1
+            skip_secondary_hit:
             }
         }
         else
@@ -534,17 +620,64 @@ static __forceinline void TrackLastEnemyHit(EnemyManagerUpdateEnemy *enemy)
         }
     }
 
-    if (!g_EnemyManagerUpdateSpellState)
+    __asm
     {
-        position = enemy->Position();
-        if (g_EnemyManagerUpdateLastHitY < position->y)
-            StorePrimaryHit(position);
-        if (g_EnemyManagerUpdateShotType == 2 && g_EnemyManagerUpdateLastHit2Y < -900.0f)
-        {
-            angle = EnemyAimAngle(position);
-            if (IsSecondaryAimAngle(angle))
-                StoreSecondaryHit(position);
-        }
+        cmp DWORD PTR[g_EnemyManagerUpdateSpellState], 0
+        jne target_selection_done
+        mov edx, enemy
+        fld DWORD PTR[g_EnemyManagerUpdateLastHitY]
+        fcomp DWORD PTR[edx + 0x2b10]
+        fnstsw ax
+        test ah, 5
+        jp skip_fallback_primary
+        mov eax, enemy
+        add eax, 0x2b0c
+        mov ecx, DWORD PTR[eax]
+        mov DWORD PTR[g_EnemyManagerUpdateLastHitX], ecx
+        mov edx, DWORD PTR[eax + 4]
+        mov DWORD PTR[g_EnemyManagerUpdateLastHitY], edx
+        mov eax, DWORD PTR[eax + 8]
+        mov DWORD PTR[g_EnemyManagerUpdateLastHitZ], eax
+    skip_fallback_primary:
+        movzx ecx, BYTE PTR[g_EnemyManagerUpdateShotType]
+        cmp ecx, 2
+        jne target_selection_done
+        fld DWORD PTR[g_EnemyManagerUpdateLastHit2Y]
+        fcomp DWORD PTR[g_EnemyManagerUpdateNeg900]
+        fnstsw ax
+        test ah, 5
+        jp target_selection_done
+        mov edx, enemy
+        fld DWORD PTR[edx + 0x2b0c]
+        fsub DWORD PTR[g_EnemyManagerUpdateReferenceX]
+        fstp DWORD PTR[secondaryCurrentX]
+        mov eax, enemy
+        fld DWORD PTR[eax + 0x2b10]
+        fsub DWORD PTR[g_EnemyManagerUpdateReferenceY]
+        fst DWORD PTR[secondaryCurrentY]
+        fld DWORD PTR[secondaryCurrentX]
+        call EnemyManagerUpdateAtan2
+        fst DWORD PTR[secondaryAngleShadow]
+        fstp DWORD PTR[angle]
+        fld DWORD PTR[angle]
+        fcomp DWORD PTR[g_EnemyManagerUpdateAngleLower]
+        fnstsw ax
+        test ah, 1
+        jne target_selection_done
+        fld DWORD PTR[angle]
+        fcomp DWORD PTR[g_EnemyManagerUpdateAngleUpper]
+        fnstsw ax
+        test ah, 0x41
+        jp target_selection_done
+        mov ecx, enemy
+        add ecx, 0x2b0c
+        mov edx, DWORD PTR[ecx]
+        mov DWORD PTR[g_EnemyManagerUpdateLastHit2X], edx
+        mov eax, DWORD PTR[ecx + 4]
+        mov DWORD PTR[g_EnemyManagerUpdateLastHit2Y], eax
+        mov ecx, DWORD PTR[ecx + 8]
+        mov DWORD PTR[g_EnemyManagerUpdateLastHit2Z], ecx
+    target_selection_done:
     }
 }
 
@@ -562,6 +695,7 @@ i32 EnemyManagerUpdateOverlay::OnUpdate()
     i32 difficultyScale;
     i32 bombHit;
     i32 timerCurrent;
+    i32 deathModeIndex;
     void *timelineInstruction;
 
     bombHit = 0;
@@ -839,14 +973,34 @@ i32 EnemyManagerUpdateOverlay::OnUpdate()
 
                 TrackLastEnemyHit(enemy);
 
-                if (enemy->Life() <= 0 && enemy->CombatBits()->interactable)
+                __asm
                 {
+                    mov edx, enemy
+                    cmp DWORD PTR[edx + 0x2bb8], 0
+                    jg skip_enemy_death
+                    mov eax, enemy
+                    mov cl, BYTE PTR[eax + 0x2e29]
+                    and cl, 1
+                    movzx edx, cl
+                    test edx, edx
+                    je skip_enemy_death
+                }
+                {
+                    vmIndex = 0;
                     for (vmIndex = 0; vmIndex < 4; ++vmIndex)
                         enemy->LifeCallbacks()[vmIndex] = -1;
                     enemy->TimerCallbackThreshold() = -1;
                     enemy->TimerCallbackSub() = -1;
 
-                    switch (enemy->DeathFlags() & 7)
+                    __asm
+                    {
+                        mov edx, enemy
+                        mov al, BYTE PTR[edx + 0x2e2a]
+                        and al, 7
+                        movzx ecx, al
+                        mov DWORD PTR[deathModeIndex], ecx
+                    }
+                    switch (deathModeIndex)
                     {
                     case 3:
                         enemy->Life() = 1;
@@ -921,6 +1075,10 @@ i32 EnemyManagerUpdateOverlay::OnUpdate()
                             (i16)enemy->DeathCallbackSub());
                         enemy->DeathCallbackSub() = -1;
                     }
+                }
+                __asm
+                {
+                skip_enemy_death:
                 }
 
             }
