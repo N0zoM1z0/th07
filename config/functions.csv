@@ -630,7 +630,7 @@ address,size,span_end,current_name,proposed_name,module,status,match_percent,cal
 0x0045DB60,1000,0x0045DF47,sub_45DB60,,,unclassified,0.00,unknown,,false,,,,
 0x0045DF50,194,0x0045E011,sub_45DF50,CStreamingSound_reset,sound,matching,100.00,__thiscall,HRESULT CStreamingSound_reset(CStreamingSound * this),false,src/zwave.cpp,strict VC7 COFF exact 194/194 bytes 2026-08-12,root,Restores buffer and resets stream position
 0x0045E020,56,0x0045E057,sub_45E020,,,unclassified,0.00,unknown,,false,,,,
-0x0045E060,19,0x0045E072,sub_45E060,,,unclassified,0.00,unknown,,false,,,,
+0x0045E060,19,0x0045E072,sub_45E060,CWaveFile_dtor,sound,matching,100.00,__thiscall,void CWaveFile_dtor(CWaveFile * this),false,src/WaveFileDestructor.cpp,python3 scripts/build.py --unit wave-file-destructor --compare --json; strict exact 19/19 target and object SHA a5426a82a6af6c9be3bb0042cdcbe2e5c1f14c079609564eb2ea17ab3c6bafae 2026-08-13,root,CSound destructor 0x0045D2C0 calls this exact target symbol. TH08 uniquely identifies 0x0045E4B0 as CWaveFile Close; target destructor forwards its receiver there and retains the HRESULT in EAX. Real C++ implementation reproduces target bytes exactly.
 0x0045E080,163,0x0045E122,sub_45E080,,,unclassified,0.00,unknown,,false,,,,
 0x0045E130,84,0x0045E183,sub_45E130,,,unclassified,0.00,unknown,,false,,,,
 0x0045E190,92,0x0045E1EB,sub_45E190,,,unclassified,0.00,unknown,,false,,,,

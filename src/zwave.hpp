@@ -33,6 +33,7 @@ class CWaveFile
     ThBgmFormat *m_pzwf;
 
     ~CWaveFile();
+    HRESULT Close();
     HRESULT Read(BYTE *pBuffer, DWORD dwSizeToRead, DWORD *pdwSizeRead);
     HRESULT ResetFile(bool bLoop);
 };

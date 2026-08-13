@@ -1294,6 +1294,18 @@ notes = "Target-pinned WaveFile size getter; TH08 exact clone corroborates the r
 address = "0x0045E1F0"
 symbol_base = "?GetSize@WaveFile@th07@@QAEHXZ"
 
+[units.wave-file-destructor]
+kind = "probe"
+source = "src/WaveFileDestructor.cpp"
+object = "build/match-units/WaveFileDestructor.obj"
+profile = "vc7-debug-od-no-gs-g6"
+notes = "Real-C++ CWaveFile destructor forwarding to target-attested Close."
+
+[[units.wave-file-destructor.functions]]
+address = "0x0045E060"
+symbol_base = "??1CWaveFile@th07@@QAE@XZ"
+rel32_targets = ["?Close@CWaveFile@th07@@QAEJXZ=0x0045E4B0"]
+
 [units.supervisor-activation]
 kind = "probe"
 source = "src/SupervisorActivation.cpp"
