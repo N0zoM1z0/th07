@@ -400,12 +400,13 @@ static __forceinline void SpawnLaserVariant(EclOperands::EnemyOverlay *enemy, Ru
 ZunResult EclManager::RunEcl(Enemy *enemy)
 {
 #define rawEnemy ((EclOperands::EnemyOverlay *)enemy)
-    EnterInterrupt(rawEnemy);
     RunEclInstruction *instruction = CurrentInstruction(rawEnemy);
-    void *laser;
+    EnterInterrupt(rawEnemy);
 
     for (;;)
     {
+        void *laser;
+
         if (instruction == 0)
             return ZUN_ERROR;
 

@@ -97,7 +97,7 @@ ecl_global_1347AA0,0x01347AA0,00000000,0x0,Target-observed zero-initialized ECL 
 ecl_global_1347AA4,0x01347AA4,00000000,0x0,Target-observed zero-initialized ECL integer bank slot,literal
 ecl_global_1347AA8,0x01347AA8,00000000,0x0,Target-observed zero-initialized ECL integer bank slot,literal
 ecl_global_1347AAC,0x01347AAC,00000000,0x0,Target-observed zero-initialized ECL integer bank slot,literal
-ecl_global_4BE408,0x004BE408,00000000,0x0,Target-observed zero-initialized ECL float operand storage,literal
+ecl_global_4BE408,0x004BE408,00000000,0x0;0x4;0x8,Target-observed zero-initialized ECL/player reference vector used by Enemy update,literal
 ecl_global_4BE40C,0x004BE40C,00000000,0x0,Target-observed zero-initialized ECL float operand storage,literal
 ecl_global_4BE410,0x004BE410,00000000,0x0,Target-observed zero-initialized ECL float operand storage,literal
 ecl_global_1347AB0,0x01347AB0,00000000,0x0,Target-observed zero-initialized ECL float bank slot,literal
@@ -119,7 +119,7 @@ bullet_update_real_3,0x00498A8C,00004040,0x0,Exact target float 3.0 divisor used
 rng_real_neg_pi,0x00498A5C,db0f49c0,0x0,Exact target float negative pi used by core angle normalization,literal
 rng_real_4294967296,0x00498B28,0000804f,0x0,Exact target rounded UINT_MAX divisor used by core RNG float conversion,literal
 ecl_difficulty_mask,0x00626284,00,0x0,Target-observed ECL difficulty bitmask storage read by RunEcl,literal
-ecl_manager_1347938,0x01347938,00000000,0x0,Target-observed EclManager storage used by RunEcl interrupt dispatch,literal
+ecl_manager_1347938,0x01347938,00000000,0x0,Target-observed EclManager storage whose first dword points to timeline metadata,literal
 player_update_bound_left,0x0062F874,00000000,0x0,Target-observed player movement-area left edge storage,literal
 player_update_bound_top,0x0062F878,00000000,0x0,Target-observed player movement-area top edge storage,literal
 player_update_bound_width,0x0062F87C,00000000,0x0;0x4,Target-observed player movement-area width/height storage,address
@@ -504,3 +504,20 @@ ecl_real_10019,0x00498D58,008c1c46,0x0,Target-observed float 10019.0 constant us
 ecl_real_10020,0x00498D54,00901c46,0x0,Target-observed float 10020.0 constant used by the ECL dispatcher,literal
 player_update_real_neg_32,0x00498C68,000000c2,0x0,Target-observed float -32.0 used by Player orb interpolation,literal
 player_update_real_neg_16,0x00498D14,000080c1,0x0,Target-observed float -16.0 used by Player orb interpolation,literal
+enemy_update_special_damage_4bfee3,0x004BFEE3,00000000,0x0,Target zero-initialized Enemy update special-damage mode byte read at 0x004211C4,address
+enemy_update_pause_4bfee0,0x004BFEE0,00000000,0x0,Target zero-initialized Enemy update pause-mode byte read at 0x00420844,address
+enemy_update_random_items_49efa0,0x0049EFA0,0000010001000007010100000701010001000100010001000100070101010002,0x0,Target 32-byte Enemy random item sequence indexed by the death-item path,literal
+enemy_update_last_hit2_4bff0c,0x004BFF0C,00000000,0x0;0x4;0x8,Target zero-initialized secondary enemy-position selection vector,address
+enemy_update_last_hit_x_4bff00,0x004BFF00,00000000,0x0,Target zero-initialized primary selected enemy position X,literal
+enemy_update_last_hit_y_4bff04,0x004BFF04,00000000,0x0,Target zero-initialized primary selected enemy position Y,literal
+enemy_update_last_hit_z_4bff08,0x004BFF08,00000000,0x0,Target zero-initialized primary selected enemy position Z,literal
+enemy_update_last_hit2_y_4bff10,0x004BFF10,00000000,0x0,Target zero-initialized secondary selected enemy position Y,literal
+enemy_update_last_hit2_z_4bff14,0x004BFF14,00000000,0x0,Target zero-initialized secondary selected enemy position Z,literal
+enemy_update_hit_state_4bff18,0x004BFF18,00000000,0x0,Target zero-initialized enemy-position selection state,literal
+enemy_update_reference_y_4be40c,0x004BE40C,00000000,0x0,Target zero-initialized reference position Y,literal
+enemy_update_reference_z_4be410,0x004BE410,00000000,0x0,Target zero-initialized reference position Z,literal
+enemy_update_angle_neg_2pi_3,0x00498D6C,920a06c0,0x0,Target float lower angle bound used by Enemy position selection,literal
+enemy_update_angle_neg_pi_3,0x00498D68,920a86bf,0x0,Target float upper angle bound used by Enemy position selection,literal
+enemy_update_real_neg900,0x00498B0C,000061c4,0x0,Target float -900 sentinel used by Enemy position selection,literal
+enemy_update_real_16,0x00498A80,00008041,0x0,Target float 16 divisor used by Enemy follow-target interpolation,literal
+enemy_update_boss_ui_flags_134e2c4,0x0134E2C4,00000000,0x0,Target zero-initialized four-entry Enemy boss UI flag array,address

@@ -1334,6 +1334,95 @@ dir32_targets = ["__real@3e99999a=ecl_real_0_3"]
 address = "0x0041F670"
 symbol_base = "?ReleaseEffects@EnemyUpdateOverlay@th07@@QAEXXZ"
 
+[units.enemy-manager-update]
+kind = "probe"
+source = "src/EnemyManagerUpdate.cpp"
+object = "build/match-units/EnemyManagerUpdate.obj"
+profile = "vc7-debug-od-no-gs-g6"
+notes = "TH07 target-bounded EnemyManager core update: ECL, movement/trails, ANM, collision/damage/death, effects, timers, and draw-list rebuild."
+
+[[units.enemy-manager-update.functions]]
+address = "0x00420620"
+symbol_base = "?OnUpdate@EnemyManagerUpdateOverlay@th07@@QAEHXZ"
+rel32_targets = [
+  "?IsMessageActive@EnemyManagerUpdateGui@th07@@QAEHXZ=0x0042AD66",
+  "?IncreaseSubrank@EnemyManagerUpdateGrazeState@th07@@QAEXH@Z=0x0042F4AA",
+  "?Run@EnemyManagerUpdateTimelineLane@th07@@QAEXXZ=0x0041F6F0",
+  "?Decrement@EnemyManagerUpdateTimer@th07@@QAEXH@Z=0x004394C7",
+  "?RunEcl@EnemyManagerUpdateEclManager@th07@@QAEHPAUEnemyManagerUpdateEnemy@2@@Z=0x00410520",
+  "?ClampPosition@EnemyManagerUpdateEnemy@th07@@QAEXXZ=0x004203B0",
+  "?Move@EnemyManagerUpdateEnemy@th07@@QAEXXZ=0x0041E920",
+  "?IsInBounds@EnemyManagerUpdateGrazeState@th07@@QAEHMMMM@Z=0x0042D6D8",
+  "?Despawn@EnemyManagerUpdateEnemy@th07@@QAEXXZ=0x004202D0",
+  "?HandleLifeCallback@EnemyManagerUpdateEnemy@th07@@QAEHXZ=0x0041FD70",
+  "?HandleTimerCallback@EnemyManagerUpdateEnemy@th07@@QAEHXZ=0x0041FF80",
+  "?ExecuteScript@EnemyManagerUpdateAnmManager@th07@@QAEHPAUEnemyManagerUpdateAnmVm@2@@Z=0x00450D60",
+  "?CheckPlayerCollision@EnemyManagerUpdateEnemy@th07@@QAEXPAUEnemyManagerUpdateVec3@2@0@Z=0x00420490",
+  "?CalcDamageToEnemy@EnemyManagerUpdatePlayer@th07@@QAEHPAUEnemyManagerUpdateVec3@2@0PAH@Z=0x0043D9E0",
+  "?ApplyRank@EnemyManagerUpdateGrazeState@th07@@QAEXH@Z=0x0042F5A2",
+  "?SpawnParticles@EnemyManagerUpdateEffectManager@th07@@QAEXHPAUEnemyManagerUpdateVec3@2@HH@Z=0x0041C1C0",
+  "?ReleaseEffects@EnemyManagerUpdateEnemy@th07@@QAEXXZ=0x0041F670",
+  "?SpawnItem@EnemyManagerUpdateItemManager@th07@@QAEXPAUEnemyManagerUpdateVec3@2@HH@Z=0x004326F0",
+  "?DespawnBullets@EnemyManagerUpdateBulletManager@th07@@QAEHHH@Z=0x004249A0",
+  "?PlaySoundByIdx@EnemyManagerUpdateSoundPlayer@th07@@QAEXHH@Z=0x0044C930",
+  "?ConvertBulletBonus@EnemyManagerUpdateRewardManager@th07@@QAEHHH@Z=0x00423090",
+  "?ShowBonus@EnemyManagerUpdateGui@th07@@QAEXH@Z=0x00427BF8",
+  "?CallEclSub@EnemyManagerUpdateEclManager@th07@@QAEXPAXF@Z=0x0040E530",
+  "?UpdateEffects@EnemyManagerUpdateEnemy@th07@@QAEXXZ=0x0041F580",
+  "?Advance@EnemyManagerUpdateTimerManager@th07@@QAEXPAH0@Z=0x0043958D",
+  "?PeriodicCheck@EnemyManagerUpdateGrazeState@th07@@QAEHXZ=0x00404FE0",
+  "__ftol2=0x0048B8A0",
+  "__CIatan2=0x0048BCAA",
+]
+dir32_targets = [
+  "?g_EnemyManagerUpdateEclManager@th07@@3UEnemyManagerUpdateEclManager@1@A=ecl_manager_1347938",
+  "?g_EnemyManagerUpdateAnmManager@th07@@3PAUEnemyManagerUpdateAnmManager@1@A=?g_AnmManager@th07@@3PAUAnmManager@1@A",
+  "?g_EnemyManagerUpdatePlayer@th07@@3UEnemyManagerUpdatePlayer@1@A=bullet_update_player",
+  "?g_EnemyManagerUpdateGameManager@th07@@3PAUEnemyManagerUpdateGameManager@1@A=?g_GameManager@th07@@3PAUGameManager@1@A",
+  "?g_EnemyManagerUpdateGrazeState@th07@@3UEnemyManagerUpdateGrazeState@1@A=?g_GrazeState@th07@@3UGrazeState@1@A",
+  "?g_EnemyManagerUpdateGui@th07@@3UEnemyManagerUpdateGui@1@A=spell_gui_49FBF0",
+  "?g_EnemyManagerUpdateRewardManager@th07@@3UEnemyManagerUpdateRewardManager@1@A=enemy_manager_global",
+  "?g_EnemyManagerUpdateTimerManager@th07@@3UEnemyManagerUpdateTimerManager@1@A=bullet_update_timer_manager",
+  "?g_EnemyManagerUpdateEffectManager@th07@@3UEnemyManagerUpdateEffectManager@1@A=?g_EffectManager@th07@@3UEffectManager@1@A",
+  "?g_EnemyManagerUpdateItemManager@th07@@3UEnemyManagerUpdateItemManager@1@A=player_bomb_item_manager",
+  "?g_EnemyManagerUpdateBulletManager@th07@@3UEnemyManagerUpdateBulletManager@1@A=spell_bullet_manager_62F958",
+  "?g_EnemyManagerUpdateSoundPlayer@th07@@3UEnemyManagerUpdateSoundPlayer@1@A=?g_SoundPlayer@th07@@3USoundPlayer@1@A",
+  "?g_EnemyManagerUpdateDifficulty@th07@@3HA=ecl_difficulty_62F85C",
+  "?g_EnemyManagerUpdateAccumulator@th07@@3HA=ecl_global_62F898",
+  "?g_EnemyManagerUpdateFrameStop@th07@@3HA=?g_HideGrazeCounter@th07@@3HA",
+  "?g_EnemyManagerUpdatePauseByte@th07@@3DA=enemy_update_pause_4bfee0",
+  "?g_EnemyManagerUpdateSpecialDamage@th07@@3EA=enemy_update_special_damage_4bfee3",
+  "?g_EnemyManagerUpdatePracticeFlag@th07@@3EA=ecl_global_62F647",
+  "?g_EnemyManagerUpdateStageState@th07@@3EA=bullet_update_paused",
+  "?g_EnemyManagerUpdateBossPresent@th07@@3EA=ecl_boss_present_49FC14",
+  "?g_EnemyManagerUpdateBossHealth@th07@@3MA=ecl_boss_health_49FC18",
+  "?g_EnemyManagerUpdateSpellActive@th07@@3HA=spell_active_12FE0C8",
+  "?g_EnemyManagerUpdateSpellState@th07@@3HA=enemy_update_hit_state_4bff18",
+  "?g_EnemyManagerUpdatePlayerFlags@th07@@3PAEA=?g_PlayerCollisionFlags@th07@@3HA",
+  "?g_EnemyManagerUpdateLastHitX@th07@@3MA=enemy_update_last_hit_x_4bff00",
+  "?g_EnemyManagerUpdateLastHitY@th07@@3MA=enemy_update_last_hit_y_4bff04",
+  "?g_EnemyManagerUpdateLastHitZ@th07@@3MA=enemy_update_last_hit_z_4bff08",
+  "?g_EnemyManagerUpdateLastHit2X@th07@@3MA=enemy_update_last_hit2_4bff0c",
+  "?g_EnemyManagerUpdateLastHit2Y@th07@@3MA=enemy_update_last_hit2_y_4bff10",
+  "?g_EnemyManagerUpdateLastHit2Z@th07@@3MA=enemy_update_last_hit2_z_4bff14",
+  "?g_EnemyManagerUpdateReferenceX@th07@@3MA=ecl_global_4BE408",
+  "?g_EnemyManagerUpdateReferenceY@th07@@3MA=enemy_update_reference_y_4be40c",
+  "?g_EnemyManagerUpdateReferenceZ@th07@@3MA=enemy_update_reference_z_4be410",
+  "?g_EnemyManagerUpdateShotType@th07@@3EA=player_bomb_character",
+  "?g_EnemyManagerUpdateOne@th07@@3MB=__real@3f800000",
+  "?g_EnemyManagerUpdateSixteen@th07@@3MB=enemy_update_real_16",
+  "?g_EnemyManagerUpdateBossUi@th07@@3PAY0CEM@EA=enemy_boss_ui",
+  "?g_EnemyManagerUpdateBossUiFlags@th07@@3PAHA=enemy_update_boss_ui_flags_134e2c4",
+  "?g_EnemyManagerUpdateRandomItemTable@th07@@3PAEA=enemy_update_random_items_49efa0",
+  "?g_EnemyManagerUpdateCombatTemplate@th07@@3PAEA=enemy_combat_template_9ac6dc",
+  "__real@3f000000=__real@3f000000",
+  "__real@3f800000=__real@3f800000",
+  "__real@40200000=bullet_update_real_2_5",
+  "__real@c0060a92=enemy_update_angle_neg_2pi_3",
+  "__real@bf860a92=enemy_update_angle_neg_pi_3",
+  "__real@c4610000=enemy_update_real_neg900",
+]
+
 [units.enemy-render-wrappers]
 kind = "probe"
 source = "src/EnemyRender.cpp"

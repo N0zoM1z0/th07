@@ -209,12 +209,8 @@ i32 AnmManager::ExecuteScript(AnmVm *vm)
     if (VM_S(vm, 0x1c6) != 0)
         goto handle_interrupt;
 
-    while (1)
+    while (instruction = VM_P(vm, 0x1e0), (instructionTime = instruction->time) <= VM_I(vm, 0x38))
     {
-        instruction = VM_P(vm, 0x1e0);
-        instructionTime = instruction->time;
-        if (instructionTime > VM_I(vm, 0x38))
-            break;
         opcode = instruction->opcode;
         switch (opcode)
         {

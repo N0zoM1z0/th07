@@ -57,10 +57,19 @@ Target facts:
   item/effect handling, followed by manager timer/periodic cleanup work.
 
 TH06 provides a useful semantic map for this sequence, but its layouts and
-some branches differ. The TH07 target remains authoritative. In particular,
-the large body should only be added after its remaining TH07 callees and local
-lifetimes are bounded; an empty or behaviorally incomplete callback would hide
-missing game logic and is forbidden by the reconstruction rules.
+some branches differ. The TH07 target remains authoritative. The dedicated
+`src/EnemyManagerUpdate.cpp` unit now compiles a substantial target-backed
+implementation of every major phase: timeline lanes, ECL and movement,
+follow-target interpolation, trail history and collision, primary/secondary
+ANM, damage/rank/spell scaling, target selection, death/items/effects, boss UI,
+timers, and the four draw lists. It is not yet a strict byte match.
+
+Typed instruction-shape comparison proved especially useful on this body. It
+exposed the ECL manager's first dword as a pointer to timeline metadata, the
+signed pause byte at `0x4BFEE0`, and several VC7 expression/bitfield shapes.
+Successive source corrections extended the exact instruction-topology prefix
+from 8 to more than 400 instructions before later branches diverged. This is a
+compiler-shaping diagnostic only and does not grant matching status.
 
 Three large update dependencies are now strict exact matches. `0x0041F6F0` runs one 16-byte
 timeline lane with a `0x84` frame. Its 13 target opcodes cover enemy spawning
@@ -78,10 +87,9 @@ roles, but the listed layout and branches are TH07 observations.
 
 The highest-leverage sequence is:
 
-1. recover the still-unmatched effect/death helpers called by the update body;
-2. implement the update body by its target basic-block phases while preserving
-   the `0x210` frame and VC7 local allocation;
-3. use the same exact-helper-first approach for the render body at
+1. converge the update body's remaining collision/death-tail branches and
+   preserve the target `0x210` local allocation;
+2. use the same exact-helper-first approach for the render body at
    `0x00422170`.
 
 ## EnemyManager render (`0x00422170`)
