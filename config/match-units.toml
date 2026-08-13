@@ -2694,7 +2694,22 @@ rel32_targets = [
   "?ParseHeader@PbgArchive@th07@@QAE_NPBD@Z=0x0045FB50",
   "?CopyFileName@PbgArchive@th07@@QAEPADPBD@Z=0x0045FFC0",
 ]
-dir32_targets = ["$L54572=pbg_archive_load_eh_handler"]
+dir32_targets = ["$L54632=pbg_archive_load_eh_handler"]
+
+[[units.pbg-archive.functions]]
+address = "0x0045FB50"
+symbol_base = "?ParseHeader@PbgArchive@th07@@QAE_NPBD@Z"
+rel32_targets = [
+  "?LzssDecode@th07@@YIPAXPAXI0I@Z=0x0045EF00",
+  "?AllocEntries@PbgArchive@th07@@QAEPAUPbgArchiveEntry@2@PAXHI@Z=0x0045FDE0",
+  "?DebugPrint@th07@@YAXPBDZZ=0x0045E4F0",
+]
+dir32_targets = [
+  "__imp__GlobalAlloc@8=__imp__GlobalAlloc@8",
+  "__imp__GlobalFree@4=__imp__GlobalFree@4",
+  "?g_TargetPbgSeekBegin@th07@@3IA=?g_TargetPbgSeekBegin@th07@@3IA",
+  "?g_TargetPbgOpenReadMode@th07@@3PBDB=?g_TargetPbgOpenReadMode@th07@@3PBDB",
+]
 
 [[units.pbg-file.functions]]
 address = "0x0045E590"

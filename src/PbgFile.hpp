@@ -22,6 +22,14 @@ class IPbgFile
     virtual ~IPbgFile()
     {
     }
+
+    // Archive parsing calls this small non-virtual helper.  VC7 inlines it
+    // into the target parser while retaining the receiver homes used by the
+    // virtual Read call.
+    u32 ReadInt(i32 *outValue)
+    {
+        return Read(outValue, 4);
+    }
 };
 
 class CPbgFile : public IPbgFile

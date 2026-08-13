@@ -110,6 +110,116 @@ char *PbgArchive::CopyFileName(const char *filename)
     return copy;
 }
 
+#pragma var_order(entryBuffer, decompressedSize, magic, size, fileTableOffset, fileTableBuffer)
+bool PbgArchive::ParseHeader(const char *filename)
+{
+    HGLOBAL entryBuffer;
+    u32 decompressedSize;
+    i32 magic;
+    u32 size;
+    u32 fileTableOffset;
+    HGLOBAL fileTableBuffer;
+
+    fileTableBuffer = NULL;
+    entryBuffer = NULL;
+
+    if (m_file == NULL)
+    {
+        return false;
+    }
+    if (!m_file->Open(filename, g_TargetPbgOpenReadMode))
+    {
+        goto parseError;
+    }
+    if (m_file->ReadInt(&magic) == 0)
+    {
+        goto parseError;
+    }
+    if (magic != 0x34474250)
+    {
+        goto parseError;
+    }
+    if (m_file->ReadInt(&m_entryCount) == 0)
+    {
+        goto parseError;
+    }
+    if (m_entryCount <= 0)
+    {
+        goto parseError;
+    }
+
+    size = m_file->GetSize();
+    if (m_file->ReadInt((i32 *)&fileTableOffset) == 0)
+    {
+        goto parseError;
+    }
+    if (fileTableOffset >= size)
+    {
+        goto parseError;
+    }
+    size -= fileTableOffset;
+    if (m_file->ReadInt((i32 *)&decompressedSize) == 0)
+    {
+        goto parseError;
+    }
+
+    m_file->Seek(fileTableOffset, g_TargetPbgSeekBegin);
+    fileTableBuffer = GlobalAlloc(0, size);
+    if (fileTableBuffer == NULL)
+    {
+        goto parseError;
+    }
+    if (m_file->Read(fileTableBuffer, size) == 0)
+    {
+        goto parseError;
+    }
+
+    entryBuffer = LzssDecode(fileTableBuffer, size, NULL, decompressedSize);
+    if (entryBuffer == NULL)
+    {
+        goto parseError;
+    }
+    m_entries = AllocEntries(entryBuffer, m_entryCount, fileTableOffset);
+    if (m_entries == NULL)
+    {
+        goto parseError;
+    }
+
+    if (fileTableBuffer != NULL)
+    {
+        GlobalFree(fileTableBuffer);
+        fileTableBuffer = NULL;
+    }
+    if (entryBuffer != NULL)
+    {
+        GlobalFree(entryBuffer);
+        entryBuffer = NULL;
+    }
+    return true;
+
+parseError:
+    if (fileTableBuffer != NULL)
+    {
+        GlobalFree(fileTableBuffer);
+        fileTableBuffer = NULL;
+    }
+    if (entryBuffer != NULL)
+    {
+        GlobalFree(entryBuffer);
+        entryBuffer = NULL;
+    }
+    if (m_file != NULL)
+    {
+        delete m_file;
+        m_file = NULL;
+    }
+    DebugPrint("\203\164\203\100\203\103\203\213 %s \202\314\203\111\201\133\203\166\203\223\222\206\202\311\203\107\203\211\201\133\202\252\224\255\220\266\202\265\202\334\202\265\202\275\015\012", filename);
+    while (false)
+    {
+    }
+    return false;
+}
+
 #pragma var_order(entry, decompressedSize, decompressedData, compressedData, compressedSize)
 void *PbgArchive::ReadDecompressEntry(const char *filename, void *outBuffer)
 {

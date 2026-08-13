@@ -38,6 +38,7 @@ class PbgArchive
     PbgArchiveEntry *FindEntry(const char *filename);
     char *CopyFileName(const char *filename);
     bool ParseHeader(const char *filename);
+    PbgArchiveEntry *AllocEntries(void *entryBuffer, i32 count, u32 dataOffset);
     void *ReadDecompressEntry(const char *filename, void *outBuffer);
 
   private:

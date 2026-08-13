@@ -21,6 +21,7 @@ $L54536,0x0048C438,b814a84900e92430ffff,0x0,Direct target EH handler thunk refer
 ??_C@_0BG@HINDPDNP@info?5?3?5?$CFs?5not?5found?$AN?6?$AA@,0x004950E8,696e666f203a202573206e6f7420666f756e640d0a00,0x0,Target PbgArchive Load not-found diagnostic literal,literal
 ?g_TargetPbgOpenReadMode@th07@@3PBDB,0x0049EA70,44524900,0x0,Target PbgArchive ReadDecompressEntry read-mode pointer global whose target storage points at the observed r literal,literal
 pbg_archive_load_eh_handler,0x0048C4FB,b8d0a84900e9612fffff,0x0,Direct target EH handler thunk referenced by PbgArchive Load,address
+??_C@_0DB@OGAANPCC@?$IDt?$ID?$EA?$IDC?$ID?$IL?5?$CFs?5?$IC?L?$IDI?$IB?$FL?$IDv?$ID?$JD?$JC?$IG?$IC?I?$IDG?$ID?$IJ?$IB?$FL@,0x00495084,837483408343838b2025732082cc8349815b83768393928682c983478389815b82aa94ad90b682b582dc82b582bd0d0a00,0x0,Target CP932 archive-corruption diagnostic literal passed by PbgArchive ParseHeader,literal
 ??_C@_0BC@MEMJKKEL@info?5?3?5?$CFs?5error?$AN?6?$AA@,0x004950B8,696e666f203a202573206572726f720d0a00,0x0,Target PbgArchive ReadDecompressEntry error diagnostic literal,literal
 ?g_TargetPbgSeekBegin@th07@@3IA,0x00495120,00000000,0x0,Direct target zero origin loaded before CPbgFile ReadWholeFile restore seeks,literal
 _g_FormatInfoArray,0x0049ED98,16000000,0x0,Direct target table bytes and IDA xref from TextHelper GetFormatInfo,literal
