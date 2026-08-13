@@ -8,7 +8,15 @@ extern i32 g_ReplayInputPending;
 extern u32 g_ReplayInputFlags;
 extern u8 g_ReplayInputMode;
 
+struct ReplayInputGuiState {
+    u8 unknown0000[0x209B0];
+    u8 restartReady;
+};
+
 struct ReplayInputGui {
+    u8 unknown00[8];
+    ReplayInputGuiState *state;
+
     i32 IsBombInputBlocked();
     i32 IsRestartReady();
 };
@@ -19,6 +27,11 @@ struct ReplayInputUi {
 
 extern ReplayInputGui g_ReplayInputGui;
 extern ReplayInputUi g_ReplayInputUi;
+
+i32 ReplayInputGui::IsRestartReady()
+{
+    return (i32)state->restartReady;
+}
 
 struct ReplayInput {
     i32 frameCounter;

@@ -2361,6 +2361,10 @@ dir32_targets = [
   "?g_ReplayInputUi@th07@@3UReplayInputUi@1@A=spell_ui_9A9B00",
 ]
 
+[[units.replay-input.functions]]
+address = "0x00427BE2"
+symbol_base = "?IsRestartReady@ReplayInputGui@th07@@QAEHXZ"
+
 [units.player-lifecycle-callbacks]
 kind = "probe"
 source = "src/PlayerLifecycleCallbacks.cpp"
