@@ -117,7 +117,7 @@ struct PlayerBombOverlay {
     }
 
     PlayerBombOverlay *Initialize();
-    i32 RegisterBombCallbacks();
+    static i32 __fastcall AddedCallback(PlayerBombOverlay *player);
     void BeginBomb();
     void UpdateBomb();
     i32 DrawBomb();
@@ -135,6 +135,11 @@ struct PlayerBombOverlay {
     void SetBombItemState(i32 state);
     void SetBombEffectTimer(i32 timer);
     void DrawPlayerBullets();
+};
+
+struct PlayerBombBossUiSlot {
+    i16 value;
+    u8 unknown02[0x24A];
 };
 
 typedef char PlayerBombAnmVmSizeMustMatch[(sizeof(PlayerBombAnmVm) == 0x24C) ? 1 : -1];
@@ -209,6 +214,11 @@ struct PlayerBombAnmManager {
     void DrawPlayer(void *player);
     void DrawShadow(void *vm);
 };
+
+static __forceinline void SetAndExecuteScript(PlayerBombAnmManager *anmManager, void *vm, i32 script)
+{
+    anmManager->SetAndExecute(vm, anmManager->scripts[script]);
+}
 
 struct PlayerBombItemManager {
     void RemoveAllItems();
@@ -285,12 +295,14 @@ extern PlayerBombGrazeState g_PlayerBombGrazeState626270;
 extern PlayerBombGuiState g_PlayerBombGuiState49FBF0;
 extern PlayerBombDrawState g_PlayerBombDrawState1347B00;
 extern u8 g_PlayerShotType;
-extern i32 g_PlayerGameMode;
+extern u8 g_PlayerCharacter;
+extern i32 g_PlayerSupervisorState;
 extern f32 g_PlayerInitialX;
 extern f32 g_PlayerInitialY;
 extern const char *g_PlayerUnfocusedShtFiles[6];
 extern const char *g_PlayerFocusedShtFiles[6];
-extern i16 g_TargetBossUi134DB5A[];
+extern PlayerBombBossUiSlot g_TargetBossUi134DB5A[];
+extern PlayerBombOverlay g_Player;
 extern i16 g_PlayerBombHudActive;
 extern i32 g_PlayerBombHudTimer;
 extern i32 g_BombEffectState0;
@@ -300,6 +312,11 @@ extern i32 g_BombEffectState3;
 extern EffectManager g_EffectManager;
 extern GameManager *g_GameManager;
 extern SoundPlayer g_SoundPlayer;
+
+static __forceinline void SetBossUiActive(i32 index)
+{
+    g_TargetBossUi134DB5A[index].value = 2;
+}
 
 #pragma var_order(pointCount, pointStride, point, pointEnd, spriteBegin, spriteCount, spriteStride, sprite, workTimer)
 PlayerBombWorkItem *PlayerBombWorkItem::Initialize()
@@ -440,128 +457,113 @@ PlayerBombOverlay *PlayerBombOverlay::Initialize()
 }
 
 #pragma var_order(index, bullet, anmManager, playerTimer, firstSecondaryVm, firstSecondaryAnmManager, secondSecondaryVm, secondSecondaryAnmManager, bombCooldown)
-i32 PlayerBombOverlay::RegisterBombCallbacks()
+i32 __fastcall PlayerBombOverlay::AddedCallback(PlayerBombOverlay *player)
 {
-    if (reinterpret_cast<PlayerBombShtSlot *>(reinterpret_cast<u8 *>(this) + 0xB7E70)
+    if (reinterpret_cast<PlayerBombShtSlot *>(reinterpret_cast<u8 *>(player) + 0xB7E70)
             ->Load(g_PlayerUnfocusedShtFiles[g_PlayerShotType])) {
         return -1;
     }
-    if (reinterpret_cast<PlayerBombShtSlot *>(reinterpret_cast<u8 *>(this) + 0xB7E74)
+    if (reinterpret_cast<PlayerBombShtSlot *>(reinterpret_cast<u8 *>(player) + 0xB7E74)
             ->Load(g_PlayerFocusedShtFiles[g_PlayerShotType])) {
         return -1;
     }
 
-    {
-        i32 loadPlayerAnm;
-        if (g_PlayerGameMode != 3 && g_PlayerGameMode != 11 && g_PlayerGameMode != 12) {
-            loadPlayerAnm = 1;
-        } else {
-            loadPlayerAnm = 0;
-        }
-        if (loadPlayerAnm) {
-            u8 selectedShot = g_PlayerShotType;
-
-            if (selectedShot == 0) {
+    if ((g_PlayerSupervisorState != 3 && g_PlayerSupervisorState != 11
+         && g_PlayerSupervisorState != 12) ? 1 : 0) {
+        switch (g_PlayerCharacter) {
+            case 0:
                 if (g_PlayerBombAnmManager->LoadFile(10, "data/player00.anm", 1024)) {
                     return -1;
                 }
-            } else if (selectedShot == 1) {
+                break;
+            case 1:
                 if (g_PlayerBombAnmManager->LoadFile(10, "data/player01.anm", 1024)) {
                     return -1;
                 }
-            } else if (selectedShot == 2) {
+                break;
+            case 2:
                 if (g_PlayerBombAnmManager->LoadFile(10, "data/player02.anm", 1024)) {
                     return -1;
                 }
-            }
+                break;
         }
     }
 
     PlayerBombAnmManager *anmManager = g_PlayerBombAnmManager;
-    *reinterpret_cast<i16 *>(reinterpret_cast<u8 *>(this) + 0x1D8) = 1024;
-    anmManager->SetAndExecute(this, anmManager->scripts[1024]);
+    *reinterpret_cast<i16 *>(reinterpret_cast<u8 *>(player) + 0x1D8) = 1024;
+    SetAndExecuteScript(anmManager, player, 1024);
 
-    *reinterpret_cast<f32 *>(reinterpret_cast<u8 *>(this) + 0x930) = g_PlayerInitialX / 2.0f;
-    *reinterpret_cast<f32 *>(reinterpret_cast<u8 *>(this) + 0x934) = g_PlayerInitialY - 64.0f;
-    *reinterpret_cast<f32 *>(reinterpret_cast<u8 *>(this) + 0x938) = 0.49f;
-    *reinterpret_cast<f32 *>(reinterpret_cast<u8 *>(this) + 0x9BC) = 0.49f;
-    *reinterpret_cast<f32 *>(reinterpret_cast<u8 *>(this) + 0x9C8) = 0.49f;
+    *reinterpret_cast<f32 *>(reinterpret_cast<u8 *>(player) + 0x930) = g_PlayerInitialX / 2.0f;
+    *reinterpret_cast<f32 *>(reinterpret_cast<u8 *>(player) + 0x934) = g_PlayerInitialY - 64.0f;
+    *reinterpret_cast<f32 *>(reinterpret_cast<u8 *>(player) + 0x938) = 0.49f;
+    *reinterpret_cast<f32 *>(reinterpret_cast<u8 *>(player) + 0x9BC) = 0.49f;
+    *reinterpret_cast<f32 *>(reinterpret_cast<u8 *>(player) + 0x9C8) = 0.49f;
 
     i32 index;
     for (index = 0; index < 128; ++index) {
-        *reinterpret_cast<i32 *>(reinterpret_cast<u8 *>(this) + 0x9E8 + index * 0x20) = 0;
+        *reinterpret_cast<i32 *>(reinterpret_cast<u8 *>(player) + 0x9E8 + index * 0x20) = 0;
     }
 
-    *reinterpret_cast<f32 *>(reinterpret_cast<u8 *>(this) + 0x994) = g_PlayerBombScreen->width / 2.0f;
-    *reinterpret_cast<f32 *>(reinterpret_cast<u8 *>(this) + 0x990) = *reinterpret_cast<f32 *>(reinterpret_cast<u8 *>(this) + 0x994);
-    *reinterpret_cast<f32 *>(reinterpret_cast<u8 *>(this) + 0x998) = 5.0f;
-    *reinterpret_cast<f32 *>(reinterpret_cast<u8 *>(this) + 0x9A0) = g_PlayerBombScreen->height / 2.0f;
-    *reinterpret_cast<f32 *>(reinterpret_cast<u8 *>(this) + 0x99C) = *reinterpret_cast<f32 *>(reinterpret_cast<u8 *>(this) + 0x9A0);
-    *reinterpret_cast<f32 *>(reinterpret_cast<u8 *>(this) + 0x9A4) = 5.0f;
-    *reinterpret_cast<f32 *>(reinterpret_cast<u8 *>(this) + 0x9A8) = 12.0f;
-    *reinterpret_cast<f32 *>(reinterpret_cast<u8 *>(this) + 0x9AC) = 12.0f;
-    *reinterpret_cast<f32 *>(reinterpret_cast<u8 *>(this) + 0x9B0) = 5.0f;
+    *reinterpret_cast<f32 *>(reinterpret_cast<u8 *>(player) + 0x994) = g_PlayerBombScreen->width / 2.0f;
+    *reinterpret_cast<f32 *>(reinterpret_cast<u8 *>(player) + 0x990) = *reinterpret_cast<f32 *>(reinterpret_cast<u8 *>(player) + 0x994);
+    *reinterpret_cast<f32 *>(reinterpret_cast<u8 *>(player) + 0x998) = 5.0f;
+    *reinterpret_cast<f32 *>(reinterpret_cast<u8 *>(player) + 0x9A0) = g_PlayerBombScreen->height / 2.0f;
+    *reinterpret_cast<f32 *>(reinterpret_cast<u8 *>(player) + 0x99C) = *reinterpret_cast<f32 *>(reinterpret_cast<u8 *>(player) + 0x9A0);
+    *reinterpret_cast<f32 *>(reinterpret_cast<u8 *>(player) + 0x9A4) = 5.0f;
+    *reinterpret_cast<f32 *>(reinterpret_cast<u8 *>(player) + 0x9A8) = 12.0f;
+    *reinterpret_cast<f32 *>(reinterpret_cast<u8 *>(player) + 0x9AC) = 12.0f;
+    *reinterpret_cast<f32 *>(reinterpret_cast<u8 *>(player) + 0x9B0) = 5.0f;
 
-    *reinterpret_cast<i32 *>(reinterpret_cast<u8 *>(this) + 0x241C) = 0;
-    *reinterpret_cast<i8 *>(reinterpret_cast<u8 *>(this) + 0x2408) = 1;
-    PlayerBombTimer *playerTimer = reinterpret_cast<PlayerBombTimer *>(reinterpret_cast<u8 *>(this) + 0x16A00);
+    *reinterpret_cast<i32 *>(reinterpret_cast<u8 *>(player) + 0x241C) = 0;
+    *reinterpret_cast<i8 *>(reinterpret_cast<u8 *>(player) + 0x2408) = 1;
+    PlayerBombTimer *playerTimer = reinterpret_cast<PlayerBombTimer *>(reinterpret_cast<u8 *>(player) + 0x16A00);
     playerTimer->current = 120;
     playerTimer->fraction = 0.0f;
     playerTimer->previous = -999;
-    *reinterpret_cast<i8 *>(reinterpret_cast<u8 *>(this) + 0x240A) = 1;
+    *reinterpret_cast<i8 *>(reinterpret_cast<u8 *>(player) + 0x240A) = 1;
 
-    u8 *firstSecondaryVm = reinterpret_cast<u8 *>(this) + 0x24C;
+    u8 *firstSecondaryVm = reinterpret_cast<u8 *>(player) + 0x24C;
     PlayerBombAnmManager *firstSecondaryAnmManager = g_PlayerBombAnmManager;
     *reinterpret_cast<i16 *>(firstSecondaryVm + 0x1D8) = 1152;
-    firstSecondaryAnmManager->SetAndExecute(firstSecondaryVm, firstSecondaryAnmManager->scripts[1152]);
-    u8 *secondSecondaryVm = reinterpret_cast<u8 *>(this) + 0x498;
+    SetAndExecuteScript(firstSecondaryAnmManager, firstSecondaryVm, 1152);
+    u8 *secondSecondaryVm = reinterpret_cast<u8 *>(player) + 0x498;
     PlayerBombAnmManager *secondSecondaryAnmManager = g_PlayerBombAnmManager;
     *reinterpret_cast<i16 *>(secondSecondaryVm + 0x1D8) = 1153;
-    secondSecondaryAnmManager->SetAndExecute(secondSecondaryVm, secondSecondaryAnmManager->scripts[1153]);
+    SetAndExecuteScript(secondSecondaryAnmManager, secondSecondaryVm, 1153);
 
-    u8 *bullet = reinterpret_cast<u8 *>(this) + 0x2444;
+    u8 *bullet = reinterpret_cast<u8 *>(player) + 0x2444;
     for (index = 0; index < 96; ++index, bullet += 0x364) {
         *reinterpret_cast<i16 *>(bullet + 0x34A) = 0;
     }
 
-    PlayerBombTimer *bombCooldown = reinterpret_cast<PlayerBombTimer *>(reinterpret_cast<u8 *>(this) + 0x169F4);
+    PlayerBombTimer *bombCooldown = reinterpret_cast<PlayerBombTimer *>(reinterpret_cast<u8 *>(player) + 0x169F4);
     bombCooldown->current = -1;
     bombCooldown->fraction = 0.0f;
     bombCooldown->previous = -999;
 
-    BombState()->calculateUnfocused = g_PlayerBombCallbacks[g_PlayerShotType][0];
-    BombState()->drawUnfocused = g_PlayerBombCallbacks[g_PlayerShotType][1];
-    BombState()->calculateFocused = g_PlayerBombCallbacks[g_PlayerShotType][2];
-    BombState()->drawFocused = g_PlayerBombCallbacks[g_PlayerShotType][3];
-    BombState()->active = 0;
-    rotationAngle = -1.57079637f;
-    *reinterpret_cast<f32 *>(reinterpret_cast<u8 *>(this) + 0x23F4) = 1.0f;
-    *reinterpret_cast<f32 *>(reinterpret_cast<u8 *>(this) + 0x23F0) = 1.0f;
-    *reinterpret_cast<i32 *>(reinterpret_cast<u8 *>(this) + 0x23F8) = g_PlayerBombScreen->bombCapacity;
+    player->BombState()->calculateUnfocused = g_PlayerBombCallbacks[g_PlayerShotType][0];
+    player->BombState()->drawUnfocused = g_PlayerBombCallbacks[g_PlayerShotType][1];
+    player->BombState()->calculateFocused = g_PlayerBombCallbacks[g_PlayerShotType][2];
+    player->BombState()->drawFocused = g_PlayerBombCallbacks[g_PlayerShotType][3];
+    player->BombState()->active = 0;
+    player->rotationAngle = -1.57079637f;
+    *reinterpret_cast<f32 *>(reinterpret_cast<u8 *>(player) + 0x23F4) = 1.0f;
+    *reinterpret_cast<f32 *>(reinterpret_cast<u8 *>(player) + 0x23F0) = 1.0f;
+    *reinterpret_cast<i32 *>(reinterpret_cast<u8 *>(player) + 0x23F8) = g_PlayerBombScreen->bombCapacity;
 
-    {
-        i32 showBombHud;
-        if (g_PlayerGameMode != 3 && g_PlayerGameMode != 11 && g_PlayerGameMode != 12) {
-            showBombHud = 1;
-        } else {
-            showBombHud = 0;
-        }
-        if (showBombHud) {
-            g_PlayerBombHudActive = 1;
-            g_PlayerBombHudTimer = 1;
-        }
+    if ((g_PlayerSupervisorState != 3 && g_PlayerSupervisorState != 11
+         && g_PlayerSupervisorState != 12) ? 1 : 0) {
+        g_PlayerBombHudActive = 1;
+        g_PlayerBombHudTimer = 1;
     }
 
-    index = 0;
-    g_TargetBossUi134DB5A[index * 294] = 2;
-    index = 1;
-    g_TargetBossUi134DB5A[index * 294] = 2;
-    index = 2;
-    g_TargetBossUi134DB5A[index * 294] = 2;
+    SetBossUiActive(0);
+    SetBossUiActive(1);
+    SetBossUiActive(2);
 
     if (g_BombScore >= g_PlayerBombResources->scoreFloor + 50000) {
         g_BombScore = g_PlayerBombResources->scoreFloor + 50000;
-        FinishDeathBomb();
+        g_Player.FinishDeathBomb();
     }
     return 0;
 }

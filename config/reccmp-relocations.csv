@@ -236,6 +236,7 @@ player_bomb_hide_draw,0x0062F64D,00,0x0,Target-observed byte suppressing Player 
 player_bomb_draw_timer,0x004D44E0,00000000,0x0,Target-observed flash timer read by Player bomb drawing,literal
 player_bomb_draw_state,0x01347B00,00000000,0x0,Target-observed draw-state receiver used for bomb flash color,literal
 player_bomb_shot_type,0x0062F647,00,0x0,Target-observed character and shot selector byte,literal
+player_bomb_character,0x0062F645,00,0x0,Target-observed character selector byte used for Player ANM dispatch,literal
 player_bomb_game_mode,0x0062F645,00,0x0,Target-observed game-mode selector byte used by Player resource loading,literal
 player_bomb_unfocused_sht,0x0049F530,b46b4900,0x0,Target-observed non-uniform unfocused shot-file pointer table,address
 player_bomb_focused_sht,0x0049F548,506b4900,0x0,Target-observed non-uniform focused shot-file pointer table,address

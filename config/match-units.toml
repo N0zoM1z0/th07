@@ -777,7 +777,7 @@ dir32_targets = [
 
 [[units.player-bomb.functions]]
 address = "0x004423E0"
-symbol_base = "?RegisterBombCallbacks@PlayerBombOverlay@th07@@QAEHXZ"
+symbol_base = "?AddedCallback@PlayerBombOverlay@th07@@SIHPAU12@@Z"
 rel32_targets = [
   "?Load@PlayerBombShtSlot@th07@@QAIHPBD@Z=0x00442B70",
   "?LoadFile@PlayerBombAnmManager@th07@@QAEHHPBDH@Z=0x0044DF90",
@@ -786,9 +786,10 @@ rel32_targets = [
 ]
 dir32_targets = [
   "?g_PlayerShotType@th07@@3EA=player_bomb_shot_type",
+  "?g_PlayerCharacter@th07@@3EA=player_bomb_character",
   "?g_PlayerUnfocusedShtFiles@th07@@3PAPBDA=player_bomb_unfocused_sht",
   "?g_PlayerFocusedShtFiles@th07@@3PAPBDA=player_bomb_focused_sht",
-  "?g_PlayerGameMode@th07@@3HA=player_bomb_game_mode",
+  "?g_PlayerSupervisorState@th07@@3HA=?g_SupervisorState@th07@@3HA",
   "??_C@_0BC@NMOFKGIP@data?1player00?4anm?$AA@=player_bomb_anm_00",
   "??_C@_0BC@BHLJHFCK@data?1player01?4anm?$AA@=player_bomb_anm_01",
   "??_C@_0BC@JBCNAHIE@data?1player02?4anm?$AA@=player_bomb_anm_02",
@@ -800,7 +801,8 @@ dir32_targets = [
   "?g_PlayerBombCallbacks@th07@@3PAY03P6IXPAUPlayerBombOverlay@1@@ZA=?g_PlayerBombCallbacks@th07@@3PAY03P6IXPAUPlayerBombOverlay@1@@ZA",
   "?g_PlayerBombHudActive@th07@@3FA=player_bomb_hud_active",
   "?g_PlayerBombHudTimer@th07@@3HA=player_bomb_hud_timer",
-  "?g_TargetBossUi134DB5A@th07@@3PAFA=ecl_boss_ui_134DB5A",
+  "?g_TargetBossUi134DB5A@th07@@3PAUPlayerBombBossUiSlot@1@A=ecl_boss_ui_134DB5A",
+  "?g_Player@th07@@3UPlayerBombOverlay@1@A=bullet_update_player",
   "?g_PlayerBombResources@th07@@3PAUPlayerBombResourceState@1@A=player_bomb_resources",
   "?g_BombScore@th07@@3HA=player_bomb_score_register",
   "__real@3f000000=__real@3f000000",
