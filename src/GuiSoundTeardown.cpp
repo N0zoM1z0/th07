@@ -25,4 +25,15 @@ __declspec(naked) i32 GuiSoundTeardown::Destroy()
     }
 }
 
+struct GuiTimerTeardown
+{
+    i32 Target436380();
+    i32 Destroy();
+};
+
+i32 GuiTimerTeardown::Destroy()
+{
+    return Target436380();
+}
+
 } // namespace th07
