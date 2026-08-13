@@ -4,6 +4,7 @@ __imp__CreateDIBSection@24,0x0048D01C,24b30900,0x0,PE import table entry and GDI
 __imp__DeleteObject@4,0x0048D028,fab20900,0x0,PE import table entry and GDI32 DeleteObject import,literal
 __imp__SelectObject@8,0x0048D02C,eab20900,0x0,PE import table entry and GDI32 SelectObject import,literal
 __imp__CreateCompatibleDC@4,0x0048D030,d4b20900,0x0,PE import table entry and GDI32 CreateCompatibleDC import,literal
+__imp__CloseHandle@4,0x0048D068,40af0900,0x0,PE KERNEL32 import table entry for CloseHandle,literal
 _g_FormatInfoArray,0x0049ED98,16000000,0x0,Direct target table bytes and IDA xref from TextHelper GetFormatInfo,literal
 __imp__Sleep@4,0x0048D0B0,8ab00900,0x0,PE KERNEL32 import table entry for Sleep,literal
 __imp__SetTextColor@8,0x0048D014,44b30900,0x0,PE GDI32 import table entry for SetTextColor,literal

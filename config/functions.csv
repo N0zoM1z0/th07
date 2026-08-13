@@ -637,7 +637,7 @@ address,size,span_end,current_name,proposed_name,module,status,match_percent,cal
 0x0045E1F0,17,0x0045E200,unknown_libname_5,WaveFile_get_size,sound,matching,100.00,__thiscall,i32 WaveFile_get_size(WaveFile * this),false,src/WaveFile.cpp,python3 scripts/build.py --unit wave-file --compare --json; strict exact 17/17 target and object SHA 43e665e8b882fde68ac77d1eeda5dc83c975429712f94b4e53e6ecdbd92b314e 2026-08-13,root,TH07 target directly returns i32 at receiver+0x2C. Unique exact TH08 clone 0x004733C0 named CWaveFile GetSize corroborates role.
 0x0045E210,328,0x0045E357,sub_45E210,,,unclassified,0.00,unknown,,false,,,,
 0x0045E360,328,0x0045E4A7,sub_45E360,,,unclassified,0.00,unknown,,false,,,,
-0x0045E4B0,51,0x0045E4E2,sub_45E4B0,,,unclassified,0.00,unknown,,false,,,,
+0x0045E4B0,51,0x0045E4E2,sub_45E4B0,CWaveFile_close,sound,matching,100.00,__thiscall,HRESULT CWaveFile_close(CWaveFile * this),false,src/WaveFileClose.cpp,python3 scripts/build.py --unit wave-file-close --compare --json; strict exact 51/51 target and object SHA bd91ec7a2f3a62b7e7ead4fb8b12ae27d4ba7f82bb68b7ae71f4c2c17e642882 2026-08-13,root,Target checks this+0x78 mode equals 1 then calls KERNEL32 CloseHandle on this+0x8C and writes INVALID_HANDLE_VALUE there; it returns S_OK. Unique TH08 clone identifies CWaveFile Close. Real C++ implementation reproduces target bytes exactly.
 0x0045E4F0,5,0x0045E4F4,sub_45E4F0,,,unclassified,0.00,unknown,,false,,,,
 0x0045E500,20,0x0045E513,sub_45E500,,,unclassified,0.00,unknown,,false,,,,
 0x0045E520,47,0x0045E54E,sub_45E520,,,unclassified,0.00,unknown,,false,,,,
