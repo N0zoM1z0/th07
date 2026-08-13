@@ -1190,6 +1190,39 @@ rel32_targets = [
 ]
 dir32_targets = ["?g_EclManagerSpawn@th07@@3UEclManagerSpawnOverlay@1@A=ecl_manager_1347938"]
 
+[units.enemy-timeline]
+kind = "probe"
+source = "src/EnemyTimeline.cpp"
+object = "build/match-units/EnemyTimeline.obj"
+profile = "vc7-debug-od-no-gs-g6"
+notes = "TH07 target-bounded 13-opcode Enemy timeline lane, corroborated by TH06 RunEclTimeline."
+
+[[units.enemy-timeline.functions]]
+address = "0x0041F6F0"
+symbol_base = "?Run@EnemyTimelineLane@th07@@QAEXXZ"
+rel32_targets = [
+  "?SpawnEnemy@EnemyTimelineManager@th07@@QAEPAUEnemyTimelineEnemy@2@HPAUEnemyTimelineVec3@2@HHHH@Z=0x0041F2E0",
+  "?GetRandomF32@Rng@th07@@QAEMXZ=0x00431900",
+  "?MsgRead@EnemyTimelineGui@th07@@QAEXH@Z=0x00429A36",
+  "?MsgWait@EnemyTimelineGui@th07@@QAEHXZ=0x0042AD29",
+  "?Decrement@ZunTimer@th07@@QAEXH@Z=0x004394C7",
+  "?ApplyPower@EnemyTimelinePowerState@th07@@QAEXXZ=0x004012B0",
+  "?Advance@TimerManager@th07@@QAEXPAHPAM@Z=0x0043958D",
+]
+dir32_targets = [
+  "?g_EnemyTimelineManager@th07@@3UEnemyTimelineManager@1@A=enemy_manager_global",
+  "?g_EnemyTimelineGui@th07@@3UEnemyTimelineGui@1@A=spell_gui_49FBF0",
+  "?g_EnemyTimelineRng@th07@@3VRng@1@A=ecl_rng_49FE20",
+  "?g_EnemyTimelineBosses@th07@@3PAPAUEnemyTimelineEnemy@1@A=spell_bosses_12FE098",
+  "?g_EnemyTimelinePowerState@th07@@3UEnemyTimelinePowerState@1@A=?g_GrazeState@th07@@3UGrazeState@1@A",
+  "?g_EnemyTimelineGameManager@th07@@3PAUEnemyTimelineGameManager@1@A=?g_GameManager@th07@@3PAUGameManager@1@A",
+  "?g_EnemyTimelineTimerManager@th07@@3UTimerManager@1@A=bullet_update_timer_manager",
+  "?g_EnemyTimelineGameMode@th07@@3EA=player_bomb_game_mode",
+  "?g_EnemyTimelineArea@th07@@3UEnemyTimelineArea@1@A=player_update_bound_width",
+  "?g_EnemyTimelineRandomSentinel@th07@@3MB=enemy_timeline_real_neg990",
+  "__real@44480000=enemy_timeline_real_800",
+]
+
 [units.anm-triangle-fan]
 kind = "probe"
 source = "src/AnmTriangleFan.cpp"

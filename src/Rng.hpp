@@ -12,6 +12,11 @@ class Rng
     u32 GetRandomU32();
     f32 GetRandomF32();
 
+    f32 GetRandomF32InRange(f32 range)
+    {
+        return GetRandomF32() * range;
+    }
+
   private:
     u16 seed;
     u16 seedBackup;

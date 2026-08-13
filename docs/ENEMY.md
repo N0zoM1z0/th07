@@ -15,6 +15,7 @@ stable layer below the large manager callbacks:
 | `0x0041F2E0` | allocate and initialize an enemy slot | 327 |
 | `0x0041F580` | advance attached enemy effects | 240 |
 | `0x0041F670` | release attached enemy effects | 115 |
+| `0x0041F6F0` | run one 13-opcode enemy timeline lane | 1599 |
 | `0x0041FD70` | handle enemy life thresholds | 516 |
 | `0x0041FF80` | handle enemy timer/spell threshold | 847 |
 | `0x004202D0` | despawn and unlink an enemy | 210 |
@@ -61,7 +62,7 @@ the large body should only be added after its remaining TH07 callees and local
 lifetimes are bounded; an empty or behaviorally incomplete callback would hide
 missing game logic and is forbidden by the reconstruction rules.
 
-Three large update dependencies are now bounded. `0x0041F6F0` runs one 16-byte
+Three large update dependencies are now strict exact matches. `0x0041F6F0` runs one 16-byte
 timeline lane with a `0x84` frame. Its 13 target opcodes cover enemy spawning
 (including randomized coordinates selected by the `-990.0` sentinel), message
 start/wait, boss interrupts, player power changes, and boss-slot waits.
@@ -78,8 +79,7 @@ roles, but the listed layout and branches are TH07 observations.
 The highest-leverage sequence is:
 
 1. finish the compiler shaping of `0x00420490`;
-2. recover the still-unmatched effect/death helpers called around
-   `0x0041F6F0`, `0x0041FD70`, and `0x0041FF80`;
+2. recover the still-unmatched effect/death helpers called by the update body;
 3. implement the update body by its target basic-block phases while preserving
    the `0x210` frame and VC7 local allocation;
 4. use the same exact-helper-first approach for the render body at

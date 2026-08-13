@@ -122,7 +122,7 @@ ecl_difficulty_mask,0x00626284,00,0x0,Target-observed ECL difficulty bitmask sto
 ecl_manager_1347938,0x01347938,00000000,0x0,Target-observed EclManager storage used by RunEcl interrupt dispatch,literal
 player_update_bound_left,0x0062F874,00000000,0x0,Target-observed player movement-area left edge storage,literal
 player_update_bound_top,0x0062F878,00000000,0x0,Target-observed player movement-area top edge storage,literal
-player_update_bound_width,0x0062F87C,00000000,0x0,Target-observed player movement-area width storage,literal
+player_update_bound_width,0x0062F87C,00000000,0x0;0x4,Target-observed player movement-area width/height storage,address
 player_update_bound_height,0x0062F880,00000000,0x0,Target-observed player movement-area height storage,literal
 player_update_double_24,0x00498AE8,0000000000003840,0x0,Exact target double 24 used by player orb trigonometry,literal
 player_update_real_neg_0_94247782,0x00498D08,3a4671bf,0x0,Exact target player rotation upper clamp,literal
@@ -147,7 +147,7 @@ timer_flags,0x00575ADC,00000000,0x0,Target-observed scheduler flag storage used 
 timer_real_0_99,0x00498A58,a4707d3f,0x0,Exact target float 0.99 threshold used by core timer arithmetic,literal
 bullet_update_real_255,0x00498AF8,00007f43,0x0,Exact target float 255.0 used by laser alpha ramps,literal
 bullet_update_real_640,0x00498BD8,00002044,0x0,Exact target float 640.0 used by laser offscreen bounds,literal
-spell_gui_49FBF0,0x0049FBF0,00000000,0x0,Target-observed zero-initialized GUI storage used by spell lifecycle calls,literal
+spell_gui_49FBF0,0x0049FBF0,00000000,0x0;0x24,Target-observed zero-initialized GUI storage used by spell lifecycle calls and boss-present byte at +0x24,address
 spell_ui_9A9B00,0x009A9B00,00000000,0x0,Target-observed zero-initialized UI state storage used by spell lifecycle calls,literal
 spell_bullet_manager_62F958,0x0062F958,00000000,0x0,Target-observed BulletManager storage used for spell-end cancellation,literal
 spell_sound_4BA0D8,0x004BA0D8,00000000,0x0,Target-observed sound storage used by spell-end audio,literal
@@ -495,6 +495,8 @@ enemy_callback_pool_9aea50,0x009AEA50,00000000,0x0,Target zero-initialized Enemy
 enemy_combat_template_9ac6dc,0x009AC6DC,00000000,0x0,Target zero-initialized 0xD4-byte Enemy combat reset template,literal
 enemy_spell_seconds_49fc0c,0x0049FC0C,00000000,0x0,Target zero-initialized boss spell seconds display value,literal
 enemy_real_0_25,0x00498CC4,0000803e,0x0,Target float 0.25 rank decrease factor used by Enemy timer callback,literal
+enemy_timeline_real_neg990,0x00498B44,008077c4,0x0,Target float -990 sentinel used for randomized timeline coordinates,literal
+enemy_timeline_real_800,0x00498D64,00004844,0x0,Target float 800 random depth range used by timeline spawns,literal
 ecl_real_10018,0x00498D5C,00881c46,0x0,Target-observed float 10018.0 constant used by the ECL dispatcher,literal
 ecl_real_10019,0x00498D58,008c1c46,0x0,Target-observed float 10019.0 constant used by the ECL dispatcher,literal
 ecl_real_10020,0x00498D54,00901c46,0x0,Target-observed float 10020.0 constant used by the ECL dispatcher,literal
