@@ -660,6 +660,11 @@ symbol_base = "?Target41AE90@th07@@YAXXZ"
 dir32_targets = ["?g_TargetResetSlots12FE26C@th07@@3PAUEclResetSlot41AE90@1@A=ecl_reset_slots_12FE26c"]
 
 [[units.ecl-run.functions]]
+address = "0x004279A0"
+symbol_base = "?QueueStateCommand@EclOp121Bullet@th07@@QAEXHHHMM@Z"
+rel32_targets = ["?ReserveStateCommand@EclOp121Bullet@th07@@QAEPAUEclOp121StateCommand@2@HHH@Z=0x004278B0"]
+
+[[units.ecl-run.functions]]
 address = "0x00418EB0"
 symbol_base = "?EclOp121ScaleBullets@th07@@YIXPAUEnemyOverlay@EclOperands@1@PBUEclOp121InstructionOverlay@1@@Z"
 rel32_targets = [

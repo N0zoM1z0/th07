@@ -214,6 +214,15 @@ struct EclOp121BulletCommand
 };
 typedef char EclOp121BulletCommand_size[sizeof(EclOp121BulletCommand) == 0x18 ? 1 : -1];
 
+struct EclOp121StateCommand
+{
+    f32 parameter;
+    f32 angle;
+    i32 duration;
+    u8 unknown0C[4];
+};
+typedef char EclOp121StateCommand_size[sizeof(EclOp121StateCommand) == 0x10 ? 1 : -1];
+
 struct EclOp121Bullet
 {
     union
@@ -228,8 +237,8 @@ struct EclOp121Bullet
 
     void QueueRotationCommand(f32 speedDelta, f32 unusedDelta, i32 duration,
                               f32 angularStep, f32 interval);
-    void QueueStateCommand(i32 unknown0, i32 unknown1, i32 duration,
-                           f32 parameter, f32 angle);
+    EclOp121StateCommand *ReserveStateCommand(i32 unknown0, i32 unknown1, i32 size);
+    void QueueStateCommand(i32 unknown0, i32 unknown1, i32 duration, f32 parameter, f32 angle);
     __forceinline EclOp121BulletCommand &CommandAt(i32 index)
     {
         return commands[index];
@@ -282,6 +291,17 @@ extern EclOp121AnmManager *g_TargetAnmManager4B9E44;
 extern f32 g_TargetFrameMultiplier575AC8;
 extern f32 g_TargetRealOne498A54;
 extern EclOp121TimerManager g_TargetTimerManager575950;
+
+void EclOp121Bullet::QueueStateCommand(i32 unknown0, i32 unknown1, i32 duration,
+                                        f32 parameter, f32 angle)
+{
+    EclOp121StateCommand *command;
+
+    command = ReserveStateCommand(unknown0, unknown1, 0x10);
+    command->duration = duration;
+    command->parameter = parameter;
+    command->angle = angle;
+}
 
 void __fastcall Target44B310(i32 first, i32 second, i32 third, i32 fourth, i32 fifth);
 

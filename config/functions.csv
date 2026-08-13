@@ -201,7 +201,7 @@ address,size,span_end,current_name,proposed_name,module,status,match_percent,cal
 0x004278B0,91,0x0042790A,sub_4278B0,,,unclassified,0.00,unknown,,false,,,,
 0x00427910,73,0x00427958,sub_427910,,,unclassified,0.00,unknown,,false,,,,
 0x00427960,62,0x0042799D,sub_427960,,,unclassified,0.00,unknown,,false,,,,
-0x004279A0,62,0x004279DD,sub_4279A0,,,unclassified,0.00,unknown,,false,,,,
+0x004279A0,62,0x004279DD,sub_4279A0,Bullet_queue_state_command,bullet,matching,100.00,__thiscall,void Bullet_queue_state_command(EclOp121Bullet * this; i32 unknown0; i32 unknown1; i32 duration; f32 parameter; f32 angle),false,src/EclRun.cpp,python3 scripts/build.py --unit ecl-run --compare --json; strict exact 62/62 target and object SHA 90af78169a13e394273a916951ef934f63804cf2f18a2ae8041749e31284e846 2026-08-13,root,Provisional behavior name. Target establishes member ABI five stack arguments and command entry layout; EAX retains the entry pointer but no observed caller consumes it so the exact C++ ABI is modeled as void. Allocator semantics remain unresolved.
 0x004279E0,62,0x00427A1D,sub_4279E0,,,unclassified,0.00,unknown,,false,,,,
 0x00427A20,74,0x00427A69,sub_427A20,,,unclassified,0.00,unknown,,false,,,,
 0x00427A70,62,0x00427AAD,sub_427A70,,,unclassified,0.00,unknown,,false,,,,
