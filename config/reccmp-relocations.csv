@@ -15,6 +15,7 @@ __imp__CreateFileA@28,0x0048D04C,daae0900,0x0,PE KERNEL32 import table entry for
 __imp__GetModuleFileNameA@12,0x0048D080,b4af0900,0x0,PE KERNEL32 import table entry for GetModuleFileNameA,literal
 __imp__DeleteFileA@4,0x0048D0B8,a0b00900,0x0,PE KERNEL32 import table entry for DeleteFileA,literal
 ??_C@_00CNPNBAHC@?$AA@,0x00496C1E,00,0x0,Target empty-string literal loaded by CPbgFile GetFullFilePath before the no-backslash fallback store,literal
+$L54536,0x0048C438,b814a84900e92430ffff,0x0,Direct target EH handler thunk referenced by CPbgFile complete destructor,address
 ?g_TargetPbgSeekBegin@th07@@3IA,0x00495120,00000000,0x0,Direct target zero origin loaded before CPbgFile ReadWholeFile restore seeks,literal
 _g_FormatInfoArray,0x0049ED98,16000000,0x0,Direct target table bytes and IDA xref from TextHelper GetFormatInfo,literal
 __imp__Sleep@4,0x0048D0B0,8ab00900,0x0,PE KERNEL32 import table entry for Sleep,literal

@@ -19,7 +19,9 @@ class IPbgFile
     virtual u32 Tell() = 0;
     virtual u32 GetSize() = 0;
     virtual bool Seek(i32 offset, u32 origin) = 0;
-    virtual ~IPbgFile();
+    virtual ~IPbgFile()
+    {
+    }
 };
 
 class CPbgFile : public IPbgFile
