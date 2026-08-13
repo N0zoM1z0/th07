@@ -151,6 +151,37 @@ extern u8 *g_TargetAnmManager4B9E44;
 extern EnemyOverlay *g_TargetSpellBosses12FE098[8];
 } // namespace SpellLifecycle
 
+struct EclOp121InstructionOverlay
+{
+    u8 raw00[0x10];
+    i32 bossIndex;
+};
+
+struct EclOp121MovementBits
+{
+    u8 copyTransform : 1;
+    u8 unknown : 7;
+};
+
+#pragma var_order(bossIndex)
+void __fastcall EclOp121CopyBossTransform(EclOperands::EnemyOverlay *enemy,
+                                          const EclOp121InstructionOverlay *instruction)
+{
+    i32 bossIndex;
+
+    bossIndex = instruction->bossIndex;
+    *reinterpret_cast<EclOperands::Vector3 *>(enemy->bytes + 0x2B0C) =
+        *reinterpret_cast<const EclOperands::Vector3 *>(
+            SpellLifecycle::g_TargetSpellBosses12FE098[bossIndex]->bytes + 0x2B0C);
+    *reinterpret_cast<EclOperands::Vector3 *>(enemy->bytes + 0x2B18) =
+        *reinterpret_cast<const EclOperands::Vector3 *>(
+            SpellLifecycle::g_TargetSpellBosses12FE098[bossIndex]->bytes + 0x2B18);
+    *reinterpret_cast<f32 *>(enemy->bytes + 0x2B54) =
+        *reinterpret_cast<const f32 *>(
+            SpellLifecycle::g_TargetSpellBosses12FE098[bossIndex]->bytes + 0x2B54);
+    reinterpret_cast<EclOp121MovementBits *>(enemy->bytes + 0x2E2B)->copyTransform = 1;
+}
+
 namespace
 {
 

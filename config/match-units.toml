@@ -616,6 +616,13 @@ dir32_targets = [
   "??_C@_0BM@BHMNFKCI@error?5?3?5sub?5anim?5overflow?$AN?6?$AA@=ecl_string_sub_anim_overflow",
 ]
 
+[[units.ecl-run.functions]]
+address = "0x00417B90"
+symbol_base = "?EclOp121CopyBossTransform@th07@@YIXPAUEnemyOverlay@EclOperands@1@PBUEclOp121InstructionOverlay@1@@Z"
+dir32_targets = [
+  "?g_TargetSpellBosses12FE098@SpellLifecycle@th07@@3PAPAUEnemyOverlay@12@A=spell_bosses_12FE098",
+]
+
 [units.bullet-render]
 kind = "probe"
 source = "src/BulletRender.cpp"
