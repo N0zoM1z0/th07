@@ -15,7 +15,14 @@ struct PbgArchiveEntry
     u32 decompressedSize;
     u32 unknown;
 
-    ~PbgArchiveEntry();
+    ~PbgArchiveEntry()
+    {
+        if (filename != NULL)
+        {
+            GlobalFree(filename);
+            filename = NULL;
+        }
+    }
 };
 
 typedef char PbgArchiveEntrySizeMustBe0x10[(sizeof(PbgArchiveEntry) == 0x10) ? 1 : -1];
@@ -24,12 +31,14 @@ class PbgArchive
 {
   public:
     PbgArchive();
+    ~PbgArchive();
+    void Release();
 
   private:
     PbgArchiveEntry *m_entries;
     i32 m_entryCount;
     char *m_filename;
-    CPbgFile *m_file;
+    IPbgFile *m_file;
 };
 
 typedef char PbgArchiveSizeMustBe0x10[(sizeof(PbgArchive) == 0x10) ? 1 : -1];

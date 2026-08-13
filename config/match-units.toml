@@ -2622,6 +2622,37 @@ address = "0x0045F680"
 symbol_base = "??1PbgArchiveEntry@th07@@QAE@XZ"
 dir32_targets = ["__imp__GlobalFree@4=__imp__GlobalFree@4"]
 
+[[units.pbg-archive.functions]]
+address = "0x0045E4F0"
+symbol_base = "?DebugPrint@th07@@YAXPBDZZ"
+
+[[units.pbg-archive.functions]]
+address = "0x0045F6F0"
+symbol_base = "??1PbgArchive@th07@@QAE@XZ"
+rel32_targets = ["?Release@PbgArchive@th07@@QAEXXZ=0x0045F800"]
+
+[[units.pbg-archive.functions]]
+address = "0x0045F800"
+symbol_base = "?Release@PbgArchive@th07@@QAEXXZ"
+rel32_targets = [
+  "?DebugPrint@th07@@YAXPBDZZ=0x0045E4F0",
+  "??_EPbgArchiveEntry@th07@@QAEPAXI@Z=0x0045F8D0",
+]
+dir32_targets = ["__imp__GlobalFree@4=__imp__GlobalFree@4"]
+
+[[units.pbg-archive.functions]]
+address = "0x0045F8D0"
+symbol_base = "??_EPbgArchiveEntry@th07@@QAEPAXI@Z"
+rel32_targets = [
+  "??1PbgArchiveEntry@th07@@QAE@XZ=0x0045F680",
+  "??_M@YGXPAXIHP6EX0@Z@Z=0x0047E972",
+  "??3@YAXPAX@Z=0x0047D43C",
+]
+dir32_targets = [
+  "__imp__GlobalFree@4=__imp__GlobalFree@4",
+  "??1PbgArchiveEntry@th07@@QAE@XZ=0x0045F680",
+]
+
 [[units.pbg-file.functions]]
 address = "0x0045E590"
 symbol_base = "??_GCPbgFile@th07@@UAEPAXI@Z"
