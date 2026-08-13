@@ -73,4 +73,5 @@ address,name,module,confidence,evidence
 0x0045E620,CPbgFile_open,pbg,observed,Exact target mode parser file-handle writes and strict VC7 comparison
 0x0045E590,CPbgFile_scalar_deleting_dtor,pbg,observed,Exact target CPbgFile vtable slot and strict VC7 scalar deleting destructor comparison
 0x0045E5C0,CPbgFile_dtor,pbg,observed,Exact target virtual destructor vptr sequence EH frame and strict VC7 comparison
+0x0045E520,IPbgFile_scalar_deleting_dtor,pbg,observed,Exact target IPbgFile vtable slot and strict VC7 scalar deleting destructor comparison
 0x0045E9D0,CPbgFile_get_full_file_path,pbg,observed,Exact target fastcall path resolver and strict VC7 comparison

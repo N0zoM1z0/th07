@@ -2629,6 +2629,11 @@ symbol_base = "??1IPbgFile@th07@@UAE@XZ"
 dir32_targets = ["??_7IPbgFile@th07@@6B@=??_7IPbgFile@th07@@6B@"]
 
 [[units.pbg-file.functions]]
+address = "0x0045E520"
+symbol_base = "??_GIPbgFile@th07@@UAEPAXI@Z"
+rel32_targets = ["??3@YAXPAX@Z=0x0047D43C"]
+
+[[units.pbg-file.functions]]
 address = "0x0045E620"
 symbol_base = "?Open@CPbgFile@th07@@UAE_NPBD0@Z"
 rel32_targets = ["?GetFullFilePath@CPbgFile@th07@@SIXPADPBD@Z=0x0045E9D0"]
