@@ -133,7 +133,7 @@ address,size,span_end,current_name,proposed_name,module,status,match_percent,cal
 0x0041CDE0,581,0x0041D024,sub_41CDE0,,,unclassified,0.00,unknown,,false,,,,
 0x0041D050,65,0x0041D090,sub_41D050,,,unclassified,0.00,unknown,,false,,,,
 0x0041D0A0,165,0x0041D144,sub_41D0A0,,,unclassified,0.00,unknown,,false,,,,
-0x0041D150,35,0x0041D172,sub_41D150,,,unclassified,0.00,unknown,,false,,,,
+0x0041D150,35,0x0041D172,sub_41D150,Chain_cut_observed_reset_elements,chain,matching,100.00,__fastcall,void Chain_cut_observed_reset_elements(),false,src/Chain.cpp,python3 scripts/build.py --unit chain --compare --json; strict exact 35/35 target and object SHA 2d272aa4bca50a0044414891c58051c94869cf08762183dbeb993f78f5fbdc01 2026-08-13,root,Provisional behavior name. Target directly establishes both BSS element addresses the global Chain receiver and member-call ABI; no-argument target code cannot distinguish the source free-function convention.
 0x0041D180,357,0x0041D2E4,sub_41D180,,,unclassified,0.00,unknown,,false,,,,
 0x0041D2F0,141,0x0041D37C,sub_41D2F0,,,unclassified,0.00,unknown,,false,,,,
 0x0041D380,131,0x0041D402,sub_41D380,,,unclassified,0.00,unknown,,false,,,,

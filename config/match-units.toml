@@ -2340,6 +2340,16 @@ profile = "vc7-debug-od-no-gs-g6"
 notes = "Focused VC7 unoptimized callback-chain scheduler probe, bounded to the complete 0x0042FA60--0x00430284 cluster."
 
 [[units.chain.functions]]
+address = "0x0041D150"
+symbol_base = "?CutObservedResetChains@th07@@YIXXZ"
+rel32_targets = ["?Cut@Chain@th07@@QAEXPAVChainElem@2@@Z=0x00430140"]
+dir32_targets = [
+  "?g_Chain@th07@@3VChain@1@A=?g_Chain@th07@@3UChain@1@A",
+  "?g_TargetChainElem13478F8@th07@@3VChainElem@1@A=chain_reset_elem_13478f8",
+  "?g_TargetChainElem1347918@th07@@3VChainElem@1@A=chain_reset_elem_1347918",
+]
+
+[[units.chain.functions]]
 address = "0x0042FA60"
 symbol_base = "??1Chain@th07@@QAE@XZ"
 rel32_targets = ["??1ChainElem@th07@@QAE@XZ=0x0042FB20"]

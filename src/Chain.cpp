@@ -5,6 +5,15 @@
 namespace th07
 {
 
+extern ChainElem g_TargetChainElem13478F8;
+extern ChainElem g_TargetChainElem1347918;
+
+void CutObservedResetChains()
+{
+    g_Chain.Cut(&g_TargetChainElem13478F8);
+    g_Chain.Cut(&g_TargetChainElem1347918);
+}
+
 Chain::~Chain()
 {
 }
