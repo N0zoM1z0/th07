@@ -1203,6 +1203,24 @@ dir32_targets = [
   "?g_GuiUpdateState@SpellLifecycle@th07@@3HA=?g_GuiUpdateState@th07@@3HA",
 ]
 
+[units.gui-anm-copy]
+kind = "probe"
+source = "src/GuiAnmCopy.cpp"
+object = "build/match-units/GuiAnmCopy.obj"
+profile = "vc7-debug-od-no-gs-g6"
+notes = "Target-pinned GUI ANM four-float conversion helper with private manager overlay."
+
+[[units.gui-anm-copy.functions]]
+address = "0x00427D92"
+symbol_base = "?Target427D92@th07@@YIXH@Z"
+rel32_targets = [
+  "___ftol2=0x0048B8A0",
+  "?CopyFrameValues@AnmManager@th07@@QAEXHHPAH0@Z=0x00454F30",
+]
+dir32_targets = [
+  "?g_AnmManager@th07@@3PAUAnmManager@1@A=?g_AnmManager@th07@@3PAUAnmManager@1@A",
+]
+
 [units.bullet-update]
 kind = "probe"
 source = "src/BulletUpdate.cpp"
