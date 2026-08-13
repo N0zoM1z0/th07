@@ -2598,6 +2598,13 @@ object = "build/match-units/PbgFile.obj"
 profile = "vc7-debug-od-no-gs-g6"
 notes = "Focused VC7 probe for the CPbgFile constructor; the 0x0C object layout and virtual table order are target-attested by the PBG method cluster."
 
+[units.pbg-archive]
+kind = "probe"
+source = "src/PbgArchive.cpp"
+object = "build/match-units/PbgArchive.obj"
+profile = "vc7-debug-od-no-gs-g6"
+notes = "Focused VC7 probe for the target-attested 0x10 PbgArchive owner constructor."
+
 [[units.pbg-file.functions]]
 address = "0x0045E550"
 symbol_base = "??0CPbgFile@th07@@QAE@XZ"
@@ -2605,6 +2612,10 @@ dir32_targets = [
   "??_7IPbgFile@th07@@6B@=??_7IPbgFile@th07@@6B@",
   "??_7CPbgFile@th07@@6B@=??_7CPbgFile@th07@@6B@",
 ]
+
+[[units.pbg-archive.functions]]
+address = "0x0045F6B0"
+symbol_base = "??0PbgArchive@th07@@QAE@XZ"
 
 [[units.pbg-file.functions]]
 address = "0x0045E590"

@@ -663,7 +663,7 @@ address,size,span_end,current_name,proposed_name,module,status,match_percent,cal
 0x0045F580,183,0x0045F636,sub_45F580,,,unclassified,0.00,unknown,,false,,,,
 0x0045F640,63,0x0045F67E,sub_45F640,,,unclassified,0.00,unknown,,false,,,,
 0x0045F680,40,0x0045F6A7,sub_45F680,,,unclassified,0.00,unknown,,false,,,,
-0x0045F6B0,53,0x0045F6E4,sub_45F6B0,,,unclassified,0.00,unknown,,false,,,,
+0x0045F6B0,53,0x0045F6E4,sub_45F6B0,PbgArchive_ctor,pbg,matching,100.00,__thiscall,PbgArchive * PbgArchive_ctor(PbgArchive * this),false,src/PbgArchive.cpp,python3 scripts/build.py --unit pbg-archive --compare --json; strict exact 53/53 target and object SHA 37002ca4df58695abe54a36864979eedeed499fb8d9cf6fae0e0faf4194298b6 2026-08-13,root,Target clears four 32-bit archive-owner fields at offsets 0 4 8 and C. Unique exact TH08 PbgArchive constructor corroborates entries count filename and CPbgFile ownership; real TH07 C++ layout reproduces target bytes exactly.
 0x0045F6F0,19,0x0045F702,sub_45F6F0,,,unclassified,0.00,unknown,,false,,,,
 0x0045F710,229,0x0045F7F4,sub_45F710,,,unclassified,0.00,unknown,,false,,,,
 0x0045F800,199,0x0045F8C6,sub_45F800,,,unclassified,0.00,unknown,,false,,,,
