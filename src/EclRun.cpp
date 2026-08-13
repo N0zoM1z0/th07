@@ -241,6 +241,16 @@ struct EclOp121LargeCommand
 };
 typedef char EclOp121LargeCommand_size[sizeof(EclOp121LargeCommand) == 0x20 ? 1 : -1];
 
+struct EclOp121WideCommand
+{
+    f32 unknown00;
+    f32 angle;
+    i32 duration;
+    i32 unknown0C;
+    u8 unknown10[0x70];
+};
+typedef char EclOp121WideCommand_size[sizeof(EclOp121WideCommand) == 0x80 ? 1 : -1];
+
 struct EclOp121Bullet
 {
     union
@@ -257,8 +267,11 @@ struct EclOp121Bullet
                               f32 angularStep, f32 interval);
     EclOp121RotationCommand *ReserveRotationCommand(f32 speedDelta, f32 unusedDelta, i32 size);
     EclOp121LargeCommand *ReserveLargeCommand(i32 unknown0, i32 unknown1, i32 size);
+    EclOp121WideCommand *ReserveWideCommand(i32 unknown0, i32 unknown1, i32 size);
     EclOp121StateCommand *ReserveStateCommand(i32 unknown0, i32 unknown1, i32 size);
     void QueueLargeCommand(i32 unknown0, i32 unknown1, i32 duration, f32 parameter, f32 angle);
+    void QueueWideCommand(i32 unknown0, i32 unknown1, i32 duration, i32 unknown0C,
+                          f32 unknown00, f32 angle);
     void QueueStateCommand(i32 unknown0, i32 unknown1, i32 duration, f32 parameter, f32 angle);
     __forceinline EclOp121BulletCommand &CommandAt(i32 index)
     {
@@ -333,6 +346,18 @@ void EclOp121Bullet::QueueLargeCommand(i32 unknown0, i32 unknown1, i32 duration,
     command->duration = duration;
     command->angle = angle;
     command->parameter = parameter;
+}
+
+void EclOp121Bullet::QueueWideCommand(i32 unknown0, i32 unknown1, i32 duration,
+                                       i32 unknown0C, f32 unknown00, f32 angle)
+{
+    EclOp121WideCommand *command;
+
+    command = ReserveWideCommand(unknown0, unknown1, 0x80);
+    command->duration = duration;
+    command->unknown0C = unknown0C;
+    command->unknown00 = unknown00;
+    command->angle = angle;
 }
 
 void EclOp121Bullet::QueueStateCommand(i32 unknown0, i32 unknown1, i32 duration,
