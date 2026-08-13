@@ -8,6 +8,11 @@ CPbgFile::CPbgFile() : m_handle(INVALID_HANDLE_VALUE), m_mode(0)
 {
 }
 
+CPbgFile::~CPbgFile()
+{
+    Close();
+}
+
 // The target close path releases only an open OS handle and restores the
 // constructor's unopened state.
 void CPbgFile::Close()
