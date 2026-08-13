@@ -1221,6 +1221,30 @@ dir32_targets = [
   "?g_AnmManager@th07@@3PAUAnmManager@1@A=?g_AnmManager@th07@@3PAUAnmManager@1@A",
 ]
 
+[units.gui-loop-update]
+kind = "probe"
+source = "src/GuiLoopUpdate.cpp"
+object = "build/match-units/GuiLoopUpdate.obj"
+profile = "vc7-debug-od-no-gs-g6"
+notes = "Target-observed GUI update prefix with private state and timer overlays."
+
+[[units.gui-loop-update.functions]]
+address = "0x00427E7C"
+symbol_base = "?Update@GuiLoop@th07@@QAEHXZ"
+rel32_targets = [
+  "?Target42ADAB@GuiLoop@th07@@QAEXXZ=0x0042ADAB",
+  "?Target429C42@GuiLoopState@th07@@QAEXXZ=0x00429C42",
+  "?Target439EC1@GuiLoopTimer@th07@@QAEXH@Z=0x00439EC1",
+]
+dir32_targets = [
+  "?g_TargetGuiPaused62627C@th07@@3DA=bullet_update_paused",
+  "?g_SupervisorState@th07@@3HA=?g_SupervisorState@th07@@3HA",
+  "?g_TargetDifficulty62F85C@th07@@3HA=ecl_difficulty_62F85C",
+  "?g_TargetTimerManager575950@th07@@3UGuiLoopTimer@1@A=bullet_update_timer_manager",
+  "?g_TargetRawInput4B9E4C@th07@@3GA=replay_raw_input",
+  "?g_GuiUpdateState@th07@@3HA=?g_GuiUpdateState@th07@@3HA",
+]
+
 [units.bullet-update]
 kind = "probe"
 source = "src/BulletUpdate.cpp"
