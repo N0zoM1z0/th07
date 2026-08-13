@@ -1,4 +1,5 @@
 #include "EclManager.hpp"
+#include "Timer.hpp"
 
 #include <d3dx8math.h>
 #include <math.h>
@@ -173,6 +174,7 @@ enum EnemyRunEclOffset
 {
     ENEMY_CURRENT_INSTRUCTION = 0x6E4,
     ENEMY_SCRIPT_TIME = 0x6F0,
+    ENEMY_CALLBACK_CONTEXT = 0x6FC,
     ENEMY_SCRIPT_TIMER_PREVIOUS = 0x764,
     ENEMY_SCRIPT_TIMER_CURRENT = 0x768,
     ENEMY_SCRIPT_TIMER_LIMIT = 0x76C,
@@ -180,6 +182,11 @@ enum EnemyRunEclOffset
     ENEMY_CONTEXT_STACK_DEPTH = 0x2A7C,
     ENEMY_INTERRUPT_TABLE = 0x2A88,
     ENEMY_RUN_INTERRUPT = 0x2B08,
+    ENEMY_TIMER_CALLBACK_THRESHOLD = 0x2F58,
+    ENEMY_TIMER_CALLBACK = 0x2EE4,
+    ENEMY_TIMER_CALLBACK_CONTEXT = 0x2EE8,
+    ENEMY_TIMER_CALLBACK_TIMER = 0x2F5C,
+    ENEMY_TIMER_CALLBACK_RAN = 0x8F4,
     ENEMY_MOVEMENT_FLAGS = 0x2E28,
     ENEMY_DISABLE_CALL_STACK = 0x2E2A,
 };
@@ -282,20 +289,52 @@ static __forceinline void SaveEclContext(EclOperands::EnemyOverlay *enemy)
            enemy->bytes + ENEMY_CURRENT_INSTRUCTION, 0x218);
 }
 
-static __forceinline void EnterInterrupt(EclOperands::EnemyOverlay *enemy)
+struct EclTimerCallbackTimer
 {
-    if (IntAt(enemy, ENEMY_RUN_INTERRUPT) < 0)
-        return;
+    i32 previous;
+    f32 subFrame;
+    i32 current;
+};
 
-    if ((ByteAt(enemy, ENEMY_DISABLE_CALL_STACK) & 0x20) == 0)
-        SaveEclContext(enemy);
+// Observed at 0x0041054E--0x00410699.  This is separate from the script
+// interrupt selected through +0x2B08: the callback uses its own timer and
+// restores the saved ECL context before entering the requested subroutine.
+static __forceinline void EnterTimerCallback(EclOperands::EnemyOverlay *enemy,
+                                             RunEclInstruction *&instruction)
+{
+    EclTimerCallbackTimer *timer;
+    i32 current;
+    i32 threshold;
 
-    g_TargetEclManager1347938.CallEclSub((EnemyEclContext *)(enemy->bytes + ENEMY_CURRENT_INSTRUCTION),
-                                         (i16)IntAt(enemy, ENEMY_INTERRUPT_TABLE +
-                                                           4 * IntAt(enemy, ENEMY_RUN_INTERRUPT)));
-    if (IntAt(enemy, ENEMY_CONTEXT_STACK_DEPTH) < 15)
-        ++IntAt(enemy, ENEMY_CONTEXT_STACK_DEPTH);
-    IntAt(enemy, ENEMY_RUN_INTERRUPT) = -1;
+    // Keep the positive path as the lexical fallthrough.  The target uses
+    // forward `jl` exits at 0x00410558 and 0x004105C6 to the common resume
+    // sequence; equivalent early returns reverse both branches under VC7.
+    if (IntAt(enemy, ENEMY_TIMER_CALLBACK) >= 0)
+    {
+        timer = (EclTimerCallbackTimer *)(enemy->bytes + ENEMY_TIMER_CALLBACK_TIMER);
+        timer->previous = timer->current;
+        g_EclTailTimerManager.Advance(&timer->current, (i32 *)&timer->subFrame);
+        current = timer->current;
+        threshold = IntAt(enemy, ENEMY_TIMER_CALLBACK_THRESHOLD);
+        if (current >= threshold)
+        {
+            // The target rematerializes this receiver at 0x004105CC before
+            // the reset stores instead of reusing the timer used for Advance.
+            EclTimerCallbackTimer *resetTimer =
+                (EclTimerCallbackTimer *)(enemy->bytes + ENEMY_TIMER_CALLBACK_TIMER);
+            resetTimer->current = 0;
+            resetTimer->subFrame = 0.0f;
+            resetTimer->previous = -999;
+            SaveEclContext(enemy);
+            memcpy(enemy->bytes + ENEMY_CALLBACK_CONTEXT, enemy->bytes + ENEMY_TIMER_CALLBACK_CONTEXT, 0x68);
+            g_TargetEclManager1347938.CallEclSub((EnemyEclContext *)(enemy->bytes + ENEMY_CURRENT_INSTRUCTION),
+                                                 (i16)IntAt(enemy, ENEMY_TIMER_CALLBACK));
+            if (IntAt(enemy, ENEMY_CONTEXT_STACK_DEPTH) < 15)
+                IntAt(enemy, ENEMY_CONTEXT_STACK_DEPTH) = IntAt(enemy, ENEMY_CONTEXT_STACK_DEPTH) + 1;
+            instruction = CurrentInstruction(enemy);
+            IntAt(enemy, ENEMY_TIMER_CALLBACK_RAN) = 1;
+        }
+    }
 }
 
 // Exact payload accesses for target opcodes 0x40--0x48.  The request starts
@@ -400,15 +439,38 @@ static __forceinline void SpawnLaserVariant(EclOperands::EnemyOverlay *enemy, Ru
 ZunResult EclManager::RunEcl(Enemy *enemy)
 {
 #define rawEnemy ((EclOperands::EnemyOverlay *)enemy)
-    RunEclInstruction *instruction = CurrentInstruction(rawEnemy);
-    EnterInterrupt(rawEnemy);
+    RunEclInstruction *instruction;
 
-    for (;;)
+// The target reloads the active instruction before both the initial dispatch
+// and each post-interrupt resume (0x00410531 / 0x00414BFD).
+run_ecl_top:
+    instruction = CurrentInstruction(rawEnemy);
+    // A pending script interrupt branches forward into the shared opcode-109
+    // continuation below.  Keeping that continuation physically shared is
+    // required by the target's entry branch at 0x00410549.
+    if (IntAt(rawEnemy, ENEMY_RUN_INTERRUPT) >= 0)
+        goto run_script_interrupt;
+
+    // The timer callback path begins at 0x0041054E after the +0x2B08 test.
+    EnterTimerCallback(rawEnemy, instruction);
+
+    // Target 0x0041069A--0x004106D2 bypasses instruction dispatch while the
+    // per-script delay is active, stepping both target-observed ZunTimer
+    // instances backward before resuming the post-dispatch enemy update.
+    const i32 scriptTimerLimit = IntAt(rawEnemy, ENEMY_SCRIPT_TIMER_LIMIT);
+    if (scriptTimerLimit > 0)
+    {
+        ((ZunTimer *)(rawEnemy->bytes + ENEMY_SCRIPT_TIMER_PREVIOUS))->Decrement(1);
+        ((ZunTimer *)(rawEnemy->bytes + 0x6E8))->Decrement(1);
+        goto post_ecl_dispatch;
+    }
+
+    // The target's common advance returns to this signed timeline predicate;
+    // ending the loop on a future instruction naturally lowers to its
+    // 0x004106D7 boolean materialization.
+    while (!(ScriptTime(rawEnemy) - instruction->time < 0))
     {
         void *laser;
-
-        if (instruction == 0)
-            return ZUN_ERROR;
 
         // 0x004106EC tests the instruction difficulty byte before dispatch.
         // A clear bit means that this instruction is skipped but still
@@ -418,12 +480,6 @@ ZunResult EclManager::RunEcl(Enemy *enemy)
             Advance(instruction);
             CurrentInstruction(rawEnemy) = instruction;
             continue;
-        }
-
-        if (instruction->time != ScriptTime(rawEnemy))
-        {
-            CurrentInstruction(rawEnemy) = instruction;
-            break;
         }
 
         switch (instruction->opcode)
@@ -959,7 +1015,25 @@ ZunResult EclManager::RunEcl(Enemy *enemy)
             break;
         case 109:
             IntAt(rawEnemy, 4 * 2754) = ReadInt(rawEnemy, instruction, 0);
-            break;
+            // Target case 109 falls directly into the pending-interrupt
+            // continuation, rather than returning through the common advance.
+            // The entry test above reaches this same label for a previously
+            // pending interrupt.
+run_script_interrupt:
+            Advance(instruction);
+            CurrentInstruction(rawEnemy) = instruction;
+            if ((ByteAt(rawEnemy, ENEMY_DISABLE_CALL_STACK) & 0x20) == 0)
+                SaveEclContext(rawEnemy);
+
+            g_TargetEclManager1347938.CallEclSub(
+                (EnemyEclContext *)(rawEnemy->bytes + ENEMY_CURRENT_INSTRUCTION),
+                (i16)IntAt(rawEnemy, ENEMY_INTERRUPT_TABLE +
+                                      4 * IntAt(rawEnemy, ENEMY_RUN_INTERRUPT)));
+            if (IntAt(rawEnemy, ENEMY_CONTEXT_STACK_DEPTH) < 15)
+                IntAt(rawEnemy, ENEMY_CONTEXT_STACK_DEPTH) =
+                    IntAt(rawEnemy, ENEMY_CONTEXT_STACK_DEPTH) + 1;
+            IntAt(rawEnemy, ENEMY_RUN_INTERRUPT) = -1;
+            goto run_ecl_top;
         case 110:
         {
             const i32 value = ReadInt(rawEnemy, instruction, 0);
@@ -1281,6 +1355,7 @@ ZunResult EclManager::RunEcl(Enemy *enemy)
         CurrentInstruction(rawEnemy) = instruction;
     }
 
+post_ecl_dispatch:
     // Observed at 0x00416FC3--0x004172A7.  Living enemies with a configured
     // pose set select the primary ANM script from horizontal movement.  The
     // target stores the selected +0x900 script index at +0x1d8 and invokes

@@ -103,6 +103,12 @@ struct EnemyManagerUpdateControlFlagBits
     u8 unknown7 : 1;
 };
 
+struct EnemyManagerUpdateDamageModeBits
+{
+    u32 rankFloor : 1;
+    u32 unknown : 31;
+};
+
 struct EnemyManagerUpdateFlagOverlay
 {
     u8 unknown0000[0x2E28];
@@ -145,6 +151,10 @@ struct EnemyManagerUpdateEnemy
     i32 &MaxLife() { return *reinterpret_cast<i32 *>(raw + 0x2BBC); }
     i32 &Score() { return *reinterpret_cast<i32 *>(raw + 0x2BC0); }
     u32 &DamageModeFlags() { return *reinterpret_cast<u32 *>(raw + 0x2BCC); }
+    EnemyManagerUpdateDamageModeBits *DamageModeBits()
+    {
+        return reinterpret_cast<EnemyManagerUpdateDamageModeBits *>(raw + 0x2BCC);
+    }
     EnemyManagerUpdateTimer *BossTimer() { return reinterpret_cast<EnemyManagerUpdateTimer *>(raw + 0x2BC4); }
     u32 &DisplayColor() { return *reinterpret_cast<u32 *>(raw + 0x2BD0); }
     i32 &DeathCallbackSub() { return *reinterpret_cast<i32 *>(raw + 0x2A84); }
@@ -304,7 +314,7 @@ extern i32 g_EnemyManagerUpdateDifficulty;
 extern i32 g_EnemyManagerUpdateAccumulator;
 extern i32 g_EnemyManagerUpdateFrameStop;
 extern i8 g_EnemyManagerUpdatePauseByte;
-extern u8 g_EnemyManagerUpdateSpecialDamage;
+extern i8 g_EnemyManagerUpdateSpecialDamage;
 extern u8 g_EnemyManagerUpdatePracticeFlag;
 extern u8 g_EnemyManagerUpdateStageState;
 extern u8 g_EnemyManagerUpdateBossPresent;
@@ -415,10 +425,13 @@ static __forceinline i32 EnemyIsInBounds(EnemyManagerUpdateEnemy *enemy)
         enemy->PrimaryVm()->sprite->width, enemy->PrimaryVm()->sprite->height);
 }
 
-static __forceinline i32 EnemyTrailIsInBounds(EnemyManagerUpdateEnemy *enemy, EnemyManagerUpdateVec3 *position)
+static __forceinline i32 EnemyTrailIsInBounds(EnemyManagerUpdateEnemy *enemy)
 {
     return g_EnemyManagerUpdateGrazeState.IsInBounds(
-        position->x, position->y,
+        reinterpret_cast<EnemyManagerUpdateVec3 *>(enemy->raw + 0x2F78 +
+            0x1C * (enemy->TrailHistoryCount() - 1))->x,
+        reinterpret_cast<EnemyManagerUpdateVec3 *>(enemy->raw + 0x2F78 +
+            0x1C * (enemy->TrailHistoryCount() - 1))->y,
         enemy->PrimaryVm()->sprite->width, enemy->PrimaryVm()->sprite->height);
 }
 
@@ -479,7 +492,7 @@ static __forceinline void TrackLastEnemyHit(EnemyManagerUpdateEnemy *enemy)
     f32 angle;
 
     currentDeltaX = position->x - g_EnemyManagerUpdateReferenceX;
-    if (enemy->CombatFlags() & 0x40)
+    if (enemy->CombatBits()->boss)
     {
         previousDeltaX = g_EnemyManagerUpdateLastHitX - g_EnemyManagerUpdateReferenceX;
         if (!g_EnemyManagerUpdateSpellState || fabs(previousDeltaX) > fabs(currentDeltaX))
@@ -519,7 +532,7 @@ static __forceinline void TrackLastEnemyHit(EnemyManagerUpdateEnemy *enemy)
 i32 EnemyManagerUpdateOverlay::OnUpdate()
 {
     EnemyManagerUpdateEnemy *enemy;
-    EnemyManagerUpdateVec3 secondaryHitbox;
+    D3DXVECTOR3 secondaryHitbox;
     i32 damageOccurred;
     i32 trailIndex;
     i32 vmIndex;
@@ -577,6 +590,7 @@ i32 EnemyManagerUpdateOverlay::OnUpdate()
         }
         else
         {
+        run_enemy_ecl:
             if (g_EnemyManagerUpdateEclManager.RunEcl(enemy) == -1)
             {
                 enemy->ClearActive();
@@ -602,102 +616,103 @@ i32 EnemyManagerUpdateOverlay::OnUpdate()
 
             if (enemy->DeathBits()->hasBeenInBounds == 1)
             {
-                if (!enemy->TrailFlags())
+                if (!((enemy->TrailFlags() || EnemyIsInBounds(enemy)) &&
+                      (!enemy->TrailFlags() || EnemyIsInBounds(enemy) ||
+                       EnemyTrailIsInBounds(enemy))) &&
+                    !enemy->DeathBits()->allowOffscreen)
                 {
-                    if (!EnemyIsInBounds(enemy) && !enemy->DeathBits()->allowOffscreen)
-                    {
-                        enemy->ClearActive();
-                        enemy->Despawn();
-                        continue;
-                    }
-                }
-                else if (!EnemyIsInBounds(enemy))
-                {
-                    EnemyManagerUpdateVec3 *lastSample = reinterpret_cast<EnemyManagerUpdateVec3 *>(
-                        enemy->raw + 0x2F78 + 0x1C * (enemy->TrailHistoryCount() - 1));
-                    if (!EnemyTrailIsInBounds(enemy, lastSample) && !enemy->DeathBits()->allowOffscreen)
-                    {
-                        enemy->ClearActive();
-                        enemy->Despawn();
-                        continue;
-                    }
+                    enemy->ClearActive();
+                    enemy->Despawn();
+                    continue;
                 }
             }
 
-            while (enemy->HandleLifeCallback() ||
-                   (enemy->TimerCallbackThreshold() >= 0 && enemy->HandleTimerCallback()))
-            {
-            }
+            if (enemy->HandleLifeCallback())
+                goto run_enemy_ecl;
+            if (enemy->TimerCallbackThreshold() >= 0 && enemy->HandleTimerCallback())
+                goto run_enemy_ecl;
 
             enemy->PrimaryVm()->color = enemy->DisplayColor();
             g_EnemyManagerUpdateAnmManager->ExecuteScript(enemy->PrimaryVm());
             enemy->DisplayColor() = enemy->PrimaryVm()->color;
             for (vmIndex = 0; vmIndex < 2; ++vmIndex)
             {
-                EnemyManagerUpdateAnmVm *vm = enemy->ExtraVm(vmIndex);
-                if (vm->scriptIndex >= 0 && g_EnemyManagerUpdateAnmManager->ExecuteScript(vm))
-                    vm->scriptIndex = -1;
+                if (enemy->ExtraVm(vmIndex)->scriptIndex >= 0 &&
+                    g_EnemyManagerUpdateAnmManager->ExecuteScript(enemy->ExtraVm(vmIndex)))
+                    enemy->ExtraVm(vmIndex)->scriptIndex = -1;
             }
 
             bombHit = 0;
-            damage = 0;
             damageOccurred = 0;
-            if ((enemy->CombatFlags() & 8) == 0 && (enemy->UpdateFlags() & 4) == 0)
+            if (!enemy->CombatBits()->noSprite && !enemy->ControlBits()->skipCombat)
             {
-                if ((enemy->CombatFlags() & 3) == 3)
+                if (enemy->CombatBits()->interactable && enemy->CombatBits()->collisionEnabled)
                 {
                     enemy->CheckPlayerCollision(enemy->Position(), enemy->Hitbox());
                     if (enemy->TrailFlags())
                     {
-                        secondaryHitbox = *enemy->Hitbox();
+                        secondaryHitbox = *reinterpret_cast<D3DXVECTOR3 *>(enemy->Hitbox());
                         for (trailIndex = 1; trailIndex < enemy->TrailSampleCount(); trailIndex += 6)
                         {
-                            EnemyManagerUpdateVec3 *sample = reinterpret_cast<EnemyManagerUpdateVec3 *>(enemy->raw + 0x2F78 + 0x1C * trailIndex);
                             if (enemy->TrailFlags() & 2)
                             {
-                                f32 scale = (f32)trailIndex / (f32)enemy->TrailSampleCount();
-                                secondaryHitbox.x = enemy->Hitbox()->x - enemy->Hitbox()->x * scale;
-                                secondaryHitbox.y = enemy->Hitbox()->y - enemy->Hitbox()->y * scale;
-                                secondaryHitbox.z = enemy->Hitbox()->z - enemy->Hitbox()->z * scale;
+                                secondaryHitbox =
+                                    *reinterpret_cast<D3DXVECTOR3 *>(enemy->Hitbox()) -
+                                    *reinterpret_cast<D3DXVECTOR3 *>(enemy->Hitbox()) *
+                                    (f32)trailIndex / (f32)enemy->TrailSampleCount();
                             }
-                            enemy->CheckPlayerCollision(sample, &secondaryHitbox);
+                            enemy->CheckPlayerCollision(
+                                reinterpret_cast<EnemyManagerUpdateVec3 *>(
+                                    enemy->raw + 0x2F78 + 0x1C * trailIndex),
+                                reinterpret_cast<EnemyManagerUpdateVec3 *>(&secondaryHitbox));
                         }
                     }
                 }
 
                 enemy->LastDamage() = 0;
-                if ((enemy->CombatFlags() & 0x11) == 0x11)
+                if (enemy->CombatBits()->interactable && enemy->CombatBits()->damageCollision)
                 {
                     damage = g_EnemyManagerUpdatePlayer.CalcDamageToEnemy(enemy->Position(), enemy->Hitbox(), &bombHit);
                     if (enemy->SecondaryHitbox()->x > 0.0f)
                     {
                         extraDamage = g_EnemyManagerUpdatePlayer.CalcDamageToEnemy(enemy->Position(), enemy->SecondaryHitbox(), &bombHit);
-                        damage += (i32)((f32)extraDamage / 2.5f);
+                        if (!bombHit)
+                            damage = damage + extraDamage / 2.5f;
                     }
 
                     if (damage > 0)
                     {
-                        if (((enemy->CombatFlags() & 0x40) || !g_EnemyManagerUpdateSpecialDamage) &&
+                        if ((enemy->CombatBits()->boss || !g_EnemyManagerUpdateSpecialDamage) &&
                             !g_EnemyManagerUpdateFrameStop)
                         {
                             i32 rankAmount;
-                            if ((enemy->CombatFlags() & 0x40) == 0 || g_EnemyManagerUpdateSpecialDamage)
-                                rankAmount = 10 * (damage / (30 - difficultyScale));
-                            else
+                            if (enemy->CombatBits()->boss && !g_EnemyManagerUpdateSpecialDamage)
                                 rankAmount = 10 * (damage / (10 - difficultyScale / 3));
+                            else
+                                rankAmount = 10 * (damage / (30 - difficultyScale));
                             if (rankAmount > 70)
                                 rankAmount = 70;
-                            if (!rankAmount && (!g_EnemyManagerUpdateSpecialDamage || (enemy->DamageModeFlags() & 1)))
+                            u32 rankFloorFlags;
+                            if (!rankAmount &&
+                                (!g_EnemyManagerUpdateSpecialDamage ||
+                                 ((rankFloorFlags = enemy->DamageModeFlags()),
+                                  (rankFloorFlags & 1))))
                                 rankAmount = 10;
-                            if (!g_EnemyManagerUpdatePracticeFlag)
+                            switch (g_EnemyManagerUpdatePracticeFlag)
                             {
-                                if ((rankAmount == 20 || rankAmount == 30) && (enemy->DamageModeFlags() & 1))
-                                    rankAmount -= 10;
+                            case 0:
+                                if (rankAmount == 20 || rankAmount == 30)
+                                {
+                                    u32 rankAdjustFlags = enemy->DamageModeFlags();
+                                    if (rankAdjustFlags & 1)
+                                        rankAmount -= 10;
+                                }
                                 if (g_EnemyManagerUpdateDifficulty >= 5 && g_EnemyManagerUpdateDifficulty <= 6 &&
-                                    (enemy->CombatFlags() & 0x40) == 0)
+                                    !enemy->CombatBits()->boss)
                                     damage /= 2;
-                                if (g_EnemyManagerUpdateDifficulty == 4 && (enemy->CombatFlags() & 0x40) == 0)
+                                if (g_EnemyManagerUpdateDifficulty == 4 && !enemy->CombatBits()->boss)
                                     damage -= damage / 16 + damage / 4;
+                                break;
                             }
                             if (rankAmount)
                                 g_EnemyManagerUpdateGrazeState.ApplyRank(rankAmount);
@@ -705,8 +720,10 @@ i32 EnemyManagerUpdateOverlay::OnUpdate()
 
                         if (damage >= 70)
                             damage = 70;
-                        g_EnemyManagerUpdateGameManager->score += 10 * (damage / 5) / 10;
-                        if ((enemy->CombatFlags() & 4) != 0)
+                        register EnemyManagerUpdateGameManager *scoreManager =
+                            g_EnemyManagerUpdateGameManager;
+                        scoreManager->score += 10 * (damage / 5) / 10;
+                        if (enemy->CombatBits()->damageable)
                         {
                             if (SpellActive())
                             {
@@ -718,7 +735,7 @@ i32 EnemyManagerUpdateOverlay::OnUpdate()
                                     damage = 0;
                             }
                             if (*reinterpret_cast<i32 *>(enemy->raw + 0x4F40) > 0)
-                                damage = (enemy->CombatFlags() & 0x40) ? damage / 9 : 0;
+                                damage = enemy->CombatBits()->boss ? damage / 9 : 0;
                             enemy->Life() -= damage;
                             enemy->LastDamage() = damage;
                         }
@@ -728,7 +745,7 @@ i32 EnemyManagerUpdateOverlay::OnUpdate()
 
                 TrackLastEnemyHit(enemy);
 
-                if (enemy->Life() <= 0 && (enemy->CombatFlags() & 1))
+                if (enemy->Life() <= 0 && enemy->CombatBits()->interactable)
                 {
                     for (vmIndex = 0; vmIndex < 4; ++vmIndex)
                         enemy->LifeCallbacks()[vmIndex] = -1;
@@ -739,7 +756,7 @@ i32 EnemyManagerUpdateOverlay::OnUpdate()
                     {
                     case 3:
                         enemy->Life() = 1;
-                        enemy->CombatFlags() &= ~4;
+                        enemy->CombatBits()->damageable = 0;
                         enemy->DeathFlags() &= 0xF8;
                         g_EnemyManagerUpdateBossPresent = 0;
                         *reinterpret_cast<u16 *>(g_EnemyManagerUpdatePlayerFlags + 0xD6) |= 0x20;
@@ -752,14 +769,14 @@ i32 EnemyManagerUpdateOverlay::OnUpdate()
                         break;
                     case 1:
                         g_EnemyManagerUpdateGameManager->score += enemy->Score() / 10;
-                        enemy->CombatFlags() &= ~1;
+                        enemy->CombatBits()->interactable = 0;
                     case 0:
                         if ((enemy->DeathFlags() & 7) == 0)
                         {
                             g_EnemyManagerUpdateGameManager->score += enemy->Score() / 10;
                             enemy->ClearActive();
                         }
-                        if (enemy->CombatFlags() & 0x40)
+                        if (enemy->CombatBits()->boss)
                         {
                             g_EnemyManagerUpdateBossPresent = 0;
                             enemy->ReleaseEffects();
@@ -782,7 +799,7 @@ i32 EnemyManagerUpdateOverlay::OnUpdate()
                             }
                             ++RandomSpawnIndex();
                         }
-                        if ((enemy->CombatFlags() & 0x40) && !g_EnemyManagerUpdateSpellActive)
+                        if (enemy->CombatBits()->boss && !g_EnemyManagerUpdateSpellActive)
                         {
                             i32 bullets = g_EnemyManagerUpdateBulletManager.DespawnBullets(8000, 1);
                             i32 score = g_EnemyManagerUpdateRewardManager.ConvertBulletBonus(8000, bullets);
@@ -831,15 +848,15 @@ i32 EnemyManagerUpdateOverlay::OnUpdate()
             enemy->PrimaryVm()->flags &= ~0x10000;
         }
 
-        if (enemy->CombatFlags() & 0x40)
+        if (enemy->CombatBits()->boss)
         {
             EnemyManagerUpdateVec3 bossUiPosition;
             if (!g_EnemyManagerUpdateGui.IsMessageActive() && !enemy->BossSlot())
                 g_EnemyManagerUpdateBossHealth = (f32)enemy->Life() / (f32)enemy->MaxLife();
 
-            if (((enemy->CombatFlags() >> 6) & 1) < 4)
+            if (enemy->BossSlot() < 4)
             {
-                bossUiPosition.x = (enemy->CombatFlags() & 8) ? -999.0f : enemy->Position()->x + 32.0f;
+                bossUiPosition.x = enemy->CombatBits()->noSprite ? -999.0f : enemy->Position()->x + 32.0f;
                 bossUiPosition.y = 472.0f;
                 bossUiPosition.z = 0.0f;
                 *reinterpret_cast<EnemyManagerUpdateVec3 *>(g_EnemyManagerUpdateBossUi[enemy->BossSlot()]) = bossUiPosition;
@@ -853,7 +870,7 @@ i32 EnemyManagerUpdateOverlay::OnUpdate()
         if (enemy->FreezeTimer() > 0)
             reinterpret_cast<EnemyManagerUpdateTimer *>(enemy->raw + 0x4F38)->Decrement(1);
 
-        if ((enemy->CombatFlags() & 8) == 0 && enemy->IsActive())
+        if (!enemy->CombatBits()->noSprite && enemy->IsActive())
         {
             enemy->DrawNext() = DrawHeads()[enemy->DrawGroup()];
             DrawHeads()[enemy->DrawGroup()] = enemy;

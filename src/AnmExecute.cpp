@@ -77,7 +77,17 @@ struct AnmTimerManager
     void Advance(i32 *current, i32 *subFrame);
 };
 
-extern void AnmManagerSetSprite(AnmManager *manager, AnmVm *vm, i32 sprite);
+struct AnmManagerSpriteOverlay
+{
+    void SetSprite(AnmVm *vm, i32 sprite);
+};
+
+struct AnmVmFlipOverlay
+{
+    u8 beforeFlip[0x1C0];
+    u32 unknownLowFlags : 8;
+    u32 flipFlags : 2;
+};
 struct AnmRngOverlay { u32 RandomU32(); float RandomF32(); };
 extern AnmRngOverlay g_AnmRng;
 extern AnmTimerManager g_AnmTimerManager;
@@ -175,21 +185,19 @@ void AnmManager::SetAndExecuteScript(AnmVm *vm, AnmRawInstr *script)
     }
 }
 
-#pragma var_order(instruction, fallback, i, interp)
+#pragma var_order(instruction, fallback, i, interp, currentScriptTime, spriteScriptTime, valueX, \
+                 valueY, valueZ, repeatCounter, positionX, positionY, positionZ, currentTimer, endTimer, \
+                 resetTimer, startTimer, scriptTimer, angleTimer, endTime, jumpTime)
 i32 AnmManager::ExecuteScript(AnmVm *vm)
 {
     AnmRawInstr *instruction;
     AnmRawInstr *fallback;
     i32 i;
-    i32 opcode;
-    i32 instructionTime;
-    i32 spriteIndex;
     i32 currentScriptTime;
     float valueX;
     float valueY;
     float valueZ;
     i32 *repeatCounter;
-    i32 repeatValue;
     float positionX;
     float positionY;
     float positionZ;
@@ -209,10 +217,10 @@ i32 AnmManager::ExecuteScript(AnmVm *vm)
     if (VM_S(vm, 0x1c6) != 0)
         goto handle_interrupt;
 
-    while (instruction = VM_P(vm, 0x1e0), (instructionTime = instruction->time) <= VM_I(vm, 0x38))
+    while (instruction = VM_P(vm, 0x1e0), currentScriptTime = VM_I(vm, 0x38),
+           instruction->time <= currentScriptTime)
     {
-        opcode = instruction->opcode;
-        switch (opcode)
+        switch (instruction->opcode)
         {
         case -1:
         case 1:
@@ -220,24 +228,34 @@ i32 AnmManager::ExecuteScript(AnmVm *vm)
         case 2:
             VM_P(vm, 0x1e0) = 0;
             return 1;
-        case 3:
+        case 3: {
+            i32 spriteScriptTime;
             VM_I(vm, 0x1c0) |= 1;
-            spriteIndex = GetInt(vm, instruction, 0);
-            AnmManagerSetSprite(this, vm, spriteIndex);
-            currentScriptTime = VM_I(vm, 0x38);
-            VM_I(vm, 0x23c) = currentScriptTime;
+            reinterpret_cast<AnmManagerSpriteOverlay *>(this)->SetSprite(
+                vm,
+                GetInt(vm, instruction, 0) +
+                    reinterpret_cast<i32 *>(reinterpret_cast<u8 *>(this) + 0x2B6F0)[VM_S(vm, 0x1D8)]);
+            spriteScriptTime = VM_I(vm, 0x38);
+            VM_I(vm, 0x23c) = spriteScriptTime;
             break;
+        }
+        case 7:
+            VM_F(vm, 0x18) = GetFloat(vm, instruction, 0); VM_F(vm, 0x1c) = GetFloat(vm, instruction, 1); VM_I(vm, 0x1c0) |= 8;
+            break;
+        case 8: vm->raw[0x1bb] = (u8)(instruction->args.i[0] & 0xff); break;
+        case 9: VM_I(vm, 0x1b8) = (VM_I(vm, 0x1b8) & 0xff000000) | (instruction->args.i[0] & 0x00ffffff); break;
         case 4:
-            VM_I(vm, 0x38) = instruction->args.i[1];
-            VM_I(vm, 0x34) = 0;
-            VM_I(vm, 0x30) = -999;
+            jumpTime = instruction->args.i[1];
+            scriptTimer = TimerAt(vm, 0x30);
+            scriptTimer->current = jumpTime;
+            scriptTimer->subFrame = 0.0f;
+            scriptTimer->previous = -999;
             VM_P(vm, 0x1e0) = reinterpret_cast<AnmRawInstr *>(reinterpret_cast<u8 *>(VM_P(vm, 0x1dc)) + instruction->args.i[0]);
             continue;
         case 5:
             repeatCounter = GetIntPtr(vm, instruction, 0);
             --*repeatCounter;
-            repeatValue = GetInt(vm, instruction, 0);
-            if (repeatValue > 0) {
+            if (GetInt(vm, instruction, 0) > 0) {
                 jumpTime = instruction->args.i[2];
                 scriptTimer = TimerAt(vm, 0x30);
                 scriptTimer->current = jumpTime;
@@ -247,29 +265,11 @@ i32 AnmManager::ExecuteScript(AnmVm *vm)
                 continue;
             }
             break;
-        case 6:
-            if (VM_I(vm, 0x1c0) & 0x80) {
-                valueX = GetFloat(vm, instruction, 0);
-                valueY = GetFloat(vm, instruction, 1);
-                valueZ = GetFloat(vm, instruction, 2);
-                VM_F(vm, 0x230) = valueX;
-                VM_F(vm, 0x234) = valueY;
-                VM_F(vm, 0x238) = valueZ;
-            } else {
-                valueX = GetFloat(vm, instruction, 0);
-                valueY = GetFloat(vm, instruction, 1);
-                valueZ = GetFloat(vm, instruction, 2);
-                VM_F(vm, 0x1c8) = valueX;
-                VM_F(vm, 0x1cc) = valueY;
-                VM_F(vm, 0x1d0) = valueZ;
-            }
+        case 10:
+            reinterpret_cast<AnmVmFlipOverlay *>(vm)->flipFlags ^= 1;
+            VM_F(vm, 0x18) = -VM_F(vm, 0x18);
+            VM_I(vm, 0x1c0) |= 8;
             break;
-        case 7:
-            VM_F(vm, 0x18) = GetFloat(vm, instruction, 0); VM_F(vm, 0x1c) = GetFloat(vm, instruction, 1); VM_I(vm, 0x1c0) |= 8;
-            break;
-        case 8: vm->raw[0x1bb] = instruction->args.b[0]; break;
-        case 9: VM_I(vm, 0x1b8) = (VM_I(vm, 0x1b8) & 0xff000000) | (instruction->args.i[0] & 0x00ffffff); break;
-        case 10: VM_I(vm, 0x1c0) ^= 0x100; VM_F(vm, 0x18) = -VM_F(vm, 0x18); VM_I(vm, 0x1c0) |= 8; break;
         case 11: VM_I(vm, 0x1c0) ^= 0x200; VM_F(vm, 0x1c) = -VM_F(vm, 0x1c); VM_I(vm, 0x1c0) |= 8; break;
         case 12:
             positionX = GetFloat(vm, instruction, 0);
@@ -290,6 +290,23 @@ i32 AnmManager::ExecuteScript(AnmVm *vm)
             vm->raw[0xc2] = 0; vm->raw[0x22b] = vm->raw[0x1bb]; vm->raw[0x22f] = instruction->args.b[0];
             break;
         case 16: VM_I(vm, 0x1c0) = (VM_I(vm, 0x1c0) & ~0x10) | ((instruction->args.i[0] & 1) << 4); break;
+        case 6:
+            if (VM_I(vm, 0x1c0) & 0x80) {
+                valueX = GetFloat(vm, instruction, 0);
+                valueY = GetFloat(vm, instruction, 1);
+                valueZ = GetFloat(vm, instruction, 2);
+                VM_F(vm, 0x230) = valueX;
+                VM_F(vm, 0x234) = valueY;
+                VM_F(vm, 0x238) = valueZ;
+            } else {
+                valueX = GetFloat(vm, instruction, 0);
+                valueY = GetFloat(vm, instruction, 1);
+                valueZ = GetFloat(vm, instruction, 2);
+                VM_F(vm, 0x1c8) = valueX;
+                VM_F(vm, 0x1cc) = valueY;
+                VM_F(vm, 0x1d0) = valueZ;
+            }
+            break;
         case 17: vm->raw[0xc0] = 0; goto pos_time;
         case 18: vm->raw[0xc0] = 4; goto pos_time;
         case 19: vm->raw[0xc0] = 6;

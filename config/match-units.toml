@@ -538,6 +538,7 @@ rel32_targets = [
   "?TargetEffect423090@th07@@YAXHH@Z=0x00423090",
   "?Target44C930@th07@@YAXHH@Z=0x0044C930",
   "?Target439401@th07@@YAXH@Z=0x00439401",
+  "?Decrement@ZunTimer@th07@@QAEXH@Z=0x004394C7",
   "?Target424C00@th07@@YAXPAMM@Z=0x00424C00",
   "?Target42F5A2@th07@@YAXH@Z=0x0042F5A2",
   "?RandomU32@TargetRngOverlay@EclOperands@th07@@QAEIXZ=0x004318D0",
@@ -1338,7 +1339,7 @@ symbol_base = "?ReleaseEffects@EnemyUpdateOverlay@th07@@QAEXXZ"
 kind = "probe"
 source = "src/EnemyManagerUpdate.cpp"
 object = "build/match-units/EnemyManagerUpdate.obj"
-profile = "vc7-debug-od-no-gs-g6"
+profile = "vc7-debug-od-no-gs-g6-no-op"
 notes = "TH07 target-bounded EnemyManager core update: ECL, movement/trails, ANM, collision/damage/death, effects, timers, and draw-list rebuild."
 
 [[units.enemy-manager-update.functions]]
@@ -1391,7 +1392,7 @@ dir32_targets = [
   "?g_EnemyManagerUpdateAccumulator@th07@@3HA=ecl_global_62F898",
   "?g_EnemyManagerUpdateFrameStop@th07@@3HA=?g_HideGrazeCounter@th07@@3HA",
   "?g_EnemyManagerUpdatePauseByte@th07@@3DA=enemy_update_pause_4bfee0",
-  "?g_EnemyManagerUpdateSpecialDamage@th07@@3EA=enemy_update_special_damage_4bfee3",
+  "?g_EnemyManagerUpdateSpecialDamage@th07@@3DA=enemy_update_special_damage_4bfee3",
   "?g_EnemyManagerUpdatePracticeFlag@th07@@3EA=ecl_global_62F647",
   "?g_EnemyManagerUpdateStageState@th07@@3EA=bullet_update_paused",
   "?g_EnemyManagerUpdateBossPresent@th07@@3EA=ecl_boss_present_49FC14",
@@ -1448,6 +1449,28 @@ symbol_base = "?HasActiveBoss@EnemyManagerRenderOverlay@th07@@QAEHXZ"
 address = "0x004220F0"
 symbol_base = "?InterpolateWrappedAngle@th07@@YGMMMM@Z"
 dir32_targets = ["__real@40c90fdb=ecl_real_40c90fdb"]
+
+[[units.enemy-render-wrappers.functions]]
+address = "0x00422170"
+symbol_base = "?DrawImpl@EnemyManagerRenderOverlay@th07@@QAIHHH@Z"
+rel32_targets = [
+  "?Draw3@EnemyRenderAnmManager@th07@@QAEXPAUEnemyRenderVm@2@@Z=0x0044F9A0",
+  "?InterpolateWrappedAngle@th07@@YGMMMM@Z=0x004220F0",
+  "__CIsin=0x0048BB40",
+  "__CIcos=0x0048BBF0",
+  "?DrawTriangleFan@EnemyRenderAnmManager@th07@@QAEHPAUEnemyRenderVm@2@PAUVertexDiffuseXyzrhw@2@H@Z=0x004552D0",
+]
+dir32_targets = [
+  "?g_EnemyRenderAnmManager@th07@@3PAUEnemyRenderAnmManager@1@A=?g_AnmManager@th07@@3PAUAnmManager@1@A",
+  "?g_EnemyRenderOffsetX@th07@@3MA=?g_RenderOffsetX@th07@@3MA",
+  "?g_EnemyRenderOffsetY@th07@@3MA=?g_RenderOffsetY@th07@@3MA",
+  "__real@c4778000=enemy_timeline_real_neg990",
+  "__real@3727c5ac=vc7_auto_00498B58_00000000",
+  "__real@3f800000=__real@3f800000",
+  "__real@40000000=__real@40000000",
+  "__real@41800000=__real@41800000",
+  "__real@42000000=__real@42000000",
+]
 
 [units.screen-effect]
 kind = "probe"
@@ -1702,6 +1725,7 @@ rel32_targets = [
   "?GetFloatVarPtr@AnmVm@th07@@QAEPAMPAMGI@Z=0x00450C10",
   "?GetIntVarPtr@AnmVm@th07@@QAEPAHPAHGI@Z=0x00450CA0",
   "?AnmManagerSetSprite@th07@@YIXPAUAnmManager@1@PAUAnmVm@1@H@Z=0x0044E8E0",
+  "?SetSprite@AnmManagerSpriteOverlay@th07@@QAEXPAUAnmVm@2@H@Z=0x0044E8E0",
   "?RandomU32@AnmRngOverlay@th07@@QAEIXZ=0x004318D0",
   "?RandomF32@AnmRngOverlay@th07@@QAEMXZ=0x00431900",
   "?AddNormalizeAngle@th07@@YGMMM@Z=0x00431930",

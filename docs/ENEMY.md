@@ -68,7 +68,11 @@ Typed instruction-shape comparison proved especially useful on this body. It
 exposed the ECL manager's first dword as a pointer to timeline metadata, the
 signed pause byte at `0x4BFEE0`, and several VC7 expression/bitfield shapes.
 Successive source corrections extended the exact instruction-topology prefix
-from 8 to more than 400 instructions before later branches diverged. This is a
+from 8 to 844 of 1661 target instructions. In particular, the collision/trail
+vector expression, combat bitfields, signed special-damage byte, and rank
+branch order now follow the target. An A/B compiler probe also demonstrated
+that this translation unit was built without `/Op`; removing forced x87
+precision stores crossed the secondary-hit damage expression. This remains a
 compiler-shaping diagnostic only and does not grant matching status.
 
 Three large update dependencies are now strict exact matches. `0x0041F6F0` runs one 16-byte
@@ -100,14 +104,19 @@ fastcall-shaped inputs: manager in `ECX`, first draw group in `EDX`, and the
 exclusive end group on the stack. Each group starts from a head pointer at
 `manager+0x954700+group*4` and follows the enemy link at `+0x4F44`.
 
-The first bounded phase updates and draws the primary ANM VM and two adjacent
+The dedicated source now implements all bounded phases: it traverses the four
+intrusive lists, draws auxiliary 0, primary, then auxiliary 1, applies the
+target rotation and render-offset gates, implements both sampled-sprite and
+triangle-fan trails, and restores primary scale/color. The first bounded phase
+updates and draws the primary ANM VM and two adjacent
 VM slots of `0x24C` bytes. Active VMs have a nonnegative script index at
 `+0x1D8`; world position combines enemy position at `+0x2B0C`, VM offsets at
 `+0x230`, and the global render offsets. The primary VM uses Z `0.29`, while
 the surrounding slots use Z `0.3`, before calling the rotated ANM draw helper
 at `0x0044F9A0`. A later branch temporarily changes primary scale/color for a
-trail or triangle-fan effect and then restores them. These target facts define
-the next source cut; TH06 only corroborates the phase order.
+trail or triangle-fan effect and then restores them. The body compiles but is
+not yet a strict match: the current object uses a `0x88` frame and 2054-byte
+body versus target `0xFC` and 2863 bytes. TH06 only corroborates phase order.
 
 The reproducible compiler packet is generated with:
 
