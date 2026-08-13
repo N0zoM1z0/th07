@@ -412,6 +412,25 @@ def analyze(address: str, compare: bool) -> dict[str, Any]:
             cleanup = int(insn.operands[0].imm) if insn.operands else 0
             returns.append(cleanup)
 
+    for index in range(len(instructions) - 4):
+        fld, fcomp, fnstsw, test, branch = instructions[index : index + 5]
+        if (
+            fld.mnemonic == "fld"
+            and fcomp.mnemonic == "fcomp"
+            and fcomp.operands
+            and fcomp.operands[0].type == X86_OP_MEM
+            and fcomp.operands[0].size == 4
+            and fnstsw.mnemonic == "fnstsw"
+            and test.mnemonic == "test"
+            and len(test.operands) == 2
+            and test.operands[0].type == X86_OP_REG
+            and test.reg_name(test.operands[0].reg) == "ah"
+            and test.operands[1].type == X86_OP_IMM
+            and int(test.operands[1].imm) == 1
+            and branch.mnemonic.startswith("j")
+        ):
+            features.add("x87_f32_threshold_c0_branch")
+
     if any(values == {0, 1} for values in stack_immediate_bits.values()):
         features.add("boolean_materialization")
 
@@ -538,6 +557,8 @@ def main() -> int:
             set_script_observed = set_script["exact_observations"]
             player_update = analyze("0x0043EE50", False)
             player_update_observed = player_update["exact_observations"]
+            ecl_find_large = analyze("0x00418120", False)
+            ecl_find_large_features = ecl_find_large["inferences"]["features"]
             failures = []
             if aux_observed["frame_size"] != 0x44:
                 failures.append("0x0043E0A0 frame regression")
@@ -564,6 +585,8 @@ def main() -> int:
                 or player_update_observed["instruction_count"] != 1408
             ):
                 failures.append("0x0043EE50 frame/instruction-count regression")
+            if "x87_f32_threshold_c0_branch" not in ecl_find_large_features:
+                failures.append("0x00418120 x87 threshold-branch regression")
             same_shape = compare_instruction_shapes(
                 bytes.fromhex("55 8b ec 83 ec 08 89 4d fc 6a 01"),
                 bytes.fromhex("55 8b ec 83 ec 10 89 4d f8 6a 7f"),

@@ -628,6 +628,18 @@ address = "0x00418110"
 symbol_base = "?EclOp121NoOp@th07@@YIXPAUEnemyOverlay@EclOperands@1@PBUEclOp121InstructionOverlay@1@@Z"
 
 [[units.ecl-run.functions]]
+address = "0x00418120"
+symbol_base = "?EclOp121FindLargeBullet@th07@@YIXPAUEnemyOverlay@EclOperands@1@PBUEclOp121InstructionOverlay@1@@Z"
+rel32_targets = [
+  "?SpawnParticles@EffectManager@th07@@QAEPAXHPAUD3DXVECTOR3@@HH@Z=0x0041C1C0",
+  "?Clear@EclOp121Bullet@th07@@QAEXXZ=0x00417B20",
+]
+dir32_targets = [
+  "?g_EffectManager@th07@@3UEffectManager@1@A=?g_EffectManager@th07@@3UEffectManager@1@A",
+  "__real@42700000=ecl_real_60",
+]
+
+[[units.ecl-run.functions]]
 address = "0x00417C30"
 symbol_base = "?EclOp121RotateBullets@th07@@YIXPAUEnemyOverlay@EclOperands@1@PBUEclOp121InstructionOverlay@1@@Z"
 rel32_targets = [

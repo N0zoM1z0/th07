@@ -286,6 +286,39 @@ void __fastcall EclOp121RotateBullets(EclOperands::EnemyOverlay *enemy,
     }
 }
 
+#pragma var_order(request, i, bullet, unusedInstructionParameter, targetSlotEC, targetSlotE8)
+void __fastcall EclOp121FindLargeBullet(EclOperands::EnemyOverlay *enemy,
+                                        const EclOp121InstructionOverlay *instruction)
+{
+    i32 unusedInstructionParameter;
+    // Target-observed unaccessed debug-frame dwords at EBP-0xEC/-0xE8.
+    i32 targetSlotEC;
+    i32 targetSlotE8;
+    EclOp121Bullet *bullet;
+    i32 i;
+    EclOp121BulletSpawnRequest request;
+
+    bullet = reinterpret_cast<EclOp121Bullet *>(0x0063B218);
+    memset(&request, 0, sizeof(request));
+    request.commandOwner = -1;
+    unusedInstructionParameter = instruction->rawParameter10;
+    *(f32 *)(enemy->bytes + 0x70C) = -999.0f;
+
+    for (i = 0; i < 1024; i++, bullet = reinterpret_cast<EclOp121Bullet *>(bullet->bytes + 0xD68))
+    {
+        if (*(u16 *)(bullet->bytes + 0xBFC) == 0 || *(u16 *)(bullet->bytes + 0xBFC) == 5)
+            continue;
+        if (*(f32 *)(*(u8 **)(bullet->bytes + 0x1E4) + 0x2C) >= 60.0f)
+        {
+            *(f32 *)(enemy->bytes + 0x70C) = *(f32 *)(bullet->bytes + 0xB8C);
+            *(f32 *)(enemy->bytes + 0x710) = *(f32 *)(bullet->bytes + 0xB90);
+            g_EffectManager.SpawnParticles(2, reinterpret_cast<D3DXVECTOR3 *>(bullet->bytes + 0xB8C), 1, -1);
+            bullet->Clear();
+            break;
+        }
+    }
+}
+
 #pragma var_order(modeForSwitch, instructionMode, squaredDistance, sqrtTemporary, \
                   distance, radius, bullet, i, request)
 void __fastcall EclOp121CancelBulletsInRadius(EclOperands::EnemyOverlay *enemy,

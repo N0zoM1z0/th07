@@ -48,6 +48,13 @@ recommendation = "Use a double literal/expression for an x87 qword memory operan
 evidence = "Player auxiliary collision 0x0043E0A0 exact qword-zero guard"
 
 [[rules]]
+id = "vc7-x87-positive-f32-threshold"
+requires = ["x87_f32_threshold_c0_branch"]
+confidence = "observed_pattern"
+recommendation = "For a target `fld value; fcomp f32-constant; fnstsw ax; test ah, 1` threshold guard, express the accepted path as a positive `value >= constant` block before trying an inverted `continue`; VC7 then preserves the target's C0-only branch form. Retain it only through strict comparison."
+evidence = "ECL opcode-121 large-bullet search 0x00418120 reached strict exact 311/311 bytes and 67/67 instructions with the positive threshold block; the equivalent inverted form emitted a different x87 branch sequence."
+
+[[rules]]
 id = "vc7-nonfolded-idiv"
 requires = ["idiv"]
 confidence = "observed_pattern"
