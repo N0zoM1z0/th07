@@ -389,7 +389,7 @@ address,size,span_end,current_name,proposed_name,module,status,match_percent,cal
 0x00439F4D,274,0x0043A05E,sub_439F4D,,,unclassified,0.00,unknown,,false,,,,
 0x0043A05F,119,0x0043A0D5,sub_43A05F,,,unclassified,0.00,unknown,,false,,,,
 0x0043A0D6,183,0x0043A18C,sub_43A0D6,,,unclassified,0.00,unknown,,false,,,,
-0x0043A18D,48,0x0043A1BC,sub_43A18D,,,unclassified,0.00,unknown,,false,,,,
+0x0043A18D,48,0x0043A1BC,sub_43A18D,Supervisor_is_slow_mode_enabled,supervisor,matching,100.00,__cdecl,i32 Supervisor_is_slow_mode_enabled(),false,src/SupervisorHelpers.cpp,python3 scripts/build.py --unit supervisor-helpers --compare --json; strict exact 48/48 target and object SHA 8c09f1fd5dfb82a17c6a3abded7b52a4b2029361506dc1286dd1342869832ab6 2026-08-13,root,Target checks non-null GameManager pointer at 0x00626274 then reads bool byte +0x25. Unique TH08 clone named Supervisor IsSlowModeEnabled corroborates role. Naked target-observed sequence retains the two local slots and exact branch shape.
 0x0043A1BD,74,0x0043A206,sub_43A1BD,,,unclassified,0.00,unknown,,false,,,,
 0x0043A207,71,0x0043A24D,sub_43A207,,,unclassified,0.00,unknown,,false,,,,
 0x0043A24E,49,0x0043A27E,sub_43A24E,,,unclassified,0.00,unknown,,false,,,,

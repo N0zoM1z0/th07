@@ -1302,6 +1302,18 @@ notes = "Target-pinned WaveFile size getter; TH08 exact clone corroborates the r
 address = "0x0045E1F0"
 symbol_base = "?GetSize@WaveFile@th07@@QAEHXZ"
 
+[units.supervisor-helpers]
+kind = "probe"
+source = "src/SupervisorHelpers.cpp"
+object = "build/match-units/SupervisorHelpers.obj"
+profile = "vc7-debug-od-no-gs-g6"
+notes = "Target-pinned Supervisor GameManager predicate helpers."
+
+[[units.supervisor-helpers.functions]]
+address = "0x0043A18D"
+symbol_base = "?IsSlowModeEnabled@th07@@YIHXZ"
+dir32_targets = ["?g_TargetGameManager626274@th07@@3PAUSupervisorGameState@1@A=replay_game_manager"]
+
 [units.bullet-update]
 kind = "probe"
 source = "src/BulletUpdate.cpp"
