@@ -2605,6 +2605,21 @@ object = "build/match-units/PbgArchive.obj"
 profile = "vc7-debug-od-no-gs-g6"
 notes = "Focused VC7 probe for the target-attested 0x10 PbgArchive owner constructor."
 
+[units.lzss]
+kind = "probe"
+source = "src/Lzss.cpp"
+object = "build/match-units/Lzss.obj"
+profile = "vc7-debug-od-no-gs-g6"
+notes = "Focused VC7 probe for the target-attested PBG LZSS decoder and its persistent 0x2000-byte dictionary."
+
+[[units.lzss.functions]]
+address = "0x0045EF00"
+symbol_base = "?LzssDecode@th07@@YIPAXPAXI0I@Z"
+dir32_targets = [
+  "__imp__GlobalAlloc@8=__imp__GlobalAlloc@8",
+  "?g_LzssDictionary@th07@@3PAEA=?g_LzssDictionary@th07@@3PAEA",
+]
+
 [[units.pbg-file.functions]]
 address = "0x0045E550"
 symbol_base = "??0CPbgFile@th07@@QAE@XZ"
