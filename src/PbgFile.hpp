@@ -37,6 +37,11 @@ class CPbgFile : public IPbgFile
     virtual ~CPbgFile();
     virtual void *ReadWholeFile(u32 maximumSize);
 
+    // Target 0x0045E9D0 receives its two arguments in ECX/EDX and is called
+    // by Open after its mode parser accepts a file mode.  It turns a relative
+    // path into one rooted at the executable's directory.
+    static void __fastcall GetFullFilePath(char *buffer, const char *filename);
+
     HANDLE m_handle;
     u32 m_mode;
 };

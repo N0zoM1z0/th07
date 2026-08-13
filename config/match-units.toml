@@ -2614,6 +2614,16 @@ dir32_targets = [
 ]
 
 [[units.pbg-file.functions]]
+address = "0x0045E620"
+symbol_base = "?Open@CPbgFile@th07@@UAE_NPBD0@Z"
+rel32_targets = ["?GetFullFilePath@CPbgFile@th07@@SIXPADPBD@Z=0x0045E9D0"]
+dir32_targets = [
+  "__imp__DeleteFileA@4=__imp__DeleteFileA@4",
+  "__imp__CreateFileA@28=__imp__CreateFileA@28",
+  "__imp__SetFilePointer@16=__imp__SetFilePointer@16",
+]
+
+[[units.pbg-file.functions]]
 address = "0x0045E770"
 symbol_base = "?Close@CPbgFile@th07@@UAEXXZ"
 dir32_targets = ["__imp__CloseHandle@4=__imp__CloseHandle@4"]
@@ -2651,6 +2661,15 @@ dir32_targets = [
   "__imp__GlobalFree@4=__imp__GlobalFree@4",
   "?g_TargetPbgSeekBegin@th07@@3IA=?g_TargetPbgSeekBegin@th07@@3IA",
 ]
+
+[[units.pbg-file.functions]]
+address = "0x0045E9D0"
+symbol_base = "?GetFullFilePath@CPbgFile@th07@@SIXPADPBD@Z"
+rel32_targets = [
+  "_strchr=0x0047DD00",
+  "_strrchr=0x0047D4B0",
+]
+dir32_targets = ["__imp__GetModuleFileNameA@12=__imp__GetModuleFileNameA@12"]
 
 [[units.pbg-file-destructor.functions]]
 address = "0x0045E500"

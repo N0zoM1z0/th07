@@ -18,6 +18,59 @@ CPbgFile::~CPbgFile()
     Close();
 }
 
+#pragma var_order(curMode, goToEnd, filePathBuffer, creationDisposition)
+bool CPbgFile::Open(const char *filename, const char *mode)
+{
+    DWORD creationDisposition;
+    BOOL goToEnd = FALSE;
+    char filePathBuffer[MAX_PATH];
+
+    Close();
+
+    const char *curMode;
+    for (curMode = mode; *curMode != '\0'; curMode++)
+    {
+        if (*curMode == 'r')
+        {
+            m_mode = GENERIC_READ;
+            creationDisposition = OPEN_EXISTING;
+            break;
+        }
+        if (*curMode == 'w')
+        {
+            DeleteFileA(filename);
+            m_mode = GENERIC_WRITE;
+            creationDisposition = CREATE_ALWAYS;
+            break;
+        }
+        if (*curMode == 'a')
+        {
+            goToEnd = TRUE;
+            m_mode = GENERIC_WRITE;
+            creationDisposition = OPEN_ALWAYS;
+            break;
+        }
+    }
+
+    if (*curMode == '\0')
+    {
+        return false;
+    }
+
+    GetFullFilePath(filePathBuffer, filename);
+    m_handle = CreateFileA(filePathBuffer, m_mode, FILE_SHARE_READ, NULL, creationDisposition,
+                           FILE_ATTRIBUTE_NORMAL | FILE_FLAG_SEQUENTIAL_SCAN, NULL);
+    if (m_handle == INVALID_HANDLE_VALUE)
+    {
+        return false;
+    }
+    if (goToEnd)
+    {
+        SetFilePointer(m_handle, 0, NULL, FILE_END);
+    }
+    return true;
+}
+
 // The target close path releases only an open OS handle and restores the
 // constructor's unopened state.
 void CPbgFile::Close()
@@ -117,5 +170,26 @@ void *CPbgFile::ReadWholeFile(u32 maximumSize)
     }
     Seek(previousOffset, g_TargetPbgSeekBegin);
     return memory;
+}
+
+void __fastcall CPbgFile::GetFullFilePath(char *buffer, const char *filename)
+{
+    if (strchr(filename, ':') != NULL)
+    {
+        strcpy(buffer, filename);
+    }
+    else
+    {
+        GetModuleFileNameA(NULL, buffer, MAX_PATH);
+
+        char *endOfModulePath = strrchr(buffer, '\\');
+        if (endOfModulePath == NULL)
+        {
+            strcpy(buffer, "");
+        }
+
+        endOfModulePath[1] = '\0';
+        strcat(buffer, filename);
+    }
 }
 } // namespace th07
