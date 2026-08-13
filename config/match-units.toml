@@ -2620,6 +2620,60 @@ dir32_targets = [
   "?g_LzssDictionary@th07@@3PAEA=?g_LzssDictionary@th07@@3PAEA",
 ]
 
+[[units.lzss.functions]]
+address = "0x0045EAD0"
+symbol_base = "?LzssEncode@th07@@YIPAEPAEHPAH@Z"
+rel32_targets = [
+  "?LzssInitEncoderState@th07@@YAXXZ=0x0045F2C0",
+  "?LzssInitTree@th07@@YIXH@Z=0x0045F270",
+  "?LzssDeleteString@th07@@YIXH@Z=0x0045F460",
+  "?LzssAddString@th07@@YIHHPAH@Z=0x0045F340",
+]
+dir32_targets = [
+  "__imp__GlobalAlloc@8=__imp__GlobalAlloc@8",
+  "?g_LzssDictionary@th07@@3PAEA=?g_LzssDictionary@th07@@3PAEA",
+]
+
+[[units.lzss.functions]]
+address = "0x0045F270"
+symbol_base = "?LzssInitTree@th07@@YIXH@Z"
+dir32_targets = ["?g_LzssTree@th07@@3PAULzssTreeNode@1@A=?g_LzssTree@th07@@3PAULzssTreeNode@1@A"]
+
+[[units.lzss.functions]]
+address = "0x0045F2C0"
+symbol_base = "?LzssInitEncoderState@th07@@YAXXZ"
+dir32_targets = [
+  "?g_LzssDictionary@th07@@3PAEA=?g_LzssDictionary@th07@@3PAEA",
+  "?g_LzssTree@th07@@3PAULzssTreeNode@1@A=?g_LzssTree@th07@@3PAULzssTreeNode@1@A",
+]
+
+[[units.lzss.functions]]
+address = "0x0045F340"
+symbol_base = "?LzssAddString@th07@@YIHHPAH@Z"
+rel32_targets = ["?LzssReplaceNode@th07@@YIXHH@Z=0x0045F580"]
+
+[[units.lzss.functions]]
+address = "0x0045F460"
+symbol_base = "?LzssDeleteString@th07@@YIXH@Z"
+rel32_targets = [
+  "?LzssContractNode@th07@@YIXHH@Z=0x0045F4F0",
+  "?LzssFindNextNode@th07@@YIHH@Z=0x0045F640",
+  "?LzssDeleteString@th07@@YIXH@Z=0x0045F460",
+  "?LzssReplaceNode@th07@@YIXHH@Z=0x0045F580",
+]
+
+[[units.lzss.functions]]
+address = "0x0045F4F0"
+symbol_base = "?LzssContractNode@th07@@YIXHH@Z"
+
+[[units.lzss.functions]]
+address = "0x0045F580"
+symbol_base = "?LzssReplaceNode@th07@@YIXHH@Z"
+
+[[units.lzss.functions]]
+address = "0x0045F640"
+symbol_base = "?LzssFindNextNode@th07@@YIHH@Z"
+
 [[units.pbg-file.functions]]
 address = "0x0045E550"
 symbol_base = "??0CPbgFile@th07@@QAE@XZ"

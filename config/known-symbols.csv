@@ -76,7 +76,15 @@ address,name,module,confidence,evidence
 0x0045E520,IPbgFile_scalar_deleting_dtor,pbg,observed,Exact target IPbgFile vtable slot and strict VC7 scalar deleting destructor comparison
 0x0045E9D0,CPbgFile_get_full_file_path,pbg,observed,Exact target fastcall path resolver and strict VC7 comparison
 0x0045E4F0,DebugPrint,pbg,observed,Exact target no-op variadic diagnostic hook and strict VC7 comparison
+0x0045EAD0,LzssEncode,pbg,observed,Exact target fastcall LZSS encoder and strict VC7 comparison
 0x0045EF00,LzssDecode,pbg,observed,Exact target fastcall LZSS decoder persistent dictionary and strict VC7 comparison
+0x0045F270,LzssInitTree,pbg,observed,Exact target LZSS tree root initialization and strict VC7 comparison
+0x0045F2C0,LzssInitEncoderState,pbg,observed,Exact target LZSS dictionary and tree reset and strict VC7 comparison
+0x0045F340,LzssAddString,pbg,observed,Exact target LZSS tree string insertion and strict VC7 comparison
+0x0045F460,LzssDeleteString,pbg,observed,Exact target LZSS tree string deletion and strict VC7 comparison
+0x0045F4F0,LzssContractNode,pbg,observed,Exact target LZSS tree node contraction and strict VC7 comparison
+0x0045F580,LzssReplaceNode,pbg,observed,Exact target LZSS tree node replacement and strict VC7 comparison
+0x0045F640,LzssFindNextNode,pbg,observed,Exact target LZSS predecessor lookup and strict VC7 comparison
 0x0045F6B0,PbgArchive_ctor,pbg,observed,Exact target four-field archive owner initialization and strict VC7 comparison
 0x0045F680,PbgArchiveEntry_dtor,pbg,observed,Exact target filename GlobalFree ownership and strict VC7 comparison
 0x0045F6F0,PbgArchive_dtor,pbg,observed,Exact target Release delegation and strict VC7 comparison

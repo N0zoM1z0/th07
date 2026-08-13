@@ -12,6 +12,7 @@ __imp__WriteFile@20,0x0048D054,f6ae0900,0x0,PE KERNEL32 import table entry for W
 __imp__GlobalFree@4,0x0048D090,06b00900,0x0,PE KERNEL32 import table entry for GlobalFree,literal
 __imp__GlobalAlloc@8,0x0048D0B4,92b00900,0x0,PE KERNEL32 import table entry for GlobalAlloc,literal
 ?g_LzssDictionary@th07@@3PAEA,0x004B7E40,00000000,0x0,Target 0x0045EF00 directly indexes this 0x2000-byte persistent LZSS dictionary; its image-uninitialized storage is represented as zero,literal
+?g_LzssTree@th07@@3PAULzssTreeNode@1@A,0x0049FE30,00000000,0x0;0x4;0x8;0x18008,Target 0x0045F270 directly accesses root-sentinel right plus dynamic parent-left-right fields of this 8193-node LZSS tree,address
 __imp__CreateFileA@28,0x0048D04C,daae0900,0x0,PE KERNEL32 import table entry for CreateFileA,literal
 __imp__GetModuleFileNameA@12,0x0048D080,b4af0900,0x0,PE KERNEL32 import table entry for GetModuleFileNameA,literal
 __imp__DeleteFileA@4,0x0048D0B8,a0b00900,0x0,PE KERNEL32 import table entry for DeleteFileA,literal
