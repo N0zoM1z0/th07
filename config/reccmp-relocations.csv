@@ -48,8 +48,8 @@ __imp__SetKeyboardState@4,0x0048D1B4,e6b00900,0x0,PE USER32 import table entry f
 ?g_BulletManagerCalcChain@th07@@3UChainElem@1@A,0x009A9ABC,00000000,0x0;0x4;0x8;0xC;0x1C,Direct target callback-chain field references and zero-initialized target storage,literal
 ?g_BulletManagerDrawChain@th07@@3UChainElem@1@A,0x0062F934,00000000,0x0;0x4;0x8;0xC;0x1C,Direct target callback-chain field references and zero-initialized target storage,literal
 ?g_Chain@th07@@3UChain@1@A,0x00626218,00000000,0x0,Direct target this pointer used by callback-chain methods and zero-initialized target storage,literal
-chain_reset_elem_13478f8,0x013478F8,00000000,0x0,Direct target BSS ChainElem address passed to Chain Cut at 0x0041D150,literal
-chain_reset_elem_1347918,0x01347918,00000000,0x0,Direct target BSS ChainElem address passed to Chain Cut at 0x0041D150,literal
+chain_reset_elem_13478f8,0x013478F8,00000000,0x0;0x4;0x8;0xC;0x1C,Direct target BSS ChainElem address passed to Chain Cut and configured by reset registration at 0x0041D0A0,literal
+chain_reset_elem_1347918,0x01347918,00000000,0x0;0x4;0x8;0xC;0x1C,Direct target BSS ChainElem address passed to Chain Cut and configured by reset registration at 0x0041D0A0,literal
 ?g_BulletManagerStorage@th07@@3PAEA,0x0062F958,00000000,0x0,Direct target destination used by BulletManager CutChain bulk clear,literal
 ?g_GrazeState@th07@@3UGrazeState@1@A,0x00626270,00000000,0x0,Direct target this pointer used by Player death and graze-state calls and zero-initialized target storage,literal
 ?g_EffectManager@th07@@3UEffectManager@1@A,0x012FE250,00000000,0x0,Direct target this pointer used by Player effect calls and zero-initialized target storage,literal

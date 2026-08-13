@@ -20,10 +20,24 @@ struct ChainOverlay
     i32 AddToDrawChain(ChainNodeOverlay *node, i32 priority);
 };
 
+// The storage type is defined privately in EnemyManagerUpdate.cpp.  This
+// declaration exists only to preserve the target-attested member ABI here.
+struct EnemyManagerUpdateOverlay
+{
+    void ClearObservedStorage();
+};
+
 extern ChainOverlay g_Chain;
 extern ChainNodeOverlay g_EnemyCalcChain;
 extern ChainNodeOverlay g_EnemyDrawHighChain;
 extern ChainNodeOverlay g_EnemyDrawLowChain;
+extern ChainNodeOverlay g_TargetResetCalcChain13478F8;
+extern ChainNodeOverlay g_TargetResetDrawChain1347918;
+
+extern i32 __fastcall Target41C790(void *argument);
+extern i32 __fastcall Target41CDE0(void *argument);
+extern i32 __fastcall Target41D050(void *argument);
+extern i32 __fastcall Target41CA10(void *argument);
 
 struct EnemyAnmManager
 {
@@ -92,6 +106,30 @@ void EnemyManagerLifecycle::CutChain()
     g_Chain.Cut(&g_EnemyCalcChain);
     g_Chain.Cut(&g_EnemyDrawHighChain);
     g_Chain.Cut(&g_EnemyDrawLowChain);
+}
+
+i32 __cdecl RegisterObservedResetChains()
+{
+    EnemyManagerUpdateOverlay *manager;
+
+    manager = reinterpret_cast<EnemyManagerUpdateOverlay *>(0x012FE250);
+    manager->ClearObservedStorage();
+
+    g_TargetResetCalcChain13478F8.callback = reinterpret_cast<void *>(&Target41C790);
+    g_TargetResetCalcChain13478F8.addedCallback = 0;
+    g_TargetResetCalcChain13478F8.deletedCallback = 0;
+    g_TargetResetCalcChain13478F8.addedCallback = reinterpret_cast<void *>(&Target41CDE0);
+    g_TargetResetCalcChain13478F8.deletedCallback = reinterpret_cast<void *>(&Target41D050);
+    g_TargetResetCalcChain13478F8.arg = manager;
+    if (g_Chain.AddToCalcChain(&g_TargetResetCalcChain13478F8, 11))
+        return -1;
+
+    g_TargetResetDrawChain1347918.callback = reinterpret_cast<void *>(&Target41CA10);
+    g_TargetResetDrawChain1347918.addedCallback = 0;
+    g_TargetResetDrawChain1347918.deletedCallback = 0;
+    g_TargetResetDrawChain1347918.arg = manager;
+    g_Chain.AddToDrawChain(&g_TargetResetDrawChain1347918, 9);
+    return 0;
 }
 
 i32 __fastcall EnemyManagerLifecycle::RegisterChain(const char *enemyAnm, const char *enemy2Anm)
