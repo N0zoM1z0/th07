@@ -66,4 +66,14 @@ PbgArchiveEntry *PbgArchive::FindEntry(const char *filename)
     }
     return NULL;
 }
+
+char *PbgArchive::CopyFileName(const char *filename)
+{
+    char *copy = (char *)GlobalAlloc(0, strlen(filename) + 1);
+    if (copy != NULL)
+    {
+        strcpy(copy, filename);
+    }
+    return copy;
+}
 } // namespace th07
