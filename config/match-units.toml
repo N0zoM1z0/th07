@@ -2617,6 +2617,11 @@ dir32_targets = [
 address = "0x0045F6B0"
 symbol_base = "??0PbgArchive@th07@@QAE@XZ"
 
+[[units.pbg-archive.functions]]
+address = "0x0045F680"
+symbol_base = "??1PbgArchiveEntry@th07@@QAE@XZ"
+dir32_targets = ["__imp__GlobalFree@4=__imp__GlobalFree@4"]
+
 [[units.pbg-file.functions]]
 address = "0x0045E590"
 symbol_base = "??_GCPbgFile@th07@@UAEPAXI@Z"

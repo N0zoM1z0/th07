@@ -6,7 +6,19 @@ namespace th07
 {
 // Target 0x0045F6B0 clears exactly these four archive-owner fields.  Their
 // roles are corroborated by the immediately following TH07 archive methods.
-struct PbgArchiveEntry;
+struct PbgArchiveEntry
+{
+    // Target destructor 0x0045F680 only owns the filename allocation; the
+    // following fields agree with target-side archive entry consumers.
+    HGLOBAL filename;
+    u32 dataOffset;
+    u32 decompressedSize;
+    u32 unknown;
+
+    ~PbgArchiveEntry();
+};
+
+typedef char PbgArchiveEntrySizeMustBe0x10[(sizeof(PbgArchiveEntry) == 0x10) ? 1 : -1];
 
 class PbgArchive
 {
