@@ -1,10 +1,12 @@
 #include "inttypes.hpp"
 
-#include <d3dx8math.h>
-#include <math.h>
-#include <string.h>
-
+extern "C" double __cdecl cos(double);
+extern "C" double __cdecl sin(double);
 #pragma intrinsic(sin, cos)
+
+#include <math.h>
+#include <d3dx8math.h>
+#include <string.h>
 
 namespace th07 {
 
@@ -643,7 +645,7 @@ void PlayerBombOverlay::FinishDeathBomb()
     reinterpret_cast<PlayerBombInputState *>(g_PlayerCollisionFlags)->flags |= 8;
 }
 
-#pragma var_order(effect, index, angle, effectTimer78, effectTimerB, effectTimer60, effectTimer9C, playerTimer, this, radialCos, radialSin)
+#pragma var_order(effect, index, angle, effectTimer78, effectTimerB, effectTimer60, effectTimer9C, playerTimer, this)
 void PlayerBombOverlay::StartDeathBomb(i32)
 {
     PlayerBombTimer *playerTimer;
@@ -671,10 +673,10 @@ void PlayerBombOverlay::StartDeathBomb(i32)
     effectTimerB->fraction = 0.0f;
     effectTimerB->previous = -999;
     effect->enabledC4 = 0;
-    effect->speedX = 0.0625f;
-    effect->speedY = 0.0625f;
-    effect->scaleX = 1.3f;
-    effect->scaleY = 1.3f;
+    effect->scaleX = 0.0625f;
+    effect->scaleY = 0.0625f;
+    effect->speedX = 1.3f;
+    effect->speedY = 1.3f;
     effectTimer60 = &effect->timer60;
     effectTimer60->current = 0;
     effectTimer60->fraction = 0.0f;
@@ -704,15 +706,10 @@ void PlayerBombOverlay::StartDeathBomb(i32)
                             50, 8);
     angle = -3.14159274f;
     for (index = 0; index < 32; ++index, angle += 0.196349546f) {
-        f32 radialCos;
-        f32 radialSin;
-
         effect = reinterpret_cast<PlayerBombEffect *>(g_EffectManager.SpawnParticles(
             29, reinterpret_cast<D3DXVECTOR3 *>(reinterpret_cast<u8 *>(this) + 0x930), 1, -1));
-        radialCos = (f32)cos(angle);
-        effect->radialCos = radialCos;
-        radialSin = (f32)sin(angle);
-        effect->radialSin = radialSin;
+        effect->radialCos = cosf(angle);
+        effect->radialSin = sinf(angle);
     }
 
     g_SoundPlayer.PlaySoundByIdx(7, 0);

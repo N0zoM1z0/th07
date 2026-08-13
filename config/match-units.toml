@@ -658,8 +658,8 @@ dir32_targets = [
 kind = "probe"
 source = "src/PlayerBomb.cpp"
 object = "build/match-units/PlayerBomb.obj"
-profile = "vc7-debug-od-no-gs-g6"
-notes = "Focused VC7 unoptimized no-GS G6 Player bomb-tail probe over the target-observed full 0xB7E78 layout."
+profile = "vc7-debug-od-no-gs-g6-no-op"
+notes = "Focused VC7 unoptimized no-GS G6 no-Op Player bomb-tail probe over the target-observed full 0xB7E78 layout."
 
 [[units.player-bomb.functions]]
 address = "0x0043B7F0"
