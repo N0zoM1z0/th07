@@ -164,6 +164,14 @@ struct EclOp121InstructionOverlay
     i32 rawParameter10;
 };
 
+struct EclResetSlot41AE90
+{
+    u8 bytes[0x2D8];
+};
+typedef char EclResetSlot41AE90_size[(sizeof(EclResetSlot41AE90) == 0x2D8) ? 1 : -1];
+
+extern EclResetSlot41AE90 g_TargetResetSlots12FE26C[400];
+
 struct EclOp121MovementBits
 {
     u8 copyTransform : 1;
@@ -276,7 +284,20 @@ extern f32 g_TargetRealOne498A54;
 extern EclOp121TimerManager g_TargetTimerManager575950;
 
 void __fastcall Target44B310(i32 first, i32 second, i32 third, i32 fourth, i32 fifth);
-void __cdecl Target41AE90();
+
+#pragma var_order(slot, i)
+void __cdecl Target41AE90()
+{
+    i32 i;
+    EclResetSlot41AE90 *slot;
+
+    slot = g_TargetResetSlots12FE26C;
+    for (i = 0; i < 400; ++i, ++slot)
+    {
+        if (*(i8 *)(slot->bytes + 0x2CD) == 30)
+            *(f32 *)(slot->bytes + 0x278) = -0.01f;
+    }
+}
 
 #pragma var_order(i, bullet, angularStep)
 void __fastcall EclOp121RotateBullets(EclOperands::EnemyOverlay *enemy,

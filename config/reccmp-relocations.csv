@@ -103,6 +103,7 @@ ecl_global_1347AAC,0x01347AAC,00000000,0x0,Target-observed zero-initialized ECL 
 ecl_global_4BE408,0x004BE408,00000000,0x0;0x4;0x8,Target-observed zero-initialized ECL/player reference vector used by Enemy update,literal
 ecl_global_4BE40C,0x004BE40C,00000000,0x0,Target-observed zero-initialized ECL float operand storage,literal
 ecl_global_4BE410,0x004BE410,00000000,0x0,Target-observed zero-initialized ECL float operand storage,literal
+ecl_reset_slots_12FE26c,0x012FE26C,00000000,0x0,Direct target BSS slot-array base used by ECL reset helper 0x0041AE90,literal
 ecl_global_1347AB0,0x01347AB0,00000000,0x0,Target-observed zero-initialized ECL float bank slot,literal
 ecl_global_1347AB4,0x01347AB4,00000000,0x0,Target-observed zero-initialized ECL float bank slot,literal
 ecl_global_1347AB8,0x01347AB8,00000000,0x0,Target-observed zero-initialized ECL float bank slot,literal
