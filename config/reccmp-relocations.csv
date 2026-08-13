@@ -29,6 +29,7 @@ midi_output_dtor_eh_handler,0x0048C486,b864a84900e9d62fffff,0x0,Direct target EH
 texthelper_render_eh_handler,0x0048C558,b84ca94900e9042fffff,0x0,Direct target EH handler thunk referenced by TextHelper rendering,address
 ??_7CStreamingSound@th07@@6B@,0x0049528C,80da450030d04500,0x0,Direct target vptr assignment in CStreamingSound destructor,address
 ??_7CSound@th07@@6B@,0x00495290,30d04500,0x0,Direct target vptr assignments in CSound constructor and destructor,address
+??_7IPbgFile@th07@@6B@,0x0049526C,0be947000be947000be947000be947000be947000be947000be9470020e54500,0x0,Direct target vptr assignment in IPbgFile complete destructor; seven abstract entries precede its scalar deleting destructor,address
 _IID_IDirectSoundNotify,0x004903F8,830721b0cd89d011af0800a0c925cd16,0x0,Direct target GUID operand in CStreamingSound InitSoundBuffers,literal
 __imp__joyGetPosEx@8,0x0048D220,eaad0900,0x0,PE WINMM import table entry for joyGetPosEx,literal
 __imp__joyGetDevCapsA@12,0x0048D254,d8ad0900,0x0,PE WINMM import table entry for joyGetDevCapsA,literal

@@ -2591,6 +2591,18 @@ object = "build/match-units/Chain.obj"
 profile = "vc7-debug-od-no-gs-g6"
 notes = "Focused VC7 unoptimized callback-chain scheduler probe, bounded to the complete 0x0042FA60--0x00430284 cluster."
 
+[units.pbg-file-destructor]
+kind = "probe"
+source = "src/PbgFileDestructor.cpp"
+object = "build/match-units/PbgFileDestructor.obj"
+profile = "vc7-debug-od-no-gs-g6"
+notes = "Focused VC7 probe for the exact IPbgFile virtual base destructor; the PBG interface order is target-attested by the adjacent CPbgFile vtable."
+
+[[units.pbg-file-destructor.functions]]
+address = "0x0045E500"
+symbol_base = "??1IPbgFile@th07@@UAE@XZ"
+dir32_targets = ["??_7IPbgFile@th07@@6B@=??_7IPbgFile@th07@@6B@"]
+
 [[units.chain.functions]]
 address = "0x0041D150"
 symbol_base = "?CutObservedResetChains@th07@@YIXXZ"
