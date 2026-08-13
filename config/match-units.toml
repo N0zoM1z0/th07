@@ -1151,6 +1151,22 @@ rel32_targets = [
 ]
 dir32_targets = ["?g_EclManagerSpawn@th07@@3UEclManagerSpawnOverlay@1@A=ecl_manager_1347938"]
 
+[units.anm-triangle-fan]
+kind = "probe"
+source = "src/AnmTriangleFan.cpp"
+object = "build/match-units/AnmTriangleFan.obj"
+profile = "vc7-debug-od-no-gs-g6"
+notes = "Target-bounded TH07 triangle-fan renderer; TH08 corroborates only the semantic role."
+
+[[units.anm-triangle-fan.functions]]
+address = "0x004552D0"
+symbol_base = "?DrawTriangleFan@AnmTriangleFanManager@th07@@QAEHPAUAnmTriangleFanVm@2@PAUVertexDiffuseXyzrhw@2@H@Z"
+rel32_targets = [
+  "?FlushVertexBuffer@AnmTriangleFanManager@th07@@QAEXXZ=0x0044F5C0",
+  "?SetRenderStateForVm@AnmTriangleFanManager@th07@@QAEXPAUAnmTriangleFanVm@2@@Z=0x0044EAE0",
+]
+dir32_targets = ["?g_ScreenEffectDevice@th07@@3PAUIDirect3DDevice8@@A=?g_ScreenEffectDevice@th07@@3PAUIDirect3DDevice8@@A"]
+
 [units.enemy-lifecycle]
 kind = "probe"
 source = "src/EnemyLifecycle.cpp"

@@ -579,7 +579,7 @@ address,size,span_end,current_name,proposed_name,module,status,match_percent,cal
 0x004550C0,70,0x00455105,sub_4550C0,,,unclassified,0.00,unknown,,false,,,,
 0x00455110,91,0x0045516A,sub_455110,,,unclassified,0.00,unknown,,false,,,,
 0x00455170,352,0x004552CF,sub_455170,,,unclassified,0.00,unknown,,false,,,,
-0x004552D0,298,0x004553F9,sub_4552D0,AnmManager_draw_triangle_fan,anm,identified,0.00,__thiscall,i32 AnmManager_draw_triangle_fan(AnmManager * this; AnmVm * vm; VertexDiffuseXyzrhw * vertices; i32 count),false,,Target bounded disassembly as 0x422170 trail callee plus TH08 DrawTriangleFan corroboration 2026-08-13,root,Target proves VM visibility and alpha guards cached texture and FVF setup then DrawPrimitiveUP triangle fan with count minus two primitives and 28-byte vertices
+0x004552D0,298,0x004553F9,sub_4552D0,AnmManager_draw_triangle_fan,anm,matching,100.00,__thiscall,i32 AnmManager_draw_triangle_fan(AnmManager * this; AnmVm * vm; VertexDiffuseXyzrhw * vertices; i32 count),false,src/AnmTriangleFan.cpp,python3 scripts/build.py --unit anm-triangle-fan --compare --json; strict VC7 exact 298/298 bytes SHA256 5e21f3607d7397950edba2be74b85a638f175190bb457a6c54082f16e1a38f90 2026-08-13,root,Target proves VM visibility and alpha guards cached texture and FVF setup then DrawPrimitiveUP target primitive 5 with count minus two and 28-byte vertices
 0x004553FA,59,0x00455434,sub_4553FA,,,unclassified,0.00,unknown,,false,,,,
 0x00455435,72,0x0045547C,sub_455435,,,unclassified,0.00,unknown,,false,,,,
 0x0045547D,89,0x004554D5,sub_45547D,,,unclassified,0.00,unknown,,false,,,,

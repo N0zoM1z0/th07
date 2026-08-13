@@ -25,6 +25,7 @@ stable layer below the large manager callbacks:
 | `0x00422F40` | register update/draw chains | 267 |
 | `0x00423050` | cut update/draw chains | 50 |
 | `0x004232A0` | test whether an active boss exists | 64 |
+| `0x004552D0` | draw the enemy trail triangle fan | 298 |
 
 `0x00420490` is the direct player-collision helper. Its target frame is
 `0x4C`; the current implementation has the exact frame and receiver home but
