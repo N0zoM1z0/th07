@@ -441,6 +441,10 @@ def analyze(address: str, compare: bool) -> dict[str, Any]:
     shape = comparison.get("instruction_shape") if isinstance(comparison, dict) else None
     if isinstance(shape, dict) and shape.get("topology_exact"):
         features.add("instruction_topology_exact")
+        if shape.get("control_flow_exact"):
+            features.add("instruction_control_flow_exact")
+        elif shape.get("branch_target_mismatch_count"):
+            features.add("branch_target_mismatch")
         if any(
             item["target_offset"] != item["object_offset"]
             for item in shape.get("stack_slot_pairs", [])
@@ -560,6 +564,15 @@ def main() -> int:
             different_shape = compare_instruction_shapes(
                 bytes.fromhex("8b 45 fc"), bytes.fromhex("8b 4d fc"), 0x00401000
             )
+            different_branch = compare_instruction_shapes(
+                bytes.fromhex("74 02 90 90 c3"),
+                bytes.fromhex("74 01 90 90 c3"),
+                0x00401000,
+            )
+            bullet_body = load_target()[0].read(0x00425A50, 4237)
+            bullet_graph = compare_instruction_shapes(
+                bullet_body, bullet_body, 0x00425A50
+            )
             if not same_shape["topology_exact"] or not any(
                 item["target_offset"] == -4 and item["object_offset"] == -8
                 for item in same_shape["stack_slot_pairs"]
@@ -567,9 +580,19 @@ def main() -> int:
                 failures.append("instruction-shape normalization regression")
             if different_shape["shared_shape_prefix"] != 0:
                 failures.append("instruction-shape register regression")
+            if (
+                different_branch["branch_target_mismatch_count"] != 1
+                or different_branch["first_branch_target_mismatch"]["instruction_index"] != 0
+            ):
+                failures.append("instruction branch-graph regression")
+            if (
+                not bullet_graph["control_flow_exact"]
+                or bullet_graph["target_internal_branch_count"] != 86
+            ):
+                failures.append("0x00425A50 branch-graph regression")
             if failures:
                 raise ValueError("; ".join(failures))
-            print("typed reconstruction facts OK: 5 target-pinned regressions plus shape fixtures")
+            print("typed reconstruction facts OK: 6 target-pinned regressions plus shape/branch fixtures")
             return 0
         if not args.address:
             parser.error("address is required unless --check is selected")

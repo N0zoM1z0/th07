@@ -69,6 +69,13 @@ recommendation = "When the normalized instruction topology is complete but EBP s
 evidence = "Player::OnUpdate 0x0043EE50 reached all 1408 target instruction shapes before its final receiver-home/local-order adjustment, then became strict exact 6790/6790 bytes"
 
 [[rules]]
+id = "zun-shared-label-branch-target"
+requires = ["instruction_topology_exact", "branch_target_mismatch"]
+confidence = "observed_pattern"
+recommendation = "When instruction topology and sizes align but an internal jump reaches a different instruction index, inspect source-level continue/break/goto and switch fallthrough before changing expressions or ABI. Reuse the target's real shared cleanup/advance label."
+evidence = "BulletManager::OnUpdate 0x00425A50 had 999/999 aligned instruction shapes but three Clear paths used C++ continue and skipped the target's shared bullet-advance label; replacing them with the target-backed advance edge produced strict exact 4237/4237 bytes"
+
+[[rules]]
 id = "zun-direct-boolean-materialization"
 requires = ["boolean_materialization", "register_home"]
 confidence = "observed_pattern"

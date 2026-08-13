@@ -28,6 +28,8 @@ target observations, compiler inferences, and source hypotheses separate.
    `topology_exact` is true, inspect `stack_slot_pairs` and instruction sizes
    before changing behavior: the remaining problem is usually constants,
    relocations, local order, or lifetime shaping.
+   Then inspect `first_branch_target_mismatch`: equal instruction shapes can
+   still send a `continue`, `break`, or `goto` to the wrong shared label.
 6. Accept a result only through the canonical unit's strict 100% comparison.
 
 If the address has no match-unit entry, use the packet for ABI recovery and ask
@@ -48,6 +50,10 @@ the coordinator to create the canonical entry before matching iterations.
 - A target jump table can establish emitted case-destination order and reveal
   shared labels. Treat the recovered source case order as an inference and
   verify every case's fields, signs, side effects, and fallthrough against TH07.
+- Model unaccessed inline parameter homes only when the exact target holes and
+  the pinned SDK/adjacent source identify their roles. For D3DX8 vector
+  lowering, name constructor/division receiver and scalar homes; never replace
+  that evidence with anonymous padding or an arbitrary byte array.
 - Read `exact_observations.unaccessed_frame_slots` before shaping a receiver
   home. These are target frame dwords with no decoded memory access; they can
   corroborate a legacy reserved local, but do not by themselves justify adding

@@ -68,6 +68,24 @@ def _instruction_record(instruction: Any, base: int) -> dict[str, Any]:
     }
 
 
+def _internal_branch_edges(instructions: list[Any]) -> dict[int, int]:
+    """Map direct jump instruction indices to destination instruction indices."""
+    address_to_index = {
+        instruction.address: index for index, instruction in enumerate(instructions)
+    }
+    edges: dict[int, int] = {}
+    for index, instruction in enumerate(instructions):
+        if not instruction.mnemonic.startswith("j") or not instruction.operands:
+            continue
+        operand = instruction.operands[0]
+        if operand.type != X86_OP_IMM:
+            continue
+        destination = int(operand.imm) & 0xFFFFFFFF
+        if destination in address_to_index:
+            edges[index] = address_to_index[destination]
+    return edges
+
+
 def compare_instruction_shapes(
     target: bytes, object_code: bytes, address: int
 ) -> dict[str, Any]:
@@ -129,6 +147,32 @@ def compare_instruction_shapes(
             ),
         }
 
+    target_edges = _internal_branch_edges(target_instructions)
+    object_edges = _internal_branch_edges(object_instructions)
+    branch_mismatches = []
+    for index in sorted(set(target_edges) | set(object_edges)):
+        target_destination = target_edges.get(index)
+        object_destination = object_edges.get(index)
+        if target_destination == object_destination:
+            continue
+        branch_mismatches.append(
+            {
+                "instruction_index": index,
+                "target_destination_index": target_destination,
+                "object_destination_index": object_destination,
+                "target": (
+                    _instruction_record(target_instructions[index], address)
+                    if index < len(target_instructions)
+                    else None
+                ),
+                "object": (
+                    _instruction_record(object_instructions[index], address)
+                    if index < len(object_instructions)
+                    else None
+                ),
+            }
+        )
+
     return {
         "target_instruction_count": len(target_instructions),
         "object_instruction_count": len(object_instructions),
@@ -137,6 +181,12 @@ def compare_instruction_shapes(
         "shared_shape_prefix": prefix,
         "topology_exact": topology_exact,
         "first_shape_mismatch": first_mismatch,
+        "target_internal_branch_count": len(target_edges),
+        "object_internal_branch_count": len(object_edges),
+        "branch_target_mismatch_count": len(branch_mismatches),
+        "first_branch_target_mismatch": branch_mismatches[0] if branch_mismatches else None,
+        "branch_target_mismatches": branch_mismatches[:32],
+        "control_flow_exact": topology_exact and not branch_mismatches,
         "instruction_size_differences": size_differences,
         "stack_slot_pairs": [
             {
@@ -149,4 +199,3 @@ def compare_instruction_shapes(
             )[:64]
         ],
     }
-
