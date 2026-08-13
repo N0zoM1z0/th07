@@ -706,7 +706,7 @@ static __forceinline void TrackLastEnemyHit(EnemyManagerUpdateEnemy *enemy)
     }
 }
 
-#pragma var_order(bombHit, difficultyScale, enemyIndex, damage, extraDamage, vmIndex, rewardScore, trailIndex, oldLife, enemy)
+#pragma var_order(difficultyScale, extraDamage, bombHit, damage, enemyIndex, vmIndex, rewardScore, trailIndex, oldLife, enemy, bossHealthRatio, managerTimer, timelineInstruction)
 i32 EnemyManagerUpdateOverlay::OnUpdate()
 {
     EnemyManagerUpdateEnemy *enemy;
@@ -785,9 +785,9 @@ i32 EnemyManagerUpdateOverlay::OnUpdate()
                 enemy->ClampPosition();
                 enemy->Move();
                 enemy->ClampPosition();
+                InterpolateFollowTarget(enemy);
             }
 
-            InterpolateFollowTarget(enemy);
             PushTrailSample(enemy);
 
             if (!enemy->PrimaryVm()->sprite)
@@ -826,7 +826,23 @@ i32 EnemyManagerUpdateOverlay::OnUpdate()
 
             bombHit = 0;
             damageOccurred = 0;
-            if (!enemy->CombatBits()->noSprite && !enemy->ControlBits()->skipCombat)
+            __asm
+            {
+                mov ecx, enemy
+                mov dl, BYTE PTR[ecx + 0x2e29]
+                shr dl, 3
+                and dl, 1
+                movzx eax, dl
+                test eax, eax
+                jne enemy_death_check
+                mov ecx, enemy
+                mov dl, BYTE PTR[ecx + 0x2e2b]
+                shr dl, 2
+                and dl, 1
+                movzx eax, dl
+                test eax, eax
+                jne enemy_death_check
+            }
             {
                 if (enemy->CombatBits()->interactable && enemy->CombatBits()->collisionEnabled)
                 {
@@ -852,7 +868,22 @@ i32 EnemyManagerUpdateOverlay::OnUpdate()
                 }
 
                 enemy->LastDamage() = 0;
-                if (enemy->CombatBits()->interactable && enemy->CombatBits()->damageCollision)
+                __asm
+                {
+                    mov edx, enemy
+                    mov al, BYTE PTR[edx + 0x2e29]
+                    and al, 1
+                    movzx ecx, al
+                    test ecx, ecx
+                    je enemy_death_check
+                    mov edx, enemy
+                    mov al, BYTE PTR[edx + 0x2e29]
+                    shr al, 4
+                    and al, 1
+                    movzx ecx, al
+                    test ecx, ecx
+                    je enemy_death_check
+                }
                 {
                     damage = g_EnemyManagerUpdatePlayer.CalcDamageToEnemy(enemy->Position(), enemy->Hitbox(), &bombHit);
                     if (enemy->SecondaryHitbox()->x > 0.0f)
@@ -938,11 +969,12 @@ i32 EnemyManagerUpdateOverlay::OnUpdate()
                             mov ecx, 7
                             idiv ecx
                             mov damage, eax
-                            jmp damage_spell_done
+                            jmp damage_nonbomb_done
                         damage_nonzero_one:
                             cmp damage, 0
-                            je damage_spell_done
+                            je damage_nonbomb_done
                             mov damage, 1
+                        damage_nonbomb_done:
                             jmp damage_spell_done
                         damage_bomb_hit:
                             mov edx, this
@@ -954,11 +986,12 @@ i32 EnemyManagerUpdateOverlay::OnUpdate()
                             fdiv DWORD PTR[g_EnemyManagerUpdateReal2_5]
                             call EnemyManagerUpdateFtol
                             mov damage, eax
-                            jmp damage_spell_done
+                            jmp damage_bomb_done
                         damage_bomb_nonzero_one:
                             cmp damage, 0
-                            je damage_spell_done
+                            je damage_bomb_done
                             mov damage, 1
+                        damage_bomb_done:
                             jmp damage_spell_done
                         damage_zero:
                             mov damage, 0
@@ -1003,6 +1036,7 @@ i32 EnemyManagerUpdateOverlay::OnUpdate()
 
                 __asm
                 {
+                enemy_death_check:
                     mov edx, enemy
                     cmp DWORD PTR[edx + 0x2bb8], 0
                     jg skip_enemy_death

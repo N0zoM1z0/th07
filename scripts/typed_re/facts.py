@@ -22,7 +22,7 @@ import sys
 import tomllib
 from typing import Any
 
-from typed_re.shape import compare_instruction_shapes
+from typed_re.shape import compare_instruction_shapes, trim_coff_alignment_padding
 
 try:
     from capstone import Cs, CS_ARCH_X86, CS_MODE_32, CS_AC_READ, CS_AC_WRITE
@@ -229,6 +229,14 @@ def run_compare(address: str) -> dict[str, Any]:
             )
             result["instruction_shape"] = compare_instruction_shapes(
                 target, object_tail[:size], int(address, 0)
+            )
+            object_body, padding_size = trim_coff_alignment_padding(
+                object_tail, int(address, 0)
+            )
+            result["object_function_size"] = len(object_body)
+            result["object_alignment_padding_size"] = padding_size
+            result["full_instruction_shape"] = compare_instruction_shapes(
+                target, object_body, int(address, 0)
             )
         except (OSError, ValueError, KeyError, struct.error) as error:
             result["instruction_shape"] = {
@@ -578,6 +586,9 @@ def main() -> int:
             bullet_graph = compare_instruction_shapes(
                 bullet_body, bullet_body, 0x00425A50
             )
+            trimmed_body, trimmed_padding = trim_coff_alignment_padding(
+                bytes.fromhex("55 8b ec 5d c3 00 00 00"), 0x00401000
+            )
             if not same_shape["topology_exact"] or not any(
                 item["target_offset"] == -4 and item["object_offset"] == -8
                 for item in same_shape["stack_slot_pairs"]
@@ -603,6 +614,8 @@ def main() -> int:
                 or bullet_graph["target_internal_branch_count"] != 86
             ):
                 failures.append("0x00425A50 branch-graph regression")
+            if trimmed_body != bytes.fromhex("55 8b ec 5d c3") or trimmed_padding != 3:
+                failures.append("COFF alignment-padding trim regression")
             if failures:
                 raise ValueError("; ".join(failures))
             print("typed reconstruction facts OK: 6 target-pinned regressions plus shape/branch/resync fixtures")

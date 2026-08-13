@@ -67,16 +67,19 @@ timers, and the four draw lists. It is not yet a strict byte match.
 Typed instruction-shape comparison proved especially useful on this body. It
 exposed the ECL manager's first dword as a pointer to timeline metadata, the
 signed pause byte at `0x4BFEE0`, and several VC7 expression/bitfield shapes.
-Successive source corrections extended the exact instruction-topology prefix
-from 8 to 1647 of 1661 target instructions, with 99.16% resynchronized target
-coverage. In particular, the collision/trail vector expression, combat
-bitfields, signed special-damage byte, rank branch order, death callback reset,
+Successive source corrections recovered the complete 1661-instruction target
+topology and internal control-flow graph. The full emitted COFF body is 6879
+bytes after removing 16 bytes of decoded alignment padding, versus the
+6840-byte target; the target-sized diagnostic view therefore ends at 1645
+instructions even though no behavior is missing. In particular, the
+collision/trail vector expression, combat bitfields, movement/follow scope,
+collision/death scope, spell-damage shared labels, death callback reset,
 damage-flash channels, boss HP/UI publication, freeze timer, draw-list rebuild,
-and periodic return tail now follow one contiguous target topology. The object
-is 6891 bytes with a `0x1D0` frame versus the 6840-byte, `0x210`-frame target;
-strict comparison still fails at the frame allocation and the remaining work
-is chiefly VC7 local-lifetime and instruction-size shaping. This diagnostic
-coverage does not grant matching status.
+and periodic return tail now follow the target graph. The object uses a
+`0x1D0` frame versus the target `0x210`; strict comparison still fails at the
+frame allocation and the remaining work is VC7 local-lifetime, displacement,
+instruction-size, and relocation shaping. This diagnostic topology does not
+grant matching status.
 
 Three large update dependencies are now strict exact matches. `0x0041F6F0` runs one 16-byte
 timeline lane with a `0x84` frame. Its 13 target opcodes cover enemy spawning
@@ -94,8 +97,8 @@ roles, but the listed layout and branches are TH07 observations.
 
 The highest-leverage sequence is:
 
-1. converge the update body's frame/local lifetimes and instruction sizes
-   without disturbing its now-contiguous tail topology;
+1. converge the update body's frame/local lifetimes, displacements, and
+   relocation bytes without disturbing its topology- and CFG-exact body;
 2. use the same exact-helper-first approach for the render body at
    `0x00422170`.
 

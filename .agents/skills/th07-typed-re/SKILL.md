@@ -36,6 +36,13 @@ target observations, compiler inferences, and source hypotheses separate.
    evidence.
    Then inspect `first_branch_target_mismatch`: equal instruction shapes can
    still send a `continue`, `break`, or `goto` to the wrong shared label.
+   Also inspect `comparison.full_instruction_shape`. The ordinary view is
+   deliberately truncated to the target byte extent so it agrees with the
+   strict comparator; the full view removes only decoded post-`ret` COFF
+   alignment padding and compares the complete emitted object function. When
+   the truncated view ends below 100% but the full view is topology-exact, no
+   behavior is missing: concentrate on `object_function_size`, frame/local
+   lifetimes, instruction sizes, relocations, and branch destinations.
 6. Accept a result only through the canonical unit's strict 100% comparison.
 
 If the address has no match-unit entry, use the packet for ABI recovery and ask

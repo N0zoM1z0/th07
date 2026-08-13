@@ -21,6 +21,28 @@ def _decoder() -> Cs:
     return decoder
 
 
+def trim_coff_alignment_padding(code: bytes, address: int) -> tuple[bytes, int]:
+    """Remove only decoded post-RET COFF alignment bytes.
+
+    VC7 COMDAT text sections commonly retain zero, NOP, or INT3 alignment after
+    the function's final return.  The strict comparator must keep reporting the
+    complete section tail, but topology diagnostics need the actual emitted
+    function body when it is longer than the target extent.  Fail closed unless
+    a linearly decoded RET is followed exclusively by conventional padding.
+    """
+    instructions = list(_decoder().disasm(code, address))
+    for instruction in reversed(instructions):
+        if not instruction.mnemonic.startswith("ret"):
+            continue
+        end = instruction.address - address + instruction.size
+        padding = code[end:]
+        if padding and all(byte in {0x00, 0x90, 0xCC} for byte in padding):
+            return code[:end], len(padding)
+        if not padding:
+            return code, 0
+    return code, 0
+
+
 def _operand_shape(instruction: Any, operand: Any) -> tuple[Any, ...]:
     if operand.type == X86_OP_REG:
         return ("reg", instruction.reg_name(operand.reg), operand.size)
