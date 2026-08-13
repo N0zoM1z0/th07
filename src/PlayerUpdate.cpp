@@ -2,7 +2,7 @@
 
 #include <math.h>
 
-#pragma intrinsic(sin, cos)
+#pragma intrinsic(sin, cos, fabs)
 
 namespace th07
 {
@@ -18,11 +18,29 @@ struct PlayerBombAnmManager
     void *scripts[1];
 
     void SetAndExecute(void *vm, void *script);
+
+    __forceinline void SetAndExecuteScriptIdx(void *vm, i32 script)
+    {
+        *reinterpret_cast<i16 *>(reinterpret_cast<u8 *>(vm) + 0x1D8) = static_cast<i16>(script);
+        SetAndExecute(vm, scripts[script]);
+    }
+};
+
+struct PlayerOrbAnimation
+{
+    u8 unknown000[0x1C6];
+    i16 stopRequested;
+
+    void RequestStop()
+    {
+        stopRequested = 1;
+    }
 };
 
 struct EffectManager
 {
-    void *SpawnParticlesColored(i32 effect, D3DXVECTOR3 *position, i32 count, i32 blendMode, i32 color);
+    PlayerOrbAnimation *SpawnParticlesColored(i32 effect, D3DXVECTOR3 *position, i32 count, i32 blendMode,
+                                               i32 color);
 };
 
 struct BulletUpdateTimerManager
@@ -47,7 +65,7 @@ extern PlayerBombGuiState g_PlayerBombGuiState49FBF0;
 extern PlayerBombGrazeState g_PlayerBombGrazeState626270;
 extern u16 g_PlayerInputButtons;
 extern i32 g_PlayerGameMode;
-extern u8 g_PlayerShotType;
+extern u8 g_PlayerOrbMode;
 extern f32 g_FrameMultiplier;
 extern f32 g_PlayerUpdateBoundLeft;
 extern f32 g_PlayerUpdateBoundTop;
@@ -63,6 +81,23 @@ struct PlayerUpdateTimer
         f32 subFrame;
     };
     i32 current;
+
+    f32 AsFramesFloat()
+    {
+        return current + subFrame;
+    }
+
+    i32 AsFrames()
+    {
+        return current;
+    }
+
+    void SetCurrent(i32 value)
+    {
+        current = value;
+        subFrame = 0.0f;
+        previous = -999;
+    }
 };
 
 struct PlayerUpdateMovementConfig
@@ -94,13 +129,13 @@ struct PlayerUpdateOverlay
     f32 horizontalVelocity;                // +0x9CC
     f32 verticalVelocity;                  // +0x9D0
     u8 unknown9D4[4];
-    void *orbAnimation;                   // +0x9D8
+    PlayerOrbAnimation *orbAnimation;     // +0x9D8
     u8 unknown9DC[0x1A14];
     f32 movementMultiplierX;              // +0x23F0
     f32 movementMultiplierY;              // +0x23F4
     u8 unknown23F8[0x12];
-    u8 orbState;                          // +0x240A
-    u8 focused;                           // +0x240B
+    i8 orbState;                          // +0x240A
+    i8 focused;                           // +0x240B
     u8 unknown240C[4];
     PlayerUpdateTimer orbTimer;           // +0x2410
     i32 inputDirection;                   // +0x241C
@@ -119,9 +154,9 @@ typedef char PlayerUpdateOverlaySizeMustMatch[(sizeof(PlayerUpdateOverlay) == 0x
 
 static __forceinline void ResetTimer(PlayerUpdateTimer *timer)
 {
-    timer->previous = -999;
-    timer->subFrame = 0.0f;
     timer->current = 0;
+    timer->subFrame = 0.0f;
+    timer->previous = -999;
 }
 
 static __forceinline f32 AdvanceTimer(PlayerUpdateTimer *timer)
@@ -131,27 +166,38 @@ static __forceinline f32 AdvanceTimer(PlayerUpdateTimer *timer)
     return (f32)timer->current + timer->subFrame;
 }
 
+static __forceinline f32 Cos(f32 angle)
+{
+    return (f32)cos(angle);
+}
+
+static __forceinline f32 Sin(f32 angle)
+{
+    return (f32)sin(angle);
+}
+
+static __forceinline f32 Abs(f32 value)
+{
+    return (f32)fabs(value);
+}
+
 static __forceinline void SelectMovementAnimation(PlayerUpdateOverlay *player, f32 horizontal)
 {
     if (horizontal < 0.0f && player->previousInputX >= 0.0f)
     {
-        player->movementAnimation = 1025;
-        g_PlayerBombAnmManager->SetAndExecute(player, g_PlayerBombAnmManager->scripts[1025]);
+        g_PlayerBombAnmManager->SetAndExecuteScriptIdx(player, 1025);
     }
     else if (horizontal == 0.0f && player->previousInputX < 0.0f)
     {
-        player->movementAnimation = 1026;
-        g_PlayerBombAnmManager->SetAndExecute(player, g_PlayerBombAnmManager->scripts[1026]);
+        g_PlayerBombAnmManager->SetAndExecuteScriptIdx(player, 1026);
     }
     if (horizontal > 0.0f && player->previousInputX <= 0.0f)
     {
-        player->movementAnimation = 1027;
-        g_PlayerBombAnmManager->SetAndExecute(player, g_PlayerBombAnmManager->scripts[1027]);
+        g_PlayerBombAnmManager->SetAndExecuteScriptIdx(player, 1027);
     }
     else if (horizontal == 0.0f && player->previousInputX > 0.0f)
     {
-        player->movementAnimation = 1028;
-        g_PlayerBombAnmManager->SetAndExecute(player, g_PlayerBombAnmManager->scripts[1028]);
+        g_PlayerBombAnmManager->SetAndExecuteScriptIdx(player, 1028);
     }
 }
 
@@ -177,20 +223,29 @@ static __forceinline void UpdateStraightOrbs(PlayerUpdateOverlay *player)
         break;
     case 2:
     focused:
-        player->orbTimer.previous = player->orbTimer.current;
+        if (!player->focused)
+        {
+            player->orbState = 4;
+            player->orbTimer.SetCurrent(8 - player->orbTimer.AsFrames());
+            if (player->orbAnimation)
+                player->orbAnimation->RequestStop();
+            return;
+        }
         AdvanceTimer(&player->orbTimer);
         {
-            f32 t = ((f32)player->orbTimer.current + player->orbTimer.subFrame) / 8.0f;
-            vertical = (1.0f - t) * 32.0f - 32.0f;
-            left = 24.0f - 16.0f * t * t;
-            if (player->orbTimer.current >= 8)
+            f32 t = player->orbTimer.AsFramesFloat() / 8.0f;
+            vertical = (1.0f - t) * 32.0f + -32.0f;
+            t *= t;
+            left = -16.0f * t + 24.0f;
+            if ((i32)(player->orbTimer.current >= 8))
                 player->orbState = 3;
             if (!player->focused)
             {
-                i32 remaining = 8 - player->orbTimer.current;
                 player->orbState = 4;
-                ResetTimer(&player->orbTimer);
-                player->orbTimer.current = remaining;
+                player->orbTimer.SetCurrent(8 - player->orbTimer.AsFrames());
+                if (player->orbAnimation)
+                    player->orbAnimation->RequestStop();
+                goto unfocused;
             }
         }
         break;
@@ -202,27 +257,28 @@ static __forceinline void UpdateStraightOrbs(PlayerUpdateOverlay *player)
         {
             player->orbState = 4;
             if (player->orbAnimation)
-                *reinterpret_cast<i16 *>(reinterpret_cast<u8 *>(player->orbAnimation) + 454) = 1;
+                player->orbAnimation->RequestStop();
+            goto unfocused;
         }
         break;
     case 4:
-        if (player->focused)
-        {
-            i32 remaining = 8 - player->orbTimer.current;
-            player->orbState = 2;
-            ResetTimer(&player->orbTimer);
-            player->orbTimer.current = remaining;
-            player->orbAnimation = g_EffectManager.SpawnParticlesColored(24, &player->position, 2, 1, -1);
-            goto focused;
-        }
-        player->orbTimer.previous = player->orbTimer.current;
+    unfocused:
         AdvanceTimer(&player->orbTimer);
         {
-            f32 t = ((f32)player->orbTimer.current + player->orbTimer.subFrame) / 8.0f;
-            vertical = 32.0f * t - 32.0f;
-            left = 24.0f - 16.0f * (1.0f - t * t);
-            if (player->orbTimer.current >= 8)
+            f32 t = player->orbTimer.AsFramesFloat() / 8.0f;
+            vertical = 32.0f * t + -32.0f;
+            t *= t;
+            t = 1.0f - t;
+            left = -16.0f * t + 24.0f;
+            if ((i32)(player->orbTimer.current >= 8))
                 player->orbState = 1;
+            if (player->focused)
+            {
+                player->orbState = 2;
+                player->orbTimer.SetCurrent(8 - player->orbTimer.AsFrames());
+                player->orbAnimation = g_EffectManager.SpawnParticlesColored(24, &player->position, 2, 1, -1);
+                goto focused;
+            }
         }
         break;
     default:
@@ -235,123 +291,8 @@ static __forceinline void UpdateStraightOrbs(PlayerUpdateOverlay *player)
     player->orbPosition[1].y += vertical;
 }
 
-static __forceinline void UpdateRotatingOrbs(PlayerUpdateOverlay *player)
-{
-    f32 x;
-    f32 y;
-
-    for (;;)
-    {
-    switch (player->orbState)
-    {
-    case 0:
-        ResetTimer(&player->orbTimer);
-        return;
-    case 1:
-        ResetTimer(&player->orbTimer);
-        if (player->focused)
-        {
-            player->orbState = 2;
-            player->orbAnimation = g_EffectManager.SpawnParticlesColored(24, &player->position, 2, 1, -1);
-            goto focused;
-        }
-        {
-            f32 orbitAngle = player->rotationAngle + 1.5707964f;
-            x = (f32)cos(orbitAngle) * 24.0f;
-            y = (f32)sin(orbitAngle) * 24.0f;
-        }
-        player->orbPosition[0].x -= x;
-        player->orbPosition[1].x += x;
-        player->orbPosition[0].y -= y;
-        player->orbPosition[1].y += y;
-        return;
-    case 2:
-    focused:
-        player->orbTimer.previous = player->orbTimer.current;
-        AdvanceTimer(&player->orbTimer);
-        {
-            f32 t = ((f32)player->orbTimer.current + player->orbTimer.subFrame) / 8.0f;
-            f32 centerXAngle = player->rotationAngle + 1.5707964f;
-            f32 centerX = (f32)cos(centerXAngle) * 24.0f;
-            f32 centerYAngle = player->rotationAngle + 1.5707964f;
-            f32 centerY = (f32)sin(centerYAngle) * 24.0f;
-            f32 outXAngle = player->rotationAngle + 0.22439948f;
-            f32 outX = (f32)cos(outXAngle) * 24.0f;
-            f32 outYAngle = player->rotationAngle + 0.22439948f;
-            f32 outY = (f32)sin(outYAngle) * 24.0f;
-            f32 inXAngle = player->rotationAngle - 0.22439948f;
-            f32 inX = (f32)cos(inXAngle) * 24.0f;
-            f32 inYAngle = player->rotationAngle - 0.22439948f;
-            f32 inY = (f32)sin(inYAngle) * 24.0f;
-            player->orbPosition[1].x += (outX - centerX) * t + centerX;
-            player->orbPosition[1].y += (outY - centerY) * t + centerY;
-            player->orbPosition[0].x += (inX + centerX) * t - centerX;
-            player->orbPosition[0].y += (inY + centerY) * t - centerY;
-            if (player->orbTimer.current >= 8)
-                player->orbState = 3;
-            if (!player->focused)
-            {
-                i32 remaining = 8 - player->orbTimer.current;
-                player->orbState = 4;
-                ResetTimer(&player->orbTimer);
-                player->orbTimer.current = remaining;
-            }
-        }
-        return;
-    case 3:
-        ResetTimer(&player->orbTimer);
-        if (player->focused)
-        {
-            f32 outerAngle = player->rotationAngle + 0.22439948f;
-            f32 innerAngle = player->rotationAngle - 0.22439948f;
-            player->orbPosition[1].x += (f32)cos(outerAngle) * 24.0f;
-            player->orbPosition[1].y += (f32)sin(outerAngle) * 24.0f;
-            player->orbPosition[0].x += (f32)cos(innerAngle) * 24.0f;
-            player->orbPosition[0].y += (f32)sin(innerAngle) * 24.0f;
-            return;
-        }
-        player->orbState = 4;
-        if (player->orbAnimation)
-            *reinterpret_cast<i16 *>(reinterpret_cast<u8 *>(player->orbAnimation) + 454) = 1;
-        continue;
-    case 4:
-        if (player->focused)
-        {
-            i32 remaining = 8 - player->orbTimer.current;
-            player->orbState = 2;
-            ResetTimer(&player->orbTimer);
-            player->orbTimer.current = remaining;
-            player->orbAnimation = g_EffectManager.SpawnParticlesColored(24, &player->position, 2, 1, -1);
-            goto focused;
-        }
-        player->orbTimer.previous = player->orbTimer.current;
-        AdvanceTimer(&player->orbTimer);
-        {
-            f32 t = 1.0f - ((f32)player->orbTimer.current + player->orbTimer.subFrame) / 8.0f;
-            f32 centerAngle = player->rotationAngle + 1.5707964f;
-            f32 centerX = (f32)cos(centerAngle) * 24.0f;
-            f32 centerY = (f32)sin(centerAngle) * 24.0f;
-            f32 outerAngle = player->rotationAngle + 0.22439948f;
-            f32 outX = (f32)cos(outerAngle) * 24.0f;
-            f32 outY = (f32)sin(outerAngle) * 24.0f;
-            f32 innerAngle = player->rotationAngle - 0.22439948f;
-            f32 inX = (f32)cos(innerAngle) * 24.0f;
-            f32 inY = (f32)sin(innerAngle) * 24.0f;
-            player->orbPosition[1].x += (outX - centerX) * t + centerX;
-            player->orbPosition[1].y += (outY - centerY) * t + centerY;
-            player->orbPosition[0].x += (inX + centerX) * t - centerX;
-            player->orbPosition[0].y += (inY + centerY) * t - centerY;
-            if (player->orbTimer.current >= 8)
-                player->orbState = 1;
-        }
-        return;
-    default:
-        return;
-    }
-    }
-}
-
-#pragma var_order(previousDirection, vertical, horizontal, verticalOrbOffset, horizontalOrbOffset)
+#pragma var_order(previousDirection, vertical, horizontal, verticalOrbOffset, horizontalOrbOffset, intermediateFloat, \
+                  rotatingY, rotatingX, rotationStep)
 int __fastcall Player::OnUpdate(Player *playerBase)
 {
 #define player reinterpret_cast<PlayerUpdateOverlay *>(playerBase)
@@ -360,6 +301,10 @@ int __fastcall Player::OnUpdate(Player *playerBase)
     i32 previousDirection = player->inputDirection;
     f32 horizontalOrbOffset;
     f32 verticalOrbOffset;
+    f32 intermediateFloat;
+    f32 rotatingY;
+    f32 rotatingX;
+    f32 rotationStep;
 
     player->inputDirection = 0;
     if (g_PlayerInputButtons & 0x10)
@@ -424,8 +369,8 @@ int __fastcall Player::OnUpdate(Player *playerBase)
     player->previousInputY = vertical;
     player->horizontalVelocity = horizontal * player->movementMultiplierX * g_FrameMultiplier;
     player->verticalVelocity = vertical * player->movementMultiplierY * g_FrameMultiplier;
-    player->position.x += player->horizontalVelocity;
-    player->position.y += player->verticalVelocity;
+    player->position[0] += player->horizontalVelocity;
+    player->position[1] += player->verticalVelocity;
     if (player->position.x < g_PlayerUpdateBoundLeft)
         player->position.x = g_PlayerUpdateBoundLeft;
     else if (player->position.x > g_PlayerUpdateBoundLeft + g_PlayerUpdateBoundWidth)
@@ -446,9 +391,7 @@ int __fastcall Player::OnUpdate(Player *playerBase)
 
     verticalOrbOffset = 0.0f;
     horizontalOrbOffset = verticalOrbOffset;
-    if (*reinterpret_cast<u8 *>(&g_PlayerGameMode) == 2 && g_PlayerShotType == 1)
-        UpdateRotatingOrbs(player);
-    else
+    if (*reinterpret_cast<u8 *>(&g_PlayerGameMode) != 2 || g_PlayerOrbMode != 1)
     {
         switch (player->orbState)
         {
@@ -467,20 +410,21 @@ int __fastcall Player::OnUpdate(Player *playerBase)
             break;
         case 2:
         straightFocused:
-            player->orbTimer.previous = player->orbTimer.current;
             AdvanceTimer(&player->orbTimer);
             {
-                f32 t = ((f32)player->orbTimer.current + player->orbTimer.subFrame) / 8.0f;
-                verticalOrbOffset = (1.0f - t) * 32.0f - 32.0f;
-                horizontalOrbOffset = 24.0f - 16.0f * t * t;
-                if (player->orbTimer.current >= 8)
+                intermediateFloat = player->orbTimer.AsFramesFloat() / 8.0f;
+                verticalOrbOffset = (1.0f - intermediateFloat) * 32.0f + -32.0f;
+                intermediateFloat *= intermediateFloat;
+                horizontalOrbOffset = -16.0f * intermediateFloat + 24.0f;
+                if ((i32)(player->orbTimer.current >= 8))
                     player->orbState = 3;
                 if (!player->focused)
                 {
-                    i32 remaining = 8 - player->orbTimer.current;
                     player->orbState = 4;
-                    ResetTimer(&player->orbTimer);
-                    player->orbTimer.current = remaining;
+                    player->orbTimer.SetCurrent(8 - player->orbTimer.AsFrames());
+                    if (player->orbAnimation)
+                        player->orbAnimation->RequestStop();
+                    goto straightUnfocused;
                 }
             }
             break;
@@ -492,27 +436,28 @@ int __fastcall Player::OnUpdate(Player *playerBase)
             {
                 player->orbState = 4;
                 if (player->orbAnimation)
-                    *reinterpret_cast<i16 *>(reinterpret_cast<u8 *>(player->orbAnimation) + 454) = 1;
+                    player->orbAnimation->RequestStop();
+                goto straightUnfocused;
             }
             break;
         case 4:
-            if (player->focused)
-            {
-                i32 remaining = 8 - player->orbTimer.current;
-                player->orbState = 2;
-                ResetTimer(&player->orbTimer);
-                player->orbTimer.current = remaining;
-                player->orbAnimation = g_EffectManager.SpawnParticlesColored(24, &player->position, 2, 1, -1);
-                goto straightFocused;
-            }
-            player->orbTimer.previous = player->orbTimer.current;
+        straightUnfocused:
             AdvanceTimer(&player->orbTimer);
             {
-                f32 t = ((f32)player->orbTimer.current + player->orbTimer.subFrame) / 8.0f;
-                verticalOrbOffset = 32.0f * t - 32.0f;
-                horizontalOrbOffset = 24.0f - 16.0f * (1.0f - t * t);
-                if (player->orbTimer.current >= 8)
+                intermediateFloat = player->orbTimer.AsFramesFloat() / 8.0f;
+                verticalOrbOffset = 32.0f * intermediateFloat + -32.0f;
+                intermediateFloat *= intermediateFloat;
+                intermediateFloat = 1.0f - intermediateFloat;
+                horizontalOrbOffset = -16.0f * intermediateFloat + 24.0f;
+                if ((i32)(player->orbTimer.current >= 8))
                     player->orbState = 1;
+                if (player->focused)
+                {
+                    player->orbState = 2;
+                    player->orbTimer.SetCurrent(8 - player->orbTimer.AsFrames());
+                    player->orbAnimation = g_EffectManager.SpawnParticlesColored(24, &player->position, 2, 1, -1);
+                    goto straightFocused;
+                }
             }
             break;
         default:
@@ -524,33 +469,149 @@ int __fastcall Player::OnUpdate(Player *playerBase)
         player->orbPosition[0].y += verticalOrbOffset;
         player->orbPosition[1].y += verticalOrbOffset;
     }
+    else
+    {
+        switch (player->orbState)
+        {
+        case 0:
+            ResetTimer(&player->orbTimer);
+            break;
+        case 1:
+            {
+                horizontalOrbOffset = Cos(player->rotationAngle + 1.5707964f) * 24.0f;
+                verticalOrbOffset = Sin(player->rotationAngle + 1.5707964f) * 24.0f;
+            }
+            ResetTimer(&player->orbTimer);
+            if (player->focused)
+            {
+                player->orbState = 2;
+                player->orbAnimation = g_EffectManager.SpawnParticlesColored(24, &player->position, 2, 1, -1);
+                goto rotatingFocused;
+            }
+            player->orbPosition[0].x -= horizontalOrbOffset;
+            player->orbPosition[1].x += horizontalOrbOffset;
+            player->orbPosition[0].y -= verticalOrbOffset;
+            player->orbPosition[1].y += verticalOrbOffset;
+            break;
+        case 2:
+        rotatingFocused:
+            if (!player->focused)
+            {
+                player->orbState = 4;
+                player->orbTimer.SetCurrent(8 - player->orbTimer.AsFrames());
+                if (player->orbAnimation)
+                    player->orbAnimation->RequestStop();
+                goto rotatingUnfocused;
+            }
+            AdvanceTimer(&player->orbTimer);
+            intermediateFloat = player->orbTimer.AsFramesFloat() / 8.0f;
+            {
+                horizontalOrbOffset = Cos(player->rotationAngle + 1.5707964f) * 24.0f;
+                verticalOrbOffset = Sin(player->rotationAngle + 1.5707964f) * 24.0f;
+                rotatingX = Cos(player->rotationAngle + 0.22439948f) * 24.0f;
+                rotatingY = Sin(player->rotationAngle + 0.22439948f) * 24.0f;
+            }
+            rotatingX = (rotatingX - horizontalOrbOffset) * intermediateFloat + horizontalOrbOffset;
+            rotatingY = (rotatingY - verticalOrbOffset) * intermediateFloat + verticalOrbOffset;
+            player->orbPosition[1].x += rotatingX;
+            player->orbPosition[1].y += rotatingY;
+            {
+                rotatingX = Cos(player->rotationAngle - 0.22439948f) * 24.0f;
+                rotatingY = Sin(player->rotationAngle - 0.22439948f) * 24.0f;
+            }
+            rotatingX = (rotatingX + horizontalOrbOffset) * intermediateFloat - horizontalOrbOffset;
+            rotatingY = (rotatingY + verticalOrbOffset) * intermediateFloat - verticalOrbOffset;
+            if ((i32)(player->orbTimer.current >= 8))
+                player->orbState = 3;
+            player->orbPosition[0].x += rotatingX;
+            player->orbPosition[0].y += rotatingY;
+            break;
+        case 3:
+            ResetTimer(&player->orbTimer);
+            if (!player->focused)
+            {
+                player->orbState = 4;
+                if (player->orbAnimation)
+                    player->orbAnimation->RequestStop();
+                goto rotatingUnfocused;
+            }
+            {
+                rotatingX = Cos(player->rotationAngle + 0.22439948f) * 24.0f;
+                rotatingY = Sin(player->rotationAngle + 0.22439948f) * 24.0f;
+            }
+            player->orbPosition[1].x += rotatingX;
+            player->orbPosition[1].y += rotatingY;
+            {
+                rotatingX = Cos(player->rotationAngle - 0.22439948f) * 24.0f;
+                rotatingY = Sin(player->rotationAngle - 0.22439948f) * 24.0f;
+            }
+            player->orbPosition[0].x += rotatingX;
+            player->orbPosition[0].y += rotatingY;
+            break;
+        case 4:
+        rotatingUnfocused:
+            if (player->focused)
+            {
+                player->orbState = 2;
+                player->orbTimer.SetCurrent(8 - player->orbTimer.AsFrames());
+                player->orbAnimation = g_EffectManager.SpawnParticlesColored(24, &player->position, 2, 1, -1);
+                goto rotatingFocused;
+            }
+            AdvanceTimer(&player->orbTimer);
+            intermediateFloat = 1.0f - player->orbTimer.AsFramesFloat() / 8.0f;
+            {
+                horizontalOrbOffset = Cos(player->rotationAngle + 1.5707964f) * 24.0f;
+                verticalOrbOffset = Sin(player->rotationAngle + 1.5707964f) * 24.0f;
+                rotatingX = Cos(player->rotationAngle + 0.22439948f) * 24.0f;
+                rotatingY = Sin(player->rotationAngle + 0.22439948f) * 24.0f;
+            }
+            rotatingX = (rotatingX - horizontalOrbOffset) * intermediateFloat + horizontalOrbOffset;
+            rotatingY = (rotatingY - verticalOrbOffset) * intermediateFloat + verticalOrbOffset;
+            player->orbPosition[1].x += rotatingX;
+            player->orbPosition[1].y += rotatingY;
+            {
+                rotatingX = Cos(player->rotationAngle - 0.22439948f) * 24.0f;
+                rotatingY = Sin(player->rotationAngle - 0.22439948f) * 24.0f;
+            }
+            rotatingX = (rotatingX + horizontalOrbOffset) * intermediateFloat - horizontalOrbOffset;
+            rotatingY = (rotatingY + verticalOrbOffset) * intermediateFloat - verticalOrbOffset;
+            if ((i32)(player->orbTimer.current >= 8))
+                player->orbState = 1;
+            player->orbPosition[0].x += rotatingX;
+            player->orbPosition[0].y += rotatingY;
+            break;
+        default:
+            break;
+        }
+    }
 
     if ((g_PlayerInputButtons & 1) && !g_PlayerBombGuiState49FBF0.IsBombInputBlocked())
     {
         if (!g_PlayerBombGrazeState626270.IsBombStartBlocked())
             player->UpdateBombCollisionState();
-    }
 
-    if (!(g_PlayerInputButtons & 4))
-    {
-        f32 *rotation = &player->rotationAngle;
-        if (player->horizontalVelocity == 0.0f)
+        if (!(g_PlayerInputButtons & 4))
         {
-            f32 delta = *rotation + 1.5707964f;
-            f32 magnitude = delta < 0.0f ? -delta : delta;
-            if (magnitude <= 0.031415928f)
-                *rotation = -1.5707964f;
+            if (player->horizontalVelocity != 0.0f)
+            {
+                rotationStep = -(player->horizontalVelocity / 4.0f) * 3.1415927f / 5.0f / 10.0f;
+                player->rotationAngle -= rotationStep;
+                if (player->rotationAngle < -2.1991148f)
+                    player->rotationAngle = -2.1991148f;
+                else if (player->rotationAngle > -0.94247782f)
+                    player->rotationAngle = -0.94247782f;
+            }
             else
-                *rotation += *rotation >= -1.5707964f ? -0.062831856f * g_FrameMultiplier
-                                                      : 0.062831856f * g_FrameMultiplier;
-        }
-        else
-        {
-            *rotation -= (-(player->horizontalVelocity / 4.0f) * 3.1415927f / 5.0f / 10.0f);
-            if (*rotation < -2.1991148f)
-                *rotation = -2.1991148f;
-            else if (*rotation > -0.94247782f)
-                *rotation = -0.94247782f;
+            {
+                if (Abs(player->rotationAngle - -1.5707964f) > 0.031415928f)
+                {
+                    rotationStep = player->rotationAngle < -1.5707964f ? 0.062831856f * g_FrameMultiplier
+                                                                        : -0.062831856f * g_FrameMultiplier;
+                    player->rotationAngle += rotationStep;
+                }
+                else
+                    player->rotationAngle = -1.5707964f;
+            }
         }
     }
     return 0;

@@ -13,6 +13,7 @@ import argparse
 from collections import defaultdict
 import csv
 import hashlib
+import importlib.util
 import json
 from pathlib import Path
 import struct
@@ -20,6 +21,8 @@ import subprocess
 import sys
 import tomllib
 from typing import Any
+
+from typed_re.shape import compare_instruction_shapes
 
 try:
     from capstone import Cs, CS_ARCH_X86, CS_MODE_32, CS_AC_READ, CS_AC_WRITE
@@ -156,7 +159,7 @@ def strong_type(mnemonic: str, size: int) -> str | None:
     return None
 
 
-def find_compare(address: str) -> tuple[str, dict[str, Any]] | None:
+def find_compare(address: str) -> tuple[str, dict[str, Any], dict[str, Any]] | None:
     # Import the build driver lazily so this helper consumes the same expanded
     # manifest (including generated prebuilt units) as canonical comparisons.
     sys.path.insert(0, str(ROOT / "scripts"))
@@ -166,15 +169,25 @@ def find_compare(address: str) -> tuple[str, dict[str, Any]] | None:
     for name, unit in manifest["units"].items():
         for function in unit["functions"]:
             if function["address"] == address:
-                return name, function
+                return name, unit, function
     return None
+
+
+def load_strict_comparator() -> Any:
+    path = ROOT / "scripts" / "compare-function.py"
+    spec = importlib.util.spec_from_file_location("th07_compare_function", path)
+    if spec is None or spec.loader is None:
+        raise ValueError("cannot load strict comparator")
+    module = importlib.util.module_from_spec(spec)
+    spec.loader.exec_module(module)
+    return module
 
 
 def run_compare(address: str) -> dict[str, Any]:
     matched = find_compare(address)
     if matched is None:
         return {"state": "not_configured"}
-    unit, _function = matched
+    unit, unit_config, function = matched
     completed = subprocess.run(
         [sys.executable, str(ROOT / "scripts" / "build.py"), "--unit", unit, "--compare", "--json"],
         cwd=ROOT,
@@ -193,7 +206,36 @@ def run_compare(address: str) -> dict[str, Any]:
         (item for item in output.get("comparisons", []) if item.get("address") == address),
         None,
     )
-    return {"state": "compared", "unit": unit, "report": report}
+    result = {"state": "compared", "unit": unit, "report": report}
+    if isinstance(report, dict) and report.get("result") in {"exact", "mismatch"}:
+        try:
+            comparator = load_strict_comparator()
+            size = int(ledger_row(address)["size"])
+            target = comparator.target_bytes(int(address, 0), size)
+            rel32_targets = dict(
+                comparator.parse_mapping(str(value))
+                for value in function.get("rel32_targets", [])
+            )
+            object_tail = comparator.coff_symbol_bytes(
+                ROOT / str(unit_config["object"]),
+                str(function["symbol_base"]),
+                int(address, 0),
+                size,
+                {name: int(value, 0) for name, value in rel32_targets.items()},
+                dict(
+                    comparator.parse_mapping(str(value))
+                    for value in function.get("dir32_targets", [])
+                ),
+            )
+            result["instruction_shape"] = compare_instruction_shapes(
+                target, object_tail[:size], int(address, 0)
+            )
+        except (OSError, ValueError, KeyError, struct.error) as error:
+            result["instruction_shape"] = {
+                "state": "error",
+                "message": str(error),
+            }
+    return result
 
 
 def analyze(address: str, compare: bool) -> dict[str, Any]:
@@ -396,6 +438,14 @@ def analyze(address: str, compare: bool) -> dict[str, Any]:
             frame_address = int(str(frame_instruction["address"]), 0)
             if frame_address <= mismatch_address < frame_address + int(frame_instruction["size"]):
                 features.add("frame_mismatch")
+    shape = comparison.get("instruction_shape") if isinstance(comparison, dict) else None
+    if isinstance(shape, dict) and shape.get("topology_exact"):
+        features.add("instruction_topology_exact")
+        if any(
+            item["target_offset"] != item["object_offset"]
+            for item in shape.get("stack_slot_pairs", [])
+        ):
+            features.add("stack_slot_shift")
 
     with RULES.open("rb") as stream:
         rule_file = tomllib.load(stream)
@@ -474,6 +524,8 @@ def main() -> int:
             deleted_features = deleted["inferences"]["features"]
             set_script = analyze("0x0044EA20", False)
             set_script_observed = set_script["exact_observations"]
+            player_update = analyze("0x0043EE50", False)
+            player_update_observed = player_update["exact_observations"]
             failures = []
             if aux_observed["frame_size"] != 0x44:
                 failures.append("0x0043E0A0 frame regression")
@@ -495,9 +547,29 @@ def main() -> int:
                 failures.append("0x00427620 frame/boolean-materialization regression")
             if set_script_observed["unaccessed_frame_slots"] != ["-0x4"]:
                 failures.append("0x0044EA20 unaccessed-frame-slot regression")
+            if (
+                player_update_observed["frame_size"] != 0x214
+                or player_update_observed["instruction_count"] != 1408
+            ):
+                failures.append("0x0043EE50 frame/instruction-count regression")
+            same_shape = compare_instruction_shapes(
+                bytes.fromhex("55 8b ec 83 ec 08 89 4d fc 6a 01"),
+                bytes.fromhex("55 8b ec 83 ec 10 89 4d f8 6a 7f"),
+                0x00401000,
+            )
+            different_shape = compare_instruction_shapes(
+                bytes.fromhex("8b 45 fc"), bytes.fromhex("8b 4d fc"), 0x00401000
+            )
+            if not same_shape["topology_exact"] or not any(
+                item["target_offset"] == -4 and item["object_offset"] == -8
+                for item in same_shape["stack_slot_pairs"]
+            ):
+                failures.append("instruction-shape normalization regression")
+            if different_shape["shared_shape_prefix"] != 0:
+                failures.append("instruction-shape register regression")
             if failures:
                 raise ValueError("; ".join(failures))
-            print("typed reconstruction facts OK: 4 target-pinned regressions")
+            print("typed reconstruction facts OK: 5 target-pinned regressions plus shape fixtures")
             return 0
         if not args.address:
             parser.error("address is required unless --check is selected")

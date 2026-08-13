@@ -62,6 +62,13 @@ recommendation = "Hold behavior constant and tune declarations/lifetimes or #pra
 evidence = "TH07 matching workflow exact cases"
 
 [[rules]]
+id = "vc7-topology-exact-stack-shift"
+requires = ["instruction_topology_exact", "stack_slot_shift"]
+confidence = "observed_pattern"
+recommendation = "When the normalized instruction topology is complete but EBP slot pairs differ, hold semantics and control flow constant; tune real local declaration order, scope, and #pragma var_order until the receiver home and named slots align. The topology abstraction cannot validate constants or relocations."
+evidence = "Player::OnUpdate 0x0043EE50 reached all 1408 target instruction shapes before its final receiver-home/local-order adjustment, then became strict exact 6790/6790 bytes"
+
+[[rules]]
 id = "zun-direct-boolean-materialization"
 requires = ["boolean_materialization", "register_home"]
 confidence = "observed_pattern"

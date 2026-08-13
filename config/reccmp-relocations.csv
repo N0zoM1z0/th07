@@ -238,6 +238,7 @@ player_bomb_draw_state,0x01347B00,00000000,0x0,Target-observed draw-state receiv
 player_bomb_shot_type,0x0062F647,00,0x0,Target-observed character and shot selector byte,literal
 player_bomb_character,0x0062F645,00,0x0,Target-observed character selector byte used for Player ANM dispatch,literal
 player_bomb_game_mode,0x0062F645,00,0x0,Target-observed game-mode selector byte used by Player resource loading,literal
+player_update_orb_mode,0x0062F646,00,0x0,Target-observed byte selecting the alternate rotating-orb update path,literal
 player_bomb_unfocused_sht,0x0049F530,b46b4900,0x0,Target-observed non-uniform unfocused shot-file pointer table,address
 player_bomb_focused_sht,0x0049F548,506b4900,0x0,Target-observed non-uniform focused shot-file pointer table,address
 player_bomb_anm_00,0x00496AD8,646174612f706c6179657230302e616e6d00,0x0,Direct target player00 animation archive path,literal
@@ -501,3 +502,5 @@ enemy_timeline_real_800,0x00498D64,00004844,0x0,Target float 800 random depth ra
 ecl_real_10018,0x00498D5C,00881c46,0x0,Target-observed float 10018.0 constant used by the ECL dispatcher,literal
 ecl_real_10019,0x00498D58,008c1c46,0x0,Target-observed float 10019.0 constant used by the ECL dispatcher,literal
 ecl_real_10020,0x00498D54,00901c46,0x0,Target-observed float 10020.0 constant used by the ECL dispatcher,literal
+player_update_real_neg_32,0x00498C68,000000c2,0x0,Target-observed float -32.0 used by Player orb interpolation,literal
+player_update_real_neg_16,0x00498D14,000080c1,0x0,Target-observed float -16.0 used by Player orb interpolation,literal
