@@ -747,6 +747,13 @@ rel32_targets = [
 ]
 
 [[units.ecl-run.functions]]
+address = "0x004279E0"
+symbol_base = "?QueueLargeCommand@EclOp121Bullet@th07@@QAEXHHHMM@Z"
+rel32_targets = [
+  "?ReserveLargeCommand@EclOp121Bullet@th07@@QAEPAUEclOp121LargeCommand@2@HHH@Z=0x00427910",
+]
+
+[[units.ecl-run.functions]]
 address = "0x00417E50"
 symbol_base = "?EclOp121CancelBulletsInRadius@th07@@YIXPAUEnemyOverlay@EclOperands@1@PBUEclOp121InstructionOverlay@1@@Z"
 rel32_targets = [
