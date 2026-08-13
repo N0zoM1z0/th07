@@ -30,6 +30,7 @@ try:
         X86_OP_IMM,
         X86_OP_MEM,
         X86_OP_REG,
+        X86_REG_EAX,
         X86_REG_EBP,
         X86_REG_EBX,
         X86_REG_ECX,
@@ -272,6 +273,7 @@ def analyze(address: str, compare: bool) -> dict[str, Any]:
     image_refs: dict[tuple[int, int, str], dict[str, Any]] = {}
     calls: list[dict[str, Any]] = []
     returns: list[int] = []
+    call_result_homes: list[dict[str, Any]] = []
     features: set[str] = set()
     stack_immediate_bits: dict[int, set[int]] = {}
 
@@ -412,6 +414,72 @@ def analyze(address: str, compare: bool) -> dict[str, Any]:
             cleanup = int(insn.operands[0].imm) if insn.operands else 0
             returns.append(cleanup)
 
+    # A direct callee can return an entry pointer in EAX while the enclosing
+    # helper still has a void ABI.  Record only the narrow, byte-determined
+    # pattern: immediate EAX home followed by one or more reloads used as a
+    # memory-store base.  It is deliberately not a return-type inference.
+    for index in range(len(instructions) - 2):
+        call, home = instructions[index : index + 2]
+        if (
+            call.mnemonic != "call"
+            or not call.operands
+            or call.operands[0].type != X86_OP_IMM
+            or home.mnemonic != "mov"
+            or len(home.operands) != 2
+        ):
+            continue
+        destination, source = home.operands
+        if not (
+            destination.type == X86_OP_MEM
+            and destination.mem.base == X86_REG_EBP
+            and destination.mem.index == 0
+            and destination.mem.disp < 0
+            and source.type == X86_OP_REG
+            and source.reg == X86_REG_EAX
+        ):
+            continue
+        local_offset = int(destination.mem.disp)
+        store_bases: list[dict[str, Any]] = []
+        for load_index in range(index + 2, len(instructions) - 1):
+            load = instructions[load_index]
+            if load.mnemonic != "mov" or len(load.operands) != 2:
+                continue
+            load_destination, load_source = load.operands
+            if not (
+                load_destination.type == X86_OP_REG
+                and load_source.type == X86_OP_MEM
+                and load_source.mem.base == X86_REG_EBP
+                and load_source.mem.index == 0
+                and int(load_source.mem.disp) == local_offset
+            ):
+                continue
+            for store in instructions[load_index + 1 :]:
+                if store.mnemonic == "call" or store.mnemonic == "ret":
+                    break
+                if (
+                    store.mnemonic == "mov"
+                    and len(store.operands) == 2
+                    and store.operands[0].type == X86_OP_MEM
+                    and store.operands[0].mem.base == load_destination.reg
+                ):
+                    store_bases.append(
+                        {
+                            "reload": canonical(load.address),
+                            "store": canonical(store.address),
+                            "field_offset": int(store.operands[0].mem.disp),
+                        }
+                    )
+                    break
+        if store_bases:
+            call_result_homes.append(
+                {
+                    "call": canonical(call.address),
+                    "local_offset": local_offset,
+                    "field_store_bases": store_bases,
+                }
+            )
+            features.add("call_result_homed")
+
     for index in range(len(instructions) - 4):
         fld, fcomp, fnstsw, test, branch = instructions[index : index + 5]
         if (
@@ -531,6 +599,7 @@ def analyze(address: str, compare: bool) -> dict[str, Any]:
             "stack_accesses": stack_rows,
             "image_references": sorted(image_refs.values(), key=lambda item: item["address"]),
             "direct_calls": calls,
+            "call_result_homes": call_result_homes,
             "return_cleanup_bytes": sorted(set(returns)),
         },
         "inferences": {
@@ -582,6 +651,8 @@ def main() -> int:
             ecl_sprite_counter_features = ecl_sprite_counter["inferences"]["features"]
             clear_storage = analyze("0x0041A350", False)
             clear_storage_features = clear_storage["inferences"]["features"]
+            rotation_command = analyze("0x00427960", False)
+            state_command = analyze("0x004279A0", False)
             failures = []
             if aux_observed["frame_size"] != 0x44:
                 failures.append("0x0043E0A0 frame regression")
@@ -614,6 +685,26 @@ def main() -> int:
                 failures.append("0x004199C0 loop-continue-guard regression")
             if "rep stosd" not in clear_storage_features:
                 failures.append("0x0041A350 rep-stosd regression")
+            if (
+                "call_result_homed" not in rotation_command["inferences"]["features"]
+                or rotation_command["exact_observations"]["call_result_homes"] != [
+                    {
+                        "call": "0x00427976",
+                        "local_offset": -4,
+                        "field_store_bases": [
+                            {"reload": "0x0042797E", "store": "0x00427984", "field_offset": 8},
+                            {"reload": "0x00427987", "store": "0x0042798D", "field_offset": 0},
+                            {"reload": "0x0042798F", "store": "0x00427995", "field_offset": 4},
+                        ],
+                    }
+                ]
+            ):
+                failures.append("0x00427960 call-result-home regression")
+            if (
+                "call_result_homed" not in state_command["inferences"]["features"]
+                or len(state_command["exact_observations"]["call_result_homes"]) != 1
+            ):
+                failures.append("0x004279A0 call-result-home regression")
             same_shape = compare_instruction_shapes(
                 bytes.fromhex("55 8b ec 83 ec 08 89 4d fc 6a 01"),
                 bytes.fromhex("55 8b ec 83 ec 10 89 4d f8 6a 7f"),
@@ -668,7 +759,7 @@ def main() -> int:
                 failures.append("COFF alignment-padding trim regression")
             if failures:
                 raise ValueError("; ".join(failures))
-            print("typed reconstruction facts OK: 7 target-pinned regressions plus shape/branch/resync fixtures")
+            print("typed reconstruction facts OK: 9 target-pinned regressions plus shape/branch/resync fixtures")
             return 0
         if not args.address:
             parser.error("address is required unless --check is selected")

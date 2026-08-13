@@ -740,6 +740,13 @@ dir32_targets = [
 ]
 
 [[units.ecl-run.functions]]
+address = "0x00427960"
+symbol_base = "?QueueRotationCommand@EclOp121Bullet@th07@@QAEXMMHMM@Z"
+rel32_targets = [
+  "?ReserveRotationCommand@EclOp121Bullet@th07@@QAEPAUEclOp121RotationCommand@2@MMH@Z=0x004278B0",
+]
+
+[[units.ecl-run.functions]]
 address = "0x00417E50"
 symbol_base = "?EclOp121CancelBulletsInRadius@th07@@YIXPAUEnemyOverlay@EclOperands@1@PBUEclOp121InstructionOverlay@1@@Z"
 rel32_targets = [

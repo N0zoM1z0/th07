@@ -69,6 +69,13 @@ recommendation = "For a fixed dword-aligned target clear whose exact body saves 
 evidence = "EnemyManager storage clear 0x0041A350 reached strict exact 25/25 bytes with memset(this, 0, 0x496A8), producing the target EDI save, ECX home, EAX zero, and rep stosd sequence."
 
 [[rules]]
+id = "vc7-homed-entry-result-void-wrapper"
+requires = ["call_result_homed", "register_home"]
+confidence = "observed_pattern"
+recommendation = "When a member helper directly calls an entry allocator, immediately homes EAX in a local, and reloads that local only as a field-store base, model a typed local returned from the callee. Do not infer an outer pointer return merely because EAX remains live at ret; a void wrapper can preserve that EAX value under VC7."
+evidence = "Bullet rotation queue 0x00427960 and state queue 0x004279A0 both reached strict exact 62/62 bytes with typed entry locals and void member ABIs; their allocators differ in input ABI and entry size."
+
+[[rules]]
 id = "vc7-nonfolded-idiv"
 requires = ["idiv"]
 confidence = "observed_pattern"

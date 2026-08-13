@@ -223,6 +223,15 @@ struct EclOp121StateCommand
 };
 typedef char EclOp121StateCommand_size[sizeof(EclOp121StateCommand) == 0x10 ? 1 : -1];
 
+struct EclOp121RotationCommand
+{
+    f32 interval;
+    f32 angularStep;
+    i32 duration;
+    u8 unknown0C[0x14];
+};
+typedef char EclOp121RotationCommand_size[sizeof(EclOp121RotationCommand) == 0x20 ? 1 : -1];
+
 struct EclOp121Bullet
 {
     union
@@ -237,6 +246,7 @@ struct EclOp121Bullet
 
     void QueueRotationCommand(f32 speedDelta, f32 unusedDelta, i32 duration,
                               f32 angularStep, f32 interval);
+    EclOp121RotationCommand *ReserveRotationCommand(f32 speedDelta, f32 unusedDelta, i32 size);
     EclOp121StateCommand *ReserveStateCommand(i32 unknown0, i32 unknown1, i32 size);
     void QueueStateCommand(i32 unknown0, i32 unknown1, i32 duration, f32 parameter, f32 angle);
     __forceinline EclOp121BulletCommand &CommandAt(i32 index)
@@ -291,6 +301,17 @@ extern EclOp121AnmManager *g_TargetAnmManager4B9E44;
 extern f32 g_TargetFrameMultiplier575AC8;
 extern f32 g_TargetRealOne498A54;
 extern EclOp121TimerManager g_TargetTimerManager575950;
+
+void EclOp121Bullet::QueueRotationCommand(f32 speedDelta, f32 unusedDelta, i32 duration,
+                                           f32 angularStep, f32 interval)
+{
+    EclOp121RotationCommand *command;
+
+    command = ReserveRotationCommand(speedDelta, unusedDelta, 0x20);
+    command->duration = duration;
+    command->interval = interval;
+    command->angularStep = angularStep;
+}
 
 void EclOp121Bullet::QueueStateCommand(i32 unknown0, i32 unknown1, i32 duration,
                                         f32 parameter, f32 angle)
