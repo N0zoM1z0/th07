@@ -2,6 +2,11 @@
 
 namespace th07
 {
+// Target 0x0045E8F0 loads this target-pinned zero origin before both restore
+// seeks; its storage is in the read-only PBG constants immediately after the
+// archive error strings.
+extern u32 g_TargetPbgSeekBegin;
+
 // Target 0x0045E550 first establishes the IPbgFile construction vptr, then
 // the CPbgFile vptr, INVALID_HANDLE_VALUE, and the unopened mode value.
 CPbgFile::CPbgFile() : m_handle(INVALID_HANDLE_VALUE), m_mode(0)
@@ -73,5 +78,44 @@ bool CPbgFile::Write(const void *buffer, u32 size)
     }
     WriteFile(m_handle, buffer, size, &bytesWritten, NULL);
     return size == bytesWritten ? true : false;
+}
+
+#pragma var_order(memory, fileSize, previousOffset)
+void *CPbgFile::ReadWholeFile(u32 maximumSize)
+{
+    u32 fileSize;
+    i32 previousOffset;
+    HGLOBAL memory;
+
+    if (m_mode != GENERIC_READ)
+    {
+        return NULL;
+    }
+    fileSize = GetSize();
+    if (fileSize > maximumSize)
+    {
+        return NULL;
+    }
+    memory = GlobalAlloc(GMEM_ZEROINIT, fileSize);
+    if (memory == NULL)
+    {
+        return NULL;
+    }
+    previousOffset = Tell();
+    if (!Seek(previousOffset, g_TargetPbgSeekBegin))
+    {
+        return NULL;
+    }
+    if (!Read(memory, fileSize))
+    {
+        if (memory != NULL)
+        {
+            GlobalFree(memory);
+            memory = NULL;
+        }
+        return NULL;
+    }
+    Seek(previousOffset, g_TargetPbgSeekBegin);
+    return memory;
 }
 } // namespace th07

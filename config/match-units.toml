@@ -2643,6 +2643,15 @@ address = "0x0045E800"
 symbol_base = "?Write@CPbgFile@th07@@UAE_NPBXI@Z"
 dir32_targets = ["__imp__WriteFile@20=__imp__WriteFile@20"]
 
+[[units.pbg-file.functions]]
+address = "0x0045E8F0"
+symbol_base = "?ReadWholeFile@CPbgFile@th07@@UAEPAXI@Z"
+dir32_targets = [
+  "__imp__GlobalAlloc@8=__imp__GlobalAlloc@8",
+  "__imp__GlobalFree@4=__imp__GlobalFree@4",
+  "?g_TargetPbgSeekBegin@th07@@3IA=?g_TargetPbgSeekBegin@th07@@3IA",
+]
+
 [[units.pbg-file-destructor.functions]]
 address = "0x0045E500"
 symbol_base = "??1IPbgFile@th07@@UAE@XZ"
