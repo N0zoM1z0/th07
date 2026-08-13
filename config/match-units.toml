@@ -2633,6 +2633,16 @@ address = "0x0045E8B0"
 symbol_base = "?Seek@CPbgFile@th07@@UAE_NHI@Z"
 dir32_targets = ["__imp__SetFilePointer@16=__imp__SetFilePointer@16"]
 
+[[units.pbg-file.functions]]
+address = "0x0045E7B0"
+symbol_base = "?Read@CPbgFile@th07@@UAEIPAXI@Z"
+dir32_targets = ["__imp__ReadFile@20=__imp__ReadFile@20"]
+
+[[units.pbg-file.functions]]
+address = "0x0045E800"
+symbol_base = "?Write@CPbgFile@th07@@UAE_NPBXI@Z"
+dir32_targets = ["__imp__WriteFile@20=__imp__WriteFile@20"]
+
 [[units.pbg-file-destructor.functions]]
 address = "0x0045E500"
 symbol_base = "??1IPbgFile@th07@@UAE@XZ"

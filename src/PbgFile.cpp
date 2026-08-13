@@ -47,4 +47,26 @@ bool CPbgFile::Seek(i32 offset, u32 origin)
     SetFilePointer(m_handle, offset, NULL, origin);
     return true;
 }
+
+u32 CPbgFile::Read(void *buffer, u32 size)
+{
+    DWORD bytesRead = 0;
+    if (m_mode != GENERIC_READ)
+    {
+        return 0;
+    }
+    ReadFile(m_handle, buffer, size, &bytesRead, NULL);
+    return bytesRead;
+}
+
+bool CPbgFile::Write(const void *buffer, u32 size)
+{
+    DWORD bytesWritten = 0;
+    if (m_mode != GENERIC_WRITE)
+    {
+        return false;
+    }
+    WriteFile(m_handle, buffer, size, &bytesWritten, NULL);
+    return size == bytesWritten ? true : false;
+}
 } // namespace th07

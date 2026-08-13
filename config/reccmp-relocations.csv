@@ -7,6 +7,8 @@ __imp__CreateCompatibleDC@4,0x0048D030,d4b20900,0x0,PE import table entry and GD
 __imp__CloseHandle@4,0x0048D068,40af0900,0x0,PE KERNEL32 import table entry for CloseHandle,literal
 __imp__SetFilePointer@16,0x0048D094,14b00900,0x0,PE KERNEL32 import table entry for SetFilePointer,literal
 __imp__GetFileSize@8,0x0048D050,e8ae0900,0x0,PE KERNEL32 import table entry for GetFileSize,literal
+__imp__ReadFile@20,0x0048D058,02af0900,0x0,PE KERNEL32 import table entry for ReadFile,literal
+__imp__WriteFile@20,0x0048D054,f6ae0900,0x0,PE KERNEL32 import table entry for WriteFile,literal
 _g_FormatInfoArray,0x0049ED98,16000000,0x0,Direct target table bytes and IDA xref from TextHelper GetFormatInfo,literal
 __imp__Sleep@4,0x0048D0B0,8ab00900,0x0,PE KERNEL32 import table entry for Sleep,literal
 __imp__SetTextColor@8,0x0048D014,44b30900,0x0,PE GDI32 import table entry for SetTextColor,literal
