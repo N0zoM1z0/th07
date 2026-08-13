@@ -1135,6 +1135,23 @@ dir32_targets = [
   "__real@3fc00000=enemy_collision_real_1_5",
 ]
 
+[units.enemy-callbacks]
+kind = "probe"
+source = "src/EnemyCallbacks.cpp"
+object = "build/match-units/EnemyCallbacks.obj"
+profile = "vc7-debug-od-no-gs-g6"
+notes = "Target-bounded TH07 Enemy life and timer callbacks; TH06 corroborates semantic roles only."
+
+[[units.enemy-callbacks.functions]]
+address = "0x0041FD70"
+symbol_base = "?HandleLifeCallback@EnemyCallbackOverlay@th07@@QAEHXZ"
+rel32_targets = ["?CallEclSub@EclManagerCallbackOverlay@th07@@QAEXPAXF@Z=0x0040E530"]
+dir32_targets = [
+  "?g_EclManagerCallbacks@th07@@3UEclManagerCallbackOverlay@1@A=ecl_manager_1347938",
+  "?g_EnemyCallbackPool@th07@@3PAUEnemyCallbackOverlay@1@A=enemy_callback_pool_9aea50",
+  "?g_EnemyCombatTemplate@th07@@3UEnemyCombatTemplate@1@A=enemy_combat_template_9ac6dc",
+]
+
 [units.enemy-spawn]
 kind = "probe"
 source = "src/EnemySpawn.cpp"

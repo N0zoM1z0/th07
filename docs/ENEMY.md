@@ -15,6 +15,7 @@ stable layer below the large manager callbacks:
 | `0x0041F2E0` | allocate and initialize an enemy slot | 327 |
 | `0x0041F580` | advance attached enemy effects | 240 |
 | `0x0041F670` | release attached enemy effects | 115 |
+| `0x0041FD70` | handle enemy life thresholds | 516 |
 | `0x004202D0` | despawn and unlink an enemy | 210 |
 | `0x004203B0` | conditionally clamp enemy position | 213 |
 | `0x004220F0` | interpolate a wrapped angle | 114 |

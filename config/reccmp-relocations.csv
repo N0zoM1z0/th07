@@ -491,6 +491,8 @@ enemy_manager_global,0x009A9B00,00000000,0x0;0x4,Target EnemyManager global obje
 enemy_boss_ui,0x0134DB5C,00000000,0x0;0x4;0x8;0x24c;0x250;0x254;0x498;0x49c;0x4a0;0x6e4;0x6e8;0x6ec,Target EnemyManager four-slot boss UI position array,address
 enemy_collision_real_0_7,0x00498B1C,3333333f,0x0,Target Enemy collision graze-box divisor 0.7,literal
 enemy_collision_real_1_5,0x00498BDC,0000c03f,0x0,Target Enemy collision kill-box divisor 1.5,literal
+enemy_callback_pool_9aea50,0x009AEA50,00000000,0x0,Target zero-initialized EnemyManager 480-slot pool base used by both life and timer callbacks,literal
+enemy_combat_template_9ac6dc,0x009AC6DC,00000000,0x0,Target zero-initialized 0xD4-byte Enemy combat reset template,literal
 ecl_real_10018,0x00498D5C,00881c46,0x0,Target-observed float 10018.0 constant used by the ECL dispatcher,literal
 ecl_real_10019,0x00498D58,008c1c46,0x0,Target-observed float 10019.0 constant used by the ECL dispatcher,literal
 ecl_real_10020,0x00498D54,00901c46,0x0,Target-observed float 10020.0 constant used by the ECL dispatcher,literal
