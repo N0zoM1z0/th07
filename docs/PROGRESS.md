@@ -2,20 +2,20 @@
 
 Generated from `config/functions.csv`. Only verified 100% comparisons count as reconstructed.
 
-- Matching authored functions: **180 / 1023 (17.60%)**
-- Matching authored bytes: **58,776 / 443,386 (13.26%)**
+- Matching authored functions: **181 / 1023 (17.69%)**
+- Matching authored bytes: **58,793 / 443,386 (13.26%)**
 - Exact library functions: **504 / 504; 102,621 / 102,621 bytes**
-- Combined exact bytes: **161,397 / 546,007 (29.56%)**
+- Combined exact bytes: **161,414 / 546,007 (29.56%)**
 - IDA seed inventory: **1,527 functions / 546,007 function bytes**
 
 | Status | Functions |
 | --- | ---: |
 | `unclassified` | 824 |
-| `identified` | 3 |
+| `identified` | 2 |
 | `decompiled` | 3 |
-| `implemented` | 2 |
-| `compiles` | 11 |
-| `matching` | 180 |
+| `implemented` | 1 |
+| `compiles` | 12 |
+| `matching` | 181 |
 | `library` | 504 |
 | `blocked` | 0 |
 

@@ -1220,6 +1220,18 @@ address = "0x004378F0"
 symbol_base = "?Destroy@GuiTimerTeardown@th07@@QAEHXZ"
 rel32_targets = ["?Target436380@GuiTimerTeardown@th07@@QAEHXZ=0x00436380"]
 
+[units.gui-text-teardown]
+kind = "probe"
+source = "src/GuiTextTeardown.cpp"
+object = "build/match-units/GuiTextTeardown.obj"
+profile = "vc7-default"
+notes = "Real-C++ GUI text-resource teardown forwarding its receiver to 0x00428B19."
+
+[[units.gui-text-teardown.functions]]
+address = "0x0042D03A"
+symbol_base = "?Destroy@GuiTextTeardown@th07@@QAEHXZ"
+rel32_targets = ["?Target428B19@GuiTextTeardown@th07@@QAEHXZ=0x00428B19"]
+
 [units.wave-file]
 kind = "probe"
 source = "src/WaveFile.cpp"
@@ -1230,6 +1242,19 @@ notes = "Target-pinned WaveFile size getter; TH08 exact clone corroborates the r
 [[units.wave-file.functions]]
 address = "0x0045E1F0"
 symbol_base = "?GetSize@WaveFile@th07@@QAEHXZ"
+
+[units.supervisor-activation]
+kind = "probe"
+source = "src/SupervisorActivation.cpp"
+object = "build/match-units/SupervisorActivation.obj"
+profile = "vc7-debug-od-no-gs-g6"
+notes = "Real-C++ reconstruction of the Supervisor render-state activation helper."
+
+[[units.supervisor-activation.functions]]
+address = "0x0043A1BD"
+symbol_base = "?ActivateRenderState@SupervisorRenderState@th07@@QAEHXZ"
+rel32_targets = ["?PrepareRenderState@AnmManager@th07@@QAEXXZ=0x0044F5C0"]
+dir32_targets = ["?g_AnmManager@th07@@3PAUAnmManager@1@A=?g_AnmManager@th07@@3PAUAnmManager@1@A"]
 
 [units.bullet-update]
 kind = "probe"
