@@ -647,6 +647,14 @@ dir32_targets = [
 ]
 
 [[units.ecl-run.functions]]
+address = "0x00418E80"
+symbol_base = "?EclOp121ResetBulletFamily@th07@@YIXPAUEnemyOverlay@EclOperands@1@PBUEclOp121InstructionOverlay@1@@Z"
+rel32_targets = [
+  "?Target44B310@th07@@YIXHHHHH@Z=0x0044B310",
+  "?Target41AE90@th07@@YAXXZ=0x0041AE90",
+]
+
+[[units.ecl-run.functions]]
 address = "0x00417C30"
 symbol_base = "?EclOp121RotateBullets@th07@@YIXPAUEnemyOverlay@EclOperands@1@PBUEclOp121InstructionOverlay@1@@Z"
 rel32_targets = [

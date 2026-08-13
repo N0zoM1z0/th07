@@ -238,6 +238,7 @@ struct EclOp121BulletManager
 };
 
 void __fastcall Target44B310(i32 first, i32 second, i32 third, i32 fourth, i32 fifth);
+void __cdecl Target41AE90();
 
 #pragma var_order(i, bullet, angularStep)
 void __fastcall EclOp121RotateBullets(EclOperands::EnemyOverlay *enemy,
@@ -333,6 +334,13 @@ void __fastcall EclOp121CopyPrimaryBossState(EclOperands::EnemyOverlay *enemy,
     *reinterpret_cast<i32 *>(enemy->bytes + 0x2B60) =
         *reinterpret_cast<const i32 *>(boss->bytes + 0x2B60);
     returnValue = *reinterpret_cast<i32 *>(boss->bytes + 0x72C);
+}
+
+void __fastcall EclOp121ResetBulletFamily(EclOperands::EnemyOverlay *enemy,
+                                          const EclOp121InstructionOverlay *instruction)
+{
+    Target44B310(1, 0x50, 8, 0, 0);
+    Target41AE90();
 }
 
 #pragma var_order(modeForSwitch, instructionMode, squaredDistance, sqrtTemporary, \
