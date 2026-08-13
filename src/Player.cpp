@@ -59,36 +59,77 @@ extern void __fastcall RotatePlayerVector(D3DXVECTOR3 *out, D3DXVECTOR3 *relativ
 #define PLAYER_BOXES_OVERLAP(leftA, topA, rightA, bottomA, leftB, topB, rightB, bottomB)                              \
     ((leftA) <= (rightB) && (rightA) >= (leftB) && (topA) <= (bottomB) && (bottomA) >= (topB))
 
-#pragma var_order(bullet, i, enemyBottomRightY, enemyBottomRightX, bulletBottomRight, enemyTopLeftY, enemyTopLeftX, damage, bulletTopLeft, lastEnemyHit)
+struct PlayerBoundsVec3
+{
+    f32 x;
+    f32 y;
+    f32 z;
+
+    D3DXVECTOR3 *AsD3dxVec()
+    {
+        return reinterpret_cast<D3DXVECTOR3 *>(this);
+    }
+
+    static __forceinline void SetCorners(PlayerBoundsVec3 *topLeft, PlayerBoundsVec3 *bottomRight,
+                                         const D3DXVECTOR3 *center, const D3DXVECTOR3 *size)
+    {
+        topLeft->x = center->x - size->x * 0.5f;
+        topLeft->y = center->y - size->y * 0.5f;
+        bottomRight->x = size->x * 0.5f + center->x;
+        bottomRight->y = size->y * 0.5f + center->y;
+    }
+
+    static __forceinline void SetBulletCorners(PlayerBoundsVec3 *topLeft, PlayerBoundsVec3 *bottomRight,
+                                               const D3DXVECTOR3 *volatile center,
+                                               const D3DXVECTOR3 *volatile size)
+    {
+        topLeft->x = center->x - size->x * 0.5f;
+        topLeft->y = center->y - size->y * 0.5f;
+        bottomRight->x = size->x * 0.5f + center->x;
+        bottomRight->y = size->y * 0.5f + center->y;
+    }
+};
+
+struct PlayerLastHitVec3
+{
+    i32 x;
+    i32 y;
+    i32 z;
+
+    __forceinline i32 HasHit()
+    {
+        return z != x;
+    }
+};
+
+struct PlayerAnmManager : AnmManager
+{
+    void SetAndExecuteScriptByIndex(PlayerBullet *bullet, i32 script)
+    {
+        bullet->animationIndex = static_cast<i16>(script);
+        SetAndExecuteScript(
+            reinterpret_cast<AnmVm *>(bullet),
+            *reinterpret_cast<AnmRawInstr **>(reinterpret_cast<u8 *>(this) + 0x28EF0 + 4 * script));
+    }
+};
+
+#pragma var_order(bullet, i, enemyBottomRight, bulletBottomRight, enemyTopLeft, damage, bulletTopLeft)
 i32 Player::CalcDamageToEnemy(D3DXVECTOR3 *enemyPosition, D3DXVECTOR3 *enemySize, i32 *bombHit)
 {
-    struct BulletBoundsPoint
-    {
-        f32 x;
-        f32 y;
-    };
-    BulletBoundsPoint bulletTopLeft;
+    PlayerBoundsVec3 bulletTopLeft;
     i32 damage;
-    i32 *lastEnemyHit;
-    i32 damageToAdd;
-    i32 animationIndex;
-    AnmManager *anmManager;
-    f32 enemyTopLeftX;
-    f32 enemyTopLeftY;
+    PlayerBoundsVec3 enemyTopLeft;
     i32 i;
     PlayerBullet *bullet;
-    BulletBoundsPoint bulletBottomRight;
-    f32 enemyBottomRightX;
-    f32 enemyBottomRightY;
+    PlayerBoundsVec3 bulletBottomRight;
+    PlayerBoundsVec3 enemyBottomRight;
 
     damage = 0;
-    lastEnemyHit = &lastEnemyHitX;
-    if ((lastEnemyHitZ != lastEnemyHitX) ? 1 : 0)
+    if (!reinterpret_cast<PlayerLastHitVec3 *>(&lastEnemyHitX)->HasHit())
     {
-    enemyTopLeftX = enemyPosition->x - enemySize->x * 0.5f;
-    enemyTopLeftY = enemyPosition->y - enemySize->y * 0.5f;
-    enemyBottomRightX = enemyPosition->x + enemySize->x * 0.5f;
-    enemyBottomRightY = enemyPosition->y + enemySize->y * 0.5f;
+        return 0;
+    }
+    PlayerBoundsVec3::SetCorners(&enemyTopLeft, &enemyBottomRight, enemyPosition, enemySize);
     bullet = &bullets[0];
     if (bombHit)
     {
@@ -102,12 +143,9 @@ i32 Player::CalcDamageToEnemy(D3DXVECTOR3 *enemyPosition, D3DXVECTOR3 *enemySize
             continue;
         }
 
-        bulletTopLeft.x = bullet->position.x - bullet->size.x * 0.5f;
-        bulletTopLeft.y = bullet->position.y - bullet->size.y * 0.5f;
-        bulletBottomRight.x = bullet->position.x + bullet->size.x * 0.5f;
-        bulletBottomRight.y = bullet->position.y + bullet->size.y * 0.5f;
-        if (bulletTopLeft.y > enemyBottomRightY || bulletTopLeft.x > enemyBottomRightX ||
-            bulletBottomRight.y < enemyTopLeftY || bulletBottomRight.x < enemyTopLeftX)
+        PlayerBoundsVec3::SetBulletCorners(&bulletTopLeft, &bulletBottomRight, &bullet->position, &bullet->size);
+        if (bulletTopLeft.y > enemyBottomRight.y || bulletTopLeft.x > enemyBottomRight.x ||
+            bulletBottomRight.y < enemyTopLeft.y || bulletBottomRight.x < enemyTopLeft.x)
         {
             continue;
         }
@@ -121,30 +159,21 @@ i32 Player::CalcDamageToEnemy(D3DXVECTOR3 *enemyPosition, D3DXVECTOR3 *enemySize
             continue;
         }
 
-        if (bombIsActive)
+        if (!bombIsActive)
         {
-            damageToAdd = bullet->damage / 3;
-            if (damageToAdd == 0)
-            {
-                damageToAdd = 1;
-            }
-            damage += damageToAdd;
+            damage += bullet->damage;
         }
         else
         {
-            damage += bullet->damage;
+            damage += bullet->damage / 3 != 0 ? bullet->damage / 3 : 1;
         }
 
         if (bullet->type != 4 && bullet->type != 5)
         {
             if (bullet->state == 1)
             {
-                animationIndex = bullet->animationIndex + 32;
-                anmManager = g_AnmManager;
-                bullet->animationIndex = animationIndex;
-                anmManager->SetAndExecuteScript(
-                    reinterpret_cast<AnmVm *>(bullet),
-                    *reinterpret_cast<AnmRawInstr **>(reinterpret_cast<u8 *>(anmManager) + 0x28EF0 + 4 * animationIndex));
+                reinterpret_cast<PlayerAnmManager *>(g_AnmManager)->SetAndExecuteScriptByIndex(
+                    bullet, bullet->animationIndex + 32);
                 g_EffectManager.SpawnParticles(5, &bullet->position, 1, -1);
                 bullet->position.z = 0.1f;
             }
@@ -160,35 +189,31 @@ i32 Player::CalcDamageToEnemy(D3DXVECTOR3 *enemyPosition, D3DXVECTOR3 *enemySize
 
     for (i = 0; i < 112; ++i)
     {
-        D3DXVECTOR3 regionTopLeft;
-        D3DXVECTOR3 regionBottomRight;
-
         if (damageRegions[i].size.x <= 0.0f)
         {
             continue;
         }
-        regionTopLeft = damageRegions[i].position - damageRegions[i].size / 2.0f;
-        regionBottomRight = damageRegions[i].position + damageRegions[i].size / 2.0f;
-        if (regionTopLeft.x > enemyBottomRightX || regionBottomRight.x < enemyTopLeftX ||
-            regionTopLeft.y > enemyBottomRightY || regionBottomRight.y < enemyTopLeftY)
+        *bulletTopLeft.AsD3dxVec() = damageRegions[i].position - damageRegions[i].size / 2.0f;
+        *bulletBottomRight.AsD3dxVec() = damageRegions[i].position + damageRegions[i].size / 2.0f;
+        if (bulletTopLeft.x > enemyBottomRight.x || bulletBottomRight.x < enemyTopLeft.x ||
+            bulletTopLeft.y > enemyBottomRight.y || bulletBottomRight.y < enemyTopLeft.y)
         {
             continue;
         }
 
         damage += damageRegions[i].damage;
         damageRegions[i].accumulatedDamage += damageRegions[i].damage;
-        if ((++collisionParticleCounter & 3) == 0)
+        if (++collisionParticleCounter % 4 == 0)
         {
-            if (i >= 96)
-                g_EffectManager.SpawnParticles(5, enemyPosition, 1, -1);
-            else
+            if (i < 96)
                 g_EffectManager.SpawnParticles(3, enemyPosition, 1, -1);
+            else
+                g_EffectManager.SpawnParticles(5, enemyPosition, 1, -1);
         }
         if (bombIsActive && bombHit)
         {
             *bombHit = 1;
         }
-    }
     }
     return damage;
 }
