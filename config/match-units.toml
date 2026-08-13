@@ -1108,7 +1108,7 @@ symbol_base = "?ShowSpellcardBonus@SpellcardGui@th07@@QAEXI@Z"
 dir32_targets = [
   "__real@43600000=__real@43600000",
   "__real@41800000=__real@41800000",
-  "?g_GuiUpdateState@th07@@3HA=?g_GuiUpdateState@th07@@3HA",
+  "?g_GuiUpdateState@SpellLifecycle@th07@@3HA=?g_GuiUpdateState@th07@@3HA",
 ]
 
 [units.spell-lifecycle]
@@ -1184,6 +1184,15 @@ dir32_targets = [
 [[units.spell-lifecycle.functions]]
 address = "0x00427B54"
 symbol_base = "?EndSpellcardDisplay@GuiOverlay@SpellLifecycle@th07@@QAEXXZ"
+
+[[units.spell-lifecycle.functions]]
+address = "0x00427BF8"
+symbol_base = "?ShowBonusScore@GuiOverlay@SpellLifecycle@th07@@QAEXH@Z"
+dir32_targets = [
+  "__real@43d00000=__real@43d00000",
+  "__real@42400000=__real@42400000",
+  "?g_GuiUpdateState@SpellLifecycle@th07@@3HA=?g_GuiUpdateState@th07@@3HA",
+]
 
 [units.bullet-update]
 kind = "probe"

@@ -52,10 +52,55 @@ struct GuiEndSubstate
     i16 word1C6;
 };
 
+// This is the target-observed three-float shape used by this GUI-owned
+// formatted-text record.  Keep it private: the global GUI layout is not yet
+// reconstructed.
+struct GuiBonusPosition
+{
+    f32 x;
+    f32 y;
+    f32 z;
+
+    GuiBonusPosition(f32 valueX, f32 valueY, f32 valueZ)
+    {
+        x = valueX;
+        y = valueY;
+        z = valueZ;
+    }
+};
+
+struct GuiBonusTimer
+{
+    i32 previous;
+    f32 subFrame;
+    i32 current;
+
+    void InitializeForPopup()
+    {
+        current = 0;
+        subFrame = 0.0f;
+        previous = -999;
+    }
+};
+
+struct GuiBonusScoreState
+{
+    GuiBonusPosition position;
+    u32 value;
+    i32 isShown;
+    GuiBonusTimer timer;
+};
+
+struct GuiStateOverlay
+{
+    u8 unknown0000[0x209C0];
+    GuiBonusScoreState bonusScore;
+};
+
 struct GuiOverlay
 {
     u8 unknown00[8];
-    u8 *state;
+    GuiStateOverlay *state;
 
     void ShowSpellcard(i32 portraitScript, const char *name);
     void EndSpellcardDisplay();
@@ -123,18 +168,30 @@ extern u8 g_TargetCharacterIndex62F647;
 extern u32 g_TargetReplayFlags62F648;
 extern ScoreStateOverlay *g_TargetScoreState626278;
 extern EffectManagerOverlay g_TargetEffectManager12FE250;
+extern i32 g_GuiUpdateState;
 
 void GuiOverlay::EndSpellcardDisplay()
 {
     GuiEndSubstate *first;
     GuiEndSubstate *second;
 
-    *reinterpret_cast<i16 *>(state + 0x6926) = 1;
-    first = reinterpret_cast<GuiEndSubstate *>(state + 0x6BF8);
+    *reinterpret_cast<i16 *>(reinterpret_cast<u8 *>(state) + 0x6926) = 1;
+    first = reinterpret_cast<GuiEndSubstate *>(reinterpret_cast<u8 *>(state) + 0x6BF8);
     *reinterpret_cast<i16 *>(reinterpret_cast<u8 *>(first) + 0x1C6) = 2;
-    second = reinterpret_cast<GuiEndSubstate *>(state + 0x7774);
+    second = reinterpret_cast<GuiEndSubstate *>(reinterpret_cast<u8 *>(state) + 0x7774);
     *reinterpret_cast<i16 *>(reinterpret_cast<u8 *>(second) + 0x1C6) = 2;
 }
+
+#pragma optimize("s", on)
+void GuiOverlay::ShowBonusScore(i32 score)
+{
+    state->bonusScore.position = GuiBonusPosition(416.0f, 48.0f, 0.0f);
+    state->bonusScore.isShown = 1;
+    state->bonusScore.timer.InitializeForPopup();
+    state->bonusScore.value = score;
+    g_GuiUpdateState = 2;
+}
+#pragma optimize("s", off)
 
 // Observed target ABI: 0x40FC90 accepts Enemy in ECX and raw ECL instruction
 // in EDX.  The functional names in this file are inferred only.
