@@ -431,6 +431,25 @@ def analyze(address: str, compare: bool) -> dict[str, Any]:
         ):
             features.add("x87_f32_threshold_c0_branch")
 
+    for index in range(len(instructions) - 2):
+        test_or_compare, branch, advance = instructions[index : index + 3]
+        if (
+            test_or_compare.mnemonic in {"test", "cmp"}
+            and branch.mnemonic.startswith("j")
+            and branch.mnemonic != "jmp"
+            and branch.operands
+            and branch.operands[0].type == X86_OP_IMM
+            and advance.mnemonic == "jmp"
+            and advance.operands
+            and advance.operands[0].type == X86_OP_IMM
+            and int(branch.operands[0].imm) == advance.address + advance.size
+            and int(advance.operands[0].imm) < advance.address
+        ):
+            # The target CFG says the accepted path skips an unconditional
+            # backward edge to the loop advance.  It is an exact instruction
+            # observation; source nesting remains a compiler-shaping inference.
+            features.add("loop_continue_guard")
+
     if any(values == {0, 1} for values in stack_immediate_bits.values()):
         features.add("boolean_materialization")
 
@@ -559,6 +578,8 @@ def main() -> int:
             player_update_observed = player_update["exact_observations"]
             ecl_find_large = analyze("0x00418120", False)
             ecl_find_large_features = ecl_find_large["inferences"]["features"]
+            ecl_sprite_counter = analyze("0x004199C0", False)
+            ecl_sprite_counter_features = ecl_sprite_counter["inferences"]["features"]
             failures = []
             if aux_observed["frame_size"] != 0x44:
                 failures.append("0x0043E0A0 frame regression")
@@ -587,6 +608,8 @@ def main() -> int:
                 failures.append("0x0043EE50 frame/instruction-count regression")
             if "x87_f32_threshold_c0_branch" not in ecl_find_large_features:
                 failures.append("0x00418120 x87 threshold-branch regression")
+            if "loop_continue_guard" not in ecl_sprite_counter_features:
+                failures.append("0x004199C0 loop-continue-guard regression")
             same_shape = compare_instruction_shapes(
                 bytes.fromhex("55 8b ec 83 ec 08 89 4d fc 6a 01"),
                 bytes.fromhex("55 8b ec 83 ec 10 89 4d f8 6a 7f"),

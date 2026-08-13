@@ -55,6 +55,13 @@ recommendation = "For a target `fld value; fcomp f32-constant; fnstsw ax; test a
 evidence = "ECL opcode-121 large-bullet search 0x00418120 reached strict exact 311/311 bytes and 67/67 instructions with the positive threshold block; the equivalent inverted form emitted a different x87 branch sequence."
 
 [[rules]]
+id = "vc7-loop-continue-guard"
+requires = ["loop_continue_guard"]
+confidence = "observed_pattern"
+recommendation = "When target conditionally skips a direct backward jump to a loop advance, preserve that predicate as a sequential early `continue` guard. Do not merge it with following predicates; express later accepted-path tests as nested positive blocks when the target branches directly to the shared advance label."
+evidence = "ECL sprite-636 counter 0x004199C0 reached strict exact 144/144 bytes only after preserving the first inactive-bullet test as an early continue and the following C08/sprite tests as nested accepted-path conditions; equivalent compound or all-continue forms changed VC7 branch topology."
+
+[[rules]]
 id = "vc7-nonfolded-idiv"
 requires = ["idiv"]
 confidence = "observed_pattern"

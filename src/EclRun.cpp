@@ -358,6 +358,27 @@ void __fastcall EclOp121CallTarget44B310(EclOperands::EnemyOverlay *enemy,
     Target44B310(3, instruction->rawParameter10, 1, 0xD0CFCFFF, 0);
 }
 
+#pragma var_order(i, bullet)
+void __fastcall EclOp121CountSprite636(EclOperands::EnemyOverlay *enemy,
+                                       const EclOp121InstructionOverlay *instruction)
+{
+    EclOp121Bullet *bullet;
+    i32 i;
+
+    bullet = reinterpret_cast<EclOp121Bullet *>(0x0063B218);
+    *reinterpret_cast<i32 *>(enemy->bytes + 0x6FC) = 0;
+    for (i = 0; i < 1024; i++, bullet = reinterpret_cast<EclOp121Bullet *>(bullet->bytes + 0xD68))
+    {
+        if (*(u16 *)(bullet->bytes + 0xBFC) == 0)
+            continue;
+        if (*(i32 *)(bullet->bytes + 0xC08) == 0)
+        {
+            if (*(i16 *)(bullet->bytes + 0x1D4) == 636)
+                ++*reinterpret_cast<i32 *>(enemy->bytes + 0x6FC);
+        }
+    }
+}
+
 #pragma var_order(i, bullet, multiplier, velocity)
 void __fastcall EclOp121ScaleBullets(EclOperands::EnemyOverlay *enemy,
                                      const EclOp121InstructionOverlay *instruction)

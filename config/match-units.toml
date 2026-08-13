@@ -674,6 +674,10 @@ rel32_targets = [
 ]
 
 [[units.ecl-run.functions]]
+address = "0x004199C0"
+symbol_base = "?EclOp121CountSprite636@th07@@YIXPAUEnemyOverlay@EclOperands@1@PBUEclOp121InstructionOverlay@1@@Z"
+
+[[units.ecl-run.functions]]
 address = "0x00417C30"
 symbol_base = "?EclOp121RotateBullets@th07@@YIXPAUEnemyOverlay@EclOperands@1@PBUEclOp121InstructionOverlay@1@@Z"
 rel32_targets = [
