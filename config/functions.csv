@@ -137,7 +137,7 @@ address,size,span_end,current_name,proposed_name,module,status,match_percent,cal
 0x0041D180,357,0x0041D2E4,sub_41D180,,,unclassified,0.00,unknown,,false,,,,
 0x0041D2F0,141,0x0041D37C,sub_41D2F0,,,unclassified,0.00,unknown,,false,,,,
 0x0041D380,131,0x0041D402,sub_41D380,,,unclassified,0.00,unknown,,false,,,,
-0x0041D410,115,0x0041D482,sub_41D410,,,unclassified,0.00,unknown,,false,,,,
+0x0041D410,115,0x0041D482,sub_41D410,TextCursor_parse_token_int,enemy,matching,100.00,__thiscall,i32 TextCursor_parse_token_int(EnemyTextCursor41D410 * this),false,src/EnemyLifecycle.cpp,python3 scripts/build.py --unit enemy-lifecycle --compare --json; strict exact 115/115 target and object SHA 00bfe6da4ec0d9eb7a20b23e2287dba433e422d5d81fa8a5f9b952f8926a4e00 2026-08-13,root,Provisional behavior name. Target directly establishes cursor offset parser thunk ABI loops and return value; text format termination convention remains unresolved.
 0x0041D490,591,0x0041D6DE,sub_41D490,,,unclassified,0.00,unknown,,false,,,,
 0x0041D700,3268,0x0041E3C3,sub_41D700,,,unclassified,0.00,unknown,,false,,,,
 0x0041E4B0,216,0x0041E587,sub_41E4B0,,,unclassified,0.00,unknown,,false,,,,

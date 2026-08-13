@@ -1432,6 +1432,11 @@ dir32_targets = [
 ]
 
 [[units.enemy-lifecycle.functions]]
+address = "0x0041D410"
+symbol_base = "?ParseTokenInt@EnemyTextCursor41D410@th07@@QAEHXZ"
+rel32_targets = ["_atol=0x0047D437"]
+
+[[units.enemy-lifecycle.functions]]
 address = "0x00422F40"
 symbol_base = "?RegisterChain@EnemyManagerLifecycle@th07@@SIHPBD0@Z"
 rel32_targets = [

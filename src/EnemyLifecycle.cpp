@@ -1,5 +1,7 @@
 #include "inttypes.hpp"
 
+#include <stdlib.h>
+
 namespace th07
 {
 
@@ -25,6 +27,14 @@ struct ChainOverlay
 struct EnemyManagerUpdateOverlay
 {
     void ClearObservedStorage();
+};
+
+struct EnemyTextCursor41D410
+{
+    u8 unknown0000[0x252C];
+    const char *cursor;
+
+    i32 ParseTokenInt();
 };
 
 extern ChainOverlay g_Chain;
@@ -130,6 +140,18 @@ i32 __cdecl RegisterObservedResetChains()
     g_TargetResetDrawChain1347918.arg = manager;
     g_Chain.AddToDrawChain(&g_TargetResetDrawChain1347918, 9);
     return 0;
+}
+
+i32 EnemyTextCursor41D410::ParseTokenInt()
+{
+    i32 result;
+
+    result = atol(cursor);
+    while (*cursor)
+        ++cursor;
+    while (!*cursor)
+        ++cursor;
+    return result;
 }
 
 i32 __fastcall EnemyManagerLifecycle::RegisterChain(const char *enemyAnm, const char *enemy2Anm)
