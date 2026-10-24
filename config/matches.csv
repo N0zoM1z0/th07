@@ -383,7 +383,7 @@ f_004377f0,0x004377F0,187,187,MidiOutput::FadeOutSetVolume,authored,native-linke
 f_004378b0,0x004378B0,22,22,DummyMidiTimer::OnTimerElapsed,authored,native-linked,src/th07/MidiOutput.cpp
 f_004378d0,0x004378D0,25,25,MidiTimer::StartTimer,authored,native-linked,src/th07/MidiOutput.cpp
 f_004378f0,0x004378F0,19,19,MidiTimer::StopTimer,authored,native-linked,src/th07/MidiOutput.cpp
-f_00437903,0x00437903,5,5,utils::DebugPrint2,authored,native-linked,src/th07/GameManager.cpp
+f_00437903,0x00437903,5,5,utils::DebugPrint2,authored,native-linked,src/th07/MainMenuPreInput.cpp
 f_00437908,0x00437908,817,817,Supervisor::CheckTiming,authored,native-linked,src/th07/Supervisor.cpp
 f_00437c39,0x00437C39,55,55,AnmManager::ReleaseVertexBuffer,authored,native-linked,src/th07/Supervisor.cpp
 f_00437c70,0x00437C70,1707,1707,Supervisor::OnUpdate,authored,native-linked,src/th07/Supervisor.cpp
@@ -602,6 +602,7 @@ f_004553fa,0x004553FA,59,59,Supervisor::InitializeTimingVars,authored,native-lin
 f_00455435,0x00455435,72,72,MainMenu::SetMenuState,authored,native-linked,src/th07/MainMenu.cpp
 f_0045547d,0x0045547D,89,89,MainMenu::MainMenu,authored,native-linked,src/th07/MainMenu.cpp
 f_004554d6,0x004554D6,212,263,MainMenu::OnUpdate,authored,native-linked,src/th07/MainMenu.cpp
+f_004555dd,0x004555DD,3152,3184,MainMenu::OnUpdatePreInput,authored,native-linked,src/th07/MainMenuPreInput.cpp
 f_0045624d,0x0045624D,3059,3059,MainMenu::OnUpdateOptionsMenu,authored,native-linked,src/th07/MainMenu.cpp
 f_00456e40,0x00456E40,299,299,MainMenu::SwapMapping,authored,native-linked,src/th07/MainMenu.cpp
 f_00456f6b,0x00456F6B,2365,2401,MainMenu::OnUpdateKeyConfig,authored,native-linked,src/th07/MainMenu.cpp

@@ -14,12 +14,12 @@ Completion requires all of the following:
    native procedure evidence remain intact.
 4. `replay-exact-units.py`, `verify-linked-product.py --require-all-exact`, target
    attestation, tracking/progress checks and public CI all pass on current state.
-5. The two remaining source issues are resolved without masking bytes, padding,
+5. The remaining source issue is resolved without masking bytes, padding,
    fake locals, or reclassifying them out of authored scope. Whole-function
    assembly remains prohibited except for the explicitly user-approved 32-byte
    x87 primitive bound by `config/source-policy.toml`.
 
-Current state is 684/686 authored functions and 377,002/380,493 bytes (99.0825%),
+Current state is 685/686 authored functions and 380,154/380,493 bytes (99.9109%),
 all in one product. `verify-linked-product.py` separately reports successful
 build/link verification and incomplete exact-source reconstruction. Its
 `--require-all-exact` gate deliberately fails while authored work remains.

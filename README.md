@@ -6,8 +6,8 @@
 Source reconstruction of the original Japanese **TH07 1.00b**, accepted through
 complete function-byte comparisons against the original executable.
 
-The reviewed authored scope currently has **684 / 686 exact functions** and
-**377,002 / 380,493 exact bytes (99.0825%)**. Prebuilt SDK/CRT library code, SDK inline routines, compiler-generated
+The reviewed authored scope currently has **685 / 686 exact functions** and
+**380,154 / 380,493 exact bytes (99.9109%)**. Prebuilt SDK/CRT library code, SDK inline routines, compiler-generated
 wrappers, alignment and embedded SDK data are excluded from that denominator.
 Comparison includes complete compiler extents and trailing switch tables;
 relocation fields are independently resolved and compared without masking.
@@ -15,15 +15,15 @@ relocation fields are independently resolved and compared without masking.
 | Measurement | Exact functions | Exact coverage bytes |
 | --- | ---: | ---: |
 | Unmodified some100 reference, 694 named functions | 686 / 694 | 345,019 / 381,170 (90.5158%) |
-| Maintained native LTCG build, same named scope | 692 / 694 | 377,679 / 381,170 (99.0841%) |
-| Reviewed authored functions in that product | 684 / 686 | 377,002 / 380,493 (99.0825%) |
+| Maintained linked build, same named scope | 693 / 694 | 380,831 / 381,170 (99.9111%) |
+| Reviewed authored functions in that product | 685 / 686 | 380,154 / 380,493 (99.9109%) |
 
 Every accepted function now replays from **one maintained linked product**.
 The four prior COFF-only supplements have been recovered in that product.
 The first two rows include eight SDK/compiler routines. Authored acceptance
 includes the explicitly approved 32-byte x87 primitive under the narrowly bound
-[source policy](config/source-policy.toml). The two remaining authored routines
-are recorded in [config/remaining.csv](config/remaining.csv).
+[source policy](config/source-policy.toml). The remaining authored routine
+is recorded in [config/remaining.csv](config/remaining.csv).
 Cold compilation/linking, PE entry binding and source-global relocation replay
 are verified. Whole-executable identity and runtime playability remain unverified.
 See [the oracle and measurement limits](docs/ORACLE.md).
@@ -100,7 +100,7 @@ preserved in [docs/LICENSE-some100.txt](docs/LICENSE-some100.txt); original and
 maintained file hashes are tracked in `config/*source-provenance.json`.
 Maintained corrections recover the signed score conversion, initialization call
 boundary, counter-sample alignment, unsigned bullet-table comparison and CRT
-integer-parser entry. [Matching notes](docs/MATCHING_NOTES.md) record evidence
+integer-parser entry, plus an isolated native menu compilation profile. [Matching notes](docs/MATCHING_NOTES.md) record evidence
 and remaining work. Oracle v2 resolves additional independently evidenced
 metadata; the initial v1 reference snapshot remains archived.
 

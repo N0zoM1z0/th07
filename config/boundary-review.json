@@ -6,8 +6,8 @@
   "reference_named_exact_bytes": 345019,
   "authored_functions": 686,
   "authored_bytes": 380493,
-  "authored_exact_functions": 684,
-  "authored_exact_bytes": 377002,
+  "authored_exact_functions": 685,
+  "authored_exact_bytes": 380154,
   "application_start": 4198400,
   "application_end_exclusive": 4587595,
   "runtime_start": 4594320,
@@ -2551,49 +2551,63 @@
     "original_descriptors": 18,
     "accepted": [
       {
-        "generated_info": 4827256,
+        "generated_info": 4827188,
+        "target_info": 4827556,
+        "generated_handler": 4768682,
+        "target_handler": 4769186,
+        "cleanup_checks": [
+          {
+            "generated": 4768672,
+            "target": 4769176,
+            "size": 10,
+            "result": "exact"
+          }
+        ]
+      },
+      {
+        "generated_info": 4827308,
         "target_info": 4827084,
-        "generated_handler": 4768762,
+        "generated_handler": 4768782,
         "target_handler": 4768762,
         "cleanup_checks": [
           {
-            "generated": 4768702,
+            "generated": 4768722,
             "target": 4768702,
             "size": 10,
             "result": "exact"
           },
           {
-            "generated": 4768742,
+            "generated": 4768762,
             "target": 4768742,
             "size": 10,
             "result": "exact"
           },
           {
-            "generated": 4768692,
+            "generated": 4768712,
             "target": 4768692,
             "size": 10,
             "result": "exact"
           },
           {
-            "generated": 4768752,
+            "generated": 4768772,
             "target": 4768752,
             "size": 10,
             "result": "exact"
           },
           {
-            "generated": 4768732,
+            "generated": 4768752,
             "target": 4768732,
             "size": 10,
             "result": "exact"
           },
           {
-            "generated": 4768722,
+            "generated": 4768742,
             "target": 4768722,
             "size": 10,
             "result": "exact"
           },
           {
-            "generated": 4768712,
+            "generated": 4768732,
             "target": 4768712,
             "size": 10,
             "result": "exact"
@@ -2601,13 +2615,13 @@
         ]
       },
       {
-        "generated_info": 4827292,
+        "generated_info": 4827344,
         "target_info": 4827120,
-        "generated_handler": 4768792,
+        "generated_handler": 4768936,
         "target_handler": 4768792,
         "cleanup_checks": [
           {
-            "generated": 4768784,
+            "generated": 4768928,
             "target": 4768784,
             "size": 8,
             "result": "exact"
@@ -2615,13 +2629,13 @@
         ]
       },
       {
-        "generated_info": 4827328,
+        "generated_info": 4827380,
         "target_info": 4827156,
-        "generated_handler": 4768824,
+        "generated_handler": 4768808,
         "target_handler": 4768824,
         "cleanup_checks": [
           {
-            "generated": 4768816,
+            "generated": 4768800,
             "target": 4768816,
             "size": 8,
             "result": "exact"
@@ -2629,13 +2643,13 @@
         ]
       },
       {
-        "generated_info": 4827364,
+        "generated_info": 4827416,
         "target_info": 4827192,
-        "generated_handler": 4768859,
+        "generated_handler": 4768843,
         "target_handler": 4768859,
         "cleanup_checks": [
           {
-            "generated": 4768848,
+            "generated": 4768832,
             "target": 4768848,
             "size": 11,
             "result": "exact"
@@ -2643,19 +2657,19 @@
         ]
       },
       {
-        "generated_info": 4827408,
+        "generated_info": 4827460,
         "target_info": 4827236,
-        "generated_handler": 4768902,
+        "generated_handler": 4768886,
         "target_handler": 4768902,
         "cleanup_checks": [
           {
-            "generated": 4768880,
+            "generated": 4768864,
             "target": 4768880,
             "size": 8,
             "result": "exact"
           },
           {
-            "generated": 4768888,
+            "generated": 4768872,
             "target": 4768888,
             "size": 14,
             "result": "exact"
@@ -2663,13 +2677,13 @@
         ]
       },
       {
-        "generated_info": 4827444,
+        "generated_info": 4827496,
         "target_info": 4827272,
-        "generated_handler": 4768920,
+        "generated_handler": 4768904,
         "target_handler": 4768920,
         "cleanup_checks": [
           {
-            "generated": 4768912,
+            "generated": 4768896,
             "target": 4768912,
             "size": 8,
             "result": "exact"
@@ -2677,7 +2691,7 @@
         ]
       },
       {
-        "generated_info": 4827480,
+        "generated_info": 4827532,
         "target_info": 4827592,
         "generated_handler": 4769179,
         "target_handler": 4768955,
@@ -2691,13 +2705,13 @@
         ]
       },
       {
-        "generated_info": 4827516,
+        "generated_info": 4827568,
         "target_info": 4827308,
-        "generated_handler": 4768955,
+        "generated_handler": 4768971,
         "target_handler": 4768987,
         "cleanup_checks": [
           {
-            "generated": 4768944,
+            "generated": 4768960,
             "target": 4768976,
             "size": 11,
             "result": "exact"
@@ -2705,13 +2719,13 @@
         ]
       },
       {
-        "generated_info": 4827552,
+        "generated_info": 4827604,
         "target_info": 4827344,
-        "generated_handler": 4768987,
+        "generated_handler": 4769003,
         "target_handler": 4769019,
         "cleanup_checks": [
           {
-            "generated": 4768976,
+            "generated": 4768992,
             "target": 4769008,
             "size": 11,
             "result": "exact"
@@ -2719,19 +2733,19 @@
         ]
       },
       {
-        "generated_info": 4827596,
+        "generated_info": 4827648,
         "target_info": 4827388,
-        "generated_handler": 4769030,
+        "generated_handler": 4769046,
         "target_handler": 4769062,
         "cleanup_checks": [
           {
-            "generated": 4769008,
+            "generated": 4769024,
             "target": 4769040,
             "size": 11,
             "result": "exact"
           },
           {
-            "generated": 4769019,
+            "generated": 4769035,
             "target": 4769051,
             "size": 11,
             "result": "exact"
@@ -2739,19 +2753,19 @@
         ]
       },
       {
-        "generated_info": 4827640,
+        "generated_info": 4827692,
         "target_info": 4827432,
-        "generated_handler": 4769062,
+        "generated_handler": 4769078,
         "target_handler": 4769094,
         "cleanup_checks": [
           {
-            "generated": 4769040,
+            "generated": 4769056,
             "target": 4769072,
             "size": 11,
             "result": "exact"
           },
           {
-            "generated": 4769051,
+            "generated": 4769067,
             "target": 4769083,
             "size": 11,
             "result": "exact"
@@ -2759,13 +2773,13 @@
         ]
       },
       {
-        "generated_info": 4827676,
+        "generated_info": 4827728,
         "target_info": 4827468,
-        "generated_handler": 4769080,
+        "generated_handler": 4769096,
         "target_handler": 4769112,
         "cleanup_checks": [
           {
-            "generated": 4769072,
+            "generated": 4769088,
             "target": 4769104,
             "size": 8,
             "result": "exact"
@@ -2773,25 +2787,25 @@
         ]
       },
       {
-        "generated_info": 4827728,
+        "generated_info": 4827780,
         "target_info": 4827520,
-        "generated_handler": 4769134,
+        "generated_handler": 4769150,
         "target_handler": 4769166,
         "cleanup_checks": [
           {
-            "generated": 4769104,
+            "generated": 4769120,
             "target": 4769136,
             "size": 8,
             "result": "exact"
           },
           {
-            "generated": 4769112,
+            "generated": 4769128,
             "target": 4769144,
             "size": 11,
             "result": "exact"
           },
           {
-            "generated": 4769123,
+            "generated": 4769139,
             "target": 4769155,
             "size": 11,
             "result": "exact"
@@ -2799,21 +2813,7 @@
         ]
       },
       {
-        "generated_info": 4827764,
-        "target_info": 4827556,
-        "generated_handler": 4769154,
-        "target_handler": 4769186,
-        "cleanup_checks": [
-          {
-            "generated": 4769144,
-            "target": 4769176,
-            "size": 10,
-            "result": "exact"
-          }
-        ]
-      },
-      {
-        "generated_info": 4827800,
+        "generated_info": 4827816,
         "target_info": 4827628,
         "generated_handler": 4769199,
         "target_handler": 4769206,
@@ -2827,7 +2827,7 @@
         ]
       },
       {
-        "generated_info": 4827844,
+        "generated_info": 4827860,
         "target_info": 4827672,
         "generated_handler": 4769229,
         "target_handler": 4769236,
@@ -2847,7 +2847,7 @@
         ]
       },
       {
-        "generated_info": 4827880,
+        "generated_info": 4827896,
         "target_info": 4827708,
         "generated_handler": 4769253,
         "target_handler": 4769260,
@@ -2863,7 +2863,7 @@
     ],
     "blocked": [
       {
-        "generated_info": 4827172,
+        "generated_info": 4827224,
         "candidate_infos": [],
         "reason": "graph does not match uniquely"
       }
@@ -2874,10 +2874,10 @@
       "module": "Supervisor.obj",
       "object": "g_LastTime",
       "guard": "S3",
-      "generated_object": 20308116,
+      "generated_object": 20308148,
       "target_object": 20308640,
       "object_size": 4,
-      "generated_guard": 20308120,
+      "generated_guard": 20308152,
       "target_guard": 20308644,
       "evidence": "typed-adjacent-VC7-local-static-BSS-contribution"
     },
@@ -2885,10 +2885,10 @@
       "module": "MusicRoom.obj",
       "object": "s_MusicRoom",
       "guard": "S1",
-      "generated_object": 20308128,
+      "generated_object": 20308160,
       "target_object": 20308648,
       "object_size": 23556,
-      "generated_guard": 20331684,
+      "generated_guard": 20331716,
       "target_guard": 20332204,
       "evidence": "typed-adjacent-VC7-local-static-BSS-contribution"
     }
@@ -2896,17 +2896,17 @@
   "compiler_thunks": [
     {
       "name": "atoi",
-      "generated": 4707386,
+      "generated": 4707385,
       "target": 4707383,
       "size": 5,
-      "generated_callee": 4707250,
+      "generated_callee": 4707249,
       "target_callee": 4707247,
       "callee_evidence": "named-function-complete-extent",
       "evidence": "complete-unique-CRT-tail-thunk-replay"
     }
   ],
-  "native_named_exact_functions": 692,
-  "native_named_exact_bytes": 377679,
+  "native_named_exact_functions": 693,
+  "native_named_exact_bytes": 380831,
   "oracle_version": 2,
   "source_policy_exclusions": {}
 }

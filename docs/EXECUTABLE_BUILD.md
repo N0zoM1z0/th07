@@ -1,14 +1,16 @@
 # Native executable build and evidence
 
-`python3 scripts/build-whole.py` cold-builds all 29 maintained translation units
+`python3 scripts/build-whole.py` cold-builds all 30 maintained translation units
 serially with pinned VC7 under headless Wine, then performs faithful and metadata
 links. `python3 scripts/build-reference.py` reproduces the unmodified pinned
-reference separately. Both use `/GL /LTCG` and omit original icon resources.
+reference separately. The reference uses 29 `/GL` units and `/LTCG`. The maintained product adds one
+linked native COFF unit for the menu pre-input profile. Both omit original icon
+resources; the native unit is part of the same executable, not a supplement.
 
 Every currently accepted function comes from the maintained product; separate
 focused probes are retained as historical work. Full native measurement is
-692/694 named functions. Authored acceptance is 684/686, including the explicitly user-approved
-32-byte x87 primitive; two frame mismatches remain. [Completion requirements](GOAL.md) remain unmet.
+693/694 named functions. Authored acceptance is 685/686, including the explicitly user-approved
+32-byte x87 primitive; one frame mismatch remains. [Completion requirements](GOAL.md) remain unmet.
 
 Each native build directory retains faithful and metadata executables, master
 `th07.pdb`, `th07.map`, bounded `pdb-symbols.json`, all intermediate objects and
@@ -25,7 +27,7 @@ force recompilation. `--incremental` still performs both complete links.
 python3 scripts/build-whole.py
 python3 scripts/replay-exact-units.py
 python3 scripts/verify-linked-product.py
-# Completion gate: currently fails because two authored routines remain.
+# Completion gate: currently fails because one authored routine remains.
 python3 scripts/verify-linked-product.py --require-all-exact
 ```
 

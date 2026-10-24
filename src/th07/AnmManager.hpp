@@ -335,6 +335,10 @@ C_ASSERT(sizeof(AnmVmBase) == 0x1c8);
 
 struct AnmVm : AnmVmBase
 {
+// The isolated native menu profile preserves the observed constructor call.
+#if defined(TH07_ANM_CTOR_NOINLINE)
+    __declspec(noinline)
+#endif
     AnmVm()
     {
         memset(this, 0, sizeof(AnmVm));

@@ -4619,7 +4619,7 @@
       "name": "utils::DebugPrint2",
       "origin": "authored",
       "kind": "native-linked",
-      "source_file": "src/th07/GameManager.cpp",
+      "source_file": "src/th07/MainMenuPreInput.cpp",
       "target_compared_sha256": "7178bc05f1e5707e6c3dae3e068488f3df05d53b0e5eb728edd1abc56533f087",
       "native_name": "utils::DebugPrint2"
     },
@@ -7238,6 +7238,18 @@
       "source_file": "src/th07/MainMenu.cpp",
       "target_compared_sha256": "62f28124997df3e56d0d76519f4d298f5d6667e1a03d77bbe02da9c48b35f962",
       "native_name": "MainMenu::OnUpdate"
+    },
+    "f_004555dd": {
+      "unit": "f_004555dd",
+      "address": "0x004555DD",
+      "size": 3152,
+      "compare_size": 3184,
+      "name": "MainMenu::OnUpdatePreInput",
+      "origin": "authored",
+      "kind": "native-linked",
+      "source_file": "src/th07/MainMenuPreInput.cpp",
+      "target_compared_sha256": "daa290c796f01f1eddc8dbcad1c47a87f993422df2bb438937f2439bb1661915",
+      "native_name": "MainMenu::OnUpdatePreInput"
     },
     "f_0045624d": {
       "unit": "f_0045624d",

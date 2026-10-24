@@ -44,6 +44,18 @@ def object_reusable(record,command,root=ROOT):
         if not path.is_file() or digest(path)!=record[hash_key]:return False
     return True
 
+def maintained_units(upstream,config,source):
+    additional=config.get('additional_translation_units',[])
+    if not isinstance(additional,list) or any(not isinstance(name,str) for name in additional):raise ValueError('invalid additional translation units')
+    base=(source/'src/th07').resolve()
+    for name in additional:
+        path=(base/name).resolve()
+        if Path(name).is_absolute() or not path.is_relative_to(base) or path.suffix!='.cpp' or not path.is_file():raise ValueError('invalid maintained translation unit: '+name)
+        if path.relative_to(base).as_posix()!=name:raise ValueError('noncanonical maintained translation unit: '+name)
+    result=[*upstream,*additional]
+    if len(set(result))!=len(result):raise ValueError('duplicate maintained translation unit')
+    return result
+
 def actual_pdb(path):
     matches=[p for p in path.parent.iterdir() if p.name.casefold()==path.name.casefold()]
     if len(matches)!=1:raise ValueError('missing or ambiguous compiler PDB: '+str(path))
@@ -94,7 +106,9 @@ def main():
     old_commands=eligible_cached_commands(previous,source,tree,digest(generated/'i18n.hpp'),tool_hashes)
     build_config=ROOT/'config/native-build.toml'
     config_hash=digest(build_config) if a.source_root else None
-    coff_units=set(tomllib.loads(build_config.read_text())['maintained']['coff_translation_units']) if a.source_root else set()
+    native_config=tomllib.loads(build_config.read_text())['maintained'] if a.source_root else {}
+    files=maintained_units(files,native_config,source)
+    coff_units=set(native_config.get('coff_translation_units',[]))
     if coff_units-set(files):raise ValueError('unknown native COFF translation unit')
     commands=[];objects=[]
     for name in files:
@@ -137,7 +151,7 @@ def main():
     from pe_image import PE
     verify_image_binding(pdb,PE(exe))
     (out/'pdb-symbols.json').write_text(json.dumps(symbols(pdb),indent=2)+'\n')
-    receipt={'upstream_commit':PIN,'source_root':str(source),'source_tree':tree,'build_config_sha256':config_hash,'generated_header_sha256':digest(generated/'i18n.hpp'),'compiler_sha256':digest(compiler),'frontend_sha256':digest(patched/'c1xx.dll'),'wrapper_source_sha256':HACKERY_SHA,'backend_sha256':digest(patched/'c2.dll'),'linker_sha256':digest(linker),'commands':commands,'link_command':list(map(str,cmd)),'metadata_link_command':list(map(str,[*cmd,'/FIXED:NO'])),'image_sha256':digest(exe),'pdb_sha256':digest(pdb),'map_sha256':digest(mapfile),'pdb_symbols_sha256':digest(out/'pdb-symbols.json'),'pdb_parser_sha256':digest(ROOT/'scripts/pdb_symbols.py'),'faithful_image_sha256':digest(faithful),'profile':'upstream-no-GL-diagnostic' if a.no_gl else 'upstream-matching-GL-LTCG-no-icon'}
+    receipt={'upstream_commit':PIN,'source_root':str(source),'source_tree':tree,'build_config_sha256':config_hash,'generated_header_sha256':digest(generated/'i18n.hpp'),'compiler_sha256':digest(compiler),'frontend_sha256':digest(patched/'c1xx.dll'),'wrapper_source_sha256':HACKERY_SHA,'backend_sha256':digest(patched/'c2.dll'),'linker_sha256':digest(linker),'commands':commands,'link_command':list(map(str,cmd)),'metadata_link_command':list(map(str,[*cmd,'/FIXED:NO'])),'image_sha256':digest(exe),'pdb_sha256':digest(pdb),'map_sha256':digest(mapfile),'pdb_symbols_sha256':digest(out/'pdb-symbols.json'),'pdb_parser_sha256':digest(ROOT/'scripts/pdb_symbols.py'),'faithful_image_sha256':digest(faithful),'profile':'upstream-no-GL-diagnostic' if a.no_gl else 'maintained-mixed-VC7-LTCG-COFF-no-icon' if coff_units else 'upstream-matching-GL-LTCG-no-icon'}
     (out/'build-receipt.json').write_text(json.dumps(receipt,indent=2)+'\n')
     for p in out.iterdir():
         if p.suffix.lower()=='.pch':p.unlink()

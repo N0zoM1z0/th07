@@ -32,6 +32,14 @@
         "src/th07/Ending.cpp"
       ],
       "change": "Use atoi and 32-bit int result; independently identify the original 5-byte CRT forwarding entry by complete tail-thunk replay."
+    },
+    {
+      "paths": [
+        "src/th07/MainMenu.cpp",
+        "src/th07/MainMenuPreInput.cpp",
+        "src/th07/AnmManager.hpp"
+      ],
+      "change": "Move OnUpdatePreInput into a native COFF TU with the observed constructor call preserved by a TU-local noinline declaration hint. Constructor body/layout/ABI remain shared. Use size-profile diagnostic stubs, /Od /Oi headers and the menu size/ordinary-strcpy profile. Complete 3184-byte routine, including 32 table bytes, replays in the maintained linked product."
     }
   ],
   "files": [
@@ -45,7 +53,7 @@
     },
     {
       "path": "src/th07/AnmManager.hpp",
-      "sha256": "1b85237a66596f6143527bc15b6d7cd6e2cbfd147428720ed9ae62951fb9dd52"
+      "sha256": "f73a3a97f1baed806858adb3d565062436568d8c042b3bdea223eeac3d398e29"
     },
     {
       "path": "src/th07/AsciiManager.cpp",
@@ -145,11 +153,15 @@
     },
     {
       "path": "src/th07/MainMenu.cpp",
-      "sha256": "3332403ba0306de7cddd2576809b73b951c4fbb3a15928bc88395b4b2ff9d941"
+      "sha256": "ce30d052f2ba73ac24005e192a0c35c25b7b3f44fd3879c52f008a89c8bb2637"
     },
     {
       "path": "src/th07/MainMenu.hpp",
       "sha256": "a40b324eb0455beabdf5ad69afb55489217b6825f3d82ca7bc4e98bf7c5a1a79"
+    },
+    {
+      "path": "src/th07/MainMenuPreInput.cpp",
+      "sha256": "4cf117efba90c4cc123675318a906ea3b5f346ae50b968c015d265032faa4ec0"
     },
     {
       "path": "src/th07/MidiOutput.cpp",

@@ -9,7 +9,9 @@ measurement. The reference is some100/th07 commit
 
 `scripts/build-reference.py` reproduces the upstream 29-TU VC7 13.00.9466 profile
 with pinned `var_order`, Japanese localization generation and `/GL /LTCG`.
-The maintained product uses that graph with the recorded source corrections.
+The maintained product adds the recorded `MainMenuPreInput.cpp` native COFF
+unit to that graph, preserving a constructor call with a TU-local compiler
+attribute. All accepted code is in the same linked product.
 The faithful profile omits the original icon. `/GL` objects contain intermediate
 representation; native sizes must come from the completed link, not apparent
 COFF prefixes.
@@ -56,8 +58,8 @@ SHA-256 of complete target ranges.
 | Current oracle v2 scope | Exact functions | Exact coverage bytes |
 | --- | ---: | ---: |
 | Unmodified reference, named scope | 686 / 694 | 345,019 / 381,170 (90.5158%) |
-| Maintained linked product, named scope | 692 / 694 | 377,679 / 381,170 (99.0841%) |
-| Reviewed authored functions in that product | 684 / 686 | 377,002 / 380,493 (99.0825%) |
+| Maintained linked product, named scope | 693 / 694 | 380,831 / 381,170 (99.9111%) |
+| Reviewed authored functions in that product | 685 / 686 | 380,154 / 380,493 (99.9109%) |
 
 The initial v1 reference measurement was 682/694 and 89.6149%. It is preserved
 in `config/legacy/reference-baseline-v1.csv`. V2 removes four independently
@@ -68,7 +70,9 @@ The maintained signed score correction recovers ECL's complete 30,156-byte
 procedure, including 692 table bytes beyond the 29,464 coverage bytes.
 Further fixes recover initialization call boundaries, sample alignment, unsigned
 array comparison and CRT parser identity. [Matching notes](MATCHING_NOTES.md)
-record target evidence and rejected experiments.
+record target evidence and rejected experiments. The menu pre-input loop now
+replays all 3,184 bytes, including its 32-byte table, through the isolated native
+profile described in [frame diagnostics](FRAME_DIAGNOSTICS.md).
 
 Every accepted function now comes from **one maintained linked product**.
 The four former standalone supplements—ending parameter parsing, enemy chain
@@ -102,7 +106,6 @@ unchanged.
 | Address | Function | Coverage bytes | Blocker |
 | --- | --- | ---: | --- |
 | `0x0044A302` | `ResultScreen::RegisterChain` | 339 | Stack frame 0x38 versus 0x2C |
-| `0x004555DD` | `MainMenu::OnUpdatePreInput` | 3,152 | Stack frame 0x6C versus 0x64 |
 
 `config/functions.csv`, `function-origins.csv`, `matches.csv` and
 `exact-units.json` jointly define current acceptance. `config/remaining.csv`
@@ -112,7 +115,7 @@ CSV fields while loading that archive.
 
 ## Build and link verification limits
 
-A fresh 29-TU cold build and both links pass. The product verifier checks startup
+A fresh 30-TU cold build and both links pass. The product verifier checks startup
 binding, imports, unsuppressed linker status and complete native measurements.
 It also replays **132 named application globals/vtables** through independently
 resolved relocations, and checks their faithful/metadata byte agreement.

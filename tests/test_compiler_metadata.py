@@ -83,6 +83,25 @@ class CacheTests(Fixture):
     def test_cpp_inclusion_requires_full_build(self):
         (self.root/'src/th07/a.cpp').write_text('#include "b.cpp"\n');self.assertEqual(self.cached(),{})
 
+class NativeGraphTests(Fixture):
+    def setUp(self):
+        super().setUp();self.module=load('native_graph_builder','build-reference.py')
+        self.base=self.root/'src/th07';self.base.mkdir(parents=True)
+        for name in ['upstream.cpp','menu.cpp']:(self.base/name).write_text('// source\n')
+    def test_additional_native_tu_is_in_the_same_product_graph(self):
+        self.assertEqual(self.module.maintained_units(['upstream.cpp'],{'additional_translation_units':['menu.cpp']},self.root),['upstream.cpp','menu.cpp'])
+    def test_reference_graph_remains_unchanged(self):
+        self.assertEqual(self.module.maintained_units(['upstream.cpp'],{},self.root),['upstream.cpp'])
+    def test_duplicate_source_is_rejected(self):
+        with self.assertRaisesRegex(ValueError,'duplicate'):
+            self.module.maintained_units(['upstream.cpp'],{'additional_translation_units':['upstream.cpp']},self.root)
+    def test_source_outside_maintained_tree_is_rejected(self):
+        (self.root/'outside.cpp').write_text('// outside\n')
+        with self.assertRaises(ValueError):self.module.maintained_units([],{'additional_translation_units':['../../outside.cpp']},self.root)
+    def test_source_alias_is_rejected(self):
+        with self.assertRaisesRegex(ValueError,'noncanonical'):
+            self.module.maintained_units(['upstream.cpp'],{'additional_translation_units':['./upstream.cpp']},self.root)
+
 class ObjectCacheTests(Fixture):
     def setUp(self):
         super().setUp();self.module=load('cache_builder','build-reference.py')

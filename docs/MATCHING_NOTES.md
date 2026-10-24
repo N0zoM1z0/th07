@@ -31,6 +31,14 @@
   version string are copied through a relocation at literal-base+4. A bounded
   offset inside the independently mapped full literal resolves this field.
 
+- `MainMenu::OnUpdatePreInput` (`0x004555DD`, 3,152 coverage / 3,184 full bytes):
+  move the loop into `MainMenuPreInput.cpp`, linked as native COFF. Its TU-local
+  AnmVm constructor declaration hint prevents speculative inline slots and gives
+  the observed `0x64` allocation. Constructor bodies, ABI and layout remain
+  shared. Ordinary strcpy calls and separate header/function size profiles
+  preserve all existing exact routines and independent diagnostic identities.
+  Complete replay includes the 32-byte table; there are no separate supplements.
+
 All four former COFF supplements now pass from the maintained product. The
 canonical manifest contains no separate probe supplements.
 
@@ -39,10 +47,6 @@ canonical manifest contains no separate probe supplements.
 - `ResultScreen::RegisterChain`, 339 bytes: frame 0x38 versus target 0x2C;
   the affected parameter/temporary homes differ by 12 bytes. Remaining code
   and independently resolved relocations agree.
-- `MainMenu::OnUpdatePreInput`, 3,152 coverage / 3,184 full bytes: frame 0x6C
-  versus target 0x64. Most later homes shift by eight bytes. Full equality was
-  observed when AnmVm's constructor definition was hidden, but applying that
-  globally regressed 24 other constructors/callers. That experiment was rejected.
 
 Other rejected experiments: moving ResultScreen's constructor out of line made
 its caller frame 0x14, while explicit inline outside the class preserved the
@@ -50,14 +54,15 @@ its caller frame 0x14, while explicit inline outside the class preserved the
 `inline_depth(1)`, separating ResultScreen's pointer declaration from its initialization, and
 compiling ResultScreen/MainMenu without `/GL` did not fix
 the two frames. A surrounding `pack(4)` did not alter the SDK union's local
-placement. These changes were reverted; the native COFF profile list is empty.
+placement. Those global experiments were reverted. The accepted native COFF
+profile now contains only the isolated menu unit.
 
 ## Build evidence and cache correction
 
-A cold 29-TU rebuild and both links succeeded after the source fixes. The
-maintained native measurement is 692/694 named exact functions, with the two
-frame mismatches above. With the explicitly approved 32-byte x87 primitive,
-authored acceptance is 684/686 and 99.0825%.
+A cold 30-TU rebuild and both links succeeded after the source fixes. The
+maintained native measurement is 693/694 named exact functions, with only the
+ResultScreen registration frame mismatch above. With the explicitly approved 32-byte x87 primitive,
+authored acceptance is 685/686 and 99.9109%.
 
 VC7 `/GL` objects still need their compiler PDBs during a later link. Deleting
 those PDBs before reusing cached objects lost 641 source procedure records in

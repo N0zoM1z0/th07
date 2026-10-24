@@ -1,7 +1,8 @@
 # Remaining VC7 frame differences
 
-The maintained source still has two unaccepted routines. These diagnostics
-explain rejected hypotheses; they do not grant exact credit or change scope.
+One routine remains unaccepted: `ResultScreen::RegisterChain`. The menu loop
+now passes from the maintained linked product. The table records the original
+frame problem before that recovery; diagnostic similarity never grants credit.
 
 | Routine | Complete compared extent | Target allocation | Current allocation |
 | --- | ---: | ---: | ---: |
@@ -13,7 +14,28 @@ Compiler `/FAcs` listings locate unused storage among generated constructor
 locals. RegisterChain has 36 unused bytes between the allocation-pointer homes
 and the parameter home; the target has 24. PreInput has two extra dwords before
 its array-construction iterator homes. The independently relocated native
-comparison still rejects both complete extents.
+comparison rejected both complete extents before the isolated menu recovery.
+
+## Recovered menu loop
+
+`MainMenuPreInput.cpp` is an additional native COFF translation unit linked into
+our executable. A TU-local VC7 `noinline` declaration hint keeps the observed
+AnmVm constructor call and removes eight speculative inline bytes. The class
+layout, calling convention and constructor body are shared; only the compiler
+optimization attribute varies for this unit. No constructor body is hidden or
+conditionally replaced.
+
+The unit parses common diagnostic stubs with the existing size profile, then
+constructor headers with `/Od /Oi`, and applies the menu size profile plus
+ordinary strcpy calls to the loop. Otherwise a native size-profile constructor
+or a newly folded diagnostic identity changes unrelated measurements. This is
+a pinned VC7 build profile. The other 29 units retain the upstream LTCG profile.
+
+A cold 30-TU build, faithful/metadata links and full replay prove all 3,184 menu
+bytes, including the 32-byte table. The maintained product now has 693/694 named
+exact routines and 685/686 authored exact routines. All accepted implementations
+are in that product, with no external COFF supplement. ResultScreen registration
+still fails its complete comparison and remains in the denominator.
 
 ## Controlled probes
 
@@ -35,8 +57,8 @@ Every accepted routine must still replay from the maintained linked product.
 | C2 `inlS`, `inlT`, inline-depth/cost and `isize` options; EH/local-use toggles | Tested settings do not correct either frame |
 
 A `noinline` AnmVm constructor similarly obtains the desired PreInput allocation
-while changing MainMenu's constructor and registration frames. This is not a
-global source fix. No conditional constructor body, fabricated type, padding,
+while changing MainMenu's constructor and registration frames. This was rejected as a
+global source fix; the accepted menu profile isolates that compiler hint. No conditional constructor body, fabricated type, padding,
 extra inert storage or instruction patch was admitted.
 
 ## Compiler evidence and next investigation

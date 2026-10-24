@@ -1,2 +1,3 @@
 [maintained]
-coff_translation_units = []
+additional_translation_units = ["MainMenuPreInput.cpp"]
+coff_translation_units = ["MainMenuPreInput.cpp"]
