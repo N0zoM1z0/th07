@@ -76,13 +76,50 @@ The stock VC7 backend is unchanged from the pinned tool repository:
   inferred prototypes are hypotheses, not recovered compiler source.
 
 These observations, together with unchanged A/B output, make further blind
-adjustment of the tested cost switches unproductive. Next investigate the
-linear-flow path and the lifetime/import of generated constructor locals.
-The current evidence does not prove the internal allocation gate responsible
-for every unused slot. No compiler binary was modified.
+adjustment of the tested cost switches unproductive. No compiler binary was
+modified.
 
 Both compiler load paths are now checked: the private frontend directory's C2
 used by compilation and the stock C2 used by the LTCG linker. Build receipts,
 incremental invalidation and native replay require the pinned backend hash.
 Legacy receipts lacking that field require a rebuild. Negative controls reject
 a changed backend while leaving the compiler driver, frontend and linker intact.
+
+## Runtime compiler tracing
+
+A headless WineDbg GDB proxy and batch GDB traced compilation of the maintained
+ResultScreen source without changing either compiler or game instructions.
+The trace confirms three imports of the ordinary vector-construction helper
+while considering ResultScreen's constructor inside RegisterChain. The first
+two helpers construct ANM arrays; the third constructs the score-node array.
+The later post-import gate at `0x107727B3` accepts all three vector helpers
+but returns zero for the result constructor, after the nested imports. The
+final emitted RegisterChain still calls the standalone constructor.
+
+At `0x1076885C`, the initial early-inline budget has a hardcoded minimum of
+1000, using twice the function's recorded intermediate-language size above
+that minimum. The trace observes a budget of 1000 before importing the result
+constructor, 451 before the first vector helper, 406 before the second, and
+155 before the score-node helper. This is a separate path from the previously
+tested `inlS`/`inlT` cost settings. It does not establish that a supported option
+can remove the unwanted storage, or account for each stack slot's lifetime.
+
+Further private COFF probes demonstrate why frame size alone is insufficient:
+
+| Source/profile probe | RegisterChain | Standalone constructor | DeletedCallback |
+| --- | --- | --- | --- |
+| Original maintained source, EH enabled | 339 bytes, frame `0x38` | 251 bytes, frame `0x38` | Exact in maintained product |
+| Empty score-node destructor, EH enabled | 339 bytes, frame `0x2C` | 210 bytes, frame `0x48` | 256 bytes instead of 265 |
+| Same destructor, EH disabled | 308 bytes, frame `0x34` | 251 bytes, frame `0x38` | Not recovered |
+
+The destructor changes the generated array-construction/cleanup machinery.
+Its desired registration allocation therefore cannot authorize admission:
+the complete constructor and deletion behavior must also pass. Nothrow and
+forceinline hints, destructor optimization settings, score-grid wrappers,
+initialization helpers and alias settings did not produce a complete fix.
+None of these probe source changes entered the maintained product. In
+particular, no differing class definitions across translation units were used.
+
+Next investigate the import/cleanup of generated locals and distinguish it
+from the later decision to retain the constructor call. The sole remaining
+339-byte routine is still rejected by the strict oracle.
