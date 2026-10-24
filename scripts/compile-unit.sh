@@ -80,7 +80,7 @@ export WINEDLLOVERRIDES=winemenubuilder.exe=d
 source_win="$(winepath -w "$source_path")"
 output_win="$(winepath -w "$output_path")"
 pdb_win="$(winepath -w "$pdb_path")"
-src_win="$(winepath -w "$repo_root/src")"
+src_win="$(winepath -w "$repo_root/src/legacy")"
 runner_win="$(winepath -w "$repo_root/scripts/vc7run.bat")"
 export DEVENV_PREFIX
 DEVENV_PREFIX="$(winepath -w "$vc7_root")"

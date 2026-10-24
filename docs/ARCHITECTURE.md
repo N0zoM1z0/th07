@@ -5,7 +5,7 @@ entry `0x0047EA7D`. `.text` occupies virtual `0x00401000`–`0x0048CD37`
 inclusively (572,728 bytes). The original image has stripped relocations.
 VC7 compiler 13.00.9466 and LINK 7.0 reproduce the source build profile.
 
-`src/th07/` contains the maintained upstream translation-unit graph: supervisor,
+`src/` contains the maintained upstream translation-unit graph: supervisor,
 window/input, callback chains, ANM/text/rendering, stage/ECL, enemies, bullets,
 items, player, GUI/effects, score/replay, DirectSound/MIDI, menus/results/endings
 and PBG4 archive handling. `resources/csv/i18n.csv` generates the Japanese header
@@ -19,10 +19,13 @@ The shared C++ bodies and object layouts do not vary across units. The result
 constructor emitter adds one PE export to retain its required implementation.
 See [frame diagnostics](FRAME_DIAGNOSTICS.md).
 
-The existing `src/*.cpp` and associated headers preserve focused reconstruction
+The files under `src/legacy/` preserve focused reconstruction
 probes and their history. The earlier four standalone supplements now replay
 from the maintained native product. The [source guide](../src/README.md)
 distinguishes these two graphs; existing probes are not linked twice.
+
+The private pinned upstream checkout retains its original `src/th07/` layout;
+its provenance paths describe upstream files. Maintained paths use `src/`.
 
 `config/functions.csv` holds 1,546 reviewed entries. Explicit origins distinguish
 authored source, libraries and compiler code. Application closure is reviewed in

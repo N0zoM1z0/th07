@@ -25,7 +25,7 @@ def exclusions(root=ROOT):
     if set(policy)!={'x87_math_primitive'}:raise ValueError('unsupported source-policy exception')
     entry=policy['x87_math_primitive']
     if not entry.get('user_authorized',False):return {ADDRESS:REASON}
-    if entry['address']!=ADDRESS or entry['compare_size']!=32 or entry['source']!='src/th07/Global.hpp':raise ValueError('x87 exception scope changed')
+    if entry['address']!=ADDRESS or entry['compare_size']!=32 or entry['source']!='src/Global.hpp':raise ValueError('x87 exception scope changed')
     target=tomllib.loads((root/'config/target.toml').read_text())['target']['sha256']
     if entry['target_sha256']!=target:raise ValueError('x87 exception is bound to another target')
     bodies=primitive_bodies((root/entry['source']).read_text())

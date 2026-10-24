@@ -3,325 +3,398 @@
   "changes": [
     {
       "paths": [
-        "src/th07/EnemyManager.cpp",
-        "src/th07/EnemyManager.hpp"
+        "src/EnemyManager.cpp",
+        "src/EnemyManager.hpp"
       ],
       "change": "g_SpellcardScore u32 -> i32; target signed FILD DWORD in ECL; full 30156-byte procedure including switch tables replays exactly."
     },
     {
       "paths": [
-        "src/th07/EnemyManager.cpp",
-        "src/th07/EnemyManager.hpp"
+        "src/EnemyManager.cpp",
+        "src/EnemyManager.hpp"
       ],
       "change": "Move Initialize definition out of the class; preserve its body and original call boundary, removing unused VC7 inline-reservation slots in constructor and RegisterChain."
     },
     {
       "paths": [
-        "src/th07/main.cpp"
+        "src/main.cpp"
       ],
       "change": "Express the observed DWORD-aligned QueryPerformanceCounter sample as its two 32-bit fields; retain the 8-byte x86 API buffer layout."
     },
     {
       "paths": [
-        "src/th07/BulletManager.cpp"
+        "src/BulletManager.cpp"
       ],
       "change": "Compare template index against unsigned ARRAY_SIZE, matching the original JAE rather than JGE."
     },
     {
       "paths": [
-        "src/th07/Ending.cpp"
+        "src/Ending.cpp"
       ],
       "change": "Use atoi and 32-bit int result; independently identify the original 5-byte CRT forwarding entry by complete tail-thunk replay."
     },
     {
       "paths": [
-        "src/th07/MainMenu.cpp",
-        "src/th07/MainMenuPreInput.cpp",
-        "src/th07/AnmManager.hpp"
+        "src/MainMenu.cpp",
+        "src/MainMenuPreInput.cpp",
+        "src/AnmManager.hpp"
       ],
       "change": "Move OnUpdatePreInput into a native COFF TU with the observed constructor call preserved by a TU-local noinline declaration hint. Constructor body/layout/ABI remain shared. Use size-profile diagnostic stubs, /Od /Oi headers and the menu size/ordinary-strcpy profile. Complete 3184-byte routine, including 32 table bytes, replays in the maintained linked product."
     },
     {
       "paths": [
-        "src/th07/ResultScreen.hpp",
-        "src/th07/ResultScreen.cpp",
-        "src/th07/ResultRegister.cpp",
-        "src/th07/ResultScreenCtor.cpp"
+        "src/ResultScreen.hpp",
+        "src/ResultScreen.cpp",
+        "src/ResultRegister.cpp",
+        "src/ResultScreenCtor.cpp"
       ],
       "change": "Initialize the POD score-node grid explicitly through one shared stride/count loop. A TU-local noinline hint removes its speculative argument homes in native registration; a native dllexport constructor emitter preserves the exact shared 251-byte constructor. Class/initializer bodies and layout do not vary by TU. This emits one additional constructor export; full PE identity is not claimed. Complete 339/251/265-byte registration/constructor/deletion and all 694 named routines replay exactly with independently proven complete EH capsule aliases."
+    },
+    {
+      "paths": [
+        "src/AnmIdx.hpp",
+        "src/AnmManager.cpp",
+        "src/AnmManager.hpp",
+        "src/AsciiManager.cpp",
+        "src/AsciiManager.hpp",
+        "src/BombData.cpp",
+        "src/BombData.hpp",
+        "src/BulletManager.cpp",
+        "src/BulletManager.hpp",
+        "src/EclManager.cpp",
+        "src/EclManager.hpp",
+        "src/EffectManager.cpp",
+        "src/EffectManager.hpp",
+        "src/Ending.cpp",
+        "src/Ending.hpp",
+        "src/EnemyEclInstr.cpp",
+        "src/EnemyEclInstr.hpp",
+        "src/EnemyManager.cpp",
+        "src/EnemyManager.hpp",
+        "src/GameManager.cpp",
+        "src/GameManager.hpp",
+        "src/Global.cpp",
+        "src/Global.hpp",
+        "src/Gui.cpp",
+        "src/Gui.hpp",
+        "src/ItemManager.cpp",
+        "src/ItemManager.hpp",
+        "src/MainMenu.cpp",
+        "src/MainMenu.hpp",
+        "src/MainMenuPreInput.cpp",
+        "src/MidiOutput.cpp",
+        "src/MidiOutput.hpp",
+        "src/MusicRoom.cpp",
+        "src/MusicRoom.hpp",
+        "src/Player.cpp",
+        "src/Player.hpp",
+        "src/ReplayManager.cpp",
+        "src/ReplayManager.hpp",
+        "src/ResultRegister.cpp",
+        "src/ResultScreen.cpp",
+        "src/ResultScreen.hpp",
+        "src/ResultScreenCtor.cpp",
+        "src/ScreenEffect.cpp",
+        "src/ScreenEffect.hpp",
+        "src/SoundPlayer.cpp",
+        "src/SoundPlayer.hpp",
+        "src/Stage.cpp",
+        "src/Stage.hpp",
+        "src/Supervisor.cpp",
+        "src/Supervisor.hpp",
+        "src/TextHelper.cpp",
+        "src/TextHelper.hpp",
+        "src/ZunBool.hpp",
+        "src/ZunColor.hpp",
+        "src/ZunMath.hpp",
+        "src/ZunResult.hpp",
+        "src/dsutil.cpp",
+        "src/dsutil.hpp",
+        "src/dxutil.hpp",
+        "src/inttypes.hpp",
+        "src/main.cpp",
+        "src/pbg4/Lzss.cpp",
+        "src/pbg4/Lzss.hpp",
+        "src/pbg4/Pbg4Archive.cpp",
+        "src/pbg4/Pbg4Archive.hpp",
+        "src/pbg4/Pbg4File.cpp",
+        "src/pbg4/Pbg4File.hpp",
+        "src/utils.hpp"
+      ],
+      "change": "Flatten maintained src/th07/ to src/ without changing source bytes. Historical standalone probes are isolated under src/legacy/ and excluded from the maintained receipt/build graph."
     }
   ],
   "files": [
     {
-      "path": "src/th07/AnmIdx.hpp",
+      "path": "src/AnmIdx.hpp",
       "sha256": "8fa6e830f87e28f1fcd9c1a6e64b0019dcda47a7225ce344debfb7830fae5fec"
     },
     {
-      "path": "src/th07/AnmManager.cpp",
+      "path": "src/AnmManager.cpp",
       "sha256": "65123b88058364f41de6e4e0e5041f7f744050d4bf5abae2517752f78a370a2e"
     },
     {
-      "path": "src/th07/AnmManager.hpp",
+      "path": "src/AnmManager.hpp",
       "sha256": "f73a3a97f1baed806858adb3d565062436568d8c042b3bdea223eeac3d398e29"
     },
     {
-      "path": "src/th07/AsciiManager.cpp",
+      "path": "src/AsciiManager.cpp",
       "sha256": "5725d7509057899fe86a1d7a1ab1b817df0069d5077c1d97672a17f6c223439f"
     },
     {
-      "path": "src/th07/AsciiManager.hpp",
+      "path": "src/AsciiManager.hpp",
       "sha256": "b16cecdb56dbe5c8b85f394e9e4b80c8677d1baf5c324b9f6df8182b2476ef15"
     },
     {
-      "path": "src/th07/BombData.cpp",
+      "path": "src/BombData.cpp",
       "sha256": "bb070170d241ad54e78d6d6853ac3eedd90403d3810d52b417810ecec2aa74f6"
     },
     {
-      "path": "src/th07/BombData.hpp",
+      "path": "src/BombData.hpp",
       "sha256": "4d1ecd8b292194c0f6009413239cb2dbb5b9fee18f6134ccd54eae84d13dd159"
     },
     {
-      "path": "src/th07/BulletManager.cpp",
+      "path": "src/BulletManager.cpp",
       "sha256": "fe15864edd6f00c7f96547994e3214f2b47db6be84343db9f041f28966e2ee6d"
     },
     {
-      "path": "src/th07/BulletManager.hpp",
+      "path": "src/BulletManager.hpp",
       "sha256": "45236201b3299b5741a3691e6e3445fe21d3a07d2d666c48470301c639138432"
     },
     {
-      "path": "src/th07/EclManager.cpp",
+      "path": "src/EclManager.cpp",
       "sha256": "027b65d265857a6612f665e104a8be6af2b15eb8f4a1ed63dad75541b766a4a4"
     },
     {
-      "path": "src/th07/EclManager.hpp",
+      "path": "src/EclManager.hpp",
       "sha256": "9f2df4c365bb9445d3171b22a9f2af7ed453749d63dc11cf7dfebb3e70b5a2ec"
     },
     {
-      "path": "src/th07/EffectManager.cpp",
+      "path": "src/EffectManager.cpp",
       "sha256": "36a2fda7d9f50344bae8d6e129f9033b252dc34df1777c881e89680650a28d90"
     },
     {
-      "path": "src/th07/EffectManager.hpp",
+      "path": "src/EffectManager.hpp",
       "sha256": "96406d6e7ac4ae178fa5794d5def2a8e63e6fffcb4040ddf30df8a8cc968e80b"
     },
     {
-      "path": "src/th07/Ending.cpp",
+      "path": "src/Ending.cpp",
       "sha256": "a2075df64a5dc406630c0f1b2b34ecaa66fca5f5a707d8e6479e961bc2a820cb"
     },
     {
-      "path": "src/th07/Ending.hpp",
+      "path": "src/Ending.hpp",
       "sha256": "16bc976d97949c7de0f006d142374f9bf3fac23d6b72762736cb30812ad61880"
     },
     {
-      "path": "src/th07/EnemyEclInstr.cpp",
+      "path": "src/EnemyEclInstr.cpp",
       "sha256": "f76d2ae0af857eb6fa66d41597ffa93c1b4aa4386d1841b76fa15d9536693c0d"
     },
     {
-      "path": "src/th07/EnemyEclInstr.hpp",
+      "path": "src/EnemyEclInstr.hpp",
       "sha256": "79b0436f1cebcf402215cbb3d887dc1ee27002b68c493462e10f6805a1313cb2"
     },
     {
-      "path": "src/th07/EnemyManager.cpp",
+      "path": "src/EnemyManager.cpp",
       "sha256": "da4cc8724b7e2e05e54cd8528d866f577fb8946fea291cb3151ede59eca6236f"
     },
     {
-      "path": "src/th07/EnemyManager.hpp",
+      "path": "src/EnemyManager.hpp",
       "sha256": "a52aea11f1539f672eed6eba3a450a00a2c3767cb55c691d7fc4aefb53bc45a3"
     },
     {
-      "path": "src/th07/GameManager.cpp",
+      "path": "src/GameManager.cpp",
       "sha256": "359881b4ae010c87a3c92d7ba7cc40b4f66566cf13ac015fde87b26519c3696a"
     },
     {
-      "path": "src/th07/GameManager.hpp",
+      "path": "src/GameManager.hpp",
       "sha256": "776d36003fa413ffb00d74d5fbe75495f669fbe41ca0ea6cc93fa1da0a20d0c7"
     },
     {
-      "path": "src/th07/Global.cpp",
+      "path": "src/Global.cpp",
       "sha256": "05a6d3412aa8059306d93bd271ae5dc0233f5a42cd941bccf6b9165d1f97ed1d"
     },
     {
-      "path": "src/th07/Global.hpp",
+      "path": "src/Global.hpp",
       "sha256": "3fcee2f2fd6f2738d07f5d236e2287948651749162b488726ee2dc4d960e7b3c"
     },
     {
-      "path": "src/th07/Gui.cpp",
+      "path": "src/Gui.cpp",
       "sha256": "acd93335f0d857364a8b1ab2704b3596627cbf55cc828d75fd656d116bdd5413"
     },
     {
-      "path": "src/th07/Gui.hpp",
+      "path": "src/Gui.hpp",
       "sha256": "661b5e082910b19f5c8cebc197963bd6296b9a3d313a8daeda459bffe685eb18"
     },
     {
-      "path": "src/th07/ItemManager.cpp",
+      "path": "src/ItemManager.cpp",
       "sha256": "5578a675a3b6afad7a2dedf607b59568f3b3dcc51758b869b1758092427e9756"
     },
     {
-      "path": "src/th07/ItemManager.hpp",
+      "path": "src/ItemManager.hpp",
       "sha256": "1cdbbf5b21e1cfd3568e91f9b5e878a7d29e801b81e40986f17d1e86331a0734"
     },
     {
-      "path": "src/th07/MainMenu.cpp",
+      "path": "src/MainMenu.cpp",
       "sha256": "ce30d052f2ba73ac24005e192a0c35c25b7b3f44fd3879c52f008a89c8bb2637"
     },
     {
-      "path": "src/th07/MainMenu.hpp",
+      "path": "src/MainMenu.hpp",
       "sha256": "a40b324eb0455beabdf5ad69afb55489217b6825f3d82ca7bc4e98bf7c5a1a79"
     },
     {
-      "path": "src/th07/MainMenuPreInput.cpp",
+      "path": "src/MainMenuPreInput.cpp",
       "sha256": "c197108635de90316f43c6ebbfe40f90b4cc4a472374325733401bc8f85f5b64"
     },
     {
-      "path": "src/th07/MidiOutput.cpp",
+      "path": "src/MidiOutput.cpp",
       "sha256": "8df04a14a76c640ba2c21b4faefdd60559cebd34a2fd96155e4d7adc51ae0ff8"
     },
     {
-      "path": "src/th07/MidiOutput.hpp",
+      "path": "src/MidiOutput.hpp",
       "sha256": "6878effe38aca3b45bcd29b72176d20a45587441e22faac51cf59f5cd93e270d"
     },
     {
-      "path": "src/th07/MusicRoom.cpp",
+      "path": "src/MusicRoom.cpp",
       "sha256": "fa1e0210fad402134f312b8d35ad359628bec391fd0ddd68c15c5cce2d8bb702"
     },
     {
-      "path": "src/th07/MusicRoom.hpp",
+      "path": "src/MusicRoom.hpp",
       "sha256": "eced586d3e0bd893fc924577f746809c5356c2ccb1f13f0a41b6a298b458e620"
     },
     {
-      "path": "src/th07/Player.cpp",
+      "path": "src/Player.cpp",
       "sha256": "17e1093b2d684fab2b509b69f192f6bf1c20608e590e6387bb8bf4542650e174"
     },
     {
-      "path": "src/th07/Player.hpp",
+      "path": "src/Player.hpp",
       "sha256": "625681c1c1ea9b459cb0ab6e47868a2ddf513db0ecdeb14a7cc0513705928f1a"
     },
     {
-      "path": "src/th07/ReplayManager.cpp",
+      "path": "src/ReplayManager.cpp",
       "sha256": "665d35b6d60fa9c8376f7fc049f24592ec2486365425bb3b5babdca1955788e5"
     },
     {
-      "path": "src/th07/ReplayManager.hpp",
+      "path": "src/ReplayManager.hpp",
       "sha256": "2965b936b53de4615ff688d0b09f183a8d16f8be48e4adc39acf933f16645a2b"
     },
     {
-      "path": "src/th07/ResultRegister.cpp",
+      "path": "src/ResultRegister.cpp",
       "sha256": "972244dde00a92ee988857aa40780956d0dedfd9ae57a44abe74b57a65dd4815"
     },
     {
-      "path": "src/th07/ResultScreen.cpp",
+      "path": "src/ResultScreen.cpp",
       "sha256": "f7909a499d47fbc61727b8df67666c6ba093751b8ca7cb74f0d2d4f4a1f176a2"
     },
     {
-      "path": "src/th07/ResultScreen.hpp",
+      "path": "src/ResultScreen.hpp",
       "sha256": "c3fe7657d142a5d6cca3fbdb42cf8476a95df7e2b7a30f7013363146d4b0a2a8"
     },
     {
-      "path": "src/th07/ResultScreenCtor.cpp",
+      "path": "src/ResultScreenCtor.cpp",
       "sha256": "95acbd625d64b4fa4cf8bc802a0b927dbacbb5afb0c4901fa39ec864c8ac0b7c"
     },
     {
-      "path": "src/th07/ScreenEffect.cpp",
+      "path": "src/ScreenEffect.cpp",
       "sha256": "2048a734184699188910d317a431cbf0f66b7a467e7acc7c47b4d25d246c7175"
     },
     {
-      "path": "src/th07/ScreenEffect.hpp",
+      "path": "src/ScreenEffect.hpp",
       "sha256": "eef7b7b058c9a6e0e1d0bd48e0d9232c1bae402a99bd25ddea39ef69cf675eac"
     },
     {
-      "path": "src/th07/SoundPlayer.cpp",
+      "path": "src/SoundPlayer.cpp",
       "sha256": "1012299a207f930ab1608a6ccc6471b938410fc0fcae66e5daf46749c1448505"
     },
     {
-      "path": "src/th07/SoundPlayer.hpp",
+      "path": "src/SoundPlayer.hpp",
       "sha256": "f363cacd48955a35b82860e838a79ac89d6b3ea48d798001b94953035d5114a5"
     },
     {
-      "path": "src/th07/Stage.cpp",
+      "path": "src/Stage.cpp",
       "sha256": "0ddf389a6a48faa408ec9dd8b26d16cecc8f5ebcc47f11a89bf047437391d5c1"
     },
     {
-      "path": "src/th07/Stage.hpp",
+      "path": "src/Stage.hpp",
       "sha256": "782af4c1fe02f1ce6eb981c302745c31e05464e01a57c18aa4e73521c291d82c"
     },
     {
-      "path": "src/th07/Supervisor.cpp",
+      "path": "src/Supervisor.cpp",
       "sha256": "ce9dd2523b1b01a6b22716f5b1c5c99ab17dd0d5bd99225ccae7dfa02a06030f"
     },
     {
-      "path": "src/th07/Supervisor.hpp",
+      "path": "src/Supervisor.hpp",
       "sha256": "f95a0991a6510420c9ed3755569e0bad9f347127026e5b3b8b87bcdfaa16927f"
     },
     {
-      "path": "src/th07/TextHelper.cpp",
+      "path": "src/TextHelper.cpp",
       "sha256": "85ce531a48d9d768d71406616d3e103c6ae3a67b2b298430a9f98e8fe0780ebb"
     },
     {
-      "path": "src/th07/TextHelper.hpp",
+      "path": "src/TextHelper.hpp",
       "sha256": "1a1466af0230f50e5d4cc1834a22080e2fd161b3d7de42bf5a8574b2ca76d908"
     },
     {
-      "path": "src/th07/ZunBool.hpp",
+      "path": "src/ZunBool.hpp",
       "sha256": "9d62fd0d463b77f743a4407620ec7e82e3176984bb6af1b58be27043170c6a93"
     },
     {
-      "path": "src/th07/ZunColor.hpp",
+      "path": "src/ZunColor.hpp",
       "sha256": "d4b789b9c5fb95e4ee194e317d0982fe3f5a74361a55532c3afc7f584a380f47"
     },
     {
-      "path": "src/th07/ZunMath.hpp",
+      "path": "src/ZunMath.hpp",
       "sha256": "72139bf258e0343a71e9e33326083862ac6cca1e8d067cccf6c93b057b4a3e0e"
     },
     {
-      "path": "src/th07/ZunResult.hpp",
+      "path": "src/ZunResult.hpp",
       "sha256": "8f364217d48efad392708ae7b0b175df93b2cd9daef8e922f06a4fe1a9cf8001"
     },
     {
-      "path": "src/th07/dsutil.cpp",
+      "path": "src/dsutil.cpp",
       "sha256": "59c0c409550ff5278ce8be4f8302f305fe9015dd30bcb1dfc72978065d74ebc4"
     },
     {
-      "path": "src/th07/dsutil.hpp",
+      "path": "src/dsutil.hpp",
       "sha256": "cf1e136243f771a66dc7005b532cb8699becd04c336f67e6d317bf596ad6261f"
     },
     {
-      "path": "src/th07/dxutil.hpp",
+      "path": "src/dxutil.hpp",
       "sha256": "aada45517e8f5516d13a09c80e33602d37fcca9879695a5bd7d2e34e254038be"
     },
     {
-      "path": "src/th07/inttypes.hpp",
+      "path": "src/inttypes.hpp",
       "sha256": "4f75656eb94aa379cb2cb300f672847e391e9495c3a86ec03921a6b5bfeae05f"
     },
     {
-      "path": "src/th07/main.cpp",
+      "path": "src/main.cpp",
       "sha256": "85b75727cabbd7f1bc525d105c3468dbeaad5464abe621852136db9b88a18e45"
     },
     {
-      "path": "src/th07/pbg4/Lzss.cpp",
+      "path": "src/pbg4/Lzss.cpp",
       "sha256": "c2ac0bdef1c0ae08ac0488056ea58051fcb7d879c6458238834fb098b71dfb63"
     },
     {
-      "path": "src/th07/pbg4/Lzss.hpp",
+      "path": "src/pbg4/Lzss.hpp",
       "sha256": "df364840963756e5c74dc51161955ef8bc17136ef0a7e0617186ea1891720ef7"
     },
     {
-      "path": "src/th07/pbg4/Pbg4Archive.cpp",
+      "path": "src/pbg4/Pbg4Archive.cpp",
       "sha256": "f1f21c07abe8aba841210c582a47ba156ded5f0f907041ff5c4789d9c6b781ac"
     },
     {
-      "path": "src/th07/pbg4/Pbg4Archive.hpp",
+      "path": "src/pbg4/Pbg4Archive.hpp",
       "sha256": "4c7123924908462e31044436eddcff4e4646ad40da7d10c09e4d5077cc539fde"
     },
     {
-      "path": "src/th07/pbg4/Pbg4File.cpp",
+      "path": "src/pbg4/Pbg4File.cpp",
       "sha256": "7fa459be69042529006e2476e3787f9b8abddc66f5c311a2fed6d51846d6e75f"
     },
     {
-      "path": "src/th07/pbg4/Pbg4File.hpp",
+      "path": "src/pbg4/Pbg4File.hpp",
       "sha256": "81369d1e104b96d16c9c0b592c1e744f7c37b8c28cbaf36180a6ddd9a7abb53d"
     },
     {
-      "path": "src/th07/utils.hpp",
+      "path": "src/utils.hpp",
       "sha256": "e5e74e18d79068c13eb2c3d329abe1998c3644e13bcd6adba6ab56b2b21e1a53"
     },
     {

@@ -1,137 +1,313 @@
 #pragma once
 
-#include "inttypes.hpp"
+#include "ItemManager.hpp"
+#include "ZunMath.hpp"
+#include "ZunResult.hpp"
+#include "utils.hpp"
 
-namespace th07
-{
+extern D3DCOLOR *g_BulletColor;
 
-struct BulletVector3
+enum BulletState
 {
-    f32 x;
-    f32 y;
-    f32 z;
+    BULLET_INACTIVE,
+    BULLET_NORMAL,
+    BULLET_SPAWNING_FAST,
+    BULLET_SPAWNING_NORMAL,
+    BULLET_SPAWNING_SLOW,
+    BULLET_DESPAWN,
+    BULLET_END_ARRAY,
 };
 
-struct AnmSprite
+enum LaserState
 {
-    u8 unknown[44];
-    f32 heightPx;
+    LASER_SPAWNING,
+    LASER_ACTIVE,
+    LASER_DESPAWNING,
 };
 
-struct AnmVm
+enum BulletAimMode
 {
-    u8 unknown0[0x1C0];
-    u32 flags;
-    u8 unknown1[0x10];
-    u16 activeSpriteIndex;
-    u16 baseSpriteIndex;
-    u16 scriptIndex;
-    u8 unknown2[0x1E4 - 0x1DC];
-    AnmSprite *sprite;
-    u8 unknown3[0x24C - 0x1E8];
+    BULLET_AIM_SPREAD_AIMED,
+    BULLET_AIM_SPREAD_ABSOLUTE,
+    BULLET_AIM_RING_AIMED,
+    BULLET_AIM_RING_ABSOLUTE,
+    BULLET_AIM_RING_SHIFTED_AIMED,
+    BULLET_AIM_RING_SHIFTED_ABSOLUTE,
+    BULLET_AIM_ANGLE_RANDOM,
+    BULLET_AIM_RING_SPEED_RANDOM,
+    BULLET_AIM_RANDOM,
+};
+
+struct BulletTypeInfo
+{
+    i32 anmFileIdx;
+    i32 spawnFastIdx;
+    i32 spawnNormalIdx;
+    i32 spawnSlowIdx;
+    i32 spawnDonutIdx;
 };
 
 struct BulletTypeSprites
 {
-    AnmVm bullet;
-    AnmVm spawnFast;
-    AnmVm spawnNormal;
-    AnmVm spawnSlow;
-    AnmVm spawnDonut;
-    f32 grazeWidth;
-    f32 grazeHeight;
-    u8 unknown0[5];
+    AnmVm spriteBullet;
+    AnmVm spriteSpawnEffectFast;
+    AnmVm spriteSpawnEffectNormal;
+    AnmVm spriteSpawnEffectSlow;
+    AnmVm spriteSpawnEffectDonut;
+    Float3 grazeSize;
+    u8 unused_b88;
     u8 bulletHeight;
-    u8 grazeKind;
-    u8 unknown1;
+    u8 collisionType;
+    // pad 1
 };
+C_ASSERT(sizeof(BulletTypeSprites) == 0xb8c);
 
-struct BulletClearGroup
+struct BulletCommand
 {
-    i32 first;
-    i32 second;
-    i32 third;
-};
-
-struct Bullet
-{
-    AnmVm animations[5];
-    u8 unknownB7C[0x10];
-    BulletVector3 position;
-    union
-    {
-        BulletVector3 velocity;
-        BulletClearGroup unknownB98ToBA0;
-    };
-    union
-    {
-        BulletVector3 acceleration;
-        BulletClearGroup unknownBA4ToBAC;
-    };
-    i32 unknownBB0;
-    i32 unknownBB4;
-    i32 unknownBB8;
+    f32 speed;
     f32 angle;
-    u8 unknownBC0[0x34];
-    u16 movementFlags;
-    u16 spawnFlags;
-    i16 despawnState;
-    u16 unknownBFA;
-    u16 state;
-    u8 unknownBFE[2];
-    u8 grazeState;
-    u8 grazeKind;
-    u8 unknownC02[2];
-    Bullet *nextInDrawGroup;
-    u8 unknownC08[0x160];
+    i32 duration;
+    i32 loopCount;
+    u32 type;
+    i32 flag;
 };
-typedef char BulletSizeCheck[sizeof(Bullet) == 0xD68 ? 1 : -1];
+
+struct BulletCommandState
+{
+    ZunTimer timer;
+    f32 speed;
+    f32 angle;
+    Float3 vec3;
+    i32 duration;
+    i32 maxTimes;
+    i32 minTimes;
+};
+
+struct EnemyBulletShooter
+{
+    EnemyBulletShooter()
+    {
+        memset(this, 0, sizeof(EnemyBulletShooter));
+        this->soundOverride = -1;
+    }
+
+    BulletCommand *AddCommand(i32 command, i32 flag, u32 type);
+    void AddAngleAccelCommand(i32 command, i32 flag, i32 duration, f32 angle,
+                              f32 speed);
+    void AddDirChangeCommand(i32 command, i32 flag, i32 duration, i32 loopCount,
+                             f32 speed, f32 angle);
+    void AddSpawnDelayCommand(i32 command, i32 flag, i32 duration);
+    void AddTargetVelocityCommand(i32 command, i32 flag, i32 duration, f32 speed,
+                                  f32 angle);
+
+    i16 sprite;
+    i16 spriteOffset;
+    Float3 pos;
+    f32 angle1;
+    f32 angle2;
+    f32 speed1;
+    f32 speed2;
+    BulletCommand commands[6];
+    i32 unused_b0[3];
+    i16 count1;
+    i16 count2;
+    u16 aimMode;
+    i16 unused_c2;
+    u32 flags;
+    i32 soundIdx;
+    i32 soundOverride;
+    BulletTypeSprites *sprites;
+};
+C_ASSERT(sizeof(EnemyBulletShooter) == 0xd4);
+
+struct EnemyLaserShooter
+{
+    EnemyLaserShooter()
+    {
+        memset(this, 0, sizeof(EnemyLaserShooter));
+        this->soundOverride = -1;
+    }
+
+    i16 sprite;
+    i16 spriteOffset;
+    Float3 pos;
+    f32 angle1;
+    f32 angle2;
+    f32 speed1;
+    f32 speed2;
+    BulletCommand commands[5];
+    f32 startOffset;
+    f32 endOffset;
+    f32 startLength;
+    f32 width;
+    i32 startTime;
+    i32 duration;
+    i32 endTime;
+    i32 hitboxStartTime;
+    i32 hitboxEndTime;
+    i32 unused_bc;
+    u16 type;
+    i16 unused_c2;
+    u32 flags;
+    i32 unused_c8;
+    i32 soundOverride;
+    i32 unused_d0;
+};
+C_ASSERT(sizeof(EnemyLaserShooter) == 0xd4);
 
 struct Laser
 {
-    u8 unknown00[0x4EC];
-};
-typedef char LaserSizeCheck[sizeof(Laser) == 0x4EC ? 1 : -1];
+    void UpdateRotationZFromAngle()
+    {
+        f32 angle = AddNormalizeAngle(ZUN_PI / 2.0f + this->angle, 0.0f);
+        this->vm0.rotation.z = angle;
+    }
 
-struct ChainElem
-{
-    i16 priority;
+    struct AnmVm vm0;
+    struct AnmVm vm1;
+    Float3 pos;
+    f32 angle;
+    f32 startOffset;
+    f32 endOffset;
+    f32 startLength;
+    f32 width;
+    f32 targetWidth;
+    f32 speed;
+    i32 startTime;
+    i32 hitboxStartTime;
+    i32 duration;
+    i32 endTime;
+    i32 hitboxEndTime;
+    ZunBool isInUse;
+    ZunTimer timer;
     u16 flags;
-    int (__fastcall *callback)(void *);
-    int (__fastcall *addedCallback)(void *);
-    int (__fastcall *deletedCallback)(void *);
-    ChainElem *prev;
-    ChainElem *next;
-    ChainElem *unknown;
-    void *argument;
+    i16 color;
+    u8 state;
+    u8 hideWarning;
+    // pad 2
 };
+C_ASSERT(sizeof(Laser) == 0x4ec);
 
-class BulletManager
+struct Bullet
 {
-  public:
-    static int __fastcall AddedCallback(BulletManager *manager);
-    static int __fastcall DeletedCallback(BulletManager *manager);
-    static int __fastcall RegisterChain(char *bulletAnmPath);
-    static void __cdecl CutChain();
+    BulletCommand *AddCommand(i32 command, i32 flag, u32 type);
+    void AddAngleAccelCommand(i32 command, i32 flag, i32 duration, f32 angle,
+                              f32 speed);
+    void AddTargetVelocityCommand(i32 command, i32 flag, i32 duration, f32 speed,
+                                  f32 angle);
+    void RunCommands();
 
-    void RemoveAllBullets();
-    void Initialize();
+    void UpdateBulletBurstSpeed();
+    void UpdateBulletTargetVelocity();
+    void UpdateBulletTargetAngle();
+    void UpdateBulletDirChangeAndResume();
+    void UpdateBulletDirChangeAbsoluteAndResume();
+    void UpdateBulletDirChangeAimAtPlayer();
+    void UpdateBulletBounce();
 
-    static int __fastcall OnUpdate(BulletManager *manager);
-    static int __fastcall OnDraw(BulletManager *manager);
+    void Draw();
 
-    BulletTypeSprites templates[16];
-    Bullet bullets[1025];
-    Laser lasers[64];
-    i32 activeBulletCount;
-    i32 clearCountdown;
-    u32 timers[3];
-    u32 unknown37A13C;
-    char *bulletAnmPath;
-    Bullet *drawGroupHeads[6];
-    Bullet *nextBullet;
-    u32 nextBulletState;
+    void Initialize()
+    {
+        this->state = BULLET_INACTIVE;
+        this->timer1 = 0;
+        this->timer2 = 0;
+    }
+
+    void ClearCommand(i32 idx)
+    {
+        this->commands[idx].type = 0;
+    }
+
+    BulletTypeSprites sprites;
+    Float3 pos;
+    Float3 velocity;
+    Float3 unused_ba4;
+    f32 speed;
+    f32 accel;
+    f32 angleVel;
+    f32 angle;
+    f32 unused_bc0;
+    f32 unused_bc4;
+    ZunTimer timer1;
+    ZunTimer timer2;
+    i32 unused_be0[4];
+    i32 spawnDelay;
+    u16 exFlags;
+    u16 moreFlags;
+    i16 spriteOffset;
+    i16 unused_bfa;
+    u16 state;
+    u16 outOfBoundsTime;
+    u8 spawned;
+    u8 grazed;
+    // pad 2
+    Bullet *next;
+    i32 state2;
+    i32 soundIdx;
+    i32 curCmdIdx;
+    BulletCommand commands[5];
+    BulletCommandState commandStates[5];
 };
-typedef char BulletManagerSizeCheck[sizeof(BulletManager) == 0x37A164 ? 1 : -1];
+C_ASSERT(sizeof(Bullet) == 0xd68);
 
-} // namespace th07
+#define MAX_BULLETS 1024
+
+struct BulletManager
+{
+    // Would be nice to do away with the __declspec(noinline)
+    __declspec(noinline) void Initialize()
+    {
+        memset(this, 0, sizeof(BulletManager));
+        this->bulletsStart = this->bullets;
+        this->bullets[MAX_BULLETS].state = BULLET_END_ARRAY;
+        this->itemType = ITEM_POINT_BULLET;
+    }
+
+    BulletManager()
+    {
+        Initialize();
+    }
+
+    static void CopyBulletSpriteData(AnmVm *out, AnmVm *vm)
+    {
+        if (out->anmFileIdx != vm->anmFileIdx || vm->currentInstruction)
+        {
+            *out = *vm;
+        }
+    }
+
+    static ZunResult RegisterChain(const char *etamaAnmPath);
+    static void CutChain();
+
+    static ZunResult AddedCallback(BulletManager *arg);
+    static ZunResult DeletedCallback(BulletManager *arg);
+    static u32 OnUpdate(BulletManager *arg);
+    static u32 OnDraw(BulletManager *arg);
+
+    i32 DespawnBullets(i32 maxScore, ZunBool turnIntoItem);
+    void RemoveAllBullets(i32 itemState);
+    void RemoveBulletsInRadius(Float3 *centerPos, f32 radius);
+    static void SetSpawnEffect(AnmVm *sprite,
+                               AnmVm *bulletTypeTemplate,
+                               Bullet *bullet, i32 spriteOffset);
+    i32 SpawnBulletPattern(struct EnemyBulletShooter *bulletProps);
+    Laser *SpawnLaserPattern(struct EnemyLaserShooter *laserProps);
+    i32 SpawnSingleBullet(EnemyBulletShooter *bulletProps, i32 x, i32 y,
+                          f32 angle);
+    void StopBulletMovement();
+
+    BulletTypeSprites bulletTypeTemplates[16];
+    Bullet bullets[MAX_BULLETS + 1];
+    Laser lasers[64];
+    i32 bulletCount;
+    i32 screenClearTime;
+    ZunTimer time;
+    i32 updateCount;
+    const char *etamaAnmPath;
+    Bullet *bulletsPtrs[6];
+    Bullet *bulletsStart;
+    ItemType itemType;
+};
+C_ASSERT(sizeof(BulletManager) == 0x37a164);
+extern BulletManager g_BulletManager;

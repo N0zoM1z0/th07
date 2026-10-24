@@ -1,14 +1,14 @@
 # Source tree
 
-`th07/` contains the maintained game sources. The native product uses the pinned
+This directory contains the maintained game sources directly. The native product uses the pinned
 upstream TU list and the three native COFF units in
 [`config/native-build.toml`](../config/native-build.toml). Build it with
 `python3 scripts/build-whole.py`; verify it with
 `python3 scripts/replay-exact-units.py` and
 `python3 scripts/verify-linked-product.py --require-all-exact`.
 
-The `.cpp` and `.hpp` files directly in this directory are historical focused
-probes. They remain inputs to [`config/match-units.toml`](../config/match-units.toml)
+`legacy/` preserves the historical focused probes separately from the current
+sources. They remain inputs to [`config/match-units.toml`](../config/match-units.toml)
 and are excluded from the maintained product. Keep them for the recorded ABI and
 compiler experiments; do not combine both source graphs in one link.
 

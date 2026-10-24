@@ -174,7 +174,7 @@ symbol_base = "?jpeg_idct_1x1@D3DX@@YAXPAUjpeg_decompress_struct@1@PAUjpeg_compo
 
 [units.text-helper]
 kind = "probe"
-source = "src/TextHelper.cpp"
+source = "src/legacy/TextHelper.cpp"
 object = "build/match-units/TextHelper.obj"
 profile = "vc7-text-os"
 notes = "Focused VC7 /Os probe based on the adjacent-engine TextHelper object; not an original TH07 translation-unit claim."
@@ -244,7 +244,7 @@ dir32_targets = ["$L56551=texthelper_render_eh_handler"]
 
 [units.midi]
 kind = "probe"
-source = "src/Midi.cpp"
+source = "src/legacy/Midi.cpp"
 object = "build/match-units/Midi.obj"
 profile = "vc7-debug-od"
 notes = "Focused VC7 unoptimized probe aligned with the adjacent-engine Midi translation units."
@@ -315,7 +315,7 @@ symbol_base = "?SetFadeOut@MidiOutput@th07@@QAE?AW4ZunResult@2@I@Z"
 
 [units.zwave]
 kind = "probe"
-source = "src/zwave.cpp"
+source = "src/legacy/zwave.cpp"
 object = "build/match-units/zwave.obj"
 profile = "vc7-debug-od-no-gs-g6"
 notes = "Focused VC7 unoptimized probe aligned with the adjacent-engine DirectSound translation units."
@@ -431,7 +431,7 @@ rel32_targets = [
 
 [units.ecl-manager]
 kind = "probe"
-source = "src/EclManager.cpp"
+source = "src/legacy/EclManager.cpp"
 object = "build/match-units/EclManager.obj"
 profile = "vc7-debug-od-no-gs-g6"
 notes = "Focused VC7 unoptimized no-GS G6 ECL lifecycle probe; context offsets are target-observed and TH06 is semantic corroboration only."
@@ -447,7 +447,7 @@ symbol_base = "?CallEclSub@EclManager@th07@@QAE?AW4ZunResult@2@PAUEnemyEclContex
 
 [units.rng-core]
 kind = "probe"
-source = "src/Rng.cpp"
+source = "src/legacy/Rng.cpp"
 object = "build/match-units/Rng.obj"
 profile = "vc7-default"
 notes = "Focused target-observed core RNG and angle-normalization dependency probe; TH06/TH08 semantics agree."
@@ -478,7 +478,7 @@ dir32_targets = [
 
 [units.timer-core]
 kind = "probe"
-source = "src/Timer.cpp"
+source = "src/legacy/Timer.cpp"
 object = "build/match-units/Timer.obj"
 profile = "vc7-default"
 notes = "Focused target-observed core timer arithmetic used by ECL, ANM, bullets, and player updates."
@@ -519,7 +519,7 @@ dir32_targets = [
 
 [units.ecl-run]
 kind = "probe"
-source = "src/EclRun.cpp"
+source = "src/legacy/EclRun.cpp"
 object = "build/match-units/EclRun.obj"
 profile = "vc7-debug-od-no-gs-g6"
 notes = "High-leverage target-observed TH07 ECL dispatcher; TH06 opcode structure is supporting evidence only."
@@ -811,7 +811,7 @@ dir32_targets = [
 
 [units.bullet-render]
 kind = "probe"
-source = "src/BulletRender.cpp"
+source = "src/legacy/BulletRender.cpp"
 object = "build/match-units/BulletRender.obj"
 profile = "vc7-debug-od-no-gs-g6"
 notes = "Focused VC7 unoptimized no-GS G6 bullet and laser renderer probe over target-observed private overlays."
@@ -856,7 +856,7 @@ dir32_targets = [
 
 [units.player-bomb]
 kind = "probe"
-source = "src/PlayerBomb.cpp"
+source = "src/legacy/PlayerBomb.cpp"
 object = "build/match-units/PlayerBomb.obj"
 profile = "vc7-debug-od-no-gs-g6-no-op"
 notes = "Focused VC7 unoptimized no-GS G6 no-Op Player bomb-tail probe over the target-observed full 0xB7E78 layout."
@@ -1011,7 +1011,7 @@ dir32_targets = [
 
 [units.ecl-operands]
 kind = "probe"
-source = "src/EclOperands.cpp"
+source = "src/legacy/EclOperands.cpp"
 object = "build/match-units/EclOperands.obj"
 profile = "vc7-debug-od-no-gs-g6-no-op"
 notes = "Target-observed ECL integer/float rvalue and lvalue resolver switches over private Enemy offset overlays."
@@ -1102,7 +1102,7 @@ dir32_targets = [
 
 [units.spellcard-gui]
 kind = "probe"
-source = "src/Spellcard.cpp"
+source = "src/legacy/Spellcard.cpp"
 object = "build/match-units/Spellcard.obj"
 profile = "vc7-size-ob1-no-gs-g6"
 notes = "Focused VC7 size-oriented GUI spellcard popup probe; TH06 corroborates the source expression while TH07 target bytes determine the layout and extra GUI state write."
@@ -1118,7 +1118,7 @@ dir32_targets = [
 
 [units.spell-lifecycle]
 kind = "probe"
-source = "src/SpellLifecycle.cpp"
+source = "src/legacy/SpellLifecycle.cpp"
 object = "build/match-units/SpellLifecycle.obj"
 profile = "vc7-debug-od-no-gs-g6"
 notes = "Target-observed spell start/capture/finish lifecycle skeleton with private Enemy, GUI, record, and effect overlays."
@@ -1210,7 +1210,7 @@ dir32_targets = [
 
 [units.gui-sound-teardown]
 kind = "probe"
-source = "src/GuiSoundTeardown.cpp"
+source = "src/legacy/GuiSoundTeardown.cpp"
 object = "build/match-units/GuiSoundTeardown.obj"
 profile = "vc7-debug-od-no-gs-g6"
 notes = "Target-observed resource teardown wrapper with residual callee return ABI."
@@ -1222,7 +1222,7 @@ rel32_targets = ["?Target436380@GuiTimerTeardown@th07@@QAEHXZ=0x00436380"]
 
 [units.performance-counter]
 kind = "probe"
-source = "src/PerformanceCounter.cpp"
+source = "src/legacy/PerformanceCounter.cpp"
 object = "build/match-units/PerformanceCounter.obj"
 profile = "vc7-debug-od-no-gs-g6"
 notes = "Target-pinned QueryPerformanceCounter sampling callback with an unresolved owning class."
@@ -1237,7 +1237,7 @@ dir32_targets = [
 
 [units.midi-timer-helpers]
 kind = "probe"
-source = "src/MidiTimerHelpers.cpp"
+source = "src/legacy/MidiTimerHelpers.cpp"
 object = "build/match-units/MidiTimerHelpers.obj"
 profile = "vc7-debug-od-no-gs-g6"
 notes = "Real-C++ default MIDI timer start wrapper on the target-attested global MidiOutput receiver."
@@ -1249,7 +1249,7 @@ rel32_targets = ["?StartTimer@MidiTimer@th07@@QAEIIP6GXIIKKK@ZK@Z=0x00436300"]
 
 [units.gui-text-teardown]
 kind = "probe"
-source = "src/GuiTextTeardown.cpp"
+source = "src/legacy/GuiTextTeardown.cpp"
 object = "build/match-units/GuiTextTeardown.obj"
 profile = "vc7-default"
 notes = "Real-C++ GUI text-resource teardown forwarding its receiver to 0x00428B19."
@@ -1261,7 +1261,7 @@ rel32_targets = ["?Target428B19@GuiTextTeardown@th07@@QAEHXZ=0x00428B19"]
 
 [units.gui-sound-forward]
 kind = "probe"
-source = "src/GuiSoundForward.cpp"
+source = "src/legacy/GuiSoundForward.cpp"
 object = "build/match-units/GuiSoundForward.obj"
 profile = "vc7-default"
 notes = "Real-C++ GUI sound teardown forwarding its receiver to 0x004362D0."
@@ -1273,7 +1273,7 @@ rel32_targets = ["?Target4362D0@GuiSoundTeardown@th07@@QAEHXZ=0x004362D0"]
 
 [units.gui-resource-forward]
 kind = "probe"
-source = "src/GuiResourceForward.cpp"
+source = "src/legacy/GuiResourceForward.cpp"
 object = "build/match-units/GuiResourceForward.obj"
 profile = "vc7-default"
 notes = "Real-C++ GUI resource teardown forwarding its receiver to 0x0045BF15."
@@ -1285,7 +1285,7 @@ rel32_targets = ["?Target45BF15@GuiResourceTeardown@th07@@QAEHXZ=0x0045BF15"]
 
 [units.wave-file]
 kind = "probe"
-source = "src/WaveFile.cpp"
+source = "src/legacy/WaveFile.cpp"
 object = "build/match-units/WaveFile.obj"
 profile = "vc7-debug-od-no-gs-g6"
 notes = "Target-pinned WaveFile size getter; TH08 exact clone corroborates the role."
@@ -1296,7 +1296,7 @@ symbol_base = "?GetSize@WaveFile@th07@@QAEHXZ"
 
 [units.wave-file-destructor]
 kind = "probe"
-source = "src/WaveFileDestructor.cpp"
+source = "src/legacy/WaveFileDestructor.cpp"
 object = "build/match-units/WaveFileDestructor.obj"
 profile = "vc7-debug-od-no-gs-g6"
 notes = "Real-C++ CWaveFile destructor forwarding to target-attested Close."
@@ -1308,7 +1308,7 @@ rel32_targets = ["?Close@CWaveFile@th07@@QAEJXZ=0x0045E4B0"]
 
 [units.wave-file-close]
 kind = "probe"
-source = "src/WaveFileClose.cpp"
+source = "src/legacy/WaveFileClose.cpp"
 object = "build/match-units/WaveFileClose.obj"
 profile = "vc7-debug-od-no-gs-g6"
 notes = "Real-C++ CWaveFile file-handle close with target-attested flag and sentinel fields."
@@ -1320,7 +1320,7 @@ dir32_targets = ["__imp__CloseHandle@4=__imp__CloseHandle@4"]
 
 [units.supervisor-activation]
 kind = "probe"
-source = "src/SupervisorActivation.cpp"
+source = "src/legacy/SupervisorActivation.cpp"
 object = "build/match-units/SupervisorActivation.obj"
 profile = "vc7-debug-od-no-gs-g6"
 notes = "Real-C++ reconstruction of the Supervisor render-state activation helper."
@@ -1333,7 +1333,7 @@ dir32_targets = ["?g_AnmManager@th07@@3PAUAnmManager@1@A=?g_AnmManager@th07@@3PA
 
 [units.supervisor-slow-mode]
 kind = "probe"
-source = "src/SupervisorSlowMode.cpp"
+source = "src/legacy/SupervisorSlowMode.cpp"
 object = "build/match-units/SupervisorSlowMode.obj"
 profile = "vc7-debug-od-no-gs-g6"
 notes = "Real-C++ Supervisor member slow-mode predicate with target-attested unused this home."
@@ -1345,7 +1345,7 @@ dir32_targets = ["?g_TargetGameManager626274@th07@@3PAUSupervisorGameState@1@A=r
 
 [units.bullet-update]
 kind = "probe"
-source = "src/BulletUpdate.cpp"
+source = "src/legacy/BulletUpdate.cpp"
 object = "build/match-units/BulletUpdate.obj"
 profile = "vc7-debug-od-no-gs-g6-no-op"
 notes = "High-leverage target-observed BulletManager main update skeleton covering 1024 bullets and 64 lasers; canonical comparison tracks structural convergence."
@@ -1400,7 +1400,7 @@ dir32_targets = [
 
 [units.bullet-manager]
 kind = "probe"
-source = "src/BulletManager.cpp"
+source = "src/legacy/BulletManager.cpp"
 object = "build/match-units/BulletManager.obj"
 profile = "vc7-debug-od-no-gs-g6"
 notes = "Focused VC7 unoptimized no-GS G6 BulletManager probe; target word loads select the G6 scheduler."
@@ -1480,7 +1480,7 @@ dir32_targets = [
 
 [units.enemy-collision]
 kind = "probe"
-source = "src/EnemyCollision.cpp"
+source = "src/legacy/EnemyCollision.cpp"
 object = "build/match-units/EnemyCollision.obj"
 profile = "vc7-debug-od-no-gs-g6"
 notes = "Target- and TH06-corroborated Enemy collision bridge into exact Player graze and kill-box helpers."
@@ -1501,7 +1501,7 @@ dir32_targets = [
 
 [units.enemy-callbacks]
 kind = "probe"
-source = "src/EnemyCallbacks.cpp"
+source = "src/legacy/EnemyCallbacks.cpp"
 object = "build/match-units/EnemyCallbacks.obj"
 profile = "vc7-debug-od-no-gs-g6"
 notes = "Target-bounded TH07 Enemy life and timer callbacks; TH06 corroborates semantic roles only."
@@ -1540,7 +1540,7 @@ dir32_targets = [
 
 [units.enemy-spawn]
 kind = "probe"
-source = "src/EnemySpawn.cpp"
+source = "src/legacy/EnemySpawn.cpp"
 object = "build/match-units/EnemySpawn.obj"
 profile = "vc7-debug-od-no-gs-g6"
 notes = "Target- and TH06-corroborated fixed-pool Enemy spawn primitive used by the timeline dispatcher."
@@ -1556,7 +1556,7 @@ dir32_targets = ["?g_EclManagerSpawn@th07@@3UEclManagerSpawnOverlay@1@A=ecl_mana
 
 [units.enemy-timeline]
 kind = "probe"
-source = "src/EnemyTimeline.cpp"
+source = "src/legacy/EnemyTimeline.cpp"
 object = "build/match-units/EnemyTimeline.obj"
 profile = "vc7-debug-od-no-gs-g6"
 notes = "TH07 target-bounded 13-opcode Enemy timeline lane, corroborated by TH06 RunEclTimeline."
@@ -1589,7 +1589,7 @@ dir32_targets = [
 
 [units.anm-triangle-fan]
 kind = "probe"
-source = "src/AnmTriangleFan.cpp"
+source = "src/legacy/AnmTriangleFan.cpp"
 object = "build/match-units/AnmTriangleFan.obj"
 profile = "vc7-debug-od-no-gs-g6"
 notes = "Target-bounded TH07 triangle-fan renderer; TH08 corroborates only the semantic role."
@@ -1605,7 +1605,7 @@ dir32_targets = ["?g_ScreenEffectDevice@th07@@3PAUIDirect3DDevice8@@A=?g_ScreenE
 
 [units.enemy-lifecycle]
 kind = "probe"
-source = "src/EnemyLifecycle.cpp"
+source = "src/legacy/EnemyLifecycle.cpp"
 object = "build/match-units/EnemyLifecycle.obj"
 profile = "vc7-debug-od-no-gs-g6"
 notes = "Target- and TH06-corroborated EnemyManager chain lifecycle helpers."
@@ -1695,7 +1695,7 @@ dir32_targets = [
 
 [units.enemy-update-helpers]
 kind = "probe"
-source = "src/EnemyUpdate.cpp"
+source = "src/legacy/EnemyUpdate.cpp"
 object = "build/match-units/EnemyUpdate.obj"
 profile = "vc7-debug-od-no-gs-g6"
 notes = "Target- and TH06-corroborated Enemy helpers used directly by the TH07 EnemyManager update backbone."
@@ -1726,7 +1726,7 @@ symbol_base = "?ReleaseEffects@EnemyUpdateOverlay@th07@@QAEXXZ"
 
 [units.enemy-manager-update]
 kind = "probe"
-source = "src/EnemyManagerUpdate.cpp"
+source = "src/legacy/EnemyManagerUpdate.cpp"
 object = "build/match-units/EnemyManagerUpdate.obj"
 profile = "vc7-debug-od-no-gs-g6-no-op"
 notes = "TH07 target-bounded EnemyManager core update: ECL, movement/trails, ANM, collision/damage/death, effects, timers, and draw-list rebuild."
@@ -1830,7 +1830,7 @@ dir32_targets = [
 
 [units.bullet-spawn]
 kind = "probe"
-source = "src/BulletSpawn.cpp"
+source = "src/legacy/BulletSpawn.cpp"
 object = "build/match-units/BulletSpawn.obj"
 profile = "vc7-debug-od-no-gs-g6"
 notes = "Target-bounded core 1024-slot bullet generator called by the public ECL spawn wrapper."
@@ -1861,7 +1861,7 @@ dir32_targets = [
 
 [units.enemy-render-wrappers]
 kind = "probe"
-source = "src/EnemyRender.cpp"
+source = "src/legacy/EnemyRender.cpp"
 object = "build/match-units/EnemyRender.obj"
 profile = "vc7-debug-od-no-gs-g6-no-op"
 notes = "Target-confirmed EnemyManager renderer uses the no-/Op G6 profile; four exact draw-chain companions guard the profile and TH08 corroborates the high-priority adapter."
@@ -1909,7 +1909,7 @@ dir32_targets = [
 
 [units.screen-effect]
 kind = "probe"
-source = "src/ScreenEffect.cpp"
+source = "src/legacy/ScreenEffect.cpp"
 object = "build/match-units/ScreenEffect.obj"
 profile = "vc7-debug-od"
 notes = "Focused VC7 unoptimized ScreenEffect rendering probe, bounded to four target-confirmed UI functions."
@@ -1955,7 +1955,7 @@ rel32_targets = ["?DrawSquare@ScreenEffect@th07@@SIXPAUZunRect@2@K@Z=0x0044A650"
 
 [units.controller]
 kind = "probe"
-source = "src/Controller.cpp"
+source = "src/legacy/Controller.cpp"
 object = "build/match-units/Controller.obj"
 profile = "vc7-debug-od-no-gs-g6"
 notes = "Focused VC7 unoptimized no-GS G6 input probe; target prologues omit /GS cookies and ResetKeyboard's byte load selects G6."
@@ -2032,14 +2032,14 @@ dir32_targets = [
 
 [units.player-core]
 kind = "probe"
-source = "src/Player.cpp"
+source = "src/legacy/Player.cpp"
 object = "build/match-units/Player.obj"
 profile = "vc7-debug-od-no-gs-g6"
 notes = "Focused VC7 unoptimized no-GS G6 player damage, collision, graze, and death probe; target floating comparisons select the G6 scheduler."
 
 [units.player-update]
 kind = "probe"
-source = "src/PlayerUpdate.cpp"
+source = "src/legacy/PlayerUpdate.cpp"
 object = "build/match-units/PlayerUpdate.obj"
 profile = "vc7-debug-od-no-gs-g6-no-op"
 notes = "High-leverage target-observed TH07 player update callback; TH06 behavior is supporting evidence only."
@@ -2097,7 +2097,7 @@ dir32_targets = [
 
 [units.anm-vm-helpers]
 kind = "probe"
-source = "src/AnmVm.cpp"
+source = "src/legacy/AnmVm.cpp"
 object = "build/match-units/AnmVm.obj"
 profile = "vc7-debug-od-no-gs-g6-no-op"
 notes = "Target-observed ANM VM scalar and lvalue operand resolvers shared by the main opcode dispatcher."
@@ -2123,7 +2123,7 @@ symbol_base = "?GetIntVarPtr@AnmVm@th07@@QAEPAHPAHGI@Z"
 
 [units.anm-execute]
 kind = "probe"
-source = "src/AnmExecute.cpp"
+source = "src/legacy/AnmExecute.cpp"
 object = "build/match-units/AnmExecute.obj"
 profile = "vc7-debug-od-no-gs-g6"
 notes = "High-leverage target-observed TH07 ANM VM dispatcher; TH08 opcode structure is supporting evidence only."
@@ -2299,7 +2299,7 @@ dir32_targets = [
 
 [units.player-update-tail]
 kind = "probe"
-source = "src/PlayerUpdateTail.cpp"
+source = "src/legacy/PlayerUpdateTail.cpp"
 object = "build/match-units/PlayerUpdateTail.obj"
 profile = "vc7-debug-od-no-gs-g6"
 notes = "Focused target-observed Player UI-state reset and top-level update orchestration tail."
@@ -2336,7 +2336,7 @@ dir32_targets = [
 
 [units.player-aim]
 kind = "probe"
-source = "src/PlayerAim.cpp"
+source = "src/legacy/PlayerAim.cpp"
 object = "build/match-units/PlayerAim.obj"
 profile = "vc7-debug-od-no-gs-g6-no-op"
 notes = "Focused target-observed Player secondary-bullet draw callback and point-angle helper."
@@ -2358,7 +2358,7 @@ dir32_targets = [
 
 [units.replay-delete]
 kind = "probe"
-source = "src/ReplayDelete.cpp"
+source = "src/legacy/ReplayDelete.cpp"
 object = "build/match-units/ReplayDelete.obj"
 profile = "vc7-debug-od-no-gs-g6"
 notes = "Target-observed ReplayManager chain and buffer teardown callback."
@@ -2378,7 +2378,7 @@ dir32_targets = [
 
 [units.replay-stop]
 kind = "probe"
-source = "src/ReplayStop.cpp"
+source = "src/legacy/ReplayStop.cpp"
 object = "build/match-units/ReplayStop.obj"
 profile = "vc7-debug-od-no-gs-g6"
 notes = "TH06-corroborated TH07-target-attested replay recording terminal sentinel and stage bookmark."
@@ -2393,7 +2393,7 @@ dir32_targets = [
 
 [units.player-sht]
 kind = "probe"
-source = "src/PlayerSht.cpp"
+source = "src/legacy/PlayerSht.cpp"
 object = "build/match-units/PlayerSht.obj"
 profile = "vc7-debug-od-no-gs-g6"
 notes = "Target-observed Player SHT file loader and embedded callback relocation pass."
@@ -2411,7 +2411,7 @@ dir32_targets = [
 
 [units.replay-added]
 kind = "probe"
-source = "src/ReplayAdded.cpp"
+source = "src/legacy/ReplayAdded.cpp"
 object = "build/match-units/ReplayAdded.obj"
 profile = "vc7-debug-od-no-gs-g6"
 notes = "TH06-corroborated TH07-target-attested replay recording setup callback."
@@ -2447,7 +2447,7 @@ dir32_targets = [
 
 [units.replay-record]
 kind = "probe"
-source = "src/ReplayRecord.cpp"
+source = "src/legacy/ReplayRecord.cpp"
 object = "build/match-units/ReplayRecord.obj"
 profile = "vc7-debug-od-no-gs-g6"
 notes = "TH06-corroborated TH07-target-attested replay recording callback."
@@ -2469,7 +2469,7 @@ dir32_targets = [
 
 [units.replay-playback]
 kind = "probe"
-source = "src/ReplayPlayback.cpp"
+source = "src/legacy/ReplayPlayback.cpp"
 object = "build/match-units/ReplayPlayback.obj"
 profile = "vc7-debug-od-no-gs-g6"
 notes = "TH06-corroborated TH07-target-attested replay playback callback."
@@ -2490,7 +2490,7 @@ dir32_targets = [
 
 [units.replay-input]
 kind = "probe"
-source = "src/ReplayInput.cpp"
+source = "src/legacy/ReplayInput.cpp"
 object = "build/match-units/ReplayInput.obj"
 profile = "vc7-debug-od-no-gs-g6"
 notes = "Target-observed replay input state initialization callback."
@@ -2525,7 +2525,7 @@ symbol_base = "?IsRestartReady@ReplayInputGui@th07@@QAEHXZ"
 
 [units.player-lifecycle-callbacks]
 kind = "probe"
-source = "src/PlayerLifecycleCallbacks.cpp"
+source = "src/legacy/PlayerLifecycleCallbacks.cpp"
 object = "build/match-units/PlayerLifecycleCallbacks.obj"
 profile = "vc7-debug-od-no-gs-g6"
 notes = "Focused TH06-corroborated and TH07-target-attested Player teardown and chain-cut callbacks."
@@ -2561,7 +2561,7 @@ dir32_targets = [
 
 [units.player-lifecycle-register]
 kind = "probe"
-source = "src/PlayerLifecycleRegister.cpp"
+source = "src/legacy/PlayerLifecycleRegister.cpp"
 object = "build/match-units/PlayerLifecycleRegister.obj"
 profile = "vc7-debug-od-no-gs-g6"
 notes = "TH06-corroborated Player chain setup checked against the complete TH07 target body."
@@ -2586,28 +2586,28 @@ dir32_targets = [
 
 [units.chain]
 kind = "probe"
-source = "src/Chain.cpp"
+source = "src/legacy/Chain.cpp"
 object = "build/match-units/Chain.obj"
 profile = "vc7-debug-od-no-gs-g6"
 notes = "Focused VC7 unoptimized callback-chain scheduler probe, bounded to the complete 0x0042FA60--0x00430284 cluster."
 
 [units.pbg-file]
 kind = "probe"
-source = "src/PbgFile.cpp"
+source = "src/legacy/PbgFile.cpp"
 object = "build/match-units/PbgFile.obj"
 profile = "vc7-debug-od-no-gs-g6"
 notes = "Focused VC7 probe for the CPbgFile constructor; the 0x0C object layout and virtual table order are target-attested by the PBG method cluster."
 
 [units.pbg-archive]
 kind = "probe"
-source = "src/PbgArchive.cpp"
+source = "src/legacy/PbgArchive.cpp"
 object = "build/match-units/PbgArchive.obj"
 profile = "vc7-debug-od-no-gs-g6"
 notes = "Focused VC7 probe for the target-attested 0x10 PbgArchive owner constructor."
 
 [units.lzss]
 kind = "probe"
-source = "src/Lzss.cpp"
+source = "src/legacy/Lzss.cpp"
 object = "build/match-units/Lzss.obj"
 profile = "vc7-debug-od-no-gs-g6"
 notes = "Focused VC7 probe for the target-attested PBG LZSS decoder and its persistent 0x2000-byte dictionary."

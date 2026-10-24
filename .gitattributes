@@ -16,5 +16,6 @@
 third_party/** -text
 
 # Retain imported matching-source bytes and reproducible source receipts.
-src/th07/** text eol=lf
+src/** text eol=lf
+src/legacy/** text eol=crlf
 resources/csv/** text eol=lf

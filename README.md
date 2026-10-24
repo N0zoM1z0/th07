@@ -106,7 +106,7 @@ reports, tools and original target. See [artifact retention](docs/EXECUTABLE_BUI
 
 ## Credits and license
 
-The maintained `src/th07/` source and Japanese localization table derive from
+The maintained `src/` source and Japanese localization table derive from
 **[some100/th07](https://github.com/some100/th07)**, pinned at
 [`4878bf0`](https://github.com/some100/th07/tree/4878bf0e42a9280ef44735eb0517d4fda7cb6e04).
 Thank you to its contributors for the reconstruction. Its CC0 dedication is

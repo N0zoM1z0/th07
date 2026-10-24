@@ -6,6 +6,7 @@ from test_headless_oracle import Fixture,image,msf,record
 from pdb_symbols import constant_float_types,data_type_sizes
 from compiler_statics import recover
 from pe_image import PE
+from source_layout import source_dir,source_inputs
 ROOT=Path(__file__).resolve().parents[1]
 def load(name,file):
     spec=importlib.util.spec_from_file_location(name,ROOT/'scripts'/file);m=importlib.util.module_from_spec(spec);spec.loader.exec_module(m);return m
@@ -60,15 +61,15 @@ class StaticTests(Fixture):
 
 class CacheTests(Fixture):
     def setUp(self):
-        super().setUp();(self.root/'src/th07').mkdir(parents=True)
+        super().setUp();(self.root/'src').mkdir(parents=True)
         self.module=load('native_builder','build-reference.py')
-        self.tree=[{'path':'src/th07/a.cpp','sha256':'a'},{'path':'src/th07/b.cpp','sha256':'b'},{'path':'src/th07/shared.hpp','sha256':'h'}]
-        self.receipt={'source_root':str(self.root),'source_tree':self.tree,'generated_header_sha256':'header','compiler_sha256':'compiler','backend_sha256':'backend','commands':[{'source':'src/th07/a.cpp'},{'source':'src/th07/b.cpp'}]}
+        self.tree=[{'path':'src/a.cpp','sha256':'a'},{'path':'src/b.cpp','sha256':'b'},{'path':'src/shared.hpp','sha256':'h'}]
+        self.receipt={'source_root':str(self.root),'source_tree':self.tree,'generated_header_sha256':'header','compiler_sha256':'compiler','backend_sha256':'backend','commands':[{'source':'src/a.cpp'},{'source':'src/b.cpp'}]}
     def cached(self,tree=None):return self.module.eligible_cached_commands(self.receipt,self.root,tree or self.tree,'header',{'compiler_sha256':'compiler','backend_sha256':'backend'})
     def test_unchanged_inputs_eligible(self):self.assertEqual(len(self.cached()),2)
     def test_source_edit_invalidates_its_object(self):
         tree=[dict(r) for r in self.tree];tree[0]['sha256']='changed'
-        self.assertEqual(set(self.cached(tree)),{'src/th07/b.cpp'})
+        self.assertEqual(set(self.cached(tree)),{'src/b.cpp'})
     def test_header_edit_invalidates_every_object(self):
         tree=[dict(r) for r in self.tree];tree[2]['sha256']='changed'
         self.assertEqual(self.cached(tree),{})
@@ -81,12 +82,12 @@ class CacheTests(Fixture):
     def test_legacy_receipt_without_header_hash_rejected(self):
         del self.receipt['generated_header_sha256'];self.assertEqual(self.cached(),{})
     def test_cpp_inclusion_requires_full_build(self):
-        (self.root/'src/th07/a.cpp').write_text('#include "b.cpp"\n');self.assertEqual(self.cached(),{})
+        (self.root/'src/a.cpp').write_text('#include "b.cpp"\n');self.assertEqual(self.cached(),{})
 
 class NativeGraphTests(Fixture):
     def setUp(self):
         super().setUp();self.module=load('native_graph_builder','build-reference.py')
-        self.base=self.root/'src/th07';self.base.mkdir(parents=True)
+        self.base=self.root/'src';self.base.mkdir(parents=True)
         for name in ['upstream.cpp','menu.cpp']:(self.base/name).write_text('// source\n')
     def test_additional_native_tu_is_in_the_same_product_graph(self):
         self.assertEqual(self.module.maintained_units(['upstream.cpp'],{'additional_translation_units':['menu.cpp']},self.root),['upstream.cpp','menu.cpp'])
@@ -101,6 +102,22 @@ class NativeGraphTests(Fixture):
     def test_source_alias_is_rejected(self):
         with self.assertRaisesRegex(ValueError,'noncanonical'):
             self.module.maintained_units(['upstream.cpp'],{'additional_translation_units':['./upstream.cpp']},self.root)
+    def test_historical_probe_cannot_enter_the_native_graph(self):
+        (self.base/'legacy').mkdir();(self.base/'legacy/old.cpp').write_text('// old probe\n')
+        with self.assertRaises(ValueError):
+            self.module.maintained_units([],{'additional_translation_units':['legacy/old.cpp']},self.root)
+
+class SourceLayoutTests(Fixture):
+    def test_flat_product_and_original_reference_have_distinct_roots(self):
+        reference=self.root/'reference';maintained=self.root/'maintained'
+        self.assertEqual(source_dir(maintained,reference),maintained/'src')
+        self.assertEqual(source_dir(reference,reference),reference/'src/th07')
+    def test_historical_probes_and_source_readme_do_not_invalidate_native_inputs(self):
+        for name in ['src/main.cpp','src/pbg4/Archive.hpp','src/legacy/old.cpp',
+                     'src/README.md','resources/csv/i18n.csv']:
+            p=self.root/name;p.parent.mkdir(parents=True,exist_ok=True);p.write_text(name)
+        paths={str(p.relative_to(self.root)) for p in source_inputs(self.root,self.root/'reference')}
+        self.assertEqual(paths,{'src/main.cpp','src/pbg4/Archive.hpp','resources/csv/i18n.csv'})
 
 class ObjectCacheTests(Fixture):
     def setUp(self):

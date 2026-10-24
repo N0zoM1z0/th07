@@ -1,12 +1,20 @@
 #pragma once
 
+#include <d3d8.h>
+
+#include "Global.hpp"
+#include "Supervisor.hpp"
 #include "inttypes.hpp"
 
-#include <d3d8.h>
-#include <stddef.h>
-
-namespace th07
+enum ScreenEffectsType
 {
+    SCREEN_EFFECT_FADE_OUT,
+    SCREEN_EFFECT_SHAKE,
+    SCREEN_EFFECT_FADE_IN_PLAY_AREA,
+    SCREEN_EFFECT_PULSE,
+    SCREEN_EFFECT_FADE_IN_FULLSCREEN,
+};
+
 struct ZunRect
 {
     f32 left;
@@ -15,38 +23,37 @@ struct ZunRect
     f32 bottom;
 };
 
-// The four routines in this probe only use the effect's fade alpha and RGB
-// parameter.  Their target offsets establish this prefix; the remaining
-// fields belong to the wider screen-effect lifecycle.
-class ScreenEffect
+struct ScreenEffect
 {
-public:
-    u8 unknown0[0x10];
-    i32 fadeAlpha;
-    i32 effectLength;
-    i32 effectParam;
+    static ScreenEffect *RegisterChain(i32 type, i32 duration, u32 arg1, u32 arg2,
+                                       u32 arg3);
 
-    static void __fastcall Clear(DWORD color);
-    static void __fastcall SetViewport(DWORD clearColor);
-    static i32 __fastcall DrawFullFade(ScreenEffect *screenEffect);
-    static i32 __fastcall DrawArcadeFade(ScreenEffect *screenEffect);
-    static void __fastcall DrawSquare(ZunRect *rect, DWORD color);
+    static ZunResult AddedCallback(ScreenEffect *arg);
+    static ZunResult DeletedCallback(ScreenEffect *arg);
+    static u32 OnUpdateFadeIn(ScreenEffect *arg);
+    static u32 OnUpdateFadeOut(ScreenEffect *arg);
+    static u32 OnUpdatePulse(ScreenEffect *arg);
+    static u32 OnUpdateScreenShake(ScreenEffect *arg);
+    static u32 OnDrawFullScreenColor(ScreenEffect *arg);
+    static u32 OnDrawPlayAreaColor(ScreenEffect *arg);
+    static u32 OnDrawPlayAreaPulseColor(ScreenEffect *arg);
+
+    static void Clear(D3DCOLOR color);
+    static void DrawSquare(ZunRect *rect, D3DCOLOR color);
+    static void DrawColoredQuad(ZunRect *rect, D3DCOLOR topLeft,
+                                D3DCOLOR topRight, D3DCOLOR bottomLeft,
+                                D3DCOLOR bottomRight);
+    static void SetViewport(D3DCOLOR color);
+
+    i32 type;
+    ChainElem *calcChain;
+    ChainElem *drawChain;
+    i32 field3_0xc;
+    i32 alpha;
+    i32 duration;
+    i32 effectArg1;
+    i32 effectArg2;
+    u32 effectArg3;
+    ZunTimer timer;
 };
-
-typedef char ScreenEffectFadeAlphaOffsetMustBe0x10[(offsetof(ScreenEffect, fadeAlpha) == 0x10) ? 1 : -1];
-typedef char ScreenEffectColorOffsetMustBe0x18[(offsetof(ScreenEffect, effectParam) == 0x18) ? 1 : -1];
-
-// The target invokes this state owner before updating a viewport or drawing a
-// full-screen fade.  Its concrete engine type and method name are outside the
-// four assigned function bounds, so this declaration preserves only the
-// observed call ABI.
-struct ScreenEffectRenderState
-{
-    void __fastcall PrepareScreenEffect();
-};
-
-extern IDirect3DDevice8 *g_ScreenEffectDevice;
-extern D3DVIEWPORT8 g_ScreenEffectViewport;
-extern D3DPRESENT_PARAMETERS g_ScreenEffectPresentParameters;
-extern ScreenEffectRenderState *g_ScreenEffectRenderState;
-} // namespace th07
+C_ASSERT(sizeof(ScreenEffect) == 0x30);

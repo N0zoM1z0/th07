@@ -3,7 +3,7 @@
 > Historical focused-probe evidence. Current source ownership, acceptance and
 > counts are defined in [ORACLE.md](ORACLE.md) and the canonical ledgers.
 > The maintained `EnemyManager::OnUpdate` now passes all 6,856 compared bytes
-> (6,840 coverage bytes plus its table tail) from `src/th07/EnemyManager.cpp`.
+> (6,840 coverage bytes plus its table tail) from `src/EnemyManager.cpp`.
 > The standalone-probe status below is preserved as history.
 
 This note records target-backed structure for the TH07 1.00b enemy update and
@@ -64,7 +64,7 @@ Target facts:
 
 TH06 provides a useful semantic map for this sequence, but its layouts and
 some branches differ. The TH07 target remains authoritative. The dedicated
-`src/EnemyManagerUpdate.cpp` unit compiled a substantial target-backed
+`src/legacy/EnemyManagerUpdate.cpp` unit compiled a substantial target-backed
 implementation of every major phase: timeline lanes, ECL and movement,
 follow-target interpolation, trail history and collision, primary/secondary
 ANM, damage/rank/spell scaling, target selection, death/items/effects, boss UI,

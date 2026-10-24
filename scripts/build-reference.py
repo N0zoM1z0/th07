@@ -3,6 +3,7 @@
 from __future__ import annotations
 import argparse,ast,fcntl,hashlib,json,os,re,shutil,subprocess,sys,tomllib
 from tool_identity import TOOL_FILES,stock_identity,require_tool_identity
+from source_layout import source_dir,source_inputs
 from pathlib import Path
 ROOT=Path(__file__).resolve().parents[1]
 PIN='4878bf0e42a9280ef44735eb0517d4fda7cb6e04'
@@ -33,7 +34,7 @@ def eligible_cached_commands(previous,source,tree,header_hash,tool_hashes):
     new={r['path']:r['sha256'] for r in tree}
     changed={name for name in old.keys()|new.keys() if old.get(name)!=new.get(name)}
     if any(not name.endswith('.cpp') for name in changed):return {}
-    if any(re.search(r'#\s*include[^\n]*\.cpp',p.read_text(errors='replace')) for p in (source/'src/th07').rglob('*.cpp')):return {}
+    if any(re.search(r'#\s*include[^\n]*\.cpp',p.read_text(errors='replace')) for p in (source/'src').rglob('*.cpp') if p.relative_to(source/'src').parts[0]!='legacy'):return {}
     return {r['source']:r for r in previous.get('commands',[]) if r['source'] not in changed}
 
 def object_reusable(record,command,root=ROOT):
@@ -47,10 +48,10 @@ def object_reusable(record,command,root=ROOT):
 def maintained_units(upstream,config,source):
     additional=config.get('additional_translation_units',[])
     if not isinstance(additional,list) or any(not isinstance(name,str) for name in additional):raise ValueError('invalid additional translation units')
-    base=(source/'src/th07').resolve()
+    base=(source/'src').resolve()
     for name in additional:
         path=(base/name).resolve()
-        if Path(name).is_absolute() or not path.is_relative_to(base) or path.suffix!='.cpp' or not path.is_file():raise ValueError('invalid maintained translation unit: '+name)
+        if Path(name).is_absolute() or not path.is_relative_to(base) or path.suffix!='.cpp' or not path.is_file() or Path(name).parts[0]=='legacy':raise ValueError('invalid maintained translation unit: '+name)
         if path.relative_to(base).as_posix()!=name:raise ValueError('noncanonical maintained translation unit: '+name)
     result=[*upstream,*additional]
     if len(set(result))!=len(result):raise ValueError('duplicate maintained translation unit')
@@ -99,7 +100,8 @@ def main():
                     try:variables[t.id]=ast.literal_eval(n.value)
                     except (ValueError,TypeError):pass
     files=variables['TH07_SOURCES'];small=set(variables['TH07_SMALL']);nonintrinsic=set(variables['TH07_SMALL_NON_INTRINSIC'])
-    tree=[{'path':str(p.relative_to(source)),'sha256':digest(p)} for base in [source/'src/th07',source/'resources/csv'] for p in sorted(base.rglob('*')) if p.is_file()]
+    source_base=source_dir(source,ref)
+    tree=[{'path':str(p.relative_to(source)),'sha256':digest(p)} for p in source_inputs(source,ref)]
     receipt_path=out/'build-receipt.json'
     tool_hashes={'compiler_sha256':digest(compiler),'frontend_sha256':digest(patched/'c1xx.dll'),'wrapper_source_sha256':HACKERY_SHA,'backend_sha256':digest(patched/'c2.dll'),'linker_sha256':digest(linker)}
     previous=json.loads(receipt_path.read_text()) if a.incremental and receipt_path.is_file() else {}
@@ -117,9 +119,9 @@ def main():
         if name not in nonintrinsic:flags+=['/Oi']
         flags+=['/nologo','/W3','/GF','/Zi','/Ob1','/MT','/EHsc','/Gr','/Gy','/DNDEBUG','/wd4060','/wd4101','/wd4244']
         if not a.no_gl and name not in coff_units:flags+=['/GL']
-        flags+=['/I'+win(generated),'/I'+win(source/'src/th07')]
-        cmd=['wine',compiler,*flags,'/c',win(source/'src/th07'/name),'/Fo'+win(obj),'/Fd'+win(pdb)]
-        cached=old_commands.get('src/th07/'+name)
+        flags+=['/I'+win(generated),'/I'+win(source_base)]
+        cmd=['wine',compiler,*flags,'/c',win(source_base/name),'/Fo'+win(obj),'/Fd'+win(pdb)]
+        cached=old_commands.get(str((source_base/name).relative_to(source)))
         if cached and object_reusable(cached,cmd):
             print(f'{tag}: cached {name}',flush=True)
         else:
@@ -129,7 +131,7 @@ def main():
             print(f'{tag}: {name}',flush=True);run(cmd,out/(obj.stem+'.log'),out,environment)
         if not obj.is_file():raise ValueError('compiler returned without fresh object')
         compiler_pdb=actual_pdb(pdb)
-        commands.append({'source':'src/th07/'+name,'object':str(obj.relative_to(ROOT)),'sha256':digest(obj),'compiler_pdb':str(compiler_pdb.relative_to(ROOT)),'compiler_pdb_sha256':digest(compiler_pdb),'command':list(map(str,cmd))});objects.append(obj)
+        commands.append({'source':str((source_base/name).relative_to(source)),'object':str(obj.relative_to(ROOT)),'sha256':digest(obj),'compiler_pdb':str(compiler_pdb.relative_to(ROOT)),'compiler_pdb_sha256':digest(compiler_pdb),'command':list(map(str,cmd))});objects.append(obj)
     exe=out/'th07.exe';pdb=out/'th07.pdb';mapfile=out/'th07.map'
     flags=['/INCREMENTAL:NO','/MAP:'+win(mapfile),'/DEBUG','/PDB:'+win(pdb),'/OPT:REF','/OPT:ICF','/OUT:'+win(exe)]
     if not a.no_gl:flags+=['/LTCG']

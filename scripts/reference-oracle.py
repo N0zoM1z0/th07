@@ -14,6 +14,7 @@ import capstone
 from capstone.x86 import X86_OP_IMM,X86_OP_MEM
 from pe_image import PE
 from msvc_demangle import demangle_msvc
+from source_layout import source_inputs
 ROOT=Path(__file__).resolve().parents[1]
 ORACLE_VERSION=3
 
@@ -52,7 +53,7 @@ class Oracle:
         if self.receipt['wrapper_source_sha256']!='9d94512d1db673bcb91b34ee0d4ba5ca3ee2e01fd7ce80d09eaabdae2a1623fb':raise ValueError('unrecognized frontend source')
         source=Path(self.receipt['source_root'])
         if source.resolve()==ROOT and self.receipt.get('build_config_sha256')!=digest(ROOT/'config/native-build.toml'):raise ValueError('maintained compiler configuration changed since build')
-        actual={str(p.relative_to(source)):digest(p) for base in [source/'src/th07',source/'resources/csv'] for p in base.rglob('*') if p.is_file()}
+        actual={str(p.relative_to(source)):digest(p) for p in source_inputs(source,ROOT/'_reference/some100-th07')}
         if actual!={r['path']:r['sha256'] for r in self.receipt['source_tree']}:raise ValueError('source tree changed since build; rebuild required')
         for command in self.receipt['commands']:
             if digest(ROOT/command['object'])!=command['sha256']:raise ValueError('compiled object changed')

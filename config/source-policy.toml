@@ -4,7 +4,7 @@
 user_authorized = true
 address = 0x004325C0
 compare_size = 32
-source = "src/th07/Global.hpp"
+source = "src/Global.hpp"
 body_sha256 = "ffade69d5bae197cdc44486196f7ad94fe01aaf1ec02805753bbdf56ab8ad633"
 target_sha256 = "35467eaf8dc7fc85f024f16fb2037255f151cefda33cf4867bc9122aaa2e80ca"
 reason = "FSINCOS plus two scaled outputs; Float2/Float3 share one exact native procedure."

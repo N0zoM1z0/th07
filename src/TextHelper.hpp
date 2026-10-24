@@ -1,12 +1,9 @@
 #pragma once
 
+#include <d3d8.h>
+
 #include "inttypes.hpp"
 
-#include <d3d8.h>
-#include <windows.h>
-
-namespace th07
-{
 struct FormatInfo
 {
     D3DFORMAT format;
@@ -17,37 +14,46 @@ struct FormatInfo
     u32 blueMask;
 };
 
-class TextHelper
+struct TextHelper
 {
-  public:
     TextHelper();
     ~TextHelper();
-
-    bool ReleaseBuffer();
     bool AllocateBufferWithFallback(i32 width, i32 height, D3DFORMAT format);
-    bool TryAllocateBuffer(i32 width, i32 height, D3DFORMAT format);
-    FormatInfo *GetFormatInfo(D3DFORMAT format);
-    bool InvertAlpha(i32 x, i32 y, i32 spriteWidth, i32 fontHeight, BOOL param5);
-    bool CopyTextToSurface(IDirect3DSurface8 *outSurface);
-
+    bool CopyTextToSurface(IDirect3DSurface8 *surface);
     static void CreateTextBuffer();
+    FormatInfo *GetFormatInfo(D3DFORMAT format);
+    bool InvertAlpha(i32 x, i32 y, i32 spriteWidth, i32 fontHeight, i32 someFlag);
+    bool ReleaseBuffer();
     static void ReleaseTextBuffer();
-    static void __fastcall RenderTextToTextureBold(i32 xPos, i32 yPos, i32 spriteWidth, i32 spriteHeight,
-                                                   i32 fontHeight, i32 fontWidth, COLORREF textColor,
-                                                   COLORREF outlineType, char *string,
-                                                   IDirect3DTexture8 *outTexture);
+    static void RenderTextToTextureBold(i32 xPos, i32 yPos, i32 spriteWidth,
+                                        i32 spriteHeight, i32 fontHeight,
+                                        i32 fontWidth, D3DCOLOR textColor,
+                                        u32 outlineType, char *string,
+                                        IDirect3DTexture8 *outTexture);
+    bool TryAllocateBuffer(i32 width, i32 height, D3DFORMAT format);
 
-  private:
+    D3DFORMAT GetFormat()
+    {
+        return this->format;
+    }
+
+    i32 GetWidth()
+    {
+        return this->width;
+    }
+
+    i32 GetHeight()
+    {
+        return this->height;
+    }
+
     D3DFORMAT format;
     i32 width;
     i32 height;
     u32 imageSizeInBytes;
     i32 imageWidthInBytes;
     HDC hdc;
-    HGDIOBJ gdiObj;
-    HGDIOBJ gdiObj2;
+    HGDIOBJ gdiobj;
+    HGDIOBJ gdiobj2;
     u8 *buffer;
 };
-
-C_ASSERT(sizeof(TextHelper) == 0x24);
-}; // namespace th07

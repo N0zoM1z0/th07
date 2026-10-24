@@ -6,15 +6,15 @@ from source_policy import exclusions,primitive_bodies
 class SourcePolicyTests(unittest.TestCase):
     def setUp(self):
         self.temp=tempfile.TemporaryDirectory();self.root=Path(self.temp.name)
-        (self.root/'config').mkdir();(self.root/'src/th07').mkdir(parents=True)
+        (self.root/'config').mkdir();(self.root/'src').mkdir(parents=True)
         self.body='void FromAngleMagnitude(f32 angle, f32 magnitude) { primitive(); }'
-        (self.root/'src/th07/Global.hpp').write_text(self.body+'\n'+self.body)
+        (self.root/'src/Global.hpp').write_text(self.body+'\n'+self.body)
         (self.root/'config/target.toml').write_text('[target]\nsha256="'+64*'a'+'"\n')
         self.config='''[x87_math_primitive]
 user_authorized = true
 address = 0x4325C0
 compare_size = 32
-source = "src/th07/Global.hpp"
+source = "src/Global.hpp"
 body_sha256 = "'''+hashlib.sha256(self.body.encode()).hexdigest()+'''"
 target_sha256 = "'''+64*'a'+'''"
 '''
@@ -26,7 +26,7 @@ target_sha256 = "'''+64*'a'+'''"
     def test_explicit_revocation_retains_exclusion(self):
         self.path.write_text(self.config.replace('user_authorized = true','user_authorized = false'));self.assertIn(0x4325c0,exclusions(self.root))
     def test_unreviewed_body_change_fails_closed(self):
-        (self.root/'src/th07/Global.hpp').write_text((self.body+'\n'+self.body).replace('primitive();','other();',1))
+        (self.root/'src/Global.hpp').write_text((self.body+'\n'+self.body).replace('primitive();','other();',1))
         with self.assertRaises(ValueError):exclusions(self.root)
     def test_widened_address_fails_closed(self):
         self.path.write_text(self.config.replace('0x4325C0','0x4325C1'))
@@ -41,6 +41,6 @@ target_sha256 = "'''+64*'a'+'''"
         self.path.write_text(self.config+'\n[other]\nauthorized=true\n')
         with self.assertRaises(ValueError):exclusions(self.root)
     def test_missing_shared_definition_is_rejected(self):
-        (self.root/'src/th07/Global.hpp').write_text(self.body)
+        (self.root/'src/Global.hpp').write_text(self.body)
         with self.assertRaises(ValueError):exclusions(self.root)
 if __name__=='__main__':unittest.main()
