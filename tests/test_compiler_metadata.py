@@ -63,8 +63,8 @@ class CacheTests(Fixture):
         super().setUp();(self.root/'src/th07').mkdir(parents=True)
         self.module=load('native_builder','build-reference.py')
         self.tree=[{'path':'src/th07/a.cpp','sha256':'a'},{'path':'src/th07/b.cpp','sha256':'b'},{'path':'src/th07/shared.hpp','sha256':'h'}]
-        self.receipt={'source_root':str(self.root),'source_tree':self.tree,'generated_header_sha256':'header','compiler_sha256':'compiler','commands':[{'source':'src/th07/a.cpp'},{'source':'src/th07/b.cpp'}]}
-    def cached(self,tree=None):return self.module.eligible_cached_commands(self.receipt,self.root,tree or self.tree,'header',{'compiler_sha256':'compiler'})
+        self.receipt={'source_root':str(self.root),'source_tree':self.tree,'generated_header_sha256':'header','compiler_sha256':'compiler','backend_sha256':'backend','commands':[{'source':'src/th07/a.cpp'},{'source':'src/th07/b.cpp'}]}
+    def cached(self,tree=None):return self.module.eligible_cached_commands(self.receipt,self.root,tree or self.tree,'header',{'compiler_sha256':'compiler','backend_sha256':'backend'})
     def test_unchanged_inputs_eligible(self):self.assertEqual(len(self.cached()),2)
     def test_source_edit_invalidates_its_object(self):
         tree=[dict(r) for r in self.tree];tree[0]['sha256']='changed'
@@ -74,6 +74,10 @@ class CacheTests(Fixture):
         self.assertEqual(self.cached(tree),{})
     def test_different_compiler_invalidates_every_object(self):
         self.receipt['compiler_sha256']='different';self.assertEqual(self.cached(),{})
+    def test_different_backend_invalidates_every_object(self):
+        self.receipt['backend_sha256']='different';self.assertEqual(self.cached(),{})
+    def test_legacy_receipt_without_backend_rejected(self):
+        del self.receipt['backend_sha256'];self.assertEqual(self.cached(),{})
     def test_legacy_receipt_without_header_hash_rejected(self):
         del self.receipt['generated_header_sha256'];self.assertEqual(self.cached(),{})
     def test_cpp_inclusion_requires_full_build(self):

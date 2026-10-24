@@ -105,3 +105,8 @@ Marking the base constructor `noinline` additionally changed AnmVm's own body.
 These probes confirm the source of the reservation and were rejected as
 global fixes. Statement-scoped inline-depth controls also changed the generated
 vector-construction helper or registry calls instead of preserving the body.
+
+Further controlled probes and the separate VC7 linear-flow classifier are
+recorded in [frame diagnostics](FRAME_DIAGNOSTICS.md). The tested cost switches
+do not fix either frame. Backend identity is now checked in both load paths and
+bound to every native receipt; old receipts require a rebuild.

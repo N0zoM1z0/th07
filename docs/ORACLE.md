@@ -42,8 +42,10 @@ Synthetic negative controls reject ambiguous literals/thunks, wrong independent
 addresses, missing type/size evidence, nonadjacent guards, truncated procedures,
 trailing table corruption, wrong PDB GUID/age and stale build artifacts.
 
-Receipts bind source/header state, compiler/frontend/linker hashes, commands,
-objects, compiler PDBs and final native image/PDB/map metadata. Missing compiler
+Receipts bind source/header state, driver/frontend/backend/linker hashes, commands,
+objects, compiler PDBs and final native image/PDB/map metadata. Both the private
+compiler backend and the stock LTCG backend must match the pinned `c2.dll` hash.
+Native replay rejects receipts without that backend identity. Missing compiler
 PDBs invalidate an incremental object pair. Native PDB metadata is parsed afresh
 on replay; cached JSON cannot override it. Reports remain private in `build/`.
 Public manifests retain source ownership, coverage/full comparison sizes and

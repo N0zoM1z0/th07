@@ -2,6 +2,7 @@
 """Serial headless reproduction of the pinned some100 TH07 matching profile."""
 from __future__ import annotations
 import argparse,ast,fcntl,hashlib,json,os,re,shutil,subprocess,sys,tomllib
+from tool_identity import TOOL_FILES,stock_identity,require_tool_identity
 from pathlib import Path
 ROOT=Path(__file__).resolve().parents[1]
 PIN='4878bf0e42a9280ef44735eb0517d4fda7cb6e04'
@@ -61,7 +62,7 @@ def main():
     out=ROOT/'build'/tag;out.mkdir(parents=True,exist_ok=True);environment=env()
     stock=ROOT/'.tools/msvc700/Vc7/bin';patched=ROOT/'.tools/vc70-reference/bin'
     lock=tomllib.loads((ROOT/'config/tools.lock.toml').read_text())['msvc70']
-    if digest(stock/'cl.exe')!=lock['compiler_sha256'] or digest(stock/'c1xx.dll')!=lock['frontend_sha256']:raise ValueError('stock compiler is not pinned VC7')
+    require_tool_identity(stock_identity(stock),lock,TOOL_FILES)
     if digest(ROOT/'.tools/hackery.cpp')!=HACKERY_SHA:raise ValueError('upstream var_order source mismatch')
     if not (patched/'frontend.json').exists():
         shutil.copytree(stock,patched,dirs_exist_ok=True)
@@ -72,6 +73,7 @@ def main():
         (patched/'frontend.json').write_text(json.dumps({'source_sha256':HACKERY_SHA,'frontend_sha256':digest(patched/'c1xx.dll'),'original_sha256':digest(patched/'c1xxorig.dll')},indent=2)+'\n')
     wrapper=json.loads((patched/'frontend.json').read_text())
     if digest(patched/'c1xx.dll')!=wrapper['frontend_sha256'] or digest(patched/'c1xxorig.dll')!=lock['frontend_sha256']:raise ValueError('frontend receipt mismatch')
+    require_tool_identity({'backend_sha256':digest(patched/'c2.dll')},lock,('backend_sha256',))
     if a.prepare_only:
         print('Pinned VC7 frontend prepared (headless).');return
     compiler=patched/'cl.exe';linker=stock/'link.exe';generated=out/'generated';generated.mkdir(exist_ok=True)
@@ -87,7 +89,7 @@ def main():
     files=variables['TH07_SOURCES'];small=set(variables['TH07_SMALL']);nonintrinsic=set(variables['TH07_SMALL_NON_INTRINSIC'])
     tree=[{'path':str(p.relative_to(source)),'sha256':digest(p)} for base in [source/'src/th07',source/'resources/csv'] for p in sorted(base.rglob('*')) if p.is_file()]
     receipt_path=out/'build-receipt.json'
-    tool_hashes={'compiler_sha256':digest(compiler),'frontend_sha256':digest(patched/'c1xx.dll'),'wrapper_source_sha256':HACKERY_SHA,'linker_sha256':digest(linker)}
+    tool_hashes={'compiler_sha256':digest(compiler),'frontend_sha256':digest(patched/'c1xx.dll'),'wrapper_source_sha256':HACKERY_SHA,'backend_sha256':digest(patched/'c2.dll'),'linker_sha256':digest(linker)}
     previous=json.loads(receipt_path.read_text()) if a.incremental and receipt_path.is_file() else {}
     old_commands=eligible_cached_commands(previous,source,tree,digest(generated/'i18n.hpp'),tool_hashes)
     build_config=ROOT/'config/native-build.toml'
@@ -135,7 +137,7 @@ def main():
     from pe_image import PE
     verify_image_binding(pdb,PE(exe))
     (out/'pdb-symbols.json').write_text(json.dumps(symbols(pdb),indent=2)+'\n')
-    receipt={'upstream_commit':PIN,'source_root':str(source),'source_tree':tree,'build_config_sha256':config_hash,'generated_header_sha256':digest(generated/'i18n.hpp'),'compiler_sha256':digest(compiler),'frontend_sha256':digest(patched/'c1xx.dll'),'wrapper_source_sha256':HACKERY_SHA,'linker_sha256':digest(linker),'commands':commands,'link_command':list(map(str,cmd)),'metadata_link_command':list(map(str,[*cmd,'/FIXED:NO'])),'image_sha256':digest(exe),'pdb_sha256':digest(pdb),'map_sha256':digest(mapfile),'pdb_symbols_sha256':digest(out/'pdb-symbols.json'),'pdb_parser_sha256':digest(ROOT/'scripts/pdb_symbols.py'),'faithful_image_sha256':digest(faithful),'profile':'upstream-no-GL-diagnostic' if a.no_gl else 'upstream-matching-GL-LTCG-no-icon'}
+    receipt={'upstream_commit':PIN,'source_root':str(source),'source_tree':tree,'build_config_sha256':config_hash,'generated_header_sha256':digest(generated/'i18n.hpp'),'compiler_sha256':digest(compiler),'frontend_sha256':digest(patched/'c1xx.dll'),'wrapper_source_sha256':HACKERY_SHA,'backend_sha256':digest(patched/'c2.dll'),'linker_sha256':digest(linker),'commands':commands,'link_command':list(map(str,cmd)),'metadata_link_command':list(map(str,[*cmd,'/FIXED:NO'])),'image_sha256':digest(exe),'pdb_sha256':digest(pdb),'map_sha256':digest(mapfile),'pdb_symbols_sha256':digest(out/'pdb-symbols.json'),'pdb_parser_sha256':digest(ROOT/'scripts/pdb_symbols.py'),'faithful_image_sha256':digest(faithful),'profile':'upstream-no-GL-diagnostic' if a.no_gl else 'upstream-matching-GL-LTCG-no-icon'}
     (out/'build-receipt.json').write_text(json.dumps(receipt,indent=2)+'\n')
     for p in out.iterdir():
         if p.suffix.lower()=='.pch':p.unlink()

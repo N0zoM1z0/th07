@@ -13,6 +13,9 @@ focused probes are retained as historical work. Full native measurement is
 Each native build directory retains faithful and metadata executables, master
 `th07.pdb`, `th07.map`, bounded `pdb-symbols.json`, all intermediate objects and
 compiler PDBs, generated Japanese headers, logs and a source/tool/command receipt.
+The receipt records the pinned C2 backend as well as the driver/frontend/linker.
+Both C2 load paths are verified before building; legacy receipts without the
+backend hash must be rebuilt, and a backend change invalidates every cached TU.
 Compiler PDBs are necessary when reusing VC7 `/GL` objects and cannot be discarded
 while retaining an incremental cache. The cache verifies both object and PDB
 hashes, tool/source/header state and exact compiler command. Missing debug pairs

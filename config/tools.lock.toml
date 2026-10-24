@@ -16,6 +16,7 @@ repository = "https://github.com/archaic-msvc/msvc700.git"
 commit = "97fe4cdeaeb0bb934591d4b05eb52c2e8ab3e34b"
 compiler_sha256 = "05be307f04d8c3a9c211b77e85a63992be4642f14b4de31c04f9bb3d7bb1d65f"
 frontend_sha256 = "30c3affd786752b4a037c4b4f035b7962d1fb5a335366e093bc73d0eb02e5558"
+backend_sha256 = "3755d22dd896ca0045b22b0478d6ad56185d0c98845e2aa2e1d2300460289ad0"
 
 compiler_version = "13.00.9466"
 linker_sha256 = "1560d85164dfb763dd13f90f33ff9c6f1cd80f2afada03eed8d0a314593581f1"

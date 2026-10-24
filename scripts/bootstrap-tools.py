@@ -30,6 +30,8 @@ def main():
     tools=ROOT/'.tools';tools.mkdir(exist_ok=True)
     link_external(tools/'msvc700',a.msvc700)
     clone(lock['msvc70']['repository'],lock['msvc70']['commit'],tools/'msvc700')
+    from tool_identity import TOOL_FILES,stock_identity,require_tool_identity
+    require_tool_identity(stock_identity(tools/'msvc700/Vc7/bin'),lock['msvc70'],TOOL_FILES)
     link_external(tools/'ghidra',a.ghidra_home);link_external(tools/'jdk',a.jdk_home);link_external(tools/'dx8sdk',a.dx8sdk)
     if not (tools/'ghidra').exists():
         archive=fetch(lock['ghidra'])

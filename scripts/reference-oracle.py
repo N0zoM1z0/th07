@@ -46,8 +46,8 @@ class Oracle:
         self.receipt=json.loads((self.build/'build-receipt.json').read_text())
         lock=tomllib.loads((ROOT/'config/tools.lock.toml').read_text())['msvc70']
         if self.receipt['upstream_commit']!='4878bf0e42a9280ef44735eb0517d4fda7cb6e04':raise ValueError('unrecognized reference revision')
-        for key in ['compiler_sha256','linker_sha256']:
-            if self.receipt[key]!=lock[key]:raise ValueError('unrecognized toolchain: '+key)
+        from tool_identity import require_tool_identity
+        require_tool_identity(self.receipt,lock)
         if self.receipt['wrapper_source_sha256']!='9d94512d1db673bcb91b34ee0d4ba5ca3ee2e01fd7ce80d09eaabdae2a1623fb':raise ValueError('unrecognized frontend source')
         source=Path(self.receipt['source_root'])
         if source.resolve()==ROOT and self.receipt.get('build_config_sha256')!=digest(ROOT/'config/native-build.toml'):raise ValueError('maintained compiler configuration changed since build')
