@@ -20,13 +20,14 @@ constructor emitter adds one PE export to retain its required implementation.
 See [frame diagnostics](FRAME_DIAGNOSTICS.md).
 
 The existing `src/*.cpp` and associated headers preserve focused reconstruction
-probes and their history. The earlier four standalone supplements now replay from the maintained native
-product. Existing probes remain historical evidence and are not linked twice.
+probes and their history. The earlier four standalone supplements now replay
+from the maintained native product. The [source guide](../src/README.md)
+distinguishes these two graphs; existing probes are not linked twice.
 
 `config/functions.csv` holds 1,546 reviewed entries. Explicit origins distinguish
 authored source, libraries and compiler code. Application closure is reviewed in
-[BOUNDARY_REVIEW.md](BOUNDARY_REVIEW.md); complete-extent acceptance and the
-complete authored acceptance are documented in [ORACLE.md](ORACLE.md).
+[BOUNDARY_REVIEW.md](BOUNDARY_REVIEW.md); complete-extent measurements and source
+policy are documented in [ORACLE.md](ORACLE.md).
 
 The 686 authored functions cover 380,493 non-overlapping function bytes. This
 source scope includes the game's PBG archive code while retaining its original

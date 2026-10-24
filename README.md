@@ -7,8 +7,9 @@ Source reconstruction of the original Japanese **TH07 1.00b**, accepted through
 complete function-byte comparisons against the original executable.
 
 The reviewed authored scope currently has **686 / 686 exact functions** and
-**380,493 / 380,493 exact bytes (100.0000%)**. Prebuilt SDK/CRT library code, SDK inline routines, compiler-generated
-wrappers, alignment and embedded SDK data are excluded from that denominator.
+**380,493 / 380,493 exact bytes (100.0000%)**. Prebuilt SDK/CRT library code,
+SDK inline routines, compiler-generated wrappers, alignment and embedded SDK
+data are excluded from that denominator.
 Comparison includes complete compiler extents and trailing switch tables;
 relocation fields are independently resolved and compared without masking.
 
@@ -79,11 +80,22 @@ oracle controls without proprietary inputs. Local exact replay requires the
 original target and private build artifacts. Rebuild and compare one accepted
 function with `python3 scripts/replay-exact-units.py --unit f_00410520 --rebuild`.
 
+Preview obsolete diagnostics before cleaning them:
+
+```bash
+python3 scripts/clean-build.py
+python3 scripts/clean-build.py --apply
+```
+
+The cleaner preserves the maintained/reference builds, paired PDBs, canonical
+reports, tools and original target. See [artifact retention](docs/EXECUTABLE_BUILD.md#artifact-retention-and-cleanup).
+
 ## Documentation
 
+- [Documentation guide](docs/README.md) and [tool entry points](scripts/README.md)
 - [Architecture and source layout](docs/ARCHITECTURE.md)
-- [Active completion requirements](docs/GOAL.md)
-- [Strict oracle, reference import and remaining work](docs/ORACLE.md)
+- [Completion requirements and evidence](docs/GOAL.md)
+- [Strict oracle, reference import and acceptance](docs/ORACLE.md)
 - [Application/runtime boundary review](docs/BOUNDARY_REVIEW.md)
 - [Headless workflow and Ghidra commands](docs/RE_WORKFLOW.md)
 - [Build products and evidence](docs/EXECUTABLE_BUILD.md)
@@ -102,9 +114,10 @@ preserved in [docs/LICENSE-some100.txt](docs/LICENSE-some100.txt); original and
 maintained file hashes are tracked in `config/*source-provenance.json`.
 Maintained corrections recover the signed score conversion, initialization call
 boundary, counter-sample alignment, unsigned bullet-table comparison and CRT
-integer-parser entry, plus an isolated native menu compilation profile. [Matching notes](docs/MATCHING_NOTES.md) record evidence
-and remaining work. Oracle v2 resolved additional independently evidenced
-metadata; the initial v1 reference snapshot remains archived.
+integer-parser entry, plus native menu and result initialization profiles.
+[Matching notes](docs/MATCHING_NOTES.md) record accepted evidence and preserved
+experiments. Oracle v3 also proves complete EH capsule aliases; the initial v1
+reference snapshot remains archived.
 
 [GensokyoClub/th06](https://github.com/GensokyoClub/th06) and
 [GensokyoClub/th08](https://github.com/GensokyoClub/th08) provided engine and VC7

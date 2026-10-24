@@ -2,6 +2,9 @@
 
 > Historical focused-probe evidence. Current source ownership, acceptance and
 > counts are defined in [ORACLE.md](ORACLE.md) and the canonical ledgers.
+> The maintained `EnemyManager::OnUpdate` now passes all 6,856 compared bytes
+> (6,840 coverage bytes plus its table tail) from `src/th07/EnemyManager.cpp`.
+> The standalone-probe status below is preserved as history.
 
 This note records target-backed structure for the TH07 1.00b enemy update and
 render pipeline. It is not a substitute for strict per-function byte
@@ -61,27 +64,27 @@ Target facts:
 
 TH06 provides a useful semantic map for this sequence, but its layouts and
 some branches differ. The TH07 target remains authoritative. The dedicated
-`src/EnemyManagerUpdate.cpp` unit now compiles a substantial target-backed
+`src/EnemyManagerUpdate.cpp` unit compiled a substantial target-backed
 implementation of every major phase: timeline lanes, ECL and movement,
 follow-target interpolation, trail history and collision, primary/secondary
 ANM, damage/rank/spell scaling, target selection, death/items/effects, boss UI,
-timers, and the four draw lists. It is not yet a strict byte match.
+timers, and the four draw lists. That standalone probe did not pass strict replay.
 
 Typed instruction-shape comparison proved especially useful on this body. It
 exposed the ECL manager's first dword as a pointer to timeline metadata, the
 signed pause byte at `0x4BFEE0`, and several VC7 expression/bitfield shapes.
 Successive source corrections recovered the complete 1661-instruction target
-topology and internal control-flow graph. The full emitted COFF function is
-now exactly 6840 bytes after removing 16 bytes of decoded alignment padding,
+topology and internal control-flow graph. The historical probe's emitted COFF function was
+exactly 6840 bytes after removing 16 bytes of decoded alignment padding,
 equal to the target. Reusing the enclosing trail index in the inlined history
 shift and retaining a named reset-loop index recovered the original local
 lifetimes without padding. In particular, the
 collision/trail vector expression, combat bitfields, movement/follow scope,
 collision/death scope, spell-damage shared labels, death callback reset,
 damage-flash channels, boss HP/UI publication, freeze timer, draw-list rebuild,
-and periodic return tail now follow the target graph. The object uses a
-`0x1CC` frame versus the target `0x210`; strict comparison still fails at the
-frame allocation and the remaining work is VC7 local-lifetime, displacement,
+and periodic return tail followed the target graph. That probe used a
+`0x1CC` frame versus the target `0x210`; its strict comparison failed at the
+frame allocation and the remaining work was VC7 local-lifetime, displacement,
 instruction-size, and relocation shaping. This diagnostic topology does not
 grant matching status.
 
@@ -97,9 +100,9 @@ enters an ECL subroutine, updates spell timeout/capture and rank state, performs
 the same non-boss clear, and resets combat parameters. TH06 corroborates these
 roles, but the listed layout and branches are TH07 observations.
 
-## Next implementation cuts
+## Historical implementation sequence
 
-The highest-leverage sequence is:
+The proposed sequence at that stage was:
 
 1. converge the update body's frame/local lifetimes, displacements, and
    relocation bytes without disturbing its topology- and CFG-exact body;

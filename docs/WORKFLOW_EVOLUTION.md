@@ -3,6 +3,10 @@
 > Historical focused-probe evidence. Current source ownership, acceptance and
 > counts are defined in [ORACLE.md](ORACLE.md) and the canonical ledgers.
 
+The sequence below records the early probe plan. Current work uses
+[headless Ghidra](RE_WORKFLOW.md) and the maintained native/LTCG build. Parallel
+agent lanes require explicit authorization under `AGENTS.md`.
+
 ## Accepted order
 
 TH07 uses the mature TH10.5 control-plane ideas while removing its VC8/LTCG and

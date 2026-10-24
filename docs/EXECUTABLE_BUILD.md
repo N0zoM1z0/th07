@@ -48,3 +48,34 @@ remain unverified.
 The older `scripts/build-exe.py` and `config/executable.toml` retain the historical
 layout/resource plan. Their disabled link gate belongs to that older probe graph
 and is not the current native-product build entry.
+
+## Artifact retention and cleanup
+
+| Path | Retention |
+| --- | --- |
+| `build/authored/` | Keep the maintained images, objects, paired compiler PDBs, master PDB/map, logs and receipt |
+| `build/reference/` | Keep the pinned reference build and the same evidence/cache pairs |
+| `build/authored-comparison.json`, `build/reference-baseline.json` | Keep the current full native measurements |
+| `build/exact-replay.json`, `build/link-verification.json` | Keep canonical replay and product/global verification |
+| `build/frame-probes/`, compiler traces, trig probes and old match-unit outputs | Disposable after compact evidence/scripts are retained under `.analysis/` |
+| Named superseded trial reports | Disposable; the cleaner lists their exact paths |
+| `.analysis/`, `.private/`, `.tools/`, `_reference/`, `ghidra-project/` | Preserved by the cleaner |
+
+```bash
+python3 scripts/clean-build.py             # preview only
+python3 scripts/clean-build.py --apply     # remove named disposable paths
+```
+
+The allowlist excludes maintained/reference caches and unknown build paths.
+Cleanup refuses to run while the shared compiler lock is held, rejects a
+symlinked build root and never follows diagnostic directory symlinks. A duplicate
+`reference-baseline-v3.json` is removed only if its complete bytes equal the
+canonical `reference-baseline.json`. The preview reports the paths and logical
+byte total; it does not modify files. Match-unit outputs are removed only when
+the canonical manifest proves every accepted unit uses the native product;
+accepted legacy COFF supplements remain protected if present.
+
+After cleanup, full replay and the all-exact product gate remain runnable without
+rebuilding. Historical focused probes can regenerate their discarded outputs
+through `build.py --unit ...`. Avoid deleting compiler PDBs from a retained
+`/GL` cache; missing pairs require recompilation.
