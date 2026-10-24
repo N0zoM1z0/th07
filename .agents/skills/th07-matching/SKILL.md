@@ -55,8 +55,8 @@ reference proof for this discriminator.
 ## Resource-aware iteration
 
 All compilation runs headlessly through one shared `flock` slot, pinned to one
-CPU with low process priority. Preserve the native master PDB, remove unused
-per-object PDB/PCH files, and keep Wine's prefix outside the checkout. Never run
+CPU with low process priority. Preserve the master PDB and compiler PDBs paired with cached `/GL` objects;
+remove unused diagnostics and PCH files, and keep Wine's prefix outside the checkout. Never run
 an unbounded search following Wine's `dosdevices/z:` symlink to `/`.
 
 Current acceptance uses `scripts/replay-exact-units.py` and full native PDB or

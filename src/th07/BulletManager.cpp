@@ -1370,7 +1370,7 @@ ZunResult BulletManager::AddedCallback(BulletManager *arg)
         }
     }
 
-    for (i = 0; i < ARRAY_SIZE_SIGNED(g_BulletTypeInfos); i++)
+    for (i = 0; i < ARRAY_SIZE(g_BulletTypeInfos); i++)
     {
         g_AnmManager->SetAnmIdxAndExecuteScript(
             &arg->bulletTypeTemplates[i].spriteBullet,

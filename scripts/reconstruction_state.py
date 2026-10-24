@@ -38,4 +38,7 @@ def state():
     if result['reference_named_bytes']!=review['reference_named_bytes'] or result['reference_exact_bytes']!=review['reference_named_exact_bytes']:raise ValueError('baseline accounting differs')
     for r in json.loads((ROOT/'config/maintained-source-provenance.json').read_text())['files']:
         if hashlib.sha256((ROOT/r['path']).read_bytes()).hexdigest()!=r['sha256']:raise ValueError('maintained source provenance differs: '+r['path'])
+    result['native_named_exact_functions']=review['native_named_exact_functions']
+    result['native_named_exact_bytes']=review['native_named_exact_bytes']
+    result['native_named_exact_percent']=100*review['native_named_exact_bytes']/result['reference_named_bytes']
     return result

@@ -82,7 +82,7 @@ u32 Ending::OnDraw(Ending *arg)
 // FUNCTION: TH07 0x0041d410
 i32 Ending::ReadEndFileParameter()
 {
-    long cur = atol(this->endFileDataPtr);
+    i32 cur = atoi(this->endFileDataPtr);
     while (*this->endFileDataPtr != '\0')
     {
         this->endFileDataPtr++;

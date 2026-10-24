@@ -76,7 +76,7 @@ def symbols(path):
             if kind in (0x110f,0x1110,0x100a,0x100b):
                 checked(body,0,35);row.update(type='function',size=u32(body,12),offset=u32(body,28),section=u16(body,32),name=name_at(body,35,kind))
             elif kind in (0x110c,0x110d,0x1007,0x1008):
-                checked(body,0,10);row.update(type='data',offset=u32(body,4),section=u16(body,8),name=name_at(body,10,kind))
+                checked(body,0,10);row.update(type='data',type_index=u32(body,0),offset=u32(body,4),section=u16(body,8),name=name_at(body,10,kind))
             elif kind in (0x110e,0x1009):
                 checked(body,0,10);row.update(type='public',offset=u32(body,4),section=u16(body,8),name=name_at(body,10,kind))
             elif kind in (0x1102,0x0206):
@@ -114,3 +114,48 @@ def verify_image_binding(path,pe):
     cv=records[0]
     if cv[4:20]!=info[12:28] or u32(cv,20)!=u32(info,8):raise ValueError('PDB GUID/age does not match generated image')
     return {'guid':cv[4:20].hex(),'age':u32(cv,20)}
+
+
+def type_records(path):
+    """Read bounded compiler TPI records without consulting target instructions."""
+    data=MSF(Path(path).read_bytes()).stream(2)
+    checked(data,0,20)
+    header,begin,end,size=struct.unpack_from('<IIII',data,4)
+    if header<20 or begin>end:raise ValueError('invalid TPI header')
+    types={}
+    for index,(_,kind,body) in enumerate(records(data,header,header+size),begin):
+        if index>=end:raise ValueError('excess TPI records')
+        types[index]=(kind,body)
+    if len(types)!=end-begin:raise ValueError('missing TPI records')
+    return types
+
+
+def constant_float_types(path):
+    """Read const scalar floating types from compiler TPI metadata only."""
+    types=type_records(path)
+    result={}
+    for index,(kind,body) in types.items():
+        seen=set();at=index;is_const=False
+        while at>=0x1000:
+            if at in seen:raise ValueError('cyclic TPI modifier chain')
+            seen.add(at);entry=types.get(at)
+            if entry is None:raise ValueError('TPI modifier points outside type stream')
+            leaf,payload=entry
+            if leaf!=0x1001:break
+            checked(payload,0,6);is_const |= bool(u16(payload,4)&1);at=u32(payload,0)
+        if is_const and at in (0x40,0x41):result[index]=4 if at==0x40 else 8
+    return result
+
+
+def data_type_sizes(path):
+    """Sizes needed for scalar and concrete class local-static storage."""
+    result={0x22:4,0x74:4,0x75:4}
+    for index,(kind,body) in type_records(path).items():
+        offset=16 if kind in (0x1504,0x1505) else 8 if kind==0x1506 else None
+        if offset is None:continue
+        checked(body,0,offset+2)
+        if u16(body,2)&0x80:continue  # forward reference, no concrete extent
+        size=u16(body,offset)
+        if size<0x8000:result[index]=size
+        elif size==0x8004:result[index]=u32(checked(body,offset+2,4),0)
+    return result

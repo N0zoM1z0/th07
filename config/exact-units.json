@@ -1894,10 +1894,10 @@
       "compare_size": 115,
       "name": "Ending::ReadEndFileParameter",
       "origin": "authored",
-      "kind": "legacy-coff",
-      "source_file": "src/EnemyLifecycle.cpp",
+      "kind": "native-linked",
+      "source_file": "src/th07/Ending.cpp",
       "target_compared_sha256": "00bfe6da4ec0d9eb7a20b23e2287dba433e422d5d81fa8a5f9b952f8926a4e00",
-      "legacy_unit": "enemy-lifecycle"
+      "native_name": "Ending::ReadEndFileParameter"
     },
     "f_0041d490": {
       "unit": "f_0041d490",
@@ -1994,6 +1994,18 @@
       "source_file": "src/th07/EnemyManager.cpp",
       "target_compared_sha256": "0bb3c853b0c22cb6a32cf96c8aaaee1060835c74eb1b29767edbff6a7f9ff5e2",
       "native_name": "EnemyManager::Initialize"
+    },
+    "f_0041ee70": {
+      "unit": "f_0041ee70",
+      "address": "0x0041EE70",
+      "size": 256,
+      "compare_size": 256,
+      "name": "EnemyManager::EnemyManager",
+      "origin": "authored",
+      "kind": "native-linked",
+      "source_file": "src/th07/EnemyManager.cpp",
+      "target_compared_sha256": "725d04ed2d213e58f3a277dfb070b7b0475523f3262d5b6dcc819d0631a2baa8",
+      "native_name": "EnemyManager::EnemyManager"
     },
     "f_0041ef70": {
       "unit": "f_0041ef70",
@@ -2230,10 +2242,10 @@
       "compare_size": 267,
       "name": "EnemyManager::RegisterChain",
       "origin": "authored",
-      "kind": "legacy-coff",
-      "source_file": "src/EnemyLifecycle.cpp",
+      "kind": "native-linked",
+      "source_file": "src/th07/EnemyManager.cpp",
       "target_compared_sha256": "4dae6d809b35ed6db4fd35c797f67f0decf8e8135077fb80d6a316830ab9935e",
-      "legacy_unit": "enemy-lifecycle"
+      "native_name": "EnemyManager::RegisterChain"
     },
     "f_00423050": {
       "unit": "f_00423050",
@@ -2554,10 +2566,10 @@
       "compare_size": 1723,
       "name": "BulletManager::AddedCallback",
       "origin": "authored",
-      "kind": "legacy-coff",
-      "source_file": "src/BulletManager.cpp",
+      "kind": "native-linked",
+      "source_file": "src/th07/BulletManager.cpp",
       "target_compared_sha256": "30c66ffdab9ce0fd6640376c973ce9f4dabcb314e055375bcf1e2bfc5352d3f3",
-      "legacy_unit": "bullet-manager"
+      "native_name": "BulletManager::AddedCallback"
     },
     "f_00427620": {
       "unit": "f_00427620",
@@ -4083,6 +4095,18 @@
       "target_compared_sha256": "55b8baf770878c7f4cfb6e66b61425a1295b35adaa19ff7618af641345e6c648",
       "native_name": "GameWindow::Present"
     },
+    "f_004346e0": {
+      "unit": "f_004346e0",
+      "address": "0x004346E0",
+      "size": 855,
+      "compare_size": 855,
+      "name": "GameWindow::Render",
+      "origin": "authored",
+      "kind": "native-linked",
+      "source_file": "src/th07/main.cpp",
+      "target_compared_sha256": "e9639c4dbd292c37417881cb82a8a4921f11a305558ad6d9e9f6b1b77a9a479e",
+      "native_name": "GameWindow::Render"
+    },
     "f_00434a40": {
       "unit": "f_00434a40",
       "address": "0x00434A40",
@@ -4743,6 +4767,18 @@
       "target_compared_sha256": "290702f70f5450f7871d95f5afe1db5a14e6ff1e0c2c6db8dd4e1b3c9e6d1213",
       "native_name": "Supervisor::RegisterChain"
     },
+    "f_004390a5": {
+      "unit": "f_004390a5",
+      "address": "0x004390A5",
+      "size": 860,
+      "compare_size": 860,
+      "name": "Supervisor::DrawFpsCounter",
+      "origin": "authored",
+      "kind": "native-linked",
+      "source_file": "src/th07/Supervisor.cpp",
+      "target_compared_sha256": "a20dc80e5fdfdbb5c1bf2cd7fe27cf8fb5fa1635d961b811041da3599d18982d",
+      "native_name": "Supervisor::DrawFpsCounter"
+    },
     "f_00439401": {
       "unit": "f_00439401",
       "address": "0x00439401",
@@ -5030,6 +5066,18 @@
       "source_file": "src/th07/MusicRoom.cpp",
       "target_compared_sha256": "6e18816dddbb2129bac00abb7b1eceba239f62792abcb210265cd3f3708d4097",
       "native_name": "MusicRoom::DeletedCallback"
+    },
+    "f_0043b4db": {
+      "unit": "f_0043b4db",
+      "address": "0x0043B4DB",
+      "size": 223,
+      "compare_size": 223,
+      "name": "MusicRoom::RegisterChain",
+      "origin": "authored",
+      "kind": "native-linked",
+      "source_file": "src/th07/MusicRoom.cpp",
+      "target_compared_sha256": "3015a3d1a1f508be005be00dd43de18d71f976452d9fad01471964706a71155d",
+      "native_name": "MusicRoom::RegisterChain"
     },
     "f_0043b5c0": {
       "unit": "f_0043b5c0",
@@ -5758,10 +5806,10 @@
       "compare_size": 870,
       "name": "ReplayManager::AddedCallbackRecord",
       "origin": "authored",
-      "kind": "legacy-coff",
-      "source_file": "src/ReplayAdded.cpp",
+      "kind": "native-linked",
+      "source_file": "src/th07/ReplayManager.cpp",
       "target_compared_sha256": "b2163d9f0c932c47c401eda934bdd59be44b3a848ed0fda78173ae3a087c6b9a",
-      "legacy_unit": "replay-added"
+      "native_name": "ReplayManager::AddedCallbackRecord"
     },
     "f_004433b0": {
       "unit": "f_004433b0",
@@ -6734,6 +6782,18 @@
       "source_file": "src/th07/AnmManager.cpp",
       "target_compared_sha256": "cbd4ebe9161e5b2b97337e630683f48845df9a9ab8b8db9f94bf7bc5a3b1e17f",
       "native_name": "AnmManager::SyncRenderState"
+    },
+    "f_0044efb0": {
+      "unit": "f_0044efb0",
+      "address": "0x0044EFB0",
+      "size": 1481,
+      "compare_size": 1481,
+      "name": "AnmManager::DrawInner",
+      "origin": "authored",
+      "kind": "native-linked",
+      "source_file": "src/th07/AnmManager.cpp",
+      "target_compared_sha256": "86fcfdb22b90a7747a48ed06aeb8f946e194760dd137da81084f50f67fe2d2f1",
+      "native_name": "AnmManager::DrawInner"
     },
     "f_0044f580": {
       "unit": "f_0044f580",

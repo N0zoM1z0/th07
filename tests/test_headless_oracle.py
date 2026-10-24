@@ -129,6 +129,27 @@ class RelocationTests(Fixture):
         o=self.oracle(b'\xc3'+bytes(8),b'\xc3'+bytes(7)+b'\x01')
         r=o.compare(0x401000,{'address':0x401000,'size':9,'name':'table','module':'fixture'},1)
         self.assertNotEqual(r['status'],'exact')
+    def test_typed_const_literal_resolves_unique_content(self):
+        o=self.oracle(b'\xb8'+struct.pack('<I',0x402100)+b'\xc3',b'\xb8'+struct.pack('<I',0x403000)+b'\xc3')
+        o.named={};o.const_float_widths={0x402100:4};o.literal_candidates={bytes(4):{0x402104}}
+        o.target.sections[1]['name']='.rdata'
+        self.assertEqual(o.resolve_external(0x402100)[0],0x402104)
+    def test_ambiguous_const_literal_is_not_inferred_from_operand(self):
+        o=self.oracle(b'\xb8'+struct.pack('<I',0x402100)+b'\xc3',b'\xb8'+struct.pack('<I',0x403000)+b'\xc3')
+        o.named={};o.const_float_widths={0x402100:4};o.literal_candidates={bytes(4):{0x402104,0x402108}}
+        o.target.sections[1]['name']='.rdata'
+        self.assertIsNone(o.resolve_external(0x402100)[0])
+    def test_mutable_float_is_not_resolved_by_content(self):
+        o=self.oracle(b'\xb8'+struct.pack('<I',0x402100)+b'\xc3',b'\xb8'+struct.pack('<I',0x403000)+b'\xc3')
+        o.named={};o.const_float_widths={};o.literal_candidates={bytes(4):{0x403000}}
+        self.assertIsNone(o.resolve_external(0x402100)[0])
+    def test_string_interior_relocation_is_bounded(self):
+        o=self.oracle(b'\xc3',b'\xc3');o.string_anchors=[(0x402100,0x403000,6)]
+        self.assertEqual(o.resolve_external(0x402104)[0],0x403004)
+        self.assertIsNone(o.resolve_external(0x402106)[0])
+    def test_conflicting_string_anchors_remain_unresolved(self):
+        o=self.oracle(b'\xc3',b'\xc3');o.string_anchors=[(0x402100,0x403000,6),(0x402100,0x403010,6)]
+        self.assertIsNone(o.resolve_external(0x402104)[0])
     def test_complete_raw_linked_match(self):
         code=b'\xb8'+struct.pack('<I',0x402100)+b'\xc3';o=self.oracle(code,code)
         self.assertEqual(o.compare(0x401000,{'address':0x401000,'size':6,'name':'unit','module':'fixture'},6)['method'],'linked-raw-full-extent')

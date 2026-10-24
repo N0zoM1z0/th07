@@ -397,7 +397,7 @@ address,name,size,compare_size,status
 0x00438DE2,Supervisor::DeletedCallback,525,525,exact
 0x00438FEF,DummyMidiTimer::~DummyMidiTimer,17,17,exact
 0x00439000,Supervisor::RegisterChain,165,165,exact
-0x004390A5,Supervisor::DrawFpsCounter,860,860,unresolved
+0x004390A5,Supervisor::DrawFpsCounter,860,860,exact
 0x00439401,ZunTimer::Increment,198,198,exact
 0x004394C7,ZunTimer::Decrement,198,198,exact
 0x0043958D,Supervisor::TickTimer,110,110,exact
@@ -422,7 +422,7 @@ address,name,size,compare_size,status
 0x0043AC4C,MusicRoom::OnDraw,468,468,exact
 0x0043AE20,MusicRoom::AddedCallback,1624,1624,exact
 0x0043B478,MusicRoom::DeletedCallback,99,99,exact
-0x0043B4DB,MusicRoom::RegisterChain,223,223,unresolved
+0x0043B4DB,MusicRoom::RegisterChain,223,223,exact
 0x0043B5C0,GameManager::RerollRng,396,396,exact
 0x0043B750,GameManager::CheckGameIntegrityOnDeath,71,71,exact
 0x0043B7A0,GameManager::AddBombsUsed,71,71,exact
@@ -483,7 +483,7 @@ address,name,size,compare_size,status
 0x00442CD0,ReplayManager::OnUpdateRecord,378,378,exact
 0x00442E50,ReplayManager::OnUpdatePlaybackLowPrio,142,142,exact
 0x00442EE0,ReplayManager::OnUpdatePlayback,341,341,exact
-0x00443040,ReplayManager::AddedCallbackRecord,870,870,unresolved
+0x00443040,ReplayManager::AddedCallbackRecord,870,870,exact
 0x004433B0,ReplayManager::ValidateReplayData,416,416,exact
 0x00443550,ReplayManager::AddedCallbackPlayback,1111,1111,exact
 0x004439B0,ReplayManager::DeletedCallback,232,232,exact
@@ -566,7 +566,7 @@ address,name,size,compare_size,status
 0x0044EA20,AnmManager::SetAndExecuteScript,188,188,exact
 0x0044EAE0,AnmManager::SetRenderStateForVm,992,992,exact
 0x0044EEC0,AnmManager::SyncRenderState,237,237,exact
-0x0044EFB0,AnmManager::DrawInner,1481,1481,unresolved
+0x0044EFB0,AnmManager::DrawInner,1481,1481,exact
 0x0044F580,AnmManager::ResetVertexBuffer,60,60,exact
 0x0044F5C0,AnmManager::Flush,198,198,exact
 0x0044F690,AnmManager::PushSprite,211,211,exact

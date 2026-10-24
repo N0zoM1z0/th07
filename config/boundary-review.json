@@ -3,11 +3,11 @@
   "reference_commit": "4878bf0e42a9280ef44735eb0517d4fda7cb6e04",
   "reference_named_functions": 694,
   "reference_named_bytes": 381170,
-  "reference_named_exact_bytes": 341585,
+  "reference_named_exact_bytes": 345019,
   "authored_functions": 686,
   "authored_bytes": 380493,
-  "authored_exact_functions": 678,
-  "authored_exact_bytes": 373295,
+  "authored_exact_functions": 683,
+  "authored_exact_bytes": 376970,
   "application_start": 4198400,
   "application_end_exclusive": 4587595,
   "runtime_start": 4594320,
@@ -2845,6 +2845,20 @@
             "result": "exact"
           }
         ]
+      },
+      {
+        "generated_info": 4827880,
+        "target_info": 4827708,
+        "generated_handler": 4769253,
+        "target_handler": 4769260,
+        "cleanup_checks": [
+          {
+            "generated": 4769239,
+            "target": 4769246,
+            "size": 14,
+            "result": "exact"
+          }
+        ]
       }
     ],
     "blocked": [
@@ -2852,14 +2866,48 @@
         "generated_info": 4827172,
         "candidate_infos": [],
         "reason": "graph does not match uniquely"
-      },
-      {
-        "generated_info": 4827880,
-        "candidate_infos": [],
-        "reason": "graph does not match uniquely"
       }
     ]
   },
+  "compiler_statics": [
+    {
+      "module": "Supervisor.obj",
+      "object": "g_LastTime",
+      "guard": "S3",
+      "generated_object": 20308116,
+      "target_object": 20308640,
+      "object_size": 4,
+      "generated_guard": 20308120,
+      "target_guard": 20308644,
+      "evidence": "typed-adjacent-VC7-local-static-BSS-contribution"
+    },
+    {
+      "module": "MusicRoom.obj",
+      "object": "s_MusicRoom",
+      "guard": "S1",
+      "generated_object": 20308128,
+      "target_object": 20308648,
+      "object_size": 23556,
+      "generated_guard": 20331684,
+      "target_guard": 20332204,
+      "evidence": "typed-adjacent-VC7-local-static-BSS-contribution"
+    }
+  ],
+  "compiler_thunks": [
+    {
+      "name": "atoi",
+      "generated": 4707386,
+      "target": 4707383,
+      "size": 5,
+      "generated_callee": 4707250,
+      "target_callee": 4707247,
+      "callee_evidence": "named-function-complete-extent",
+      "evidence": "complete-unique-CRT-tail-thunk-replay"
+    }
+  ],
+  "native_named_exact_functions": 692,
+  "native_named_exact_bytes": 377679,
+  "oracle_version": 2,
   "source_policy_exclusions": {
     "0x4325c0": "Assembler-only Float2/Float3 field-writing helper; retained as an unaccepted reference-build dependency pending C++ recovery."
   }

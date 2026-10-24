@@ -1,0 +1,11 @@
+# VC7 local-static guard storage follows its named BSS object. Derive target
+# addresses from independently recorded object extents, never instruction operands.
+[[guards]]
+module = "Supervisor.obj"
+object = "g_LastTime"
+guard = "S3"
+
+[[guards]]
+module = "MusicRoom.obj"
+object = "s_MusicRoom"
+guard = "S1"

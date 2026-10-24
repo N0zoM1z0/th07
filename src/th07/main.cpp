@@ -340,7 +340,8 @@ RenderResult GameWindow::Render()
     f64 timeDiff;
     f64 curTime;
     f64 perfDiff;
-    LARGE_INTEGER perfCounter;
+    // The x86 API writes two DWORDs; the target local is DWORD-aligned.
+    struct CounterSample { DWORD LowPart; LONG HighPart; } perfCounter;
     i32 chainRes;
 
     if (!this->isAppActive)
@@ -391,7 +392,7 @@ RenderResult GameWindow::Render()
         {
             if (g_GameWindow.lpFrequency.LowPart != 0)
             {
-                QueryPerformanceCounter(&perfCounter);
+                QueryPerformanceCounter(reinterpret_cast<LARGE_INTEGER *>(&perfCounter));
                 perfDiff = (f64)(perfCounter.LowPart - g_LastPerfCounter.LowPart) / (f64)g_GameWindow.lpFrequency.LowPart;
 
                 if (perfDiff < 0.0)

@@ -6,24 +6,25 @@
 Source reconstruction of the original Japanese **TH07 1.00b**, accepted through
 complete function-byte comparisons against the original executable.
 
-The reviewed authored scope currently has **678 / 686 exact functions** and
-**373,295 / 380,493 exact bytes (98.1082%)**. Prebuilt SDK/CRT library code, SDK inline routines, compiler-generated
+The reviewed authored scope currently has **683 / 686 exact functions** and
+**376,970 / 380,493 exact bytes (99.0741%)**. Prebuilt SDK/CRT library code, SDK inline routines, compiler-generated
 wrappers, alignment and embedded SDK data are excluded from that denominator.
 Comparison includes complete compiler extents and trailing switch tables;
 relocation fields are independently resolved and compared without masking.
 
 | Measurement | Exact functions | Exact coverage bytes |
 | --- | ---: | ---: |
-| Unmodified some100 reference, 694 named functions | 682 / 694 | 341,585 / 381,170 (89.6149%) |
-| Maintained native LTCG build, same named scope | 683 / 694 | 371,049 / 381,170 (97.3448%) |
-| Reviewed authored source pool | 678 / 686 | 373,295 / 380,493 (98.1082%) |
+| Unmodified some100 reference, 694 named functions | 686 / 694 | 345,019 / 381,170 (90.5158%) |
+| Maintained native LTCG build, same named scope | 692 / 694 | 377,679 / 381,170 (99.0841%) |
+| Reviewed authored functions in that product | 683 / 686 | 376,970 / 380,493 (99.0741%) |
 
-The source pool combines the maintained native build with **four preserved,
-freshly rebuilt COFF implementations**. The first two rows include eight
-SDK/compiler routines; the authored row also excludes an assembler-only helper
-from exact acceptance. The eight remaining authored routines are recorded in
-[config/remaining.csv](config/remaining.csv). These figures establish function
-bytes; whole-executable equivalence and runtime playability remain unverified.
+Every accepted function now replays from **one maintained linked product**.
+The four prior COFF-only supplements have been recovered in that product.
+The first two rows include eight SDK/compiler routines; the authored row also
+withholds acceptance from an assembler-only mathematical helper. The three
+remaining authored routines are recorded in [config/remaining.csv](config/remaining.csv).
+Cold compilation/linking, PE entry binding and source-global relocation replay
+are verified. Whole-executable identity and runtime playability remain unverified.
 See [the oracle and measurement limits](docs/ORACLE.md).
 
 ## Target
@@ -55,8 +56,8 @@ python3 scripts/bootstrap-tools.py
 python3 scripts/ghidra.py initialize
 python3 scripts/ghidra.py check
 python3 scripts/build-whole.py
-python3 scripts/replay-legacy-units.py --units enemy-lifecycle bullet-manager replay-added
 python3 scripts/replay-exact-units.py
+python3 scripts/verify-linked-product.py
 ```
 
 Bootstrap pins are in [config/tools.lock.toml](config/tools.lock.toml). Existing
@@ -78,6 +79,7 @@ function with `python3 scripts/replay-exact-units.py --unit f_00410520 --rebuild
 ## Documentation
 
 - [Architecture and source layout](docs/ARCHITECTURE.md)
+- [Active completion requirements](docs/GOAL.md)
 - [Strict oracle, reference import and remaining work](docs/ORACLE.md)
 - [Application/runtime boundary review](docs/BOUNDARY_REVIEW.md)
 - [Headless workflow and Ghidra commands](docs/RE_WORKFLOW.md)
@@ -95,8 +97,11 @@ The maintained `src/th07/` source and Japanese localization table derive from
 Thank you to its contributors for the reconstruction. Its CC0 dedication is
 preserved in [docs/LICENSE-some100.txt](docs/LICENSE-some100.txt); original and
 maintained file hashes are tracked in `config/*source-provenance.json`.
-The local type correction makes `g_SpellcardScore` signed, matching TH07's
-32-bit signed x87 conversion and recovering the complete ECL procedure.
+Maintained corrections recover the signed score conversion, initialization call
+boundary, counter-sample alignment, unsigned bullet-table comparison and CRT
+integer-parser entry. [Matching notes](docs/MATCHING_NOTES.md) record evidence
+and remaining work. Oracle v2 resolves additional independently evidenced
+metadata; the initial v1 reference snapshot remains archived.
 
 [GensokyoClub/th06](https://github.com/GensokyoClub/th06) and
 [GensokyoClub/th08](https://github.com/GensokyoClub/th08) provided engine and VC7

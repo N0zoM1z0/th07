@@ -1,114 +1,124 @@
 # Strict function oracle
 
 The original Japanese executable is identified by SHA-256 and size before every
-native measurement. The reference is some100/th07 commit
+measurement. The reference is some100/th07 commit
 `4878bf0e42a9280ef44735eb0517d4fda7cb6e04`, retained privately under
-`_reference/some100-th07`. Its upstream similarity percentage is not an exact
-acceptance result under this oracle.
+`_reference/some100-th07`. Similarity percentages do not grant exact acceptance.
 
 ## Native evidence
 
-`scripts/build-reference.py` reproduces the upstream 29-translation-unit
-VC7 13.00.9466 matching profile. It generates the Japanese header, uses the
-pinned `var_order` frontend, and links with `/GL /LTCG`. The faithful baseline
-omits the original icon resource, following upstream's no-icon build option.
-Raw `/GL` objects contain intermediate representation, so their apparent COFF
-symbols cannot establish native procedure sizes.
+`scripts/build-reference.py` reproduces the upstream 29-TU VC7 13.00.9466 profile
+with pinned `var_order`, Japanese localization generation and `/GL /LTCG`.
+The maintained product uses that graph with the recorded source corrections.
+The faithful profile omits the original icon. `/GL` objects contain intermediate
+representation; native sizes must come from the completed link, not apparent
+COFF prefixes.
 
-The native linker PDB supplies complete procedure sizes and source-object
-ownership. `pdb_symbols.py` parses bounded MSF/CodeView streams and checks that
-the PDB GUID and age match the generated PE. A second link at the same output
-paths requests `/FIXED:NO` metadata. Its `.text` must be byte-identical to the
-faithful link; its base relocation directory enumerates DIR32 fields. Generated
-reachable x86 control flow supplies relative call/branch fields and traverses
-switch tables. Full procedure extents, including table bytes, are compared.
+The bounded MSF/CodeView reader supplies full procedure extents, types and
+source-object ownership. It binds the master PDB GUID/age to the generated PE.
+A same-path metadata link adds `/FIXED:NO`; its `.text` must remain byte-identical
+to the faithful link. DIR32 fields come from that image's relocation directory.
+Reachable generated x86 instructions supply relative fields and traverse switch
+tables. Replay compares every byte through the complete procedure/table extent.
 
-Destinations come from original symbol/global annotations, PE import identities,
+Destinations come from original symbol/global annotations, import identities,
 typed literal content, same-procedure offsets and independently validated compiler
-EH graphs. EH graphs are matched by state structure and complete cleanup/handler
-replay, with unique one-to-one assignments. Descriptor ordering is not assumed.
-Unknown or ambiguous destinations remain unaccepted. No target instruction
-operand is used to infer an expected destination, and no relocation byte is
-masked. An identical linked-address procedure can also pass by direct full-byte
-comparison. All accepted functions require every byte to match.
+metadata. Unknown destinations remain unaccepted. No target instruction operand
+selects an expected destination and no relocation byte is masked. Linked-address
+raw equality can also establish a complete exact range.
 
-Receipts retain tool hashes, source/header hashes, commands, object hashes and
-native image/PDB/map hashes. Replay checks current source and artifact hashes,
-freshly parses PDB metadata and verifies image binding. Reports stay in ignored
-`build/`; public ledgers retain coverage, full comparison size, source ownership
-and the SHA-256 of the complete target range.
+Oracle v2 additionally handles:
 
-## Reference measurement and maintained changes
+- const f32/f64 objects whose compiler TPI type establishes width and constness,
+  with a unique aligned typed read-only original literal;
+- offsets bounded inside a complete independently mapped string literal;
+- uint32 local-static guards adjacent to typed, named BSS objects, constrained by
+  original object sizes and non-overlap with other globals;
+- unique complete five-byte CRT forwarding entries to independently mapped callees;
+- compiler EH graphs matched by state shape and complete cleanup/handler replay,
+  with unique one-to-one assignments, rather than contribution order.
 
-The unmodified reference yielded **682 / 694 exact named functions**, or
-**341,585 / 381,170 coverage bytes (89.6149%)**. Its large ECL procedure was
-longer than the original function and overlapped the next original entry.
+Synthetic negative controls reject ambiguous literals/thunks, wrong independent
+addresses, missing type/size evidence, nonadjacent guards, truncated procedures,
+trailing table corruption, wrong PDB GUID/age and stale build artifacts.
 
-The target ECL uses `FILD DWORD` to convert `g_SpellcardScore`. Upstream declared
-that array `u32`; the maintained source uses `i32` in its definition and extern
-declaration. Recompiling all 29 translation units gives a **30,156-byte ECL
-procedure**, comprising 29,464 coverage bytes and 692 trailing switch-table
-bytes, all exact. No padding, fabricated locals or instruction transcription was
-introduced. The maintained native build reaches **683 / 694**, or
-**371,049 / 381,170 bytes (97.3448%)**, in the same named scope.
+Receipts bind source/header state, compiler/frontend/linker hashes, commands,
+objects, compiler PDBs and final native image/PDB/map metadata. Missing compiler
+PDBs invalidate an incremental object pair. Native PDB metadata is parsed afresh
+on replay; cached JSON cannot override it. Reports remain private in `build/`.
+Public manifests retain source ownership, coverage/full comparison sizes and
+SHA-256 of complete target ranges.
 
-Four retained original-repository probes supplement that build:
+## Reference and maintained measurements
 
-| Target | Function | Coverage / full compared bytes | Preserved source |
+| Current oracle v2 scope | Exact functions | Exact coverage bytes |
+| --- | ---: | ---: |
+| Unmodified reference, named scope | 686 / 694 | 345,019 / 381,170 (90.5158%) |
+| Maintained linked product, named scope | 692 / 694 | 377,679 / 381,170 (99.0841%) |
+| Reviewed authored functions in that product | 683 / 686 | 376,970 / 380,493 (99.0741%) |
+
+The initial v1 reference measurement was 682/694 and 89.6149%. It is preserved
+in `config/legacy/reference-baseline-v1.csv`. V2 removes four independently
+resolved metadata/literal false negatives without changing reference source or
+its target denominator. No relaxation of byte comparison is involved.
+
+The maintained signed score correction recovers ECL's complete 30,156-byte
+procedure, including 692 table bytes beyond the 29,464 coverage bytes.
+Further fixes recover initialization call boundaries, sample alignment, unsigned
+array comparison and CRT parser identity. [Matching notes](MATCHING_NOTES.md)
+record target evidence and rejected experiments.
+
+Every accepted function now comes from **one maintained linked product**.
+The four former standalone supplements—ending parameter parsing, enemy chain
+registration, bullet setup and replay recording setup—also pass there. Old focused
+probes and their original ledgers remain for provenance, and are no longer
+canonical supplements.
+
+## Authored scope and source policy
+
+Authored means reconstructed source-owned application functions, including
+adapted DirectSound utilities and PBG codecs. It describes reconstruction
+ownership, rather than original copyright authorship, following TH06's convention.
+
+The denominator remains **686 functions / 380,493 bytes**. Three D3DX inline
+routines and five compiler deleting wrappers are excluded from the 694 named
+functions. Prebuilt CRT/SDK code, compiler EH/startup code, alignment and embedded
+DInput data are outside authored scope. [Boundary review](BOUNDARY_REVIEW.md)
+records closure without unreviewed application gaps.
+
+`Float2`/`Float3::FromAngleMagnitude` at `0x004325C0` is byte-identical but its
+whole behavior is assembly field writes. It remains an unaccepted build dependency
+until admissible source is recovered. Do not reclassify it or change the
+denominator to bypass this source requirement.
+
+## Remaining authored work
+
+| Address | Function | Coverage bytes | Blocker |
 | --- | --- | ---: | --- |
-| `0x0041D410` | `Ending::ReadEndFileParameter` | 115 / 115 | `src/EnemyLifecycle.cpp` |
-| `0x00422F40` | `EnemyManager::RegisterChain` | 267 / 267 | `src/EnemyLifecycle.cpp` |
-| `0x00426F60` | `BulletManager::AddedCallback` | 1,703 / 1,723 | `src/BulletManager.cpp` |
-| `0x00443040` | `ReplayManager::AddedCallbackRecord` | 870 / 870 | `src/ReplayAdded.cpp` |
+| `0x004325C0` | `Float2::FromAngleMagnitude` | 32 | Whole-function assembly source policy |
+| `0x0044A302` | `ResultScreen::RegisterChain` | 339 | Stack frame 0x38 versus 0x2C |
+| `0x004555DD` | `MainMenu::OnUpdatePreInput` | 3,152 | Stack frame 0x6C versus 0x64 |
 
-All three probe units were rebuilt headlessly; their 14 previously accepted
-comparisons passed. The four canonical supplements additionally replay their
-complete native COFF auxiliary-symbol extent, including BulletManager's 20-byte
-table, using independently evidenced relocation mappings. These source units
-are separate from the maintained LTCG product; they have not been linked into
-a single product with the native implementations.
+`config/functions.csv`, `function-origins.csv`, `matches.csv` and
+`exact-units.json` jointly define current acceptance. `config/remaining.csv`
+records unfinished source work. The historical ledger/claims remain verbatim
+under `config/legacy/`; the admission importer repairs five unquoted historical
+CSV fields while loading that archive.
 
-## Authored scope and exclusions
+## Build and link verification limits
 
-Authored here means reconstructed source-owned application functions, including
-game-adapted DirectSound utilities and PBG codecs. It describes reconstruction
-ownership, rather than original copyright authorship. This follows the TH06
-accounting convention.
+A fresh 29-TU cold build and both links pass. The product verifier checks startup
+binding, imports, unsuppressed linker status and complete native measurements.
+It also replays **132 named application globals/vtables** through independently
+resolved relocations, and checks their faithful/metadata byte agreement.
+Twelve historical CRT placeholder globals and the two SDK object-format
+descriptors are separately reported outside that application-data check.
 
-The reviewed authored denominator is **686 functions / 380,493 bytes**. It
-excludes three D3DX inline routines and five compiler deleting wrappers from
-the 694-function named set. Linked CRT/SDK code, compiler EH/startup code,
-DInput object-format data and alignment are also outside authored scope.
-[Boundary review](BOUNDARY_REVIEW.md) records closure of the application region.
+The active completion gate is `verify-linked-product.py --require-all-exact`;
+it deliberately fails while any authored work remains. Current build/link
+verification passes, and exact-source completion is false.
 
-`Float2::FromAngleMagnitude` at `0x004325C0` is byte-identical but its entire
-behavior is an inline assembler field-writing routine. Repository policy rejects
-whole-function assembler substitutes. It remains a build dependency and counts
-as unaccepted authored source until recovered as admissible C++.
-
-After those exclusions and the four probe supplements, accepted authored source
-covers **678 / 686 functions; 373,295 / 380,493 bytes (98.1082%)**.
-`config/exact-units.json`, `matches.csv`, `function-origins.csv` and
-`functions.csv` jointly define the canonical replay and accounting.
-`config/legacy/` preserves the prior ledger and claim snapshot verbatim; the
-importer repairs five historical unquoted CSV fields when loading that archive.
-
-## Remaining authored functions
-
-| Address | Function | Coverage bytes | Current blocker |
-| --- | --- | ---: | --- |
-| `0x0041EE70` | `EnemyManager::EnemyManager` | 256 | Native stack frame differs |
-| `0x004325C0` | `Float2::FromAngleMagnitude` | 32 | Whole-function assembler source policy |
-| `0x004346E0` | `GameWindow::Render` | 855 | Temporary stack offsets differ |
-| `0x004390A5` | `Supervisor::DrawFpsCounter` | 860 | Static initialization guard unresolved |
-| `0x0043B4DB` | `MusicRoom::RegisterChain` | 223 | Compiler EH/guard destination unresolved |
-| `0x0044A302` | `ResultScreen::RegisterChain` | 339 | Native stack frame differs |
-| `0x0044EFB0` | `AnmManager::DrawInner` | 1,481 | Static half constant address ambiguous |
-| `0x004555DD` | `MainMenu::OnUpdatePreInput` | 3,152 | Native stack frame differs |
-
-The public percentage is function coverage, not `.text` coverage or whole-file
-identity. Trailing tables are checked but are not added to numerator/denominator
-a second time. The linked image exists as a comparison artifact; no game was
-executed and playability has not been established. Upstream documents a matching
-build integrity-check crash after 3,999 update cycles; that remains a runtime
-validation concern and has not been suppressed or tested here.
+The percentage measures non-overlapping function coverage, not `.text` or file
+identity. Table tails are checked without counting them twice. No game was run;
+playability remains unverified. Upstream reports an integrity-check crash after
+3,999 update cycles in its matching build; no check was suppressed here.

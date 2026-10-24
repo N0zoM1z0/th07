@@ -1,38 +1,41 @@
 # Native executable build and evidence
 
-`python3 scripts/build-whole.py` builds the maintained 29-translation-unit graph
-serially with VC7 under headless Wine. `python3 scripts/build-reference.py`
-reproduces the unmodified pinned reference separately. Both use the upstream
-`/GL /LTCG` profile and omit original icon resources. The resulting executables
-are private comparison artifacts. Whole-file identity and runtime playability
-have not been verified.
+`python3 scripts/build-whole.py` cold-builds all 29 maintained translation units
+serially with pinned VC7 under headless Wine, then performs faithful and metadata
+links. `python3 scripts/build-reference.py` reproduces the unmodified pinned
+reference separately. Both use `/GL /LTCG` and omit original icon resources.
 
-Each `build/authored/` or `build/reference/` directory retains:
+Every currently accepted function comes from the maintained product; separate
+focused probes are retained as historical work. Full native measurement is
+692/694 named functions. Authored acceptance is 683/686 because the assembler-only
+helper is withheld. [Completion requirements](GOAL.md) remain unmet.
 
-- `th07.faithful.exe`: faithful no-icon profile output;
-- `th07.exe`: same-path metadata link with an identical `.text` section;
-- `th07.pdb`, `th07.map`, `pdb-symbols.json`: full native procedure evidence;
-- the 29 intermediate objects and `build-receipt.json`: source/tool/command and
-  artifact digests;
-- generated Japanese headers and compiler/linker logs.
-
-Temporary per-object compiler PDB/PCH files are removed after a successful
-build. Master linker PDBs remain necessary evidence. The generated PE's PDB
-GUID/age binding is verified during build and replay. No LLVM PDB utility is
-required; the bounded reader handles the VC7 MSF/CodeView format directly.
+Each native build directory retains faithful and metadata executables, master
+`th07.pdb`, `th07.map`, bounded `pdb-symbols.json`, all intermediate objects and
+compiler PDBs, generated Japanese headers, logs and a source/tool/command receipt.
+Compiler PDBs are necessary when reusing VC7 `/GL` objects and cannot be discarded
+while retaining an incremental cache. The cache verifies both object and PDB
+hashes, tool/source/header state and exact compiler command. Missing debug pairs
+force recompilation. `--incremental` still performs both complete links.
 
 ```bash
 python3 scripts/build-whole.py
-python3 scripts/reference-oracle.py --build-dir build/authored --output build/authored-comparison.json
-python3 scripts/replay-legacy-units.py --units enemy-lifecycle bullet-manager replay-added
 python3 scripts/replay-exact-units.py
+python3 scripts/verify-linked-product.py
+# Completion gate: currently fails because three authored routines remain.
+python3 scripts/verify-linked-product.py --require-all-exact
 ```
 
-The canonical accepted source pool includes four focused COFF implementations
-outside this native product. Combining those implementations into one matching
-link is outstanding work, as are the eight unaccepted authored routines.
+Verification binds the PE entry to `WinMainCRTStartup`, checks imports and
+unsuppressed link status, verifies native PDB GUID/age and complete procedures,
+and compares 132 named application globals/vtables through independent
+relocations. Twelve CRT placeholders and two SDK descriptors are reported
+separately from that application-data check.
+Metadata linking must preserve faithful `.text` and the source-global bytes.
+These checks establish a valid build/link artifact and measured function/data
+agreement. No game process was executed; playability and whole-file identity
+remain unverified.
 
-The older `scripts/build-exe.py` and `config/executable.toml` preserve the
-historical layout/resource-link plan. Their disabled link gate describes that
-older probe-only graph; they are not the current native-product build entry.
-Use the commands above and [ORACLE.md](ORACLE.md) for current acceptance.
+The older `scripts/build-exe.py` and `config/executable.toml` retain the historical
+layout/resource plan. Their disabled link gate belongs to that older probe graph
+and is not the current native-product build entry.

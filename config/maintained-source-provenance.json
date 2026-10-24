@@ -7,6 +7,31 @@
         "src/th07/EnemyManager.hpp"
       ],
       "change": "g_SpellcardScore u32 -> i32; target signed FILD DWORD in ECL; full 30156-byte procedure including switch tables replays exactly."
+    },
+    {
+      "paths": [
+        "src/th07/EnemyManager.cpp",
+        "src/th07/EnemyManager.hpp"
+      ],
+      "change": "Move Initialize definition out of the class; preserve its body and original call boundary, removing unused VC7 inline-reservation slots in constructor and RegisterChain."
+    },
+    {
+      "paths": [
+        "src/th07/main.cpp"
+      ],
+      "change": "Express the observed DWORD-aligned QueryPerformanceCounter sample as its two 32-bit fields; retain the 8-byte x86 API buffer layout."
+    },
+    {
+      "paths": [
+        "src/th07/BulletManager.cpp"
+      ],
+      "change": "Compare template index against unsigned ARRAY_SIZE, matching the original JAE rather than JGE."
+    },
+    {
+      "paths": [
+        "src/th07/Ending.cpp"
+      ],
+      "change": "Use atoi and 32-bit int result; independently identify the original 5-byte CRT forwarding entry by complete tail-thunk replay."
     }
   ],
   "files": [
@@ -40,7 +65,7 @@
     },
     {
       "path": "src/th07/BulletManager.cpp",
-      "sha256": "91393919c0d466066dd549b38ba5d57761df58f64b6170629cfe3b50da303684"
+      "sha256": "fe15864edd6f00c7f96547994e3214f2b47db6be84343db9f041f28966e2ee6d"
     },
     {
       "path": "src/th07/BulletManager.hpp",
@@ -64,7 +89,7 @@
     },
     {
       "path": "src/th07/Ending.cpp",
-      "sha256": "d08be12cdd7568635b7d128f3c202d2742d1f1c7b47d78eb8774451c45f3b8c9"
+      "sha256": "a2075df64a5dc406630c0f1b2b34ecaa66fca5f5a707d8e6479e961bc2a820cb"
     },
     {
       "path": "src/th07/Ending.hpp",
@@ -80,11 +105,11 @@
     },
     {
       "path": "src/th07/EnemyManager.cpp",
-      "sha256": "c7e791b5bd7f48d0c39edb0f7cec24945c6f9fd9daf4fc637ba730388a8ae2d5"
+      "sha256": "da4cc8724b7e2e05e54cd8528d866f577fb8946fea291cb3151ede59eca6236f"
     },
     {
       "path": "src/th07/EnemyManager.hpp",
-      "sha256": "2beec45a11215db4d0744f46923ae4c2309728e41051ef2203686ef3d20193c6"
+      "sha256": "a52aea11f1539f672eed6eba3a450a00a2c3767cb55c691d7fc4aefb53bc45a3"
     },
     {
       "path": "src/th07/GameManager.cpp",
@@ -240,7 +265,7 @@
     },
     {
       "path": "src/th07/main.cpp",
-      "sha256": "51595aff1fc803ded8c5c5c1f566a6392b788f6d8d81aa0fe0b7e1df38259f30"
+      "sha256": "85b75727cabbd7f1bc525d105c3468dbeaad5464abe621852136db9b88a18e45"
     },
     {
       "path": "src/th07/pbg4/Lzss.cpp",

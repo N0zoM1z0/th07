@@ -13,13 +13,12 @@ inside ignored build directories. Headers retain target layout assertions and
 source function/global annotations.
 
 The existing `src/*.cpp` and associated headers preserve focused reconstruction
-probes and their history. Four independently replayed functions supplement the
-native build; they are selected explicitly in `config/exact-units.json`, rather
-than silently replacing upstream source bodies or being linked twice.
+probes and their history. The earlier four standalone supplements now replay from the maintained native
+product. Existing probes remain historical evidence and are not linked twice.
 
 `config/functions.csv` holds 1,546 reviewed entries. Explicit origins distinguish
 authored source, libraries and compiler code. Application closure is reviewed in
-[BOUNDARY_REVIEW.md](BOUNDARY_REVIEW.md); complete-extent acceptance and the eight
+[BOUNDARY_REVIEW.md](BOUNDARY_REVIEW.md); complete-extent acceptance and the three
 remaining authored routines are documented in [ORACLE.md](ORACLE.md).
 
 The 686 authored functions cover 380,493 non-overlapping function bytes. This

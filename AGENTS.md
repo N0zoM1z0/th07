@@ -47,8 +47,9 @@ durable discoveries into tracked ledgers and documentation.
 
 Use one compiler process at a time, pin expensive analysis/build processes to
 one CPU, lower process priority and keep Ghidra's heap at or below 2 GiB.
-Preserve linker PDBs needed for complete LTCG function extents; delete temporary
-compiler PDB/PCH files after they are no longer needed.
+Preserve linker PDBs needed for complete LTCG extents and compiler PDBs paired
+with cached `/GL` objects. Delete only unused diagnostics/PCH files; absent or
+changed compiler PDBs require recompiling their objects before linking.
 
 ## ABI and implementation
 
@@ -69,6 +70,9 @@ Even with concurrent analysis, compilation remains serial. Use Ghidra through
 the attested headless wrapper; no worker may launch a GUI or use REA/IDA MCP.
 
 ## Handoff
+
+For goal completion also require `python3 scripts/verify-linked-product.py
+--require-all-exact` against a fresh build and the full canonical replay.
 
 Run `python3 scripts/validate-tracking.py`, `python3 scripts/build.py --check`,
 `python3 scripts/progress.py --check`, and `git diff --check`. Report addresses,

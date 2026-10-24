@@ -1,9 +1,4 @@
 address,name,size,reason,source_file
-0x0041EE70,EnemyManager::EnemyManager,256,mismatch,src/th07/EnemyManager.cpp
 0x004325C0,Float2::FromAngleMagnitude,32,Assembler-only Float2/Float3 field-writing helper; retained as an unaccepted reference-build dependency pending C++ recovery.,src/th07/Player.cpp
-0x004346E0,GameWindow::Render,855,mismatch,src/th07/main.cpp
-0x004390A5,Supervisor::DrawFpsCounter,860,unresolved,src/th07/Supervisor.cpp
-0x0043B4DB,MusicRoom::RegisterChain,223,unresolved,src/th07/MusicRoom.cpp
 0x0044A302,ResultScreen::RegisterChain,339,mismatch,src/th07/ResultScreen.cpp
-0x0044EFB0,AnmManager::DrawInner,1481,unresolved,src/th07/AnmManager.cpp
 0x004555DD,MainMenu::OnUpdatePreInput,3152,mismatch,src/th07/MainMenu.cpp

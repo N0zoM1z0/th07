@@ -50,6 +50,7 @@ class Oracle:
             if self.receipt[key]!=lock[key]:raise ValueError('unrecognized toolchain: '+key)
         if self.receipt['wrapper_source_sha256']!='9d94512d1db673bcb91b34ee0d4ba5ca3ee2e01fd7ce80d09eaabdae2a1623fb':raise ValueError('unrecognized frontend source')
         source=Path(self.receipt['source_root'])
+        if source.resolve()==ROOT and self.receipt.get('build_config_sha256')!=digest(ROOT/'config/native-build.toml'):raise ValueError('maintained compiler configuration changed since build')
         actual={str(p.relative_to(source)):digest(p) for base in [source/'src/th07',source/'resources/csv'] for p in base.rglob('*') if p.is_file()}
         if actual!={r['path']:r['sha256'] for r in self.receipt['source_tree']}:raise ValueError('source tree changed since build; rebuild required')
         for command in self.receipt['commands']:
@@ -59,11 +60,13 @@ class Oracle:
         for name,key in [('th07.exe','image_sha256'),('th07.pdb','pdb_sha256'),('pdb-symbols.json','pdb_symbols_sha256')]:
             if digest(self.build/name)!=self.receipt[key]:raise ValueError('generated evidence digest mismatch: '+name)
         if self.generated.section_bytes('.text')!=PE(self.build/'th07.faithful.exe').section_bytes('.text'):raise ValueError('metadata link changed faithful code')
-        from pdb_symbols import symbols,verify_image_binding
+        from pdb_symbols import symbols,verify_image_binding,constant_float_types,data_type_sizes
         self.pdb_binding=verify_image_binding(self.build/'th07.pdb',self.generated)
         recorded=json.loads((self.build/'pdb-symbols.json').read_text())
         if symbols(self.build/'th07.pdb')!=recorded:raise ValueError('cached PDB metadata differs from current bounded parser')
         self.symbols=recorded['symbols']
+        float_types=constant_float_types(self.build/'th07.pdb')
+        self.const_float_widths={}
         for s in self.symbols:
             if s['name']=='__except_list' and s['offset']==0:
                 s['address']=0  # VC7's absolute FS:[0] linker symbol.
@@ -71,6 +74,7 @@ class Oracle:
         checkout=ROOT/'_reference/some100-th07'
         if subprocess.check_output(['git','-C',str(checkout),'rev-parse','HEAD'],text=True).strip()!=self.receipt['upstream_commit']:raise ValueError('reference pin differs')
         if subprocess.check_output(['git','-C',str(checkout),'status','--porcelain','--untracked-files=no'],text=True).strip():raise ValueError('reference checkout has tracked changes')
+        self.const_float_widths={s['address']:float_types[s['type_index']] for s in self.symbols if s['type']=='data' and s.get('type_index') in float_types and s['section']>0 and self.generated.sections[s['section']-1]['name']=='.rdata'}
         ref=checkout/'resources/csv'
         self.refs=list(csv.DictReader((ref/'funcs.csv').open(),delimiter='|'))
         self.named=collections.defaultdict(set);self.original_functions={};self.original_globals=[]
@@ -138,6 +142,14 @@ class Oracle:
                 a=int(prefix.split(b'|',1)[0],16);size=int(length,0)
                 if kind not in (b'float',b'string'):raise ValueError('invalid literal metadata row')
                 if size:self.literal_candidates[self.target.at(a,size,allow_bss=True)].add(a)
+        self.string_anchors=[]
+        for symbol in self.symbols:
+            if symbol['type']!='public' or not symbol['name'].startswith('??_C@'):continue
+            base=symbol['address'];blob=self.generated.cstring(base)+b'\0'
+            annotated=self.annotated_strings.get(blob,set())
+            candidates=annotated if len(annotated)==1 else self.literal_candidates.get(blob,set())
+            target=next(iter(candidates)) if len(candidates)==1 else base if base in candidates else None
+            if target is not None:self.string_anchors.append((base,target,len(blob)))
         self.original_ledger={int(r['address'],0):r for r in csv.DictReader((ROOT/'config/functions.csv').open())}
         self.ghidra={int(r['address'],0):r for r in csv.DictReader((ROOT/'config/ghidra-functions.csv').open())}
         self.md=capstone.Cs(capstone.CS_ARCH_X86,capstone.CS_MODE_32);self.md.detail=True
@@ -147,6 +159,10 @@ class Oracle:
             native={s['address'] for n in aliases(name) for s in self.native_by_name.get(n,[]) if s['type']=='data'}
             if len(native)==1:self.global_anchors.append((next(iter(native)),a,size,name))
         self.resolution_cache={};self.eh_map={}
+        from compiler_statics import recover as static_guards
+        self.static_map,self.static_audit=static_guards(self,tomllib.loads((ROOT/'config/compiler-statics.toml').read_text())['guards'],data_type_sizes(self.build/'th07.pdb'))
+        from compiler_thunks import recover as crt_thunks
+        self.thunk_map,self.thunk_audit=crt_thunks(self)
         from compiler_eh import recover
         self.eh_audit=recover(self)
     def name_targets(self,names):return set(a for n in names for a in self.named.get(n,()))
@@ -156,6 +172,8 @@ class Oracle:
         result=self.resolve_external(address);self.resolution_cache[address]=result;return result
     def resolve_external(self,address):
         if address in self.eh_map:return self.eh_map[address],'validated-compiler-EH-graph'
+        if address in getattr(self,'thunk_map',{}):return self.thunk_map[address],'complete-unique-CRT-tail-thunk-replay'
+        if address in getattr(self,'static_map',{}):return self.static_map[address],'typed-adjacent-VC7-local-static-BSS-contribution'
         if address in self.native_imports:
             a=self.original_imports.get(self.native_imports[address])
             return a,'PE-import-identity' if a is not None else 'unresolved-import'
@@ -181,6 +199,17 @@ class Oracle:
                 possible=annotated if len(annotated)==1 else self.literal_candidates.get(blob,set())
                 if len(possible)==1:return next(iter(possible)),'mapped-string-content'
                 if address in possible:return address,'generated-mapped-string-address'
+        # A named const f32/f64 object is not necessarily emitted under a
+        # __real@ name. Compiler TPI proves its width/constness; only a unique,
+        # aligned original typed literal can independently establish its anchor.
+        width=getattr(self,'const_float_widths',{}).get(address)
+        if width:
+            blob=self.generated.at(address,width)
+            section=self.target.section('.rdata');start=self.target.base+section['rva']
+            choices={a for a in self.literal_candidates.get(blob,set()) if a%width==0 and start<=a and a+width<=start+section['raw_size']}
+            if len(choices)==1:return next(iter(choices)),'PDB-const-scalar-unique-typed-literal'
+        literal_offsets={target+address-base for base,target,length in getattr(self,'string_anchors',[]) if base<=address<base+length}
+        if len(literal_offsets)==1:return next(iter(literal_offsets)),'named-string-literal-bounded-offset'
         anchors={(a+address-native,name) for native,a,size,name in self.global_anchors if native<=address<native+size}
         values={a for a,n in anchors}
         if len(values)==1:return next(iter(values)),'named-global-offset'
@@ -272,7 +301,7 @@ class Oracle:
             rows.append(row)
         total=union_size((r['address'],r['address']+r['size']) for r in rows)
         exact=union_size((r['address'],r['address']+r['size']) for r in rows if r['status']=='exact')
-        return {'build_kind':'unmodified-reference' if Path(self.receipt['source_root']).resolve()==(ROOT/'_reference/some100-th07').resolve() else 'maintained-source','reference_commit':self.receipt['upstream_commit'],'target_sha256':digest(self.target.path),'profile':self.receipt['profile'],'scope':'upstream function annotations; provisional origin/boundary review separate','functions':rows,'function_count':len(rows),'function_bytes':total,'exact_bytes':exact,'exact_percent':100*exact/total,'statuses':dict(collections.Counter(r['status'] for r in rows)),'compiler_eh':self.eh_audit}
+        return {'build_kind':'unmodified-reference' if Path(self.receipt['source_root']).resolve()==(ROOT/'_reference/some100-th07').resolve() else 'maintained-source','reference_commit':self.receipt['upstream_commit'],'target_sha256':digest(self.target.path),'profile':self.receipt['profile'],'scope':'upstream function annotations; provisional origin/boundary review separate','functions':rows,'function_count':len(rows),'function_bytes':total,'exact_bytes':exact,'exact_percent':100*exact/total,'statuses':dict(collections.Counter(r['status'] for r in rows)),'compiler_eh':self.eh_audit,'compiler_statics':self.static_audit,'compiler_thunks':self.thunk_audit}
 
 def main():
     p=argparse.ArgumentParser();p.add_argument('--build-dir',type=Path,default=ROOT/'build/reference');p.add_argument('--output',type=Path,default=ROOT/'build/reference-baseline.json');a=p.parse_args();result=Oracle(a.build_dir).measure();a.output.parent.mkdir(parents=True,exist_ok=True);a.output.write_text(json.dumps(result,indent=2)+'\n');print(json.dumps({k:v for k,v in result.items() if k!='functions'},indent=2))

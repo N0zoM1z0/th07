@@ -156,7 +156,7 @@ f_0041d150,0x0041D150,35,35,EffectManager::CutChain,authored,native-linked,src/t
 f_0041d180,0x0041D180,357,357,Ending::Ending,authored,native-linked,src/th07/Ending.cpp
 f_0041d2f0,0x0041D2F0,141,141,Ending::OnUpdate,authored,native-linked,src/th07/Ending.cpp
 f_0041d380,0x0041D380,131,131,Ending::OnDraw,authored,native-linked,src/th07/Ending.cpp
-f_0041d410,0x0041D410,115,115,Ending::ReadEndFileParameter,authored,legacy-coff,src/EnemyLifecycle.cpp
+f_0041d410,0x0041D410,115,115,Ending::ReadEndFileParameter,authored,native-linked,src/th07/Ending.cpp
 f_0041d490,0x0041D490,591,611,Ending::FadingEffect,authored,native-linked,src/th07/Ending.cpp
 f_0041d700,0x0041D700,3268,3492,Ending::ParseEndFile,authored,native-linked,src/th07/Ending.cpp
 f_0041e4b0,0x0041E4B0,216,216,Ending::LoadEnding,authored,native-linked,src/th07/Ending.cpp
@@ -165,6 +165,7 @@ f_0041e790,0x0041E790,137,137,Ending::DeletedCallback,authored,native-linked,src
 f_0041e820,0x0041E820,245,245,Ending::RegisterChain,authored,native-linked,src/th07/Ending.cpp
 f_0041e920,0x0041E920,312,312,Enemy::Move,authored,native-linked,src/th07/EnemyManager.cpp
 f_0041ea60,0x0041EA60,1037,1037,EnemyManager::Initialize,authored,native-linked,src/th07/EnemyManager.cpp
+f_0041ee70,0x0041EE70,256,256,EnemyManager::EnemyManager,authored,native-linked,src/th07/EnemyManager.cpp
 f_0041ef70,0x0041EF70,684,684,Enemy::Enemy,authored,native-linked,src/th07/EnemyManager.cpp
 f_0041f220,0x0041F220,185,185,EnemyEclContext::EnemyEclContext,authored,native-linked,src/th07/EnemyManager.cpp
 f_0041f2e0,0x0041F2E0,327,327,EnemyManager::SpawnEnemy,authored,native-linked,src/th07/EnemyManager.cpp
@@ -184,7 +185,7 @@ f_00422ca0,0x00422CA0,23,23,EnemyManager::OnDraw1,authored,native-linked,src/th0
 f_00422cc0,0x00422CC0,26,26,EnemyManager::OnDraw2,authored,native-linked,src/th07/EnemyManager.cpp
 f_00422ce0,0x00422CE0,394,394,EnemyManager::AddedCallback,authored,native-linked,src/th07/EnemyManager.cpp
 f_00422e70,0x00422E70,193,193,EnemyManager::DeletedCallback,authored,native-linked,src/th07/EnemyManager.cpp
-f_00422f40,0x00422F40,267,267,EnemyManager::RegisterChain,authored,legacy-coff,src/EnemyLifecycle.cpp
+f_00422f40,0x00422F40,267,267,EnemyManager::RegisterChain,authored,native-linked,src/th07/EnemyManager.cpp
 f_00423050,0x00423050,50,50,EnemyManager::CutChain,authored,native-linked,src/th07/EnemyManager.cpp
 f_00423090,0x00423090,522,522,EnemyManager::RemoveAllEnemies,authored,native-linked,src/th07/EnemyManager.cpp
 f_004232a0,0x004232A0,64,64,EnemyManager::HasActiveBoss,authored,native-linked,src/th07/EnemyManager.cpp
@@ -211,7 +212,7 @@ f_004258a0,0x004258A0,425,425,Bullet::UpdateBulletBounce,authored,native-linked,
 f_00425a50,0x00425A50,4237,4257,BulletManager::OnUpdate,authored,native-linked,src/th07/BulletManager.cpp
 f_00426b00,0x00426B00,289,305,Bullet::Draw,authored,native-linked,src/th07/BulletManager.cpp
 f_00426c40,0x00426C40,796,796,BulletManager::OnDraw,authored,native-linked,src/th07/BulletManager.cpp
-f_00426f60,0x00426F60,1703,1723,BulletManager::AddedCallback,authored,legacy-coff,src/BulletManager.cpp
+f_00426f60,0x00426F60,1703,1723,BulletManager::AddedCallback,authored,native-linked,src/th07/BulletManager.cpp
 f_00427620,0x00427620,116,116,BulletManager::DeletedCallback,authored,native-linked,src/th07/BulletManager.cpp
 f_004276a0,0x004276A0,192,192,BulletManager::RegisterChain,authored,native-linked,src/th07/BulletManager.cpp
 f_00427760,0x00427760,51,51,BulletManager::CutChain,authored,native-linked,src/th07/BulletManager.cpp
@@ -339,6 +340,7 @@ f_00433f90,0x00433F90,134,134,AnmManager::TakeScreenshotIfRequested,authored,nat
 f_00434020,0x00434020,1131,1131,WinMain,authored,native-linked,src/th07/main.cpp
 f_00434490,0x00434490,292,292,GameWindow::WindowProc,authored,native-linked,src/th07/main.cpp
 f_004345c0,0x004345C0,284,284,GameWindow::Present,authored,native-linked,src/th07/main.cpp
+f_004346e0,0x004346E0,855,855,GameWindow::Render,authored,native-linked,src/th07/main.cpp
 f_00434a40,0x00434A40,53,53,GameWindow::InitD3dInterface,authored,native-linked,src/th07/main.cpp
 f_00434a80,0x00434A80,326,326,GameWindow::CreateGameWindow,authored,native-linked,src/th07/main.cpp
 f_00434bd0,0x00434BD0,1506,1506,GameWindow::InitD3dRendering,authored,native-linked,src/th07/main.cpp
@@ -394,6 +396,7 @@ f_00438986,0x00438986,1116,1116,Supervisor::AddedCallback,authored,native-linked
 f_00438de2,0x00438DE2,525,525,Supervisor::DeletedCallback,authored,native-linked,src/th07/Supervisor.cpp
 f_00438fef,0x00438FEF,17,17,DummyMidiTimer::~DummyMidiTimer,authored,native-linked,src/th07/Supervisor.cpp
 f_00439000,0x00439000,165,165,Supervisor::RegisterChain,authored,native-linked,src/th07/Supervisor.cpp
+f_004390a5,0x004390A5,860,860,Supervisor::DrawFpsCounter,authored,native-linked,src/th07/Supervisor.cpp
 f_00439401,0x00439401,198,198,ZunTimer::Increment,authored,native-linked,src/th07/Supervisor.cpp
 f_004394c7,0x004394C7,198,198,ZunTimer::Decrement,authored,native-linked,src/th07/Supervisor.cpp
 f_0043958d,0x0043958D,110,110,Supervisor::TickTimer,authored,native-linked,src/th07/Supervisor.cpp
@@ -418,6 +421,7 @@ f_0043ab60,0x0043AB60,236,236,MusicRoom::OnUpdate,authored,native-linked,src/th0
 f_0043ac4c,0x0043AC4C,468,468,MusicRoom::OnDraw,authored,native-linked,src/th07/MusicRoom.cpp
 f_0043ae20,0x0043AE20,1624,1624,MusicRoom::AddedCallback,authored,native-linked,src/th07/MusicRoom.cpp
 f_0043b478,0x0043B478,99,99,MusicRoom::DeletedCallback,authored,native-linked,src/th07/MusicRoom.cpp
+f_0043b4db,0x0043B4DB,223,223,MusicRoom::RegisterChain,authored,native-linked,src/th07/MusicRoom.cpp
 f_0043b5c0,0x0043B5C0,396,396,GameManager::RerollRng,authored,native-linked,src/th07/Player.cpp
 f_0043b750,0x0043B750,71,71,GameManager::CheckGameIntegrityOnDeath,authored,native-linked,src/th07/Player.cpp
 f_0043b7a0,0x0043B7A0,71,71,GameManager::AddBombsUsed,authored,native-linked,src/th07/Player.cpp
@@ -478,7 +482,7 @@ f_00442c60,0x00442C60,100,100,ReplayManager::OnUpdateRng,authored,native-linked,
 f_00442cd0,0x00442CD0,378,378,ReplayManager::OnUpdateRecord,authored,native-linked,src/th07/ReplayManager.cpp
 f_00442e50,0x00442E50,142,142,ReplayManager::OnUpdatePlaybackLowPrio,authored,native-linked,src/th07/ReplayManager.cpp
 f_00442ee0,0x00442EE0,341,341,ReplayManager::OnUpdatePlayback,authored,native-linked,src/th07/ReplayManager.cpp
-f_00443040,0x00443040,870,870,ReplayManager::AddedCallbackRecord,authored,legacy-coff,src/ReplayAdded.cpp
+f_00443040,0x00443040,870,870,ReplayManager::AddedCallbackRecord,authored,native-linked,src/th07/ReplayManager.cpp
 f_004433b0,0x004433B0,416,416,ReplayManager::ValidateReplayData,authored,native-linked,src/th07/ReplayManager.cpp
 f_00443550,0x00443550,1111,1111,ReplayManager::AddedCallbackPlayback,authored,native-linked,src/th07/ReplayManager.cpp
 f_004439b0,0x004439B0,232,232,ReplayManager::DeletedCallback,authored,native-linked,src/th07/ReplayManager.cpp
@@ -560,6 +564,7 @@ f_0044e8e0,0x0044E8E0,308,308,AnmManager::SetActiveSprite,authored,native-linked
 f_0044ea20,0x0044EA20,188,188,AnmManager::SetAndExecuteScript,authored,native-linked,src/th07/AnmManager.cpp
 f_0044eae0,0x0044EAE0,992,992,AnmManager::SetRenderStateForVm,authored,native-linked,src/th07/AnmManager.cpp
 f_0044eec0,0x0044EEC0,237,237,AnmManager::SyncRenderState,authored,native-linked,src/th07/AnmManager.cpp
+f_0044efb0,0x0044EFB0,1481,1481,AnmManager::DrawInner,authored,native-linked,src/th07/AnmManager.cpp
 f_0044f580,0x0044F580,60,60,AnmManager::ResetVertexBuffer,authored,native-linked,src/th07/AnmManager.cpp
 f_0044f5c0,0x0044F5C0,198,198,AnmManager::Flush,authored,native-linked,src/th07/AnmManager.cpp
 f_0044f690,0x0044F690,211,211,AnmManager::PushSprite,authored,native-linked,src/th07/AnmManager.cpp
