@@ -19,41 +19,38 @@ ORDER = ["unclassified", "identified", "decompiled", "implemented", "compiles", 
 def render() -> tuple[str, str]:
     with FUNCTIONS.open(newline="", encoding="utf-8") as stream:
         rows = list(csv.DictReader(stream))
-    authored = [row for row in rows if row["status"] != "library"]
-    matching = [row for row in authored if row["status"] == "matching"]
-    libraries = [row for row in rows if row["status"] == "library"]
-    exact_libraries = [row for row in libraries if row["match_percent"] == "100.00"]
-    total_bytes = sum(int(row["size"]) for row in authored)
-    matching_bytes = sum(int(row["size"]) for row in matching)
-    all_bytes = sum(int(row["size"]) for row in rows)
-    library_bytes = sum(int(row["size"]) for row in libraries)
-    exact_library_bytes = sum(int(row["size"]) for row in exact_libraries)
-    exact_bytes = matching_bytes + exact_library_bytes
-    function_pct = 100 * len(matching) / len(authored) if authored else 0.0
-    byte_pct = 100 * matching_bytes / total_bytes if total_bytes else 0.0
-    combined_pct = 100 * exact_bytes / all_bytes if all_bytes else 0.0
-    counts = Counter(row["status"] for row in rows)
-    lines = [
-        "# Reconstruction progress", "",
-        "Generated from `config/functions.csv`. Only verified 100% comparisons count as reconstructed.", "",
-        f"- Matching authored functions: **{len(matching)} / {len(authored)} ({function_pct:.2f}%)**",
-        f"- Matching authored bytes: **{matching_bytes:,} / {total_bytes:,} ({byte_pct:.2f}%)**",
-        f"- Exact library functions: **{len(exact_libraries)} / {len(libraries)}; {exact_library_bytes:,} / {library_bytes:,} bytes**",
-        f"- Combined exact bytes: **{exact_bytes:,} / {all_bytes:,} ({combined_pct:.2f}%)**",
-        f"- IDA seed inventory: **{len(rows):,} functions / {all_bytes:,} function bytes**", "",
-        "| Status | Functions |", "| --- | ---: |",
-    ]
+    from reconstruction_state import state
+    summary=state()
+    authored=[r for r in rows if r['status']!='library']
+    matching=[r for r in authored if r['status']=='matching']
+    total_bytes=summary['authored_bytes'];matching_bytes=summary['authored_exact_bytes']
+    byte_pct=summary['authored_exact_percent']
+    counts=Counter(row['status'] for row in rows)
+    lines=["# Reconstruction progress", "",
+        "Generated from the reviewed origin ledger and canonical complete-extent manifest. Byte totals use non-overlapping target function coverage; replay also checks trailing switch tables.", "",
+        f"- Authored exact functions: **{len(matching)} / {len(authored)}**",
+        f"- Authored exact bytes: **{matching_bytes:,} / {total_bytes:,} ({byte_pct:.4f}%)**",
+        f"- Unaccepted authored functions: **{summary['remaining_functions']}**; see `config/remaining.csv`.",
+        "- Four accepted functions use preserved, freshly rebuilt COFF probes; the others use the maintained native LTCG build.",
+        "- Unmodified some100 reference: **682 / 694 named functions; 341,585 / 381,170 bytes (89.6149%)**.",
+        "- Maintained LTCG product alone: **683 / 694 named functions; 371,049 / 381,170 bytes (97.3448%)**.", "",
+        "The two native-build figures include eight SDK/compiler functions and precede the authored-source policy exclusion. They use a different scope from the authored total above. These are function-byte measurements, not whole-executable or runtime validation.", "",
+        "Linked SDK/CRT code, compiler helpers, DInput data tables, and alignment do not inflate authored progress. Historical runtime exact claims are preserved separately from the current canonical replay.", "",
+        f"Reviewed ledger: {len(rows):,} entries; Ghidra seed inventory: 1,573 entries. See [boundary review](BOUNDARY_REVIEW.md) and [strict oracle](ORACLE.md).", "",
+        "| Status | Functions |", "| --- | ---: |"]
     lines.extend(f"| `{status}` | {counts[status]:,} |" for status in ORDER)
-    lines.extend(["", "IDA extents are seed boundaries and are reconciled before exact comparison.", ""])
-    filled = 440 * combined_pct / 100
-    svg = f'''<svg xmlns="http://www.w3.org/2000/svg" width="560" height="116" role="img" aria-label="TH07 reconstruction progress {combined_pct:.2f}% by bytes">
-  <rect width="560" height="116" rx="8" fill="#1f2335"/>
-  <text x="24" y="32" fill="#f4f4f5" font-family="sans-serif" font-size="16" font-weight="600">TH07 source reconstruction</text>
-  <text x="536" y="32" fill="#f4f4f5" text-anchor="end" font-family="monospace" font-size="14">{combined_pct:.2f}% exact bytes</text>
-  <rect x="24" y="48" width="440" height="14" rx="7" fill="#3b4058"/>
-  <rect x="24" y="48" width="{filled:.2f}" height="14" rx="7" fill="#e46c8c"/>
-  <text x="24" y="88" fill="#c8cad2" font-family="sans-serif" font-size="13">Authored exact: {len(matching):,} / {len(authored):,} functions · {matching_bytes:,} / {total_bytes:,} bytes</text>
-  <text x="24" y="108" fill="#c8cad2" font-family="sans-serif" font-size="13">Library exact: {len(exact_libraries):,} / {len(libraries):,} functions · {exact_library_bytes:,} / {library_bytes:,} bytes</text>
+    lines.append("")
+    filled=512*byte_pct/100
+    svg=f'''<svg xmlns="http://www.w3.org/2000/svg" width="680" height="142" role="img" aria-labelledby="title desc">
+  <title id="title">TH07 authored exact bytes: {byte_pct:.4f}%</title>
+  <desc id="desc">{len(matching)} of {len(authored)} authored functions; {matching_bytes} of {total_bytes} bytes. Four functions use separate accepted COFF probes. Whole executable equivalence is unverified.</desc>
+  <rect width="680" height="142" rx="10" fill="#1f2335"/>
+  <text x="24" y="32" fill="#f4f4f5" font-family="sans-serif" font-size="17">TH07 · Perfect Cherry Blossom</text>
+  <text x="656" y="32" text-anchor="end" fill="#f4f4f5" font-family="monospace" font-size="16">{byte_pct:.4f}% authored exact</text>
+  <rect x="24" y="50" width="512" height="14" rx="7" fill="#3b4058"/>
+  <rect x="24" y="50" width="{filled:.2f}" height="14" rx="7" fill="#e46c8c"/>
+  <text x="24" y="91" fill="#d5d7df" font-family="sans-serif" font-size="14">{len(matching)} / {len(authored)} functions · {matching_bytes:,} / {total_bytes:,} bytes · 8 remaining</text>
+  <text x="24" y="119" fill="#b7bdcf" font-family="sans-serif" font-size="12">Complete function extents + tables · native LTCG build + 4 preserved COFF probes</text>
 </svg>
 '''
     return "\n".join(lines), svg

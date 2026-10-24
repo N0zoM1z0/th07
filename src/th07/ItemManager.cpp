@@ -1,0 +1,608 @@
+#include "ItemManager.hpp"
+
+#include "AnmManager.hpp"
+#include "AsciiManager.hpp"
+#include "BulletManager.hpp"
+#include "EffectManager.hpp"
+#include "EnemyManager.hpp"
+#include "GameManager.hpp"
+#include "Global.hpp"
+#include "Gui.hpp"
+#include "Player.hpp"
+#include "SoundPlayer.hpp"
+#include "utils.hpp"
+
+// GLOBAL: TH07 0x0049ecf8
+i32 g_FullPowerScoreBonus[31] = {10, 20, 30, 40, 50, 60, 70, 80,
+                                 90, 100, 200, 300, 400, 500, 600, 700,
+                                 800, 900, 1000, 2000, 3000, 4000, 5000,
+                                 6000, 7000, 8000, 9000, 10000, 11000, 12000, 51200};
+
+// GLOBAL: TH07 0x0049ed74
+i32 g_PowerLevels[9] = {8, 16, 32, 48, 64, 80, 96, 128, 999};
+
+// GLOBAL: TH07 0x0049efa0
+u8 g_ItemDropTable[32] = {0, 0, 1, 0, 1, 0, 0, 7, 1, 1, 0, 0, 7, 1, 1, 0, 1, 0,
+                          1, 0, 1, 0, 1, 0, 1, 0, 7, 1, 1, 1, 0, 2};
+
+// GLOBAL: TH07 0x00575c70
+ItemManager g_ItemManager;
+
+#pragma var_order(i, item)
+// FUNCTION: TH07 0x004326f0
+Item *ItemManager::SpawnItem(Float3 *heading, i32 itemType, i32 state)
+{
+    Item *item;
+    i32 i;
+
+    item = &this->items[this->nextIndex];
+    if (g_GameManager.GetPower() >= 128)
+    {
+        if (itemType == ITEM_POWER_SMALL || itemType == ITEM_POWER_BIG)
+        {
+            itemType = ITEM_CHERRY;
+        }
+    }
+    for (i = 0; i < MAX_ITEMS; i++)
+    {
+        this->nextIndex++;
+
+        if (item->isInUse)
+        {
+            if (this->nextIndex >= MAX_ITEMS)
+            {
+                this->nextIndex = 0;
+                item = this->items;
+            }
+            else
+            {
+                item++;
+            }
+            continue;
+        }
+        if (this->nextIndex >= MAX_ITEMS)
+        {
+            this->nextIndex = 0;
+        }
+        item->isInUse = 1;
+        item->pos = *heading;
+        item->velocity.x = 0.0f;
+        item->velocity.y = -2.2f;
+        item->velocity.z = 0.0f;
+        item->itemType = itemType;
+        item->state = state;
+        item->timer = 0;
+        if (state == ITEM_STATE_MOVE_RANDOM)
+        {
+            item->targetPos.x = g_Rng.GetRandomFloatInRange(288.0f) + 48.0f;
+            item->targetPos.y = g_Rng.GetRandomFloatInRange(192.0f) - 64.0f;
+            item->targetPos.z = 0.0f;
+            item->velocity = item->pos;
+        }
+        else if (state == ITEM_STATE_AUTOCOLLECT2)
+        {
+            item->state = ITEM_STATE_AUTOCOLLECT;
+        }
+        else if (state == ITEM_STATE_DEFAULT2)
+        {
+            item->state = ITEM_STATE_DEFAULT;
+        }
+        g_AnmManager->SetAnmIdxAndExecuteScript(
+            &item->sprite, itemType + ANM_SCRIPT_BULLETS_ITEM_SPAWN_ARRAY);
+        item->sprite.color.color = 0xffffffff;
+        item->sprite.zWriteDisable = 1;
+        item->autoCollect = 0;
+        item->isOnscreen = 1;
+        break;
+    }
+
+    return i < MAX_ITEMS ? item : &this->items[MAX_ITEMS];
+}
+
+#pragma var_order(i, itemTimerSecs, itemScore, playerAngle, grabItemSize, itemAcquired, \
+                  item, j, prevPowerIdx, k, prevPowerLevel2)
+// FUNCTION: TH07 0x00432990
+void ItemManager::OnUpdate()
+{
+    i32 prevPowerLevel2;
+    i32 k;
+    i32 prevPowerIdx;
+    i32 j;
+    Item *item;
+    ZunBool itemAcquired;
+    f32 playerAngle;
+    i32 itemScore;
+    f32 itemTimerSecs;
+    i32 i;
+
+    item = this->items;
+    Float3 grabItemSize(g_Player.shooterData->itemCollectRadius,
+                    g_Player.shooterData->itemCollectRadius, 16.0f);
+    itemAcquired = FALSE;
+    this->activeItemCount = 0;
+    this->listTail = &this->listHead;
+    this->listHead.next = NULL;
+
+    for (i = 0; i < MAX_ITEMS; i++, item++)
+    {
+        if (!item->isInUse)
+        {
+            continue;
+        }
+
+        this->activeItemCount++;
+        if (item->state == ITEM_STATE_MOVE_RANDOM)
+        {
+            if (item->timer < 60)
+            {
+                itemTimerSecs = item->timer.AsFloat() / 60.0f;
+                item->pos = item->targetPos * itemTimerSecs +
+                            item->velocity *
+                                (1.0f - itemTimerSecs);
+                goto check_collision;
+            }
+            else if (item->timer == 60)
+            {
+                item->velocity = Float3(0.0f, 0.0f, 0.0f);
+                item->state = ITEM_STATE_DEFAULT;
+            }
+        }
+        else
+        {
+            if (item->state == ITEM_STATE_AUTOCOLLECT || ((128.0 <= (f64)g_GameManager.GetPower() || g_GameManager.difficulty >= 4) && g_Player.pos.y < g_Player.shooterData->pocY) || g_Player.borderState == 1)
+            {
+                if (g_Player.playerState != PLAYER_STATE_SPAWNING)
+                {
+                    playerAngle = g_Player.AngleToPlayer(&item->pos);
+                    item->velocity.FromAngleMagnitude(playerAngle, g_Player.shooterData->itemCollectSpeed);
+                    item->state = ITEM_STATE_AUTOCOLLECT;
+                    if (g_Player.borderState == BORDER_ACTIVE)
+                    {
+                        item->autoCollect = 1;
+                    }
+                }
+                else
+                {
+                    item->velocity.y = -0.5f;
+                    item->state = ITEM_STATE_DEFAULT;
+                }
+            }
+            else
+            {
+                item->velocity.x = 0.0f;
+                item->velocity.z = 0.0f;
+                if (item->velocity.y < -2.2f)
+                {
+                    item->velocity.y = -2.2f;
+                }
+            }
+        }
+        item->pos += item->velocity * g_Supervisor.effectiveFramerateMultiplier;
+        if (g_GameManager.arcadeRegionSize.y + 16.0f <= item->pos.y)
+        {
+            item->isInUse = 0;
+            g_GameManager.DecreaseSubrank(3);
+            continue;
+        }
+        if (item->velocity.y < 3.0f)
+        {
+            item->velocity.y += 0.03f * g_Supervisor.effectiveFramerateMultiplier;
+        }
+        else
+        {
+            item->velocity.y = 3.0f;
+        }
+    check_collision:
+        if (g_Player.CalcItemBoxCollision(&item->pos, &grabItemSize) != PLAYER_COLLISION_NONE)
+        {
+            g_ReplayManager->replayEventFlags |= 0x40;
+            switch (item->itemType)
+            {
+            case ITEM_POWER_SMALL:
+                if (g_GameManager.GetPower() >= 128)
+                {
+                    g_GameManager.powerItemCountForScore++;
+                    if (g_GameManager.powerItemCountForScore >= ARRAY_SIZE(g_FullPowerScoreBonus))
+                    {
+                        g_GameManager.powerItemCountForScore = ARRAY_SIZE(g_FullPowerScoreBonus) - 1;
+                    }
+                    itemScore = g_FullPowerScoreBonus[g_GameManager.powerItemCountForScore];
+                    g_GameManager.AddScore(itemScore);
+                    g_AsciiManager.CreatePopup1(&item->pos, itemScore, itemScore >= 12800 ? 0xffffff00 : 0xffffffff);
+                }
+                else
+                {
+                    j = 0;
+                    while (g_GameManager.GetPower() >= g_PowerLevels[j])
+                    {
+                        j++;
+                    }
+                    prevPowerIdx = j;
+                    g_GameManager.powerItemCountForScore = 0;
+                    g_GameManager.AddCurrentPower(1);
+                    if (g_GameManager.GetPower() >= 128)
+                    {
+                        g_GameManager.SetPower(128.0f);
+                        if (!g_EnemyManager.spellcardInfo.isActive)
+                        {
+                            g_BulletManager.RemoveAllBullets(ITEM_STATE_AUTOCOLLECT);
+                        }
+                        g_Gui.ShowStatusPopup(0, 1);
+                        this->DespawnAllItems(i);
+                    }
+                    g_GameManager.AddScore(10);
+                    g_Gui.powerDisplayUpdateFrames = 2;
+                    while (g_GameManager.GetPower() >= g_PowerLevels[j])
+                    {
+                        j++;
+                    }
+                    if (j != prevPowerIdx)
+                    {
+                        g_AsciiManager.CreatePopup1(&item->pos, -1, 0xffffc0a0);
+                        g_SoundPlayer.PlaySoundByIdx(SOUND_POWERUP, 0);
+                    }
+                    else
+                    {
+                        g_AsciiManager.CreatePopup1(&item->pos, 10, 0xffffffff);
+                    }
+                }
+                g_GameManager.IncreaseSubrank(1);
+                break;
+            case ITEM_POINT:
+                itemScore =
+                    item->IsBelowPoc() ? 50000
+                                       : 50000 - item->OffsetFromPoc() * 100;
+                if (item->autoCollect == 1)
+                {
+                    itemScore = 50000;
+                }
+                if (itemScore >= 50000)
+                {
+                    if (g_GameManager.cherry - g_GameManager.globals->cherryStart > 50000)
+                    {
+                        itemScore = g_GameManager.cherry - g_GameManager.globals->cherryStart;
+                    }
+                }
+                else if (g_GameManager.cherry - g_GameManager.globals->cherryStart > 50000)
+                {
+                    itemScore += (g_GameManager.cherry - g_GameManager.globals->cherryStart - 50000) / 5;
+                }
+                itemScore -= itemScore % 10;
+                g_AsciiManager.CreatePopup1(&item->pos, itemScore, item->pos.y < g_Player.shooterData->pocY || item->autoCollect == 1 ? 0xffffff00 : 0xffffffff);
+                g_GameManager.AddScore(itemScore);
+                g_GameManager.globals->pointItemsCollectedThisStage++;
+                g_GameManager.globals->pointItemsCollectedForExtend++;
+                g_Gui.pointDisplayUpdateFrames = 2;
+                if (item->pos.y < 128.0f)
+                {
+                    g_GameManager.IncreaseSubrank(10);
+                }
+                else
+                {
+                    g_GameManager.IncreaseSubrank(3);
+                }
+                if (g_GameManager.globals->extendsFromPointItems >= 0)
+                {
+                    for (;;)
+                    {
+                        if (g_GameManager.difficulty < DIFF_EXTRA)
+                        {
+                            if (g_GameManager.globals->extendsFromPointItems < 3)
+                            {
+                                g_GameManager.globals->nextNeededPointItemsForExtend = g_GameManager.globals->extendsFromPointItems * 75 + 50;
+                            }
+                            else if (g_GameManager.globals->extendsFromPointItems < 5)
+                            {
+                                g_GameManager.globals->nextNeededPointItemsForExtend = (g_GameManager.globals->extendsFromPointItems - 3) * 150 + 300;
+                            }
+                            else
+                            {
+                                g_GameManager.globals->nextNeededPointItemsForExtend = (g_GameManager.globals->extendsFromPointItems - 5) * 200 + 800;
+                            }
+                        }
+                        else if (g_GameManager.globals->extendsFromPointItems == 0)
+                        {
+                            g_GameManager.globals->nextNeededPointItemsForExtend = 200;
+                        }
+                        else if (g_GameManager.globals->extendsFromPointItems == 1)
+                        {
+                            g_GameManager.globals->nextNeededPointItemsForExtend = 500;
+                        }
+                        else
+                        {
+                            g_GameManager.globals->nextNeededPointItemsForExtend = (g_GameManager.globals->extendsFromPointItems - 2) * 500 + 800;
+                        }
+
+                        if (g_GameManager.globals->pointItemsCollectedForExtend >= g_GameManager.globals->nextNeededPointItemsForExtend)
+                        {
+                            g_GameManager.ExtendFromPoints();
+                            g_GameManager.globals->extendsFromPointItems++;
+                            continue;
+                        }
+                        break;
+                    }
+                }
+                break;
+            case ITEM_POWER_BIG:
+                if (g_GameManager.GetPower() >= 128)
+                {
+                    g_AsciiManager.CreatePopup1(&item->pos, itemScore, itemScore >= 1000 ? 0xffffff00 : 0xffffffff);
+                }
+                else
+                {
+                    k = 0;
+                    while (g_GameManager.GetPower() >= g_PowerLevels[k])
+                    {
+                        k++;
+                    }
+                    prevPowerLevel2 = k;
+                    g_GameManager.AddCurrentPower(8);
+                    if (g_GameManager.GetPower() >= 128)
+                    {
+                        g_GameManager.SetPower(128.0f);
+                        if (!g_EnemyManager.spellcardInfo.isActive)
+                        {
+                            g_BulletManager.RemoveAllBullets(ITEM_STATE_AUTOCOLLECT);
+                        }
+                        g_Gui.ShowStatusPopup(0, 1);
+                        this->DespawnAllItems(i);
+                    }
+                    g_Gui.powerDisplayUpdateFrames = 2;
+                    g_GameManager.AddScore(10);
+                    while (g_GameManager.GetPower() >= g_PowerLevels[k])
+                    {
+                        k++;
+                    }
+                    if (k != prevPowerLevel2)
+                    {
+                        g_AsciiManager.CreatePopup1(&item->pos, -1, 0xffffc0a0);
+                        g_SoundPlayer.PlaySoundByIdx(SOUND_POWERUP, 0);
+                    }
+                    else
+                    {
+                        g_AsciiManager.CreatePopup1(&item->pos, 10, 0xffffffff);
+                    }
+                }
+                break;
+            case ITEM_BOMB:
+                if ((i32)g_GameManager.globals->bombsRemaining < 8)
+                {
+                    g_GameManager.AddBombsRemaining(1);
+                    g_Gui.bombDisplayUpdateFrames = 2;
+                }
+                g_GameManager.IncreaseSubrank(5);
+                break;
+            case ITEM_LIFE:
+                g_GameManager.ExtendFromPoints();
+                break;
+            case ITEM_FULL_POWER:
+                if (g_GameManager.GetPower() < 128)
+                {
+                    g_BulletManager.RemoveAllBullets(ITEM_STATE_AUTOCOLLECT);
+                    g_Gui.ShowStatusPopup(0, 1);
+                    g_SoundPlayer.PlaySoundByIdx(SOUND_POWERUP, 0);
+                    g_AsciiManager.CreatePopup1(&item->pos, -1, 0xffffc0a0);
+                    this->DespawnAllItems(i);
+                }
+                g_GameManager.SetPower(128.0f);
+                g_GameManager.AddScore(1000);
+                g_AsciiManager.CreatePopup1(&item->pos, 1000, 0xffffffff);
+                g_Gui.powerDisplayUpdateFrames = 2;
+                break;
+            case ITEM_POINT_BULLET:
+                if (!g_Player.isBombing)
+                {
+                    itemScore = g_GameManager.globals->grazeInTotal / 40 * 10 + 300;
+                    if (itemScore <= 0)
+                    {
+                        itemScore = 10;
+                    }
+                }
+                else
+                {
+                    itemScore = 100;
+                }
+                g_AsciiManager.CreatePopup2(&item->pos, itemScore, -1);
+                g_GameManager.AddScore(itemScore);
+                if (!g_Player.bombInfo.isInUse)
+                {
+                    g_GameManager.AddCherryPlus(20);
+                }
+                else if ((i & 1) == 0)
+                {
+                    g_GameManager.AddCherryPlus(10);
+                }
+                else
+                {
+                    g_GameManager.AddCherry(10);
+                }
+                break;
+            case ITEM_CHERRY_SMALL:
+                g_GameManager.AddCherryPlus(30);
+                g_GameManager.AddCherry(70);
+                break;
+            case ITEM_CHERRY:
+                if (g_GameManager.IsCherryAtMax())
+                {
+                    itemScore = item->ShouldAwardMaxScore()
+                                    ? 50000
+                                    : 50000 - item->OffsetFromPoc() * 100;
+                    itemScore -= itemScore % 10;
+                    g_AsciiManager.CreatePopup1(&item->pos, itemScore, item->pos.y < g_Player.shooterData->pocY || item->autoCollect ? 0xffffff00 : 0xffffffff);
+                    g_GameManager.AddScore(itemScore);
+                }
+                itemScore = 1000;
+                itemScore += g_GameManager.globals->spellCardsCaptured * 100;
+                if (!g_GameManager.IsCherryAtMax())
+                {
+                    g_AsciiManager.CreatePopup1(&item->pos, itemScore, 0xffff4040);
+                }
+                g_GameManager.AddCherryPlus(itemScore);
+                break;
+            case ITEM_STAR:
+                itemScore = g_GameManager.globals->grazeInTotal / 40 * 10 + 300;
+                if (itemScore <= 0)
+                {
+                    itemScore = 10;
+                }
+                if (g_GameManager.IsCherryAtMax())
+                {
+                    g_AsciiManager.CreatePopup1(&item->pos, itemScore, 0xffffffff);
+                }
+                g_GameManager.AddScore(itemScore);
+                itemScore = 100;
+                if (!g_GameManager.IsCherryAtMax())
+                {
+                    g_AsciiManager.CreatePopup1(&item->pos, itemScore, 0xffff4040);
+                }
+                g_GameManager.AddCherryPlus(itemScore);
+                break;
+            }
+            item->isInUse = 0;
+            itemAcquired = TRUE;
+            continue;
+        }
+        else
+        {
+            item->timer++;
+            if (item->sprite.currentInstruction)
+            {
+                g_AnmManager->ExecuteScript(&item->sprite);
+            }
+            this->listTail->next = item;
+            item->next = NULL;
+            this->listTail = item;
+        }
+    }
+    if (itemAcquired)
+    {
+        g_SoundPlayer.PlaySoundByIdx(SOUND_ITEM_GET, 0);
+    }
+}
+
+#pragma var_order(i, item)
+// FUNCTION: TH07 0x00433a90
+void ItemManager::RemoveAllItems()
+{
+    Item *item;
+    i32 i;
+
+    item = this->items;
+    for (i = 0; i < MAX_ITEMS; i++, item++)
+    {
+        if (!item->isInUse)
+        {
+            continue;
+        }
+
+        item->state = ITEM_STATE_AUTOCOLLECT;
+        item->velocity = Float3(0.0f, -0.5f, 0.0f);
+    }
+}
+
+#pragma var_order(i, item)
+// FUNCTION: TH07 0x00433b20
+void ItemManager::DespawnAllItems(i32 skipItemIdx)
+{
+    Item *item;
+    i32 i;
+
+    item = this->items;
+    for (i = 0; i < MAX_ITEMS; i++, item++)
+    {
+        if (item->isInUse == 0 || i == skipItemIdx)
+        {
+            continue;
+        }
+
+        if (item->itemType == 0 || item->itemType == 2)
+        {
+            if (item->velocity.y > -0.5f)
+            {
+                item->velocity.x = 0.0f;
+                item->velocity.y = -0.5f;
+                item->velocity.z = 0.0f;
+            }
+            g_EffectManager.SpawnEffect(0, &item->pos, 1, 0xffffffff);
+            item->itemType = 7;
+            g_AnmManager->SetAnmIdxAndExecuteScript(
+                &item->sprite, ANM_SCRIPT_BULLETS_ITEM_DESPAWN);
+        }
+    }
+}
+
+#pragma var_order(i, item)
+// FUNCTION: TH07 0x00433c40
+void ItemManager::ActivateAllItems()
+{
+    Item *item;
+    i32 i;
+
+    item = this->items;
+    for (i = 0; i < MAX_ITEMS; i++, item++)
+    {
+        if (item->isInUse != 1)
+        {
+            continue;
+        }
+
+        if (item->state == ITEM_STATE_AUTOCOLLECT)
+        {
+            item->state = ITEM_STATE_DEFAULT;
+            item->velocity.x = 0.0f;
+            item->velocity.y = -0.9f;
+            item->velocity.z = 0.0f;
+        }
+    }
+}
+
+#pragma var_order(itemAlpha, item)
+// FUNCTION: TH07 0x00433cd0
+void ItemManager::OnDraw()
+{
+    Item *item;
+    i32 itemAlpha;
+
+    item = this->listHead.next;
+    while (item)
+    {
+        item->sprite.pos.x =
+            g_GameManager.arcadeRegionTopLeftPos.x + item->pos.x;
+        item->sprite.pos.y =
+            g_GameManager.arcadeRegionTopLeftPos.y + item->pos.y;
+        item->sprite.pos.z = 0.01f;
+        if (item->pos.y < -8.0f)
+        {
+            item->sprite.pos.y = 8.0f + g_GameManager.arcadeRegionTopLeftPos.y;
+            if (item->isOnscreen)
+            {
+                g_AnmManager->SetActiveSprite(
+                    &item->sprite,
+                    item->itemType + ANM_SPRITE_BULLETS_ITEMS_ARRAY);
+                item->isOnscreen = 0;
+                item->sprite.zWriteDisable = 1;
+            }
+            itemAlpha = 255 - (i32)((8.0f - item->pos.y) * 255.0f / 128.0f);
+            if (itemAlpha < 64)
+            {
+                itemAlpha = 64;
+            }
+            item->sprite.color.color =
+                (item->sprite.color.color & 0xffffff) | itemAlpha << 24;
+        }
+        else
+        {
+            if (!item->isOnscreen)
+            {
+                g_AnmManager->SetActiveSprite(
+                    &item->sprite,
+                    item->itemType + ANM_SPRITE_BULLETS_ITEMS_OFFSCREEN_ARRAY);
+                item->isOnscreen = 1;
+                item->sprite.color.color = 0xffffffff;
+                item->sprite.zWriteDisable = 1;
+            }
+        }
+        g_AnmManager->Draw(&item->sprite);
+        item = item->next;
+    }
+}

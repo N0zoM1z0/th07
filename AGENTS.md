@@ -9,11 +9,12 @@ Do not analyze or substitute a localized, patched, or earlier executable.
 1. Read `docs/ARCHITECTURE.md`, `docs/RE_WORKFLOW.md`, and the relevant module
    notes.
 2. Run `python3 scripts/verify-target.py` and
-   `python3 scripts/check-ida-mcp.py`.
+   `python3 scripts/ghidra.py check`. All tools run headless; do not use REA
+   or launch a GUI/game process.
 3. Inspect `config/functions.csv` and `config/claims.csv`; claim a small,
    address-bounded unit before implementation.
-4. Reconcile IDA's function extent with target instructions and the ledger.
-   IDA chunks and decompiler output are useful evidence, not accepted boundaries.
+4. Reconcile Ghidra and historical IDA extents with complete target control
+   flow and compiler/linker extents. Analysis inventories are provisional.
 
 ## Evidence and status rules
 
@@ -38,11 +39,16 @@ Do not analyze or substitute a localized, patched, or earlier executable.
 
 ## Analysis database safety
 
-IDA MCP is attached to the file currently open in the GUI and has no program
-selector. Re-run the exact metadata preflight for every bounded work unit.
-Never call `patch_address_assembles` or otherwise patch target bytes. Preserve
-durable discoveries in tracked CSV, source, or documentation rather than only
-inside an IDB.
+Ghidra headless is the semantic backend. Use `scripts/ghidra.py`, which
+checks target identity, PE mapping and six mapped-code samples before every
+query. Historical IDA ledgers remain useful evidence but do not authorize GUI
+or IDA MCP calls. Never patch target bytes. Keep databases private and mirror
+durable discoveries into tracked ledgers and documentation.
+
+Use one compiler process at a time, pin expensive analysis/build processes to
+one CPU, lower process priority and keep Ghidra's heap at or below 2 GiB.
+Preserve linker PDBs needed for complete LTCG function extents; delete temporary
+compiler PDB/PCH files after they are no longer needed.
 
 ## ABI and implementation
 
@@ -54,30 +60,20 @@ inside an IDB.
 - Do not commit original executables, game data, IDA databases, toolchains,
   third-party reference clones, generated reports, or credentials.
 
-## Parallel reconstruction
+## Shared reconstruction state
 
-For two or more concurrent lanes, read `.agents/skills/th07-parallel/SKILL.md`
-together with `.agents/skills/th07-re/SKILL.md`. For compiler shaping, also
-read `.agents/skills/th07-matching/SKILL.md`.
-
-- The coordinator owns IDA writes, shared ABI/type decisions, address claims,
-  the function ledger, generated progress, Git commits, and pushes.
-- Evidence/matching workers receive non-overlapping address ranges and source
-  files. They must not rename or retype unrelated functions in IDA.
-- A worker starts from a coordinator-prepared target packet and canonical
-  `config/match-units.toml` entry, then iterates only through
-  `python3 scripts/build.py --unit NAME --compare --json`.
-- Shared headers, class layouts, compiler profiles, relocation allowlists, and
-  translation-unit partitions require coordinator review before mutation.
-- The typed-RE automation (`scripts/typed-re.py`, `scripts/typed_re/`,
-  `scripts/scan-vc7-library.py`, `config/typed-re-rules.toml`, and its skill)
-  is coordinator-owned. Workers may execute it and submit feedback or proposed
-  rules, but must not modify it.
-- Worker reports are proposals. The coordinator reruns the strict comparison,
-  updates status/evidence, releases claims, and performs all Git integration.
+Only start concurrent agent lanes when explicitly requested. Keep address claims
+and source ownership disjoint. One coordinator reviews ABI, compiler profiles,
+relocation maps, origins, acceptance ledgers, progress and Git integration.
+Even with concurrent analysis, compilation remains serial. Use Ghidra through
+the attested headless wrapper; no worker may launch a GUI or use REA/IDA MCP.
 
 ## Handoff
 
 Run `python3 scripts/validate-tracking.py`, `python3 scripts/build.py --check`,
 `python3 scripts/progress.py --check`, and `git diff --check`. Report addresses,
 evidence, old/new status, exact comparison result, and remaining uncertainty.
+
+Commit messages use `gpt-6.1-sol: ...`. Reference source is pinned at
+`_reference/some100-th07`; it earns exact credit only through this project's
+strict target oracle. Preserve existing accepted source and provenance.

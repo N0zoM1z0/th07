@@ -185,7 +185,7 @@ def compile_known(manifest: dict[str, object], jobs: int) -> None:
         return unit, completed.returncode, completed.stdout + completed.stderr
 
     failures = []
-    with ThreadPoolExecutor(max_workers=max(1, min(jobs, 2))) as pool:
+    with ThreadPoolExecutor(max_workers=1) as pool:
         futures = [pool.submit(compile_one, unit) for unit in units]
         for future in as_completed(futures):
             unit, code, output = future.result()
@@ -207,7 +207,7 @@ def wine_environment() -> tuple[dict[str, str], str, Path]:
         raise ValueError("missing VC7 toolchain; run scripts/bootstrap-tools.sh")
     prefix.mkdir(parents=True, exist_ok=True)
     env = os.environ.copy()
-    env.update({"WINEPREFIX": str(prefix), "WINEARCH": "win32", "WINEDEBUG": "-all"})
+    env.update({"WINEPREFIX": str(prefix), "WINEARCH": "win32", "WINEDEBUG": "-all", "DISPLAY": "", "WAYLAND_DISPLAY": "", "WINEDLLOVERRIDES": "winemenubuilder.exe=d"})
     prefix_win = subprocess.check_output(["winepath", "-w", str(vc7)], env=env, text=True).strip()
     runner_win = subprocess.check_output(["winepath", "-w", str(runner)], env=env, text=True).strip()
     env["DEVENV_PREFIX"] = prefix_win
@@ -284,7 +284,7 @@ def main() -> int:
     parser.add_argument("--resources", action="store_true")
     parser.add_argument("--link", action="store_true")
     parser.add_argument("--json", action="store_true")
-    parser.add_argument("-j", "--jobs", type=int, default=2)
+    parser.add_argument("-j", "--jobs", type=int, default=1)
     args = parser.parse_args()
     try:
         manifest, _ = load_and_validate()

@@ -1,76 +1,66 @@
-# Reverse-engineering workflow
+# Headless reconstruction workflow
 
-## Sources of truth
-
-- `config/target.toml`: immutable target identity.
-- the hash-attested IDA IDB: semantic working database, never committed.
-- `config/functions.csv`: function inventory and reconstruction lifecycle.
-- `config/known-symbols.csv` and `config/known-globals.csv`: supported names.
-- `config/claims.csv`: active address ownership.
-- function/object comparison reports: exact-match acceptance evidence.
-
-The ignored TH06/TH08 checkouts are supporting evidence. Their layouts and
-source do not override TH07 instructions.
-
-## Function lifecycle
-
-1. Verify the local executable and the active IDA session.
-2. Select and record a small unclaimed address range.
-3. Inspect function metadata, disassembly, decompilation, callers, callees,
-   xrefs, strings, globals, RTTI/vtables, and neighbors.
-4. Reconcile the IDA extent with target control flow and the ledger.
-5. Record a supported name, module, ABI, and evidence.
-6. Recover object layout and behavior before source-shaping work.
-7. Implement in a bounded translation unit.
-8. Compile with the VC7 toolchain and compare the function/object.
-9. Record exact results and promote status only as far as the evidence permits.
-10. Regenerate progress and release the claim.
-
-## Adjacent-version acceleration
-
-`scripts/cross-version-clones.py` compares TH07 functions to the exact TH06
-1.02h and TH08 1.00d binaries using relocation-aware instruction signatures.
-Its output is a candidate map, not source truth. A candidate becomes
-`identified` only after target-side semantic corroboration. It becomes
-`matching` only after reconstructed TH07 source compiles to exact target bytes.
-
-## Status meanings
-
-| Status | Meaning |
-| --- | --- |
-| `unclassified` | inventory only |
-| `identified` | role/name supported by evidence |
-| `decompiled` | control flow and types documented; no source yet |
-| `implemented` | source exists but is not integrated in the target build |
-| `compiles` | included in the target build but differs |
-| `matching` | byte-identical under the accepted comparison |
-| `library` | verified compiler/runtime/third-party code |
-| `blocked` | a concrete blocker is documented |
-
-Decompiler resemblance, identical adjacent-version source, and normalized
-binary clones are insufficient for `matching`.
-
-## Fast exact-match loop
-
-The canonical unit graph and comparator are machine-readable and fail closed:
+Start with `AGENTS.md`, the target manifest and the relevant source/ledger rows.
+Use Ghidra through the attested headless wrapper. REA, graphical Wine processes
+and GUI-attached IDA MCP are prohibited. Historical IDA files and scripts are
+retained for provenance and are outside the active workflow.
 
 ```bash
+python3 scripts/verify-target.py
+python3 scripts/ghidra.py check
+python3 scripts/ghidra.py --help
+```
+
+`scripts/ghidra.py initialize` creates the ignored `ghidra-project/TH07` database.
+Before a query, the wrapper checks file identity, PE mappings and six mapped
+code samples. It uses one CPU, low process priority and a 2 GiB maximum heap.
+Inventory exports remain separate from the reviewed acceptance ledger.
+
+For a source change, first reconcile ABI, semantics, neighbors, switch tables
+and complete function boundaries. Claim the bounded address if working with
+other contributors. Preserve original evidence, distinguish observations from
+inferences and keep unknown destinations blocked.
+
+```bash
+# Maintained native product and complete accepted-source replay
+python3 scripts/build-whole.py
+python3 scripts/replay-exact-units.py
+
+# Rebuild the corresponding product/probe and replay one accepted routine
+python3 scripts/replay-exact-units.py --unit f_00410520 --rebuild
+
+# Preserved focused probe workflow
+python3 scripts/build.py --unit enemy-lifecycle --compare --json
+```
+
+The probe command remains useful for iteration, but promotion requires complete
+extent replay rather than an old ledger-sized prefix. Never crop a longer
+procedure to the target length. Never infer a relocation destination from the
+operand being compared, mask bytes, add fake locals/padding, patch the target,
+or transcribe whole functions into assembly.
+
+Run one compiler process at a time; both build paths share a `flock` lock.
+Wine is configured with empty `DISPLAY`/`WAYLAND_DISPLAY`, a private 32-bit
+prefix outside the checkout, and menu integration disabled. Keep master linker
+PDBs and receipts, and remove temporary compiler PDB/PCH files when no longer
+needed. Do not follow Wine's `dosdevices/z:` symlink during file searches.
+
+After new evidence, update `config/functions.csv`, explicit origins, full-extent
+units, remaining work and source provenance together. The admission script is a
+snapshot importer for the pinned reference, not an automatic way to approve
+new source changes. Review its output before committing. Regenerate progress:
+
+```bash
+python3 scripts/validate-tracking.py
 python3 scripts/build.py --check
-python3 scripts/build.py --unit text-helper --compare --json
+python3 scripts/report-reconstruction-status.py --summary
+python3 scripts/progress.py
+python3 -m unittest discover -s tests -v
+python3 scripts/progress.py --check
+git diff --check
 ```
 
-Only the coordinator adds units, relocation allowlists, claims, ledger status,
-or IDA mutations. Parallel workers receive non-overlapping functions after the
-coordinator has reconciled their boundaries and prepared the unit. A worker's
-source/result is reviewed and rerun by the coordinator before `matching` is
-recorded.
-
-Coordinator capture and claim commands are explicit:
-
-```bash
-python3 scripts/work-packet.py 0x00431A0F --refresh
-python3 scripts/claim.py add --owner AGENT --notes "TextHelper lane" 0x00431A0F
-
-# Workers consume the already captured packet without querying or mutating IDA.
-python3 scripts/work-packet.py 0x00431A0F --cached
-```
+Public CI needs neither the game nor Wine. Local byte replay additionally
+requires the original executable, pinned tools/reference and fresh private build
+artifacts. A source or header change invalidates the associated receipt and
+requires rebuilding. Commit messages use `gpt-6.1-sol: ...`.

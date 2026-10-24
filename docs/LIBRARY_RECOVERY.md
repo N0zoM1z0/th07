@@ -1,5 +1,8 @@
 # Prebuilt library recovery
 
+> Historical focused-probe evidence. Current source ownership, acceptance and
+> counts are defined in [ORACLE.md](ORACLE.md) and the canonical ledgers.
+
 TH07 statically links substantial VC7-era D3DX8 and C runtime code. The
 repository's pinned toolchain contains the original `d3dx8.lib`, `LIBC.LIB`,
 and `LIBCMT.LIB` archives, so these functions should be replayed from their

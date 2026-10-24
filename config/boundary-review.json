@@ -1,0 +1,2866 @@
+{
+  "target_sha256": "35467eaf8dc7fc85f024f16fb2037255f151cefda33cf4867bc9122aaa2e80ca",
+  "reference_commit": "4878bf0e42a9280ef44735eb0517d4fda7cb6e04",
+  "reference_named_functions": 694,
+  "reference_named_bytes": 381170,
+  "reference_named_exact_bytes": 341585,
+  "authored_functions": 686,
+  "authored_bytes": 380493,
+  "authored_exact_functions": 678,
+  "authored_exact_bytes": 373295,
+  "application_start": 4198400,
+  "application_end_exclusive": 4587595,
+  "runtime_start": 4594320,
+  "sdk_data_formats": [
+    {
+      "descriptor": 4772972,
+      "data_start": 4587600,
+      "data_end": 4590224,
+      "object_count": 164,
+      "object_stride": 16
+    },
+    {
+      "descriptor": 4773492,
+      "data_start": 4590224,
+      "data_end": 4594320,
+      "object_count": 256,
+      "object_stride": 16
+    }
+  ],
+  "unreviewed_application_gap_bytes": 0,
+  "unmapped_ghidra_application_entries": 0,
+  "alignment_ranges": [
+    {
+      "address": 4198573,
+      "size": 3,
+      "origin": "alignment"
+    },
+    {
+      "address": 4198628,
+      "size": 12,
+      "origin": "alignment"
+    },
+    {
+      "address": 4198764,
+      "size": 4,
+      "origin": "alignment"
+    },
+    {
+      "address": 4198818,
+      "size": 14,
+      "origin": "alignment"
+    },
+    {
+      "address": 4199083,
+      "size": 5,
+      "origin": "alignment"
+    },
+    {
+      "address": 4199300,
+      "size": 12,
+      "origin": "alignment"
+    },
+    {
+      "address": 4199419,
+      "size": 5,
+      "origin": "alignment"
+    },
+    {
+      "address": 4199579,
+      "size": 5,
+      "origin": "alignment"
+    },
+    {
+      "address": 4200223,
+      "size": 1,
+      "origin": "alignment"
+    },
+    {
+      "address": 4200367,
+      "size": 1,
+      "origin": "alignment"
+    },
+    {
+      "address": 4200408,
+      "size": 8,
+      "origin": "alignment"
+    },
+    {
+      "address": 4200807,
+      "size": 9,
+      "origin": "alignment"
+    },
+    {
+      "address": 4200915,
+      "size": 13,
+      "origin": "alignment"
+    },
+    {
+      "address": 4200952,
+      "size": 8,
+      "origin": "alignment"
+    },
+    {
+      "address": 4201367,
+      "size": 9,
+      "origin": "alignment"
+    },
+    {
+      "address": 4201832,
+      "size": 8,
+      "origin": "alignment"
+    },
+    {
+      "address": 4201944,
+      "size": 8,
+      "origin": "alignment"
+    },
+    {
+      "address": 4202017,
+      "size": 15,
+      "origin": "alignment"
+    },
+    {
+      "address": 4202245,
+      "size": 11,
+      "origin": "alignment"
+    },
+    {
+      "address": 4202291,
+      "size": 13,
+      "origin": "alignment"
+    },
+    {
+      "address": 4202581,
+      "size": 11,
+      "origin": "alignment"
+    },
+    {
+      "address": 4202660,
+      "size": 12,
+      "origin": "alignment"
+    },
+    {
+      "address": 4203754,
+      "size": 6,
+      "origin": "alignment"
+    },
+    {
+      "address": 4204402,
+      "size": 14,
+      "origin": "alignment"
+    },
+    {
+      "address": 4209169,
+      "size": 15,
+      "origin": "alignment"
+    },
+    {
+      "address": 4209494,
+      "size": 10,
+      "origin": "alignment"
+    },
+    {
+      "address": 4212052,
+      "size": 12,
+      "origin": "alignment"
+    },
+    {
+      "address": 4212362,
+      "size": 6,
+      "origin": "alignment"
+    },
+    {
+      "address": 4214378,
+      "size": 6,
+      "origin": "alignment"
+    },
+    {
+      "address": 4214446,
+      "size": 2,
+      "origin": "alignment"
+    },
+    {
+      "address": 4214572,
+      "size": 4,
+      "origin": "alignment"
+    },
+    {
+      "address": 4214745,
+      "size": 7,
+      "origin": "alignment"
+    },
+    {
+      "address": 4214897,
+      "size": 15,
+      "origin": "alignment"
+    },
+    {
+      "address": 4215497,
+      "size": 7,
+      "origin": "alignment"
+    },
+    {
+      "address": 4215656,
+      "size": 8,
+      "origin": "alignment"
+    },
+    {
+      "address": 4216463,
+      "size": 1,
+      "origin": "alignment"
+    },
+    {
+      "address": 4221223,
+      "size": 9,
+      "origin": "alignment"
+    },
+    {
+      "address": 4221389,
+      "size": 3,
+      "origin": "alignment"
+    },
+    {
+      "address": 4222427,
+      "size": 5,
+      "origin": "alignment"
+    },
+    {
+      "address": 4222974,
+      "size": 2,
+      "origin": "alignment"
+    },
+    {
+      "address": 4224009,
+      "size": 7,
+      "origin": "alignment"
+    },
+    {
+      "address": 4224182,
+      "size": 10,
+      "origin": "alignment"
+    },
+    {
+      "address": 4224462,
+      "size": 2,
+      "origin": "alignment"
+    },
+    {
+      "address": 4224514,
+      "size": 14,
+      "origin": "alignment"
+    },
+    {
+      "address": 4225002,
+      "size": 6,
+      "origin": "alignment"
+    },
+    {
+      "address": 4225271,
+      "size": 9,
+      "origin": "alignment"
+    },
+    {
+      "address": 4227447,
+      "size": 9,
+      "origin": "alignment"
+    },
+    {
+      "address": 4228075,
+      "size": 5,
+      "origin": "alignment"
+    },
+    {
+      "address": 4228323,
+      "size": 13,
+      "origin": "alignment"
+    },
+    {
+      "address": 4228622,
+      "size": 2,
+      "origin": "alignment"
+    },
+    {
+      "address": 4228874,
+      "size": 6,
+      "origin": "alignment"
+    },
+    {
+      "address": 4230660,
+      "size": 12,
+      "origin": "alignment"
+    },
+    {
+      "address": 4231593,
+      "size": 7,
+      "origin": "alignment"
+    },
+    {
+      "address": 4233613,
+      "size": 3,
+      "origin": "alignment"
+    },
+    {
+      "address": 4234695,
+      "size": 9,
+      "origin": "alignment"
+    },
+    {
+      "address": 4235898,
+      "size": 6,
+      "origin": "alignment"
+    },
+    {
+      "address": 4236177,
+      "size": 15,
+      "origin": "alignment"
+    },
+    {
+      "address": 4236969,
+      "size": 7,
+      "origin": "alignment"
+    },
+    {
+      "address": 4237238,
+      "size": 10,
+      "origin": "alignment"
+    },
+    {
+      "address": 4238227,
+      "size": 13,
+      "origin": "alignment"
+    },
+    {
+      "address": 4239110,
+      "size": 10,
+      "origin": "alignment"
+    },
+    {
+      "address": 4240834,
+      "size": 14,
+      "origin": "alignment"
+    },
+    {
+      "address": 4241353,
+      "size": 7,
+      "origin": "alignment"
+    },
+    {
+      "address": 4242589,
+      "size": 3,
+      "origin": "alignment"
+    },
+    {
+      "address": 4242964,
+      "size": 12,
+      "origin": "alignment"
+    },
+    {
+      "address": 4243806,
+      "size": 2,
+      "origin": "alignment"
+    },
+    {
+      "address": 4244177,
+      "size": 15,
+      "origin": "alignment"
+    },
+    {
+      "address": 4245860,
+      "size": 12,
+      "origin": "alignment"
+    },
+    {
+      "address": 4246085,
+      "size": 11,
+      "origin": "alignment"
+    },
+    {
+      "address": 4248486,
+      "size": 10,
+      "origin": "alignment"
+    },
+    {
+      "address": 4248756,
+      "size": 12,
+      "origin": "alignment"
+    },
+    {
+      "address": 4250010,
+      "size": 6,
+      "origin": "alignment"
+    },
+    {
+      "address": 4250232,
+      "size": 8,
+      "origin": "alignment"
+    },
+    {
+      "address": 4252694,
+      "size": 10,
+      "origin": "alignment"
+    },
+    {
+      "address": 4252901,
+      "size": 11,
+      "origin": "alignment"
+    },
+    {
+      "address": 4252962,
+      "size": 14,
+      "origin": "alignment"
+    },
+    {
+      "address": 4254710,
+      "size": 10,
+      "origin": "alignment"
+    },
+    {
+      "address": 4255209,
+      "size": 7,
+      "origin": "alignment"
+    },
+    {
+      "address": 4256690,
+      "size": 14,
+      "origin": "alignment"
+    },
+    {
+      "address": 4257454,
+      "size": 2,
+      "origin": "alignment"
+    },
+    {
+      "address": 4258031,
+      "size": 1,
+      "origin": "alignment"
+    },
+    {
+      "address": 4258598,
+      "size": 10,
+      "origin": "alignment"
+    },
+    {
+      "address": 4258697,
+      "size": 7,
+      "origin": "alignment"
+    },
+    {
+      "address": 4260245,
+      "size": 11,
+      "origin": "alignment"
+    },
+    {
+      "address": 4261145,
+      "size": 7,
+      "origin": "alignment"
+    },
+    {
+      "address": 4291308,
+      "size": 4,
+      "origin": "alignment"
+    },
+    {
+      "address": 4291345,
+      "size": 15,
+      "origin": "alignment"
+    },
+    {
+      "address": 4291467,
+      "size": 5,
+      "origin": "alignment"
+    },
+    {
+      "address": 4291623,
+      "size": 9,
+      "origin": "alignment"
+    },
+    {
+      "address": 4292165,
+      "size": 11,
+      "origin": "alignment"
+    },
+    {
+      "address": 4292872,
+      "size": 8,
+      "origin": "alignment"
+    },
+    {
+      "address": 4293207,
+      "size": 9,
+      "origin": "alignment"
+    },
+    {
+      "address": 4293322,
+      "size": 6,
+      "origin": "alignment"
+    },
+    {
+      "address": 4294094,
+      "size": 2,
+      "origin": "alignment"
+    },
+    {
+      "address": 4294775,
+      "size": 9,
+      "origin": "alignment"
+    },
+    {
+      "address": 4295487,
+      "size": 1,
+      "origin": "alignment"
+    },
+    {
+      "address": 4296308,
+      "size": 12,
+      "origin": "alignment"
+    },
+    {
+      "address": 4296362,
+      "size": 6,
+      "origin": "alignment"
+    },
+    {
+      "address": 4296630,
+      "size": 10,
+      "origin": "alignment"
+    },
+    {
+      "address": 4296938,
+      "size": 6,
+      "origin": "alignment"
+    },
+    {
+      "address": 4297942,
+      "size": 10,
+      "origin": "alignment"
+    },
+    {
+      "address": 4298253,
+      "size": 3,
+      "origin": "alignment"
+    },
+    {
+      "address": 4298453,
+      "size": 11,
+      "origin": "alignment"
+    },
+    {
+      "address": 4298505,
+      "size": 7,
+      "origin": "alignment"
+    },
+    {
+      "address": 4298866,
+      "size": 14,
+      "origin": "alignment"
+    },
+    {
+      "address": 4299192,
+      "size": 8,
+      "origin": "alignment"
+    },
+    {
+      "address": 4300175,
+      "size": 1,
+      "origin": "alignment"
+    },
+    {
+      "address": 4300223,
+      "size": 1,
+      "origin": "alignment"
+    },
+    {
+      "address": 4300770,
+      "size": 14,
+      "origin": "alignment"
+    },
+    {
+      "address": 4301326,
+      "size": 2,
+      "origin": "alignment"
+    },
+    {
+      "address": 4301546,
+      "size": 6,
+      "origin": "alignment"
+    },
+    {
+      "address": 4301643,
+      "size": 5,
+      "origin": "alignment"
+    },
+    {
+      "address": 4301673,
+      "size": 7,
+      "origin": "alignment"
+    },
+    {
+      "address": 4302055,
+      "size": 9,
+      "origin": "alignment"
+    },
+    {
+      "address": 4302230,
+      "size": 10,
+      "origin": "alignment"
+    },
+    {
+      "address": 4302627,
+      "size": 13,
+      "origin": "alignment"
+    },
+    {
+      "address": 4302663,
+      "size": 9,
+      "origin": "alignment"
+    },
+    {
+      "address": 4303445,
+      "size": 11,
+      "origin": "alignment"
+    },
+    {
+      "address": 4303592,
+      "size": 8,
+      "origin": "alignment"
+    },
+    {
+      "address": 4303830,
+      "size": 10,
+      "origin": "alignment"
+    },
+    {
+      "address": 4303912,
+      "size": 8,
+      "origin": "alignment"
+    },
+    {
+      "address": 4304137,
+      "size": 7,
+      "origin": "alignment"
+    },
+    {
+      "address": 4304355,
+      "size": 13,
+      "origin": "alignment"
+    },
+    {
+      "address": 4304521,
+      "size": 7,
+      "origin": "alignment"
+    },
+    {
+      "address": 4304614,
+      "size": 10,
+      "origin": "alignment"
+    },
+    {
+      "address": 4305060,
+      "size": 12,
+      "origin": "alignment"
+    },
+    {
+      "address": 4306069,
+      "size": 11,
+      "origin": "alignment"
+    },
+    {
+      "address": 4306790,
+      "size": 10,
+      "origin": "alignment"
+    },
+    {
+      "address": 4307428,
+      "size": 12,
+      "origin": "alignment"
+    },
+    {
+      "address": 4307999,
+      "size": 1,
+      "origin": "alignment"
+    },
+    {
+      "address": 4308668,
+      "size": 4,
+      "origin": "alignment"
+    },
+    {
+      "address": 4308935,
+      "size": 9,
+      "origin": "alignment"
+    },
+    {
+      "address": 4309245,
+      "size": 3,
+      "origin": "alignment"
+    },
+    {
+      "address": 4309421,
+      "size": 3,
+      "origin": "alignment"
+    },
+    {
+      "address": 4310004,
+      "size": 12,
+      "origin": "alignment"
+    },
+    {
+      "address": 4310537,
+      "size": 7,
+      "origin": "alignment"
+    },
+    {
+      "address": 4310918,
+      "size": 10,
+      "origin": "alignment"
+    },
+    {
+      "address": 4311553,
+      "size": 15,
+      "origin": "alignment"
+    },
+    {
+      "address": 4311922,
+      "size": 14,
+      "origin": "alignment"
+    },
+    {
+      "address": 4312532,
+      "size": 12,
+      "origin": "alignment"
+    },
+    {
+      "address": 4313161,
+      "size": 7,
+      "origin": "alignment"
+    },
+    {
+      "address": 4313233,
+      "size": 15,
+      "origin": "alignment"
+    },
+    {
+      "address": 4313413,
+      "size": 11,
+      "origin": "alignment"
+    },
+    {
+      "address": 4313459,
+      "size": 13,
+      "origin": "alignment"
+    },
+    {
+      "address": 4313829,
+      "size": 11,
+      "origin": "alignment"
+    },
+    {
+      "address": 4313981,
+      "size": 3,
+      "origin": "alignment"
+    },
+    {
+      "address": 4314115,
+      "size": 13,
+      "origin": "alignment"
+    },
+    {
+      "address": 4314243,
+      "size": 13,
+      "origin": "alignment"
+    },
+    {
+      "address": 4314867,
+      "size": 13,
+      "origin": "alignment"
+    },
+    {
+      "address": 4318372,
+      "size": 12,
+      "origin": "alignment"
+    },
+    {
+      "address": 4318600,
+      "size": 8,
+      "origin": "alignment"
+    },
+    {
+      "address": 4319116,
+      "size": 4,
+      "origin": "alignment"
+    },
+    {
+      "address": 4319257,
+      "size": 7,
+      "origin": "alignment"
+    },
+    {
+      "address": 4319509,
+      "size": 11,
+      "origin": "alignment"
+    },
+    {
+      "address": 4319832,
+      "size": 8,
+      "origin": "alignment"
+    },
+    {
+      "address": 4320877,
+      "size": 3,
+      "origin": "alignment"
+    },
+    {
+      "address": 4321820,
+      "size": 4,
+      "origin": "alignment"
+    },
+    {
+      "address": 4322009,
+      "size": 7,
+      "origin": "alignment"
+    },
+    {
+      "address": 4322343,
+      "size": 9,
+      "origin": "alignment"
+    },
+    {
+      "address": 4322684,
+      "size": 4,
+      "origin": "alignment"
+    },
+    {
+      "address": 4323043,
+      "size": 13,
+      "origin": "alignment"
+    },
+    {
+      "address": 4324707,
+      "size": 13,
+      "origin": "alignment"
+    },
+    {
+      "address": 4325236,
+      "size": 12,
+      "origin": "alignment"
+    },
+    {
+      "address": 4326095,
+      "size": 1,
+      "origin": "alignment"
+    },
+    {
+      "address": 4326306,
+      "size": 14,
+      "origin": "alignment"
+    },
+    {
+      "address": 4326533,
+      "size": 11,
+      "origin": "alignment"
+    },
+    {
+      "address": 4326930,
+      "size": 14,
+      "origin": "alignment"
+    },
+    {
+      "address": 4333800,
+      "size": 8,
+      "origin": "alignment"
+    },
+    {
+      "address": 4333922,
+      "size": 14,
+      "origin": "alignment"
+    },
+    {
+      "address": 4336799,
+      "size": 1,
+      "origin": "alignment"
+    },
+    {
+      "address": 4336823,
+      "size": 9,
+      "origin": "alignment"
+    },
+    {
+      "address": 4336858,
+      "size": 6,
+      "origin": "alignment"
+    },
+    {
+      "address": 4337258,
+      "size": 6,
+      "origin": "alignment"
+    },
+    {
+      "address": 4337457,
+      "size": 15,
+      "origin": "alignment"
+    },
+    {
+      "address": 4337739,
+      "size": 5,
+      "origin": "alignment"
+    },
+    {
+      "address": 4337794,
+      "size": 14,
+      "origin": "alignment"
+    },
+    {
+      "address": 4338330,
+      "size": 6,
+      "origin": "alignment"
+    },
+    {
+      "address": 4338467,
+      "size": 13,
+      "origin": "alignment"
+    },
+    {
+      "address": 4338716,
+      "size": 4,
+      "origin": "alignment"
+    },
+    {
+      "address": 4338945,
+      "size": 15,
+      "origin": "alignment"
+    },
+    {
+      "address": 4339146,
+      "size": 6,
+      "origin": "alignment"
+    },
+    {
+      "address": 4339286,
+      "size": 10,
+      "origin": "alignment"
+    },
+    {
+      "address": 4339500,
+      "size": 4,
+      "origin": "alignment"
+    },
+    {
+      "address": 4342415,
+      "size": 1,
+      "origin": "alignment"
+    },
+    {
+      "address": 4343613,
+      "size": 3,
+      "origin": "alignment"
+    },
+    {
+      "address": 4344216,
+      "size": 8,
+      "origin": "alignment"
+    },
+    {
+      "address": 4344824,
+      "size": 8,
+      "origin": "alignment"
+    },
+    {
+      "address": 4345107,
+      "size": 13,
+      "origin": "alignment"
+    },
+    {
+      "address": 4345343,
+      "size": 1,
+      "origin": "alignment"
+    },
+    {
+      "address": 4346056,
+      "size": 8,
+      "origin": "alignment"
+    },
+    {
+      "address": 4346259,
+      "size": 13,
+      "origin": "alignment"
+    },
+    {
+      "address": 4346628,
+      "size": 12,
+      "origin": "alignment"
+    },
+    {
+      "address": 4346871,
+      "size": 9,
+      "origin": "alignment"
+    },
+    {
+      "address": 4347258,
+      "size": 6,
+      "origin": "alignment"
+    },
+    {
+      "address": 4347636,
+      "size": 12,
+      "origin": "alignment"
+    },
+    {
+      "address": 4348051,
+      "size": 13,
+      "origin": "alignment"
+    },
+    {
+      "address": 4348489,
+      "size": 7,
+      "origin": "alignment"
+    },
+    {
+      "address": 4352753,
+      "size": 15,
+      "origin": "alignment"
+    },
+    {
+      "address": 4353073,
+      "size": 15,
+      "origin": "alignment"
+    },
+    {
+      "address": 4353884,
+      "size": 4,
+      "origin": "alignment"
+    },
+    {
+      "address": 4355611,
+      "size": 5,
+      "origin": "alignment"
+    },
+    {
+      "address": 4355732,
+      "size": 12,
+      "origin": "alignment"
+    },
+    {
+      "address": 4355987,
+      "size": 13,
+      "origin": "alignment"
+    },
+    {
+      "address": 4356266,
+      "size": 6,
+      "origin": "alignment"
+    },
+    {
+      "address": 4356363,
+      "size": 5,
+      "origin": "alignment"
+    },
+    {
+      "address": 4356441,
+      "size": 7,
+      "origin": "alignment"
+    },
+    {
+      "address": 4356510,
+      "size": 2,
+      "origin": "alignment"
+    },
+    {
+      "address": 4356574,
+      "size": 2,
+      "origin": "alignment"
+    },
+    {
+      "address": 4356638,
+      "size": 2,
+      "origin": "alignment"
+    },
+    {
+      "address": 4356714,
+      "size": 6,
+      "origin": "alignment"
+    },
+    {
+      "address": 4356782,
+      "size": 2,
+      "origin": "alignment"
+    },
+    {
+      "address": 4389457,
+      "size": 15,
+      "origin": "alignment"
+    },
+    {
+      "address": 4389547,
+      "size": 5,
+      "origin": "alignment"
+    },
+    {
+      "address": 4389651,
+      "size": 13,
+      "origin": "alignment"
+    },
+    {
+      "address": 4389746,
+      "size": 14,
+      "origin": "alignment"
+    },
+    {
+      "address": 4389838,
+      "size": 2,
+      "origin": "alignment"
+    },
+    {
+      "address": 4390037,
+      "size": 11,
+      "origin": "alignment"
+    },
+    {
+      "address": 4390232,
+      "size": 8,
+      "origin": "alignment"
+    },
+    {
+      "address": 4390421,
+      "size": 11,
+      "origin": "alignment"
+    },
+    {
+      "address": 4390610,
+      "size": 14,
+      "origin": "alignment"
+    },
+    {
+      "address": 4391007,
+      "size": 1,
+      "origin": "alignment"
+    },
+    {
+      "address": 4391046,
+      "size": 10,
+      "origin": "alignment"
+    },
+    {
+      "address": 4391217,
+      "size": 15,
+      "origin": "alignment"
+    },
+    {
+      "address": 4391557,
+      "size": 11,
+      "origin": "alignment"
+    },
+    {
+      "address": 4391653,
+      "size": 11,
+      "origin": "alignment"
+    },
+    {
+      "address": 4391786,
+      "size": 6,
+      "origin": "alignment"
+    },
+    {
+      "address": 4391907,
+      "size": 13,
+      "origin": "alignment"
+    },
+    {
+      "address": 4393800,
+      "size": 8,
+      "origin": "alignment"
+    },
+    {
+      "address": 4395822,
+      "size": 2,
+      "origin": "alignment"
+    },
+    {
+      "address": 4396258,
+      "size": 14,
+      "origin": "alignment"
+    },
+    {
+      "address": 4396341,
+      "size": 11,
+      "origin": "alignment"
+    },
+    {
+      "address": 4396524,
+      "size": 4,
+      "origin": "alignment"
+    },
+    {
+      "address": 4396841,
+      "size": 7,
+      "origin": "alignment"
+    },
+    {
+      "address": 4397167,
+      "size": 1,
+      "origin": "alignment"
+    },
+    {
+      "address": 4397256,
+      "size": 8,
+      "origin": "alignment"
+    },
+    {
+      "address": 4397304,
+      "size": 8,
+      "origin": "alignment"
+    },
+    {
+      "address": 4397352,
+      "size": 8,
+      "origin": "alignment"
+    },
+    {
+      "address": 4397487,
+      "size": 1,
+      "origin": "alignment"
+    },
+    {
+      "address": 4400575,
+      "size": 1,
+      "origin": "alignment"
+    },
+    {
+      "address": 4400679,
+      "size": 9,
+      "origin": "alignment"
+    },
+    {
+      "address": 4400772,
+      "size": 12,
+      "origin": "alignment"
+    },
+    {
+      "address": 4400875,
+      "size": 5,
+      "origin": "alignment"
+    },
+    {
+      "address": 4401540,
+      "size": 12,
+      "origin": "alignment"
+    },
+    {
+      "address": 4405890,
+      "size": 14,
+      "origin": "alignment"
+    },
+    {
+      "address": 4406036,
+      "size": 12,
+      "origin": "alignment"
+    },
+    {
+      "address": 4406323,
+      "size": 13,
+      "origin": "alignment"
+    },
+    {
+      "address": 4406477,
+      "size": 3,
+      "origin": "alignment"
+    },
+    {
+      "address": 4406914,
+      "size": 14,
+      "origin": "alignment"
+    },
+    {
+      "address": 4407061,
+      "size": 11,
+      "origin": "alignment"
+    },
+    {
+      "address": 4407176,
+      "size": 8,
+      "origin": "alignment"
+    },
+    {
+      "address": 4407318,
+      "size": 10,
+      "origin": "alignment"
+    },
+    {
+      "address": 4408459,
+      "size": 5,
+      "origin": "alignment"
+    },
+    {
+      "address": 4408756,
+      "size": 12,
+      "origin": "alignment"
+    },
+    {
+      "address": 4409052,
+      "size": 4,
+      "origin": "alignment"
+    },
+    {
+      "address": 4409911,
+      "size": 9,
+      "origin": "alignment"
+    },
+    {
+      "address": 4409973,
+      "size": 11,
+      "origin": "alignment"
+    },
+    {
+      "address": 4410310,
+      "size": 10,
+      "origin": "alignment"
+    },
+    {
+      "address": 4411826,
+      "size": 14,
+      "origin": "alignment"
+    },
+    {
+      "address": 4411947,
+      "size": 5,
+      "origin": "alignment"
+    },
+    {
+      "address": 4413082,
+      "size": 6,
+      "origin": "alignment"
+    },
+    {
+      "address": 4414401,
+      "size": 15,
+      "origin": "alignment"
+    },
+    {
+      "address": 4415011,
+      "size": 13,
+      "origin": "alignment"
+    },
+    {
+      "address": 4415167,
+      "size": 1,
+      "origin": "alignment"
+    },
+    {
+      "address": 4415423,
+      "size": 1,
+      "origin": "alignment"
+    },
+    {
+      "address": 4415746,
+      "size": 14,
+      "origin": "alignment"
+    },
+    {
+      "address": 4415793,
+      "size": 15,
+      "origin": "alignment"
+    },
+    {
+      "address": 4415827,
+      "size": 13,
+      "origin": "alignment"
+    },
+    {
+      "address": 4415929,
+      "size": 7,
+      "origin": "alignment"
+    },
+    {
+      "address": 4415995,
+      "size": 5,
+      "origin": "alignment"
+    },
+    {
+      "address": 4416078,
+      "size": 2,
+      "origin": "alignment"
+    },
+    {
+      "address": 4416147,
+      "size": 13,
+      "origin": "alignment"
+    },
+    {
+      "address": 4416249,
+      "size": 7,
+      "origin": "alignment"
+    },
+    {
+      "address": 4416371,
+      "size": 13,
+      "origin": "alignment"
+    },
+    {
+      "address": 4416445,
+      "size": 3,
+      "origin": "alignment"
+    },
+    {
+      "address": 4416474,
+      "size": 6,
+      "origin": "alignment"
+    },
+    {
+      "address": 4416510,
+      "size": 2,
+      "origin": "alignment"
+    },
+    {
+      "address": 4416590,
+      "size": 2,
+      "origin": "alignment"
+    },
+    {
+      "address": 4416943,
+      "size": 1,
+      "origin": "alignment"
+    },
+    {
+      "address": 4417091,
+      "size": 13,
+      "origin": "alignment"
+    },
+    {
+      "address": 4417276,
+      "size": 4,
+      "origin": "alignment"
+    },
+    {
+      "address": 4417411,
+      "size": 13,
+      "origin": "alignment"
+    },
+    {
+      "address": 4417971,
+      "size": 13,
+      "origin": "alignment"
+    },
+    {
+      "address": 4418042,
+      "size": 6,
+      "origin": "alignment"
+    },
+    {
+      "address": 4418251,
+      "size": 5,
+      "origin": "alignment"
+    },
+    {
+      "address": 4418337,
+      "size": 15,
+      "origin": "alignment"
+    },
+    {
+      "address": 4418486,
+      "size": 10,
+      "origin": "alignment"
+    },
+    {
+      "address": 4418695,
+      "size": 9,
+      "origin": "alignment"
+    },
+    {
+      "address": 4418783,
+      "size": 1,
+      "origin": "alignment"
+    },
+    {
+      "address": 4419403,
+      "size": 5,
+      "origin": "alignment"
+    },
+    {
+      "address": 4421803,
+      "size": 5,
+      "origin": "alignment"
+    },
+    {
+      "address": 4421830,
+      "size": 10,
+      "origin": "alignment"
+    },
+    {
+      "address": 4421865,
+      "size": 7,
+      "origin": "alignment"
+    },
+    {
+      "address": 4437434,
+      "size": 6,
+      "origin": "alignment"
+    },
+    {
+      "address": 4437836,
+      "size": 4,
+      "origin": "alignment"
+    },
+    {
+      "address": 4437911,
+      "size": 9,
+      "origin": "alignment"
+    },
+    {
+      "address": 4437991,
+      "size": 9,
+      "origin": "alignment"
+    },
+    {
+      "address": 4438532,
+      "size": 12,
+      "origin": "alignment"
+    },
+    {
+      "address": 4438687,
+      "size": 1,
+      "origin": "alignment"
+    },
+    {
+      "address": 4438799,
+      "size": 1,
+      "origin": "alignment"
+    },
+    {
+      "address": 4438991,
+      "size": 1,
+      "origin": "alignment"
+    },
+    {
+      "address": 4439482,
+      "size": 6,
+      "origin": "alignment"
+    },
+    {
+      "address": 4439553,
+      "size": 15,
+      "origin": "alignment"
+    },
+    {
+      "address": 4439880,
+      "size": 8,
+      "origin": "alignment"
+    },
+    {
+      "address": 4440267,
+      "size": 5,
+      "origin": "alignment"
+    },
+    {
+      "address": 4440500,
+      "size": 12,
+      "origin": "alignment"
+    },
+    {
+      "address": 4440654,
+      "size": 2,
+      "origin": "alignment"
+    },
+    {
+      "address": 4441210,
+      "size": 6,
+      "origin": "alignment"
+    },
+    {
+      "address": 4441770,
+      "size": 6,
+      "origin": "alignment"
+    },
+    {
+      "address": 4441849,
+      "size": 7,
+      "origin": "alignment"
+    },
+    {
+      "address": 4442422,
+      "size": 10,
+      "origin": "alignment"
+    },
+    {
+      "address": 4443300,
+      "size": 12,
+      "origin": "alignment"
+    },
+    {
+      "address": 4443611,
+      "size": 5,
+      "origin": "alignment"
+    },
+    {
+      "address": 4444373,
+      "size": 11,
+      "origin": "alignment"
+    },
+    {
+      "address": 4444504,
+      "size": 8,
+      "origin": "alignment"
+    },
+    {
+      "address": 4444898,
+      "size": 14,
+      "origin": "alignment"
+    },
+    {
+      "address": 4445825,
+      "size": 15,
+      "origin": "alignment"
+    },
+    {
+      "address": 4446325,
+      "size": 11,
+      "origin": "alignment"
+    },
+    {
+      "address": 4446600,
+      "size": 8,
+      "origin": "alignment"
+    },
+    {
+      "address": 4446680,
+      "size": 8,
+      "origin": "alignment"
+    },
+    {
+      "address": 4448412,
+      "size": 4,
+      "origin": "alignment"
+    },
+    {
+      "address": 4448858,
+      "size": 6,
+      "origin": "alignment"
+    },
+    {
+      "address": 4449188,
+      "size": 12,
+      "origin": "alignment"
+    },
+    {
+      "address": 4449493,
+      "size": 11,
+      "origin": "alignment"
+    },
+    {
+      "address": 4449960,
+      "size": 8,
+      "origin": "alignment"
+    },
+    {
+      "address": 4451215,
+      "size": 1,
+      "origin": "alignment"
+    },
+    {
+      "address": 4451765,
+      "size": 11,
+      "origin": "alignment"
+    },
+    {
+      "address": 4451919,
+      "size": 1,
+      "origin": "alignment"
+    },
+    {
+      "address": 4458814,
+      "size": 2,
+      "origin": "alignment"
+    },
+    {
+      "address": 4458985,
+      "size": 7,
+      "origin": "alignment"
+    },
+    {
+      "address": 4459752,
+      "size": 8,
+      "origin": "alignment"
+    },
+    {
+      "address": 4460991,
+      "size": 1,
+      "origin": "alignment"
+    },
+    {
+      "address": 4461345,
+      "size": 15,
+      "origin": "alignment"
+    },
+    {
+      "address": 4462185,
+      "size": 7,
+      "origin": "alignment"
+    },
+    {
+      "address": 4462586,
+      "size": 6,
+      "origin": "alignment"
+    },
+    {
+      "address": 4462755,
+      "size": 13,
+      "origin": "alignment"
+    },
+    {
+      "address": 4462930,
+      "size": 14,
+      "origin": "alignment"
+    },
+    {
+      "address": 4463556,
+      "size": 12,
+      "origin": "alignment"
+    },
+    {
+      "address": 4464248,
+      "size": 8,
+      "origin": "alignment"
+    },
+    {
+      "address": 4464546,
+      "size": 14,
+      "origin": "alignment"
+    },
+    {
+      "address": 4464807,
+      "size": 9,
+      "origin": "alignment"
+    },
+    {
+      "address": 4465481,
+      "size": 7,
+      "origin": "alignment"
+    },
+    {
+      "address": 4465512,
+      "size": 8,
+      "origin": "alignment"
+    },
+    {
+      "address": 4465624,
+      "size": 8,
+      "origin": "alignment"
+    },
+    {
+      "address": 4466905,
+      "size": 7,
+      "origin": "alignment"
+    },
+    {
+      "address": 4467144,
+      "size": 8,
+      "origin": "alignment"
+    },
+    {
+      "address": 4467464,
+      "size": 8,
+      "origin": "alignment"
+    },
+    {
+      "address": 4467557,
+      "size": 11,
+      "origin": "alignment"
+    },
+    {
+      "address": 4467799,
+      "size": 9,
+      "origin": "alignment"
+    },
+    {
+      "address": 4467908,
+      "size": 12,
+      "origin": "alignment"
+    },
+    {
+      "address": 4468298,
+      "size": 6,
+      "origin": "alignment"
+    },
+    {
+      "address": 4468446,
+      "size": 2,
+      "origin": "alignment"
+    },
+    {
+      "address": 4468789,
+      "size": 11,
+      "origin": "alignment"
+    },
+    {
+      "address": 4469670,
+      "size": 10,
+      "origin": "alignment"
+    },
+    {
+      "address": 4471207,
+      "size": 9,
+      "origin": "alignment"
+    },
+    {
+      "address": 4471448,
+      "size": 8,
+      "origin": "alignment"
+    },
+    {
+      "address": 4472111,
+      "size": 1,
+      "origin": "alignment"
+    },
+    {
+      "address": 4472220,
+      "size": 4,
+      "origin": "alignment"
+    },
+    {
+      "address": 4474053,
+      "size": 11,
+      "origin": "alignment"
+    },
+    {
+      "address": 4498517,
+      "size": 11,
+      "origin": "alignment"
+    },
+    {
+      "address": 4498718,
+      "size": 2,
+      "origin": "alignment"
+    },
+    {
+      "address": 4498844,
+      "size": 4,
+      "origin": "alignment"
+    },
+    {
+      "address": 4499013,
+      "size": 11,
+      "origin": "alignment"
+    },
+    {
+      "address": 4499993,
+      "size": 7,
+      "origin": "alignment"
+    },
+    {
+      "address": 4500971,
+      "size": 5,
+      "origin": "alignment"
+    },
+    {
+      "address": 4501121,
+      "size": 15,
+      "origin": "alignment"
+    },
+    {
+      "address": 4501295,
+      "size": 1,
+      "origin": "alignment"
+    },
+    {
+      "address": 4501365,
+      "size": 11,
+      "origin": "alignment"
+    },
+    {
+      "address": 4501643,
+      "size": 5,
+      "origin": "alignment"
+    },
+    {
+      "address": 4501724,
+      "size": 4,
+      "origin": "alignment"
+    },
+    {
+      "address": 4502137,
+      "size": 7,
+      "origin": "alignment"
+    },
+    {
+      "address": 4502197,
+      "size": 11,
+      "origin": "alignment"
+    },
+    {
+      "address": 4502799,
+      "size": 1,
+      "origin": "alignment"
+    },
+    {
+      "address": 4502876,
+      "size": 4,
+      "origin": "alignment"
+    },
+    {
+      "address": 4503585,
+      "size": 15,
+      "origin": "alignment"
+    },
+    {
+      "address": 4504184,
+      "size": 8,
+      "origin": "alignment"
+    },
+    {
+      "address": 4504292,
+      "size": 12,
+      "origin": "alignment"
+    },
+    {
+      "address": 4504827,
+      "size": 5,
+      "origin": "alignment"
+    },
+    {
+      "address": 4505582,
+      "size": 2,
+      "origin": "alignment"
+    },
+    {
+      "address": 4506018,
+      "size": 14,
+      "origin": "alignment"
+    },
+    {
+      "address": 4506137,
+      "size": 7,
+      "origin": "alignment"
+    },
+    {
+      "address": 4506821,
+      "size": 11,
+      "origin": "alignment"
+    },
+    {
+      "address": 4507304,
+      "size": 8,
+      "origin": "alignment"
+    },
+    {
+      "address": 4507599,
+      "size": 1,
+      "origin": "alignment"
+    },
+    {
+      "address": 4507942,
+      "size": 10,
+      "origin": "alignment"
+    },
+    {
+      "address": 4508085,
+      "size": 11,
+      "origin": "alignment"
+    },
+    {
+      "address": 4510197,
+      "size": 11,
+      "origin": "alignment"
+    },
+    {
+      "address": 4510434,
+      "size": 14,
+      "origin": "alignment"
+    },
+    {
+      "address": 4510673,
+      "size": 15,
+      "origin": "alignment"
+    },
+    {
+      "address": 4511261,
+      "size": 3,
+      "origin": "alignment"
+    },
+    {
+      "address": 4511275,
+      "size": 5,
+      "origin": "alignment"
+    },
+    {
+      "address": 4511980,
+      "size": 4,
+      "origin": "alignment"
+    },
+    {
+      "address": 4512218,
+      "size": 6,
+      "origin": "alignment"
+    },
+    {
+      "address": 4512735,
+      "size": 1,
+      "origin": "alignment"
+    },
+    {
+      "address": 4513597,
+      "size": 3,
+      "origin": "alignment"
+    },
+    {
+      "address": 4513666,
+      "size": 14,
+      "origin": "alignment"
+    },
+    {
+      "address": 4513903,
+      "size": 1,
+      "origin": "alignment"
+    },
+    {
+      "address": 4515026,
+      "size": 14,
+      "origin": "alignment"
+    },
+    {
+      "address": 4515554,
+      "size": 14,
+      "origin": "alignment"
+    },
+    {
+      "address": 4515710,
+      "size": 2,
+      "origin": "alignment"
+    },
+    {
+      "address": 4516059,
+      "size": 5,
+      "origin": "alignment"
+    },
+    {
+      "address": 4516372,
+      "size": 12,
+      "origin": "alignment"
+    },
+    {
+      "address": 4516572,
+      "size": 4,
+      "origin": "alignment"
+    },
+    {
+      "address": 4517805,
+      "size": 3,
+      "origin": "alignment"
+    },
+    {
+      "address": 4519289,
+      "size": 7,
+      "origin": "alignment"
+    },
+    {
+      "address": 4519356,
+      "size": 4,
+      "origin": "alignment"
+    },
+    {
+      "address": 4519558,
+      "size": 10,
+      "origin": "alignment"
+    },
+    {
+      "address": 4519779,
+      "size": 13,
+      "origin": "alignment"
+    },
+    {
+      "address": 4520279,
+      "size": 9,
+      "origin": "alignment"
+    },
+    {
+      "address": 4520346,
+      "size": 6,
+      "origin": "alignment"
+    },
+    {
+      "address": 4520968,
+      "size": 8,
+      "origin": "alignment"
+    },
+    {
+      "address": 4521463,
+      "size": 9,
+      "origin": "alignment"
+    },
+    {
+      "address": 4522277,
+      "size": 11,
+      "origin": "alignment"
+    },
+    {
+      "address": 4522399,
+      "size": 1,
+      "origin": "alignment"
+    },
+    {
+      "address": 4523182,
+      "size": 2,
+      "origin": "alignment"
+    },
+    {
+      "address": 4523286,
+      "size": 10,
+      "origin": "alignment"
+    },
+    {
+      "address": 4524612,
+      "size": 12,
+      "origin": "alignment"
+    },
+    {
+      "address": 4524830,
+      "size": 2,
+      "origin": "alignment"
+    },
+    {
+      "address": 4525058,
+      "size": 14,
+      "origin": "alignment"
+    },
+    {
+      "address": 4525212,
+      "size": 4,
+      "origin": "alignment"
+    },
+    {
+      "address": 4525395,
+      "size": 13,
+      "origin": "alignment"
+    },
+    {
+      "address": 4538962,
+      "size": 14,
+      "origin": "alignment"
+    },
+    {
+      "address": 4539084,
+      "size": 4,
+      "origin": "alignment"
+    },
+    {
+      "address": 4539310,
+      "size": 2,
+      "origin": "alignment"
+    },
+    {
+      "address": 4539817,
+      "size": 7,
+      "origin": "alignment"
+    },
+    {
+      "address": 4540335,
+      "size": 1,
+      "origin": "alignment"
+    },
+    {
+      "address": 4540935,
+      "size": 9,
+      "origin": "alignment"
+    },
+    {
+      "address": 4541087,
+      "size": 1,
+      "origin": "alignment"
+    },
+    {
+      "address": 4541533,
+      "size": 3,
+      "origin": "alignment"
+    },
+    {
+      "address": 4541960,
+      "size": 8,
+      "origin": "alignment"
+    },
+    {
+      "address": 4542248,
+      "size": 8,
+      "origin": "alignment"
+    },
+    {
+      "address": 4542507,
+      "size": 5,
+      "origin": "alignment"
+    },
+    {
+      "address": 4542652,
+      "size": 4,
+      "origin": "alignment"
+    },
+    {
+      "address": 4542726,
+      "size": 10,
+      "origin": "alignment"
+    },
+    {
+      "address": 4542827,
+      "size": 5,
+      "origin": "alignment"
+    },
+    {
+      "address": 4572897,
+      "size": 15,
+      "origin": "alignment"
+    },
+    {
+      "address": 4572935,
+      "size": 9,
+      "origin": "alignment"
+    },
+    {
+      "address": 4572988,
+      "size": 4,
+      "origin": "alignment"
+    },
+    {
+      "address": 4573134,
+      "size": 2,
+      "origin": "alignment"
+    },
+    {
+      "address": 4573401,
+      "size": 7,
+      "origin": "alignment"
+    },
+    {
+      "address": 4574252,
+      "size": 4,
+      "origin": "alignment"
+    },
+    {
+      "address": 4575051,
+      "size": 5,
+      "origin": "alignment"
+    },
+    {
+      "address": 4575277,
+      "size": 3,
+      "origin": "alignment"
+    },
+    {
+      "address": 4575326,
+      "size": 2,
+      "origin": "alignment"
+    },
+    {
+      "address": 4575927,
+      "size": 9,
+      "origin": "alignment"
+    },
+    {
+      "address": 4576177,
+      "size": 15,
+      "origin": "alignment"
+    },
+    {
+      "address": 4576676,
+      "size": 12,
+      "origin": "alignment"
+    },
+    {
+      "address": 4576851,
+      "size": 13,
+      "origin": "alignment"
+    },
+    {
+      "address": 4577046,
+      "size": 10,
+      "origin": "alignment"
+    },
+    {
+      "address": 4577109,
+      "size": 11,
+      "origin": "alignment"
+    },
+    {
+      "address": 4577370,
+      "size": 6,
+      "origin": "alignment"
+    },
+    {
+      "address": 4577547,
+      "size": 5,
+      "origin": "alignment"
+    },
+    {
+      "address": 4577631,
+      "size": 1,
+      "origin": "alignment"
+    },
+    {
+      "address": 4577710,
+      "size": 2,
+      "origin": "alignment"
+    },
+    {
+      "address": 4577822,
+      "size": 2,
+      "origin": "alignment"
+    },
+    {
+      "address": 4577966,
+      "size": 2,
+      "origin": "alignment"
+    },
+    {
+      "address": 4577996,
+      "size": 4,
+      "origin": "alignment"
+    },
+    {
+      "address": 4578143,
+      "size": 1,
+      "origin": "alignment"
+    },
+    {
+      "address": 4579144,
+      "size": 8,
+      "origin": "alignment"
+    },
+    {
+      "address": 4579346,
+      "size": 14,
+      "origin": "alignment"
+    },
+    {
+      "address": 4579416,
+      "size": 8,
+      "origin": "alignment"
+    },
+    {
+      "address": 4579443,
+      "size": 13,
+      "origin": "alignment"
+    },
+    {
+      "address": 4579619,
+      "size": 13,
+      "origin": "alignment"
+    },
+    {
+      "address": 4579716,
+      "size": 12,
+      "origin": "alignment"
+    },
+    {
+      "address": 4579820,
+      "size": 4,
+      "origin": "alignment"
+    },
+    {
+      "address": 4579841,
+      "size": 15,
+      "origin": "alignment"
+    },
+    {
+      "address": 4580184,
+      "size": 8,
+      "origin": "alignment"
+    },
+    {
+      "address": 4580520,
+      "size": 8,
+      "origin": "alignment"
+    },
+    {
+      "address": 4580579,
+      "size": 13,
+      "origin": "alignment"
+    },
+    {
+      "address": 4580597,
+      "size": 11,
+      "origin": "alignment"
+    },
+    {
+      "address": 4580628,
+      "size": 12,
+      "origin": "alignment"
+    },
+    {
+      "address": 4580687,
+      "size": 1,
+      "origin": "alignment"
+    },
+    {
+      "address": 4580740,
+      "size": 12,
+      "origin": "alignment"
+    },
+    {
+      "address": 4580798,
+      "size": 2,
+      "origin": "alignment"
+    },
+    {
+      "address": 4580882,
+      "size": 14,
+      "origin": "alignment"
+    },
+    {
+      "address": 4581226,
+      "size": 6,
+      "origin": "alignment"
+    },
+    {
+      "address": 4581285,
+      "size": 11,
+      "origin": "alignment"
+    },
+    {
+      "address": 4581364,
+      "size": 12,
+      "origin": "alignment"
+    },
+    {
+      "address": 4581450,
+      "size": 6,
+      "origin": "alignment"
+    },
+    {
+      "address": 4581499,
+      "size": 5,
+      "origin": "alignment"
+    },
+    {
+      "address": 4581543,
+      "size": 9,
+      "origin": "alignment"
+    },
+    {
+      "address": 4581603,
+      "size": 13,
+      "origin": "alignment"
+    },
+    {
+      "address": 4581826,
+      "size": 14,
+      "origin": "alignment"
+    },
+    {
+      "address": 4582093,
+      "size": 3,
+      "origin": "alignment"
+    },
+    {
+      "address": 4583161,
+      "size": 7,
+      "origin": "alignment"
+    },
+    {
+      "address": 4584036,
+      "size": 12,
+      "origin": "alignment"
+    },
+    {
+      "address": 4584115,
+      "size": 13,
+      "origin": "alignment"
+    },
+    {
+      "address": 4584252,
+      "size": 4,
+      "origin": "alignment"
+    },
+    {
+      "address": 4584540,
+      "size": 4,
+      "origin": "alignment"
+    },
+    {
+      "address": 4584678,
+      "size": 10,
+      "origin": "alignment"
+    },
+    {
+      "address": 4584820,
+      "size": 12,
+      "origin": "alignment"
+    },
+    {
+      "address": 4585015,
+      "size": 9,
+      "origin": "alignment"
+    },
+    {
+      "address": 4585087,
+      "size": 1,
+      "origin": "alignment"
+    },
+    {
+      "address": 4585128,
+      "size": 8,
+      "origin": "alignment"
+    },
+    {
+      "address": 4585189,
+      "size": 11,
+      "origin": "alignment"
+    },
+    {
+      "address": 4585219,
+      "size": 13,
+      "origin": "alignment"
+    },
+    {
+      "address": 4585461,
+      "size": 11,
+      "origin": "alignment"
+    },
+    {
+      "address": 4585671,
+      "size": 9,
+      "origin": "alignment"
+    },
+    {
+      "address": 4585813,
+      "size": 11,
+      "origin": "alignment"
+    },
+    {
+      "address": 4586145,
+      "size": 15,
+      "origin": "alignment"
+    },
+    {
+      "address": 4586206,
+      "size": 2,
+      "origin": "alignment"
+    },
+    {
+      "address": 4586309,
+      "size": 11,
+      "origin": "alignment"
+    },
+    {
+      "address": 4586965,
+      "size": 11,
+      "origin": "alignment"
+    },
+    {
+      "address": 4587447,
+      "size": 9,
+      "origin": "alignment"
+    }
+  ],
+  "compiler_eh": {
+    "native_descriptors": 18,
+    "original_descriptors": 18,
+    "accepted": [
+      {
+        "generated_info": 4827256,
+        "target_info": 4827084,
+        "generated_handler": 4768762,
+        "target_handler": 4768762,
+        "cleanup_checks": [
+          {
+            "generated": 4768702,
+            "target": 4768702,
+            "size": 10,
+            "result": "exact"
+          },
+          {
+            "generated": 4768742,
+            "target": 4768742,
+            "size": 10,
+            "result": "exact"
+          },
+          {
+            "generated": 4768692,
+            "target": 4768692,
+            "size": 10,
+            "result": "exact"
+          },
+          {
+            "generated": 4768752,
+            "target": 4768752,
+            "size": 10,
+            "result": "exact"
+          },
+          {
+            "generated": 4768732,
+            "target": 4768732,
+            "size": 10,
+            "result": "exact"
+          },
+          {
+            "generated": 4768722,
+            "target": 4768722,
+            "size": 10,
+            "result": "exact"
+          },
+          {
+            "generated": 4768712,
+            "target": 4768712,
+            "size": 10,
+            "result": "exact"
+          }
+        ]
+      },
+      {
+        "generated_info": 4827292,
+        "target_info": 4827120,
+        "generated_handler": 4768792,
+        "target_handler": 4768792,
+        "cleanup_checks": [
+          {
+            "generated": 4768784,
+            "target": 4768784,
+            "size": 8,
+            "result": "exact"
+          }
+        ]
+      },
+      {
+        "generated_info": 4827328,
+        "target_info": 4827156,
+        "generated_handler": 4768824,
+        "target_handler": 4768824,
+        "cleanup_checks": [
+          {
+            "generated": 4768816,
+            "target": 4768816,
+            "size": 8,
+            "result": "exact"
+          }
+        ]
+      },
+      {
+        "generated_info": 4827364,
+        "target_info": 4827192,
+        "generated_handler": 4768859,
+        "target_handler": 4768859,
+        "cleanup_checks": [
+          {
+            "generated": 4768848,
+            "target": 4768848,
+            "size": 11,
+            "result": "exact"
+          }
+        ]
+      },
+      {
+        "generated_info": 4827408,
+        "target_info": 4827236,
+        "generated_handler": 4768902,
+        "target_handler": 4768902,
+        "cleanup_checks": [
+          {
+            "generated": 4768880,
+            "target": 4768880,
+            "size": 8,
+            "result": "exact"
+          },
+          {
+            "generated": 4768888,
+            "target": 4768888,
+            "size": 14,
+            "result": "exact"
+          }
+        ]
+      },
+      {
+        "generated_info": 4827444,
+        "target_info": 4827272,
+        "generated_handler": 4768920,
+        "target_handler": 4768920,
+        "cleanup_checks": [
+          {
+            "generated": 4768912,
+            "target": 4768912,
+            "size": 8,
+            "result": "exact"
+          }
+        ]
+      },
+      {
+        "generated_info": 4827480,
+        "target_info": 4827592,
+        "generated_handler": 4769179,
+        "target_handler": 4768955,
+        "cleanup_checks": [
+          {
+            "generated": 4769168,
+            "target": 4768944,
+            "size": 11,
+            "result": "exact"
+          }
+        ]
+      },
+      {
+        "generated_info": 4827516,
+        "target_info": 4827308,
+        "generated_handler": 4768955,
+        "target_handler": 4768987,
+        "cleanup_checks": [
+          {
+            "generated": 4768944,
+            "target": 4768976,
+            "size": 11,
+            "result": "exact"
+          }
+        ]
+      },
+      {
+        "generated_info": 4827552,
+        "target_info": 4827344,
+        "generated_handler": 4768987,
+        "target_handler": 4769019,
+        "cleanup_checks": [
+          {
+            "generated": 4768976,
+            "target": 4769008,
+            "size": 11,
+            "result": "exact"
+          }
+        ]
+      },
+      {
+        "generated_info": 4827596,
+        "target_info": 4827388,
+        "generated_handler": 4769030,
+        "target_handler": 4769062,
+        "cleanup_checks": [
+          {
+            "generated": 4769008,
+            "target": 4769040,
+            "size": 11,
+            "result": "exact"
+          },
+          {
+            "generated": 4769019,
+            "target": 4769051,
+            "size": 11,
+            "result": "exact"
+          }
+        ]
+      },
+      {
+        "generated_info": 4827640,
+        "target_info": 4827432,
+        "generated_handler": 4769062,
+        "target_handler": 4769094,
+        "cleanup_checks": [
+          {
+            "generated": 4769040,
+            "target": 4769072,
+            "size": 11,
+            "result": "exact"
+          },
+          {
+            "generated": 4769051,
+            "target": 4769083,
+            "size": 11,
+            "result": "exact"
+          }
+        ]
+      },
+      {
+        "generated_info": 4827676,
+        "target_info": 4827468,
+        "generated_handler": 4769080,
+        "target_handler": 4769112,
+        "cleanup_checks": [
+          {
+            "generated": 4769072,
+            "target": 4769104,
+            "size": 8,
+            "result": "exact"
+          }
+        ]
+      },
+      {
+        "generated_info": 4827728,
+        "target_info": 4827520,
+        "generated_handler": 4769134,
+        "target_handler": 4769166,
+        "cleanup_checks": [
+          {
+            "generated": 4769104,
+            "target": 4769136,
+            "size": 8,
+            "result": "exact"
+          },
+          {
+            "generated": 4769112,
+            "target": 4769144,
+            "size": 11,
+            "result": "exact"
+          },
+          {
+            "generated": 4769123,
+            "target": 4769155,
+            "size": 11,
+            "result": "exact"
+          }
+        ]
+      },
+      {
+        "generated_info": 4827764,
+        "target_info": 4827556,
+        "generated_handler": 4769154,
+        "target_handler": 4769186,
+        "cleanup_checks": [
+          {
+            "generated": 4769144,
+            "target": 4769176,
+            "size": 10,
+            "result": "exact"
+          }
+        ]
+      },
+      {
+        "generated_info": 4827800,
+        "target_info": 4827628,
+        "generated_handler": 4769199,
+        "target_handler": 4769206,
+        "cleanup_checks": [
+          {
+            "generated": 4769189,
+            "target": 4769196,
+            "size": 10,
+            "result": "exact"
+          }
+        ]
+      },
+      {
+        "generated_info": 4827844,
+        "target_info": 4827672,
+        "generated_handler": 4769229,
+        "target_handler": 4769236,
+        "cleanup_checks": [
+          {
+            "generated": 4769209,
+            "target": 4769216,
+            "size": 10,
+            "result": "exact"
+          },
+          {
+            "generated": 4769219,
+            "target": 4769226,
+            "size": 10,
+            "result": "exact"
+          }
+        ]
+      }
+    ],
+    "blocked": [
+      {
+        "generated_info": 4827172,
+        "candidate_infos": [],
+        "reason": "graph does not match uniquely"
+      },
+      {
+        "generated_info": 4827880,
+        "candidate_infos": [],
+        "reason": "graph does not match uniquely"
+      }
+    ]
+  },
+  "source_policy_exclusions": {
+    "0x4325c0": "Assembler-only Float2/Float3 field-writing helper; retained as an unaccepted reference-build dependency pending C++ recovery."
+  }
+}

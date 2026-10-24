@@ -1,0 +1,267 @@
+{
+  "repository": "https://github.com/some100/th07",
+  "commit": "4878bf0e42a9280ef44735eb0517d4fda7cb6e04",
+  "license": "CC0-1.0",
+  "original_files": [
+    {
+      "path": "src/th07/AnmIdx.hpp",
+      "sha256": "8fa6e830f87e28f1fcd9c1a6e64b0019dcda47a7225ce344debfb7830fae5fec"
+    },
+    {
+      "path": "src/th07/AnmManager.cpp",
+      "sha256": "65123b88058364f41de6e4e0e5041f7f744050d4bf5abae2517752f78a370a2e"
+    },
+    {
+      "path": "src/th07/AnmManager.hpp",
+      "sha256": "1b85237a66596f6143527bc15b6d7cd6e2cbfd147428720ed9ae62951fb9dd52"
+    },
+    {
+      "path": "src/th07/AsciiManager.cpp",
+      "sha256": "5725d7509057899fe86a1d7a1ab1b817df0069d5077c1d97672a17f6c223439f"
+    },
+    {
+      "path": "src/th07/AsciiManager.hpp",
+      "sha256": "b16cecdb56dbe5c8b85f394e9e4b80c8677d1baf5c324b9f6df8182b2476ef15"
+    },
+    {
+      "path": "src/th07/BombData.cpp",
+      "sha256": "bb070170d241ad54e78d6d6853ac3eedd90403d3810d52b417810ecec2aa74f6"
+    },
+    {
+      "path": "src/th07/BombData.hpp",
+      "sha256": "4d1ecd8b292194c0f6009413239cb2dbb5b9fee18f6134ccd54eae84d13dd159"
+    },
+    {
+      "path": "src/th07/BulletManager.cpp",
+      "sha256": "91393919c0d466066dd549b38ba5d57761df58f64b6170629cfe3b50da303684"
+    },
+    {
+      "path": "src/th07/BulletManager.hpp",
+      "sha256": "45236201b3299b5741a3691e6e3445fe21d3a07d2d666c48470301c639138432"
+    },
+    {
+      "path": "src/th07/EclManager.cpp",
+      "sha256": "027b65d265857a6612f665e104a8be6af2b15eb8f4a1ed63dad75541b766a4a4"
+    },
+    {
+      "path": "src/th07/EclManager.hpp",
+      "sha256": "9f2df4c365bb9445d3171b22a9f2af7ed453749d63dc11cf7dfebb3e70b5a2ec"
+    },
+    {
+      "path": "src/th07/EffectManager.cpp",
+      "sha256": "36a2fda7d9f50344bae8d6e129f9033b252dc34df1777c881e89680650a28d90"
+    },
+    {
+      "path": "src/th07/EffectManager.hpp",
+      "sha256": "96406d6e7ac4ae178fa5794d5def2a8e63e6fffcb4040ddf30df8a8cc968e80b"
+    },
+    {
+      "path": "src/th07/Ending.cpp",
+      "sha256": "d08be12cdd7568635b7d128f3c202d2742d1f1c7b47d78eb8774451c45f3b8c9"
+    },
+    {
+      "path": "src/th07/Ending.hpp",
+      "sha256": "16bc976d97949c7de0f006d142374f9bf3fac23d6b72762736cb30812ad61880"
+    },
+    {
+      "path": "src/th07/EnemyEclInstr.cpp",
+      "sha256": "f76d2ae0af857eb6fa66d41597ffa93c1b4aa4386d1841b76fa15d9536693c0d"
+    },
+    {
+      "path": "src/th07/EnemyEclInstr.hpp",
+      "sha256": "79b0436f1cebcf402215cbb3d887dc1ee27002b68c493462e10f6805a1313cb2"
+    },
+    {
+      "path": "src/th07/EnemyManager.cpp",
+      "sha256": "85a10bba18b4bdb6e1181ee9502fc05632d0dde0ee04afe106d9a9f33e88d04d"
+    },
+    {
+      "path": "src/th07/EnemyManager.hpp",
+      "sha256": "7c354a5b505a9dbd62ba3fed3072c85ac45144cae0a42bfe72426a4c5826c79b"
+    },
+    {
+      "path": "src/th07/GameManager.cpp",
+      "sha256": "359881b4ae010c87a3c92d7ba7cc40b4f66566cf13ac015fde87b26519c3696a"
+    },
+    {
+      "path": "src/th07/GameManager.hpp",
+      "sha256": "776d36003fa413ffb00d74d5fbe75495f669fbe41ca0ea6cc93fa1da0a20d0c7"
+    },
+    {
+      "path": "src/th07/Global.cpp",
+      "sha256": "05a6d3412aa8059306d93bd271ae5dc0233f5a42cd941bccf6b9165d1f97ed1d"
+    },
+    {
+      "path": "src/th07/Global.hpp",
+      "sha256": "3fcee2f2fd6f2738d07f5d236e2287948651749162b488726ee2dc4d960e7b3c"
+    },
+    {
+      "path": "src/th07/Gui.cpp",
+      "sha256": "acd93335f0d857364a8b1ab2704b3596627cbf55cc828d75fd656d116bdd5413"
+    },
+    {
+      "path": "src/th07/Gui.hpp",
+      "sha256": "661b5e082910b19f5c8cebc197963bd6296b9a3d313a8daeda459bffe685eb18"
+    },
+    {
+      "path": "src/th07/ItemManager.cpp",
+      "sha256": "5578a675a3b6afad7a2dedf607b59568f3b3dcc51758b869b1758092427e9756"
+    },
+    {
+      "path": "src/th07/ItemManager.hpp",
+      "sha256": "1cdbbf5b21e1cfd3568e91f9b5e878a7d29e801b81e40986f17d1e86331a0734"
+    },
+    {
+      "path": "src/th07/MainMenu.cpp",
+      "sha256": "3332403ba0306de7cddd2576809b73b951c4fbb3a15928bc88395b4b2ff9d941"
+    },
+    {
+      "path": "src/th07/MainMenu.hpp",
+      "sha256": "a40b324eb0455beabdf5ad69afb55489217b6825f3d82ca7bc4e98bf7c5a1a79"
+    },
+    {
+      "path": "src/th07/MidiOutput.cpp",
+      "sha256": "8df04a14a76c640ba2c21b4faefdd60559cebd34a2fd96155e4d7adc51ae0ff8"
+    },
+    {
+      "path": "src/th07/MidiOutput.hpp",
+      "sha256": "6878effe38aca3b45bcd29b72176d20a45587441e22faac51cf59f5cd93e270d"
+    },
+    {
+      "path": "src/th07/MusicRoom.cpp",
+      "sha256": "fa1e0210fad402134f312b8d35ad359628bec391fd0ddd68c15c5cce2d8bb702"
+    },
+    {
+      "path": "src/th07/MusicRoom.hpp",
+      "sha256": "eced586d3e0bd893fc924577f746809c5356c2ccb1f13f0a41b6a298b458e620"
+    },
+    {
+      "path": "src/th07/Player.cpp",
+      "sha256": "17e1093b2d684fab2b509b69f192f6bf1c20608e590e6387bb8bf4542650e174"
+    },
+    {
+      "path": "src/th07/Player.hpp",
+      "sha256": "625681c1c1ea9b459cb0ab6e47868a2ddf513db0ecdeb14a7cc0513705928f1a"
+    },
+    {
+      "path": "src/th07/ReplayManager.cpp",
+      "sha256": "665d35b6d60fa9c8376f7fc049f24592ec2486365425bb3b5babdca1955788e5"
+    },
+    {
+      "path": "src/th07/ReplayManager.hpp",
+      "sha256": "2965b936b53de4615ff688d0b09f183a8d16f8be48e4adc39acf933f16645a2b"
+    },
+    {
+      "path": "src/th07/ResultScreen.cpp",
+      "sha256": "ccaa96bcafa8030ac727c629b56c14f728a78cbe2b444bc5afbb9f09f8e40cfc"
+    },
+    {
+      "path": "src/th07/ResultScreen.hpp",
+      "sha256": "72a4f27df01b8cecc08407601878afb1ddbe1926734d639f1b0d21f13686c99f"
+    },
+    {
+      "path": "src/th07/ScreenEffect.cpp",
+      "sha256": "2048a734184699188910d317a431cbf0f66b7a467e7acc7c47b4d25d246c7175"
+    },
+    {
+      "path": "src/th07/ScreenEffect.hpp",
+      "sha256": "eef7b7b058c9a6e0e1d0bd48e0d9232c1bae402a99bd25ddea39ef69cf675eac"
+    },
+    {
+      "path": "src/th07/SoundPlayer.cpp",
+      "sha256": "1012299a207f930ab1608a6ccc6471b938410fc0fcae66e5daf46749c1448505"
+    },
+    {
+      "path": "src/th07/SoundPlayer.hpp",
+      "sha256": "f363cacd48955a35b82860e838a79ac89d6b3ea48d798001b94953035d5114a5"
+    },
+    {
+      "path": "src/th07/Stage.cpp",
+      "sha256": "0ddf389a6a48faa408ec9dd8b26d16cecc8f5ebcc47f11a89bf047437391d5c1"
+    },
+    {
+      "path": "src/th07/Stage.hpp",
+      "sha256": "782af4c1fe02f1ce6eb981c302745c31e05464e01a57c18aa4e73521c291d82c"
+    },
+    {
+      "path": "src/th07/Supervisor.cpp",
+      "sha256": "ce9dd2523b1b01a6b22716f5b1c5c99ab17dd0d5bd99225ccae7dfa02a06030f"
+    },
+    {
+      "path": "src/th07/Supervisor.hpp",
+      "sha256": "f95a0991a6510420c9ed3755569e0bad9f347127026e5b3b8b87bcdfaa16927f"
+    },
+    {
+      "path": "src/th07/TextHelper.cpp",
+      "sha256": "85ce531a48d9d768d71406616d3e103c6ae3a67b2b298430a9f98e8fe0780ebb"
+    },
+    {
+      "path": "src/th07/TextHelper.hpp",
+      "sha256": "1a1466af0230f50e5d4cc1834a22080e2fd161b3d7de42bf5a8574b2ca76d908"
+    },
+    {
+      "path": "src/th07/ZunBool.hpp",
+      "sha256": "9d62fd0d463b77f743a4407620ec7e82e3176984bb6af1b58be27043170c6a93"
+    },
+    {
+      "path": "src/th07/ZunColor.hpp",
+      "sha256": "d4b789b9c5fb95e4ee194e317d0982fe3f5a74361a55532c3afc7f584a380f47"
+    },
+    {
+      "path": "src/th07/ZunMath.hpp",
+      "sha256": "72139bf258e0343a71e9e33326083862ac6cca1e8d067cccf6c93b057b4a3e0e"
+    },
+    {
+      "path": "src/th07/ZunResult.hpp",
+      "sha256": "8f364217d48efad392708ae7b0b175df93b2cd9daef8e922f06a4fe1a9cf8001"
+    },
+    {
+      "path": "src/th07/dsutil.cpp",
+      "sha256": "59c0c409550ff5278ce8be4f8302f305fe9015dd30bcb1dfc72978065d74ebc4"
+    },
+    {
+      "path": "src/th07/dsutil.hpp",
+      "sha256": "cf1e136243f771a66dc7005b532cb8699becd04c336f67e6d317bf596ad6261f"
+    },
+    {
+      "path": "src/th07/dxutil.hpp",
+      "sha256": "aada45517e8f5516d13a09c80e33602d37fcca9879695a5bd7d2e34e254038be"
+    },
+    {
+      "path": "src/th07/inttypes.hpp",
+      "sha256": "4f75656eb94aa379cb2cb300f672847e391e9495c3a86ec03921a6b5bfeae05f"
+    },
+    {
+      "path": "src/th07/main.cpp",
+      "sha256": "51595aff1fc803ded8c5c5c1f566a6392b788f6d8d81aa0fe0b7e1df38259f30"
+    },
+    {
+      "path": "src/th07/pbg4/Lzss.cpp",
+      "sha256": "c2ac0bdef1c0ae08ac0488056ea58051fcb7d879c6458238834fb098b71dfb63"
+    },
+    {
+      "path": "src/th07/pbg4/Lzss.hpp",
+      "sha256": "df364840963756e5c74dc51161955ef8bc17136ef0a7e0617186ea1891720ef7"
+    },
+    {
+      "path": "src/th07/pbg4/Pbg4Archive.cpp",
+      "sha256": "f1f21c07abe8aba841210c582a47ba156ded5f0f907041ff5c4789d9c6b781ac"
+    },
+    {
+      "path": "src/th07/pbg4/Pbg4Archive.hpp",
+      "sha256": "4c7123924908462e31044436eddcff4e4646ad40da7d10c09e4d5077cc539fde"
+    },
+    {
+      "path": "src/th07/pbg4/Pbg4File.cpp",
+      "sha256": "7fa459be69042529006e2476e3787f9b8abddc66f5c311a2fed6d51846d6e75f"
+    },
+    {
+      "path": "src/th07/pbg4/Pbg4File.hpp",
+      "sha256": "81369d1e104b96d16c9c0b592c1e744f7c37b8c28cbaf36180a6ddd9a7abb53d"
+    },
+    {
+      "path": "src/th07/utils.hpp",
+      "sha256": "e5e74e18d79068c13eb2c3d329abe1998c3644e13bcd6adba6ab56b2b21e1a53"
+    }
+  ]
+}

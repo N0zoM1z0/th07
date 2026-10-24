@@ -1,0 +1,81 @@
+#pragma once
+
+#include "Player.hpp"
+
+extern u8 g_ItemDropTable[32];
+
+enum ItemType
+{
+    ITEM_POWER_SMALL,
+    ITEM_POINT,
+    ITEM_POWER_BIG,
+    ITEM_BOMB,
+    ITEM_FULL_POWER,
+    ITEM_LIFE,
+    ITEM_POINT_BULLET,
+    ITEM_CHERRY,
+    ITEM_CHERRY_SMALL,
+    ITEM_STAR,
+    ITEM_NO_ITEM = 255,
+};
+
+enum ItemState
+{
+    ITEM_STATE_DEFAULT,
+    ITEM_STATE_AUTOCOLLECT,
+    ITEM_STATE_MOVE_RANDOM,
+    ITEM_STATE_AUTOCOLLECT2,
+    ITEM_STATE_DEFAULT2,
+};
+
+struct Item
+{
+    ZunBool IsBelowPoc()
+    {
+        return this->pos.y < g_Player.shooterData->pocY;
+    }
+
+    i32 OffsetFromPoc()
+    {
+        return this->pos.y - g_Player.shooterData->pocY;
+    }
+
+    ZunBool ShouldAwardMaxScore()
+    {
+        return this->pos.y < g_Player.shooterData->pocY ||
+               this->autoCollect;
+    }
+
+    AnmVm sprite;
+    Float3 pos;
+    Float3 velocity;
+    Float3 targetPos;
+    ZunTimer timer;
+    i8 itemType;
+    i8 isInUse;
+    i8 isOnscreen;
+    i8 state;
+    i8 autoCollect;
+    // pad 3
+    struct Item *next;
+};
+C_ASSERT(sizeof(Item) == 0x288);
+
+#define MAX_ITEMS 1100
+
+struct ItemManager
+{
+    void ActivateAllItems();
+    void DespawnAllItems(i32 skipItemIdx);
+    void OnUpdate();
+    void OnDraw();
+    void RemoveAllItems();
+    Item *SpawnItem(Float3 *heading, i32 itemType, i32 state);
+
+    Item items[MAX_ITEMS + 1];
+    i32 nextIndex;
+    i32 activeItemCount;
+    Item listHead;
+    Item *listTail;
+};
+extern ItemManager g_ItemManager;

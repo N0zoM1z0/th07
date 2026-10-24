@@ -17,6 +17,8 @@ size_of_image = 16150528
 text_start = "0x00401000"
 text_end = "0x0048CD37"
 text_virtual_size = 572728
+headers_raw_size = 1024
+text_raw_offset = "0x00000400"
 text_raw_size = 572928
 relocations_stripped = true
 

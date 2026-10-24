@@ -9,9 +9,9 @@ Use this skill only for the target identity in `config/target.toml`.
 
 1. Read `AGENTS.md`, `docs/ARCHITECTURE.md`, `docs/RE_WORKFLOW.md`, the
    selected ledger row, and active claims.
-2. Run `scripts/verify-target.py` and `scripts/check-ida-mcp.py` before fresh
-   semantic work. IDA is attached to the GUI's current file and has no program
-   selector.
+2. Run `scripts/verify-target.py` and `scripts/ghidra.py check` before fresh
+   semantic work. All analysis uses the hash-attested headless Ghidra wrapper;
+   REA, GUI tools and GUI-attached IDA MCP are prohibited.
 3. Reconcile the ledger boundary with target instructions. IDA chunks and
    decompiler sizes are advisory.
 4. Run `python3 scripts/typed-re.py ADDRESS --json` when the function is

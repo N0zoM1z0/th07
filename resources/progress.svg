@@ -1,9 +1,11 @@
-<svg xmlns="http://www.w3.org/2000/svg" width="560" height="116" role="img" aria-label="TH07 reconstruction progress 30.82% by bytes">
-  <rect width="560" height="116" rx="8" fill="#1f2335"/>
-  <text x="24" y="32" fill="#f4f4f5" font-family="sans-serif" font-size="16" font-weight="600">TH07 source reconstruction</text>
-  <text x="536" y="32" fill="#f4f4f5" text-anchor="end" font-family="monospace" font-size="14">30.82% exact bytes</text>
-  <rect x="24" y="48" width="440" height="14" rx="7" fill="#3b4058"/>
-  <rect x="24" y="48" width="135.59" height="14" rx="7" fill="#e46c8c"/>
-  <text x="24" y="88" fill="#c8cad2" font-family="sans-serif" font-size="13">Authored exact: 223 / 1,023 functions · 65,633 / 443,386 bytes</text>
-  <text x="24" y="108" fill="#c8cad2" font-family="sans-serif" font-size="13">Library exact: 504 / 504 functions · 102,621 / 102,621 bytes</text>
+<svg xmlns="http://www.w3.org/2000/svg" width="680" height="142" role="img" aria-labelledby="title desc">
+  <title id="title">TH07 authored exact bytes: 98.1082%</title>
+  <desc id="desc">678 of 686 authored functions; 373295 of 380493 bytes. Four functions use separate accepted COFF probes. Whole executable equivalence is unverified.</desc>
+  <rect width="680" height="142" rx="10" fill="#1f2335"/>
+  <text x="24" y="32" fill="#f4f4f5" font-family="sans-serif" font-size="17">TH07 · Perfect Cherry Blossom</text>
+  <text x="656" y="32" text-anchor="end" fill="#f4f4f5" font-family="monospace" font-size="16">98.1082% authored exact</text>
+  <rect x="24" y="50" width="512" height="14" rx="7" fill="#3b4058"/>
+  <rect x="24" y="50" width="502.31" height="14" rx="7" fill="#e46c8c"/>
+  <text x="24" y="91" fill="#d5d7df" font-family="sans-serif" font-size="14">678 / 686 functions · 373,295 / 380,493 bytes · 8 remaining</text>
+  <text x="24" y="119" fill="#b7bdcf" font-family="sans-serif" font-size="12">Complete function extents + tables · native LTCG build + 4 preserved COFF probes</text>
 </svg>

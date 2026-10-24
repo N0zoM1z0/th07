@@ -1,5 +1,8 @@
 # Enemy subsystem reconstruction
 
+> Historical focused-probe evidence. Current source ownership, acceptance and
+> counts are defined in [ORACLE.md](ORACLE.md) and the canonical ledgers.
+
 This note records target-backed structure for the TH07 1.00b enemy update and
 render pipeline. It is not a substitute for strict per-function byte
 comparison. Names borrowed from TH06 or TH08 remain hypotheses until the TH07

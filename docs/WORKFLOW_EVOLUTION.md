@@ -1,5 +1,8 @@
 # Workflow evolution decision
 
+> Historical focused-probe evidence. Current source ownership, acceptance and
+> counts are defined in [ORACLE.md](ORACLE.md) and the canonical ledgers.
+
 ## Accepted order
 
 TH07 uses the mature TH10.5 control-plane ideas while removing its VC8/LTCG and

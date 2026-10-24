@@ -243,6 +243,7 @@ def build_unit(name: str, unit: dict[str, object], json_mode: bool) -> dict[str,
             compiler_hashes[path.name] = file_sha256(path)
     inputs = {
         "source_sha256": file_sha256(source),
+        "headers": {str(p.relative_to(ROOT)): file_sha256(p) for p in sorted((ROOT / "src").glob("*.h*")) if p.is_file()},
         "manifest_sha256": file_sha256(MANIFEST),
         "compile_script_sha256": file_sha256(ROOT / "scripts" / "compile-unit.sh"),
         "runner_sha256": file_sha256(ROOT / "scripts" / "vc7run.bat"),

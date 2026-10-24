@@ -54,15 +54,14 @@ reference proof for this discriminator.
 
 ## Resource-aware iteration
 
-When host CPU is constrained, keep VC7 builds and strict comparison batches
-within the wrapper's bounded lanes; workers may continue packet analysis and
-source drafting in parallel. The canonical compiler wrapper exposes two
-cross-worker `flock` slots and runs Wine at niceness 10 by default, which keeps
-the current host near the agreed 60% ceiling. Override only through the
-documented task-specific environment variables. Never run an unbounded
-`rg --follow --no-ignore` from a workspace containing a Wine prefix: Wine's
-`dosdevices/z:` symlink points to `/`. Keep `TH07_WINEPREFIX` outside the
-workspace, as the canonical scripts do.
+All compilation runs headlessly through one shared `flock` slot, pinned to one
+CPU with low process priority. Preserve the native master PDB, remove unused
+per-object PDB/PCH files, and keep Wine's prefix outside the checkout. Never run
+an unbounded search following Wine's `dosdevices/z:` symlink to `/`.
+
+Current acceptance uses `scripts/replay-exact-units.py` and full native PDB or
+COFF extents. A ledger-sized probe prefix cannot grant exact credit. See
+`docs/ORACLE.md` for source policy and independent relocation rules.
 
 Do not force bytes with naked assembly, copied byte arrays, manual padding,
 fake types, ABI lies, or target patches. Only the coordinator promotes a row to

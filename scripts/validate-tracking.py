@@ -127,6 +127,12 @@ def main() -> int:
         except (OSError, ValueError, KeyError) as exc:
             errors.append(str(exc))
 
+    try:
+        from reconstruction_state import state
+        state()
+    except (OSError, ValueError, KeyError) as exc:
+        errors.append(f"canonical reconstruction: {exc}")
+
     if errors:
         for error in errors:
             print(f"error: {error}")

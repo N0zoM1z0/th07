@@ -73,6 +73,9 @@ mkdir -p "$(dirname "$output_path")" "$wine_prefix"
 export WINEPREFIX="$wine_prefix"
 export WINEARCH=win32
 export WINEDEBUG=-all
+export DISPLAY=
+export WAYLAND_DISPLAY=
+export WINEDLLOVERRIDES=winemenubuilder.exe=d
 
 source_win="$(winepath -w "$source_path")"
 output_win="$(winepath -w "$output_path")"
@@ -84,16 +87,10 @@ DEVENV_PREFIX="$(winepath -w "$vc7_root")"
 compile_lock="${TH07_COMPILE_LOCK:-$(dirname "$repo_root")/.th07-vc7-compile}"
 compile_nice="${TH07_COMPILE_NICE:-10}"
 
-# VC7 itself is single-threaded. Two independent lock slots keep parallel agent
-# work moving while bounding the default compiler load to roughly two cores.
-exec 8>"${compile_lock}.0.lock"
-exec 9>"${compile_lock}.1.lock"
-if flock --nonblock 8; then
-  compile_lock_fd=8
-else
-  flock --exclusive 9
-  compile_lock_fd=9
-fi
+# One headless compiler lane; the same prefix is shared by the bounded probes.
+exec 8>"${compile_lock}.lock"
+flock --exclusive 8
+compile_lock_fd=8
 
 # VC7 launched through Wine can report a successful process status even after
 # cl.exe printed a fatal compile error.  Move the previous object aside so a
@@ -115,7 +112,8 @@ restore_previous_output() {
 }
 trap restore_previous_output EXIT
 
-nice -n "$compile_nice" wine "$runner_win" cl.exe \
+compile_cpu=$(python3 -c 'import os; print(max(os.sched_getaffinity(0)))')
+taskset -c "$compile_cpu" nice -n "$compile_nice" wine "$runner_win" cl.exe \
     /nologo \
     /c \
     /MT \

@@ -1,0 +1,734 @@
+#include "MidiOutput.hpp"
+
+#include "Global.hpp"
+#include "Supervisor.hpp"
+#include "ZunResult.hpp"
+#include "dsutil.hpp"
+#include "i18n.hpp"
+#include "inttypes.hpp"
+#include "utils.hpp"
+
+// GLOBAL: TH07 0x0135e210
+LARGE_INTEGER g_PerfCounter;
+
+// FUNCTION: TH07 0x00436110
+MidiDevice::MidiDevice()
+{
+    this->handle = NULL;
+    this->deviceID = 0;
+}
+
+// FUNCTION: TH07 0x00436140
+MidiDevice::~MidiDevice()
+{
+    Close();
+}
+
+// FUNCTION: TH07 0x00436160
+ZunBool MidiDevice::OpenDevice(i32 deviceID)
+{
+    if (this->handle)
+    {
+        if (this->deviceID != deviceID)
+        {
+            Close();
+        }
+        else
+        {
+            return false;
+        }
+    }
+    this->deviceID = deviceID;
+    return midiOutOpen(&this->handle, deviceID,
+                       (DWORD_PTR)g_Supervisor.hwndGameWindow, 0,
+                       CALLBACK_WINDOW) != MMSYSERR_NOERROR;
+}
+
+// FUNCTION: TH07 0x004361c0
+ZunResult MidiDevice::Close()
+{
+    if (!this->handle)
+    {
+        return ZUN_ERROR;
+    }
+
+    midiOutReset(this->handle);
+    midiOutClose(this->handle);
+    this->handle = NULL;
+    return ZUN_SUCCESS;
+}
+
+// FUNCTION: TH07 0x00436200
+ZunBool MidiDevice::SendLongMsg(LPMIDIHDR pmh)
+{
+    if (!this->handle)
+    {
+        return FALSE;
+    }
+
+    if (midiOutPrepareHeader(this->handle, pmh, sizeof(MIDIHDR)) !=
+        MMSYSERR_NOERROR)
+    {
+        return TRUE;
+    }
+
+    return midiOutLongMsg(this->handle, pmh, 0x40) != MMSYSERR_NOERROR;
+}
+
+union MidiShortMsg {
+    struct
+    {
+        u8 midiStatus;
+        i8 firstByte;
+        i8 secondByte;
+        i8 unused;
+    } msg;
+    u32 dwMsg;
+};
+
+// FUNCTION: TH07 0x00436250
+ZunBool MidiDevice::SendShortMsg(u8 midiStatus, u8 firstByte, u8 secondByte)
+{
+    MidiShortMsg pkt;
+
+    if (!this->handle)
+    {
+        return FALSE;
+    }
+
+    pkt.msg.midiStatus = midiStatus;
+    pkt.msg.firstByte = firstByte;
+    pkt.msg.secondByte = secondByte;
+    return midiOutShortMsg(this->handle, pkt.dwMsg) != MMSYSERR_NOERROR;
+}
+
+// FUNCTION: TH07 0x004362a0
+MidiTimer::MidiTimer()
+{
+    timeGetDevCaps(&this->timeCaps, 8);
+    this->timerId = 0;
+}
+
+// FUNCTION: TH07 0x004362d0
+MidiTimer::~MidiTimer()
+{
+    StopTimerImpl();
+    timeEndPeriod(this->timeCaps.wPeriodMin);
+}
+
+// FUNCTION: TH07 0x00436300
+u32 MidiTimer::StartTimerImpl(u32 delay, LPTIMECALLBACK cb, DWORD_PTR data)
+{
+    StopTimerImpl();
+    timeBeginPeriod(this->timeCaps.wPeriodMin);
+    if (cb)
+    {
+        this->timerId = timeSetEvent(delay, this->timeCaps.wPeriodMin, cb,
+                                     data, TIME_PERIODIC);
+    }
+    else
+    {
+        this->timerId = timeSetEvent(delay, this->timeCaps.wPeriodMin,
+                                     DefaultTimerCallback, (DWORD_PTR)this,
+                                     TIME_PERIODIC);
+    }
+    return this->timerId;
+}
+
+// FUNCTION: TH07 0x00436380
+i32 MidiTimer::StopTimerImpl()
+{
+    if (this->timerId != 0)
+    {
+        timeKillEvent(this->timerId);
+    }
+    timeEndPeriod(this->timeCaps.wPeriodMin);
+    this->timerId = 0;
+    return 1;
+}
+
+// FUNCTION: TH07 0x004363c0
+void CALLBACK MidiTimer::DefaultTimerCallback(u32 delay, u32 wPeriodMin,
+                                              DWORD_PTR dwUser, DWORD_PTR dw1,
+                                              DWORD_PTR dw2)
+{
+    MidiTimer *timer = (MidiTimer *)dwUser;
+
+    timer->OnTimerElapsed();
+}
+
+// FUNCTION: TH07 0x004363e0
+u16 MidiOutput::Ntohs(u16 x)
+{
+    u8 tmp[2];
+    tmp[0] = ((u8 *)&x)[1];
+    tmp[1] = ((u8 *)&x)[0];
+
+    return *(u16 *)&tmp;
+}
+
+// FUNCTION: TH07 0x00436400
+u32 MidiOutput::SkipVariableLength(u8 **curTrackDataCursor)
+{
+    u32 length;
+    u8 tmp;
+
+    length = 0;
+    do
+    {
+        tmp = **curTrackDataCursor;
+        *curTrackDataCursor = *curTrackDataCursor + 1;
+        length = length * 0x80 + (tmp & 127);
+    } while ((tmp & 0x80) != 0);
+    return length;
+}
+
+// FUNCTION: TH07 0x00436450
+MidiOutput::MidiOutput()
+{
+    i32 headerIdx;
+    i32 fileDataIdx;
+
+    this->tracks = NULL;
+    this->divisions = 0;
+    this->tempo = 0;
+    this->numTracks = 0;
+    this->pitchTranspose = 0;
+    this->fadeOutVolumeMultiplier = 0.0f;
+    this->fadeOutLastSetVolume = 0;
+    this->unused_2d0 = 0;
+    this->disableFadeOut = FALSE;
+    this->unused_2d8 = 0;
+    this->fadeOutState = 0;
+    this->fadeOutFlag = FALSE;
+    for (fileDataIdx = 0; fileDataIdx < ARRAY_SIZE_SIGNED(this->midiFileData); fileDataIdx++)
+    {
+        this->midiFileData[fileDataIdx] = NULL;
+    }
+    for (headerIdx = 0; headerIdx < ARRAY_SIZE_SIGNED(this->midiHeaders); headerIdx++)
+    {
+        this->midiHeaders[headerIdx] = NULL;
+    }
+    this->fileIdx = -1;
+    this->midiHeadersCursor = 0;
+}
+
+// FUNCTION: TH07 0x004365b0
+MidiOutput::~MidiOutput()
+{
+    StopPlayback();
+    ClearTracks();
+    for (i32 i = 0; i < ARRAY_SIZE_SIGNED(this->midiFileData); i++)
+    {
+        ReleaseFileData(i);
+    }
+}
+
+// FUNCTION: TH07 0x00436650
+ZunResult MidiOutput::ReadFileData(i32 fileIdx, const char *path)
+{
+    if (this->fileIdx == fileIdx)
+    {
+        StopPlayback();
+    }
+    ReleaseFileData(fileIdx);
+    this->midiFileData[fileIdx] = FileSystem::OpenFile(path, 0);
+    if (!this->midiFileData[fileIdx])
+    {
+        g_GameErrorContext.Log(TH_ERR_MIDI_LOAD_FAIL, path);
+        return ZUN_ERROR;
+    }
+
+    return ZUN_SUCCESS;
+}
+
+// FUNCTION: TH07 0x004366c0
+void MidiOutput::ReleaseFileData(u32 idx)
+{
+    ZUN_FREE(this->midiFileData[idx]);
+    this->midiFileData[idx] = NULL;
+}
+
+// FUNCTION: TH07 0x00436700
+void MidiOutput::ClearTracks()
+{
+    i32 i;
+
+    for (i = 0; i < this->numTracks; i++)
+    {
+        ZUN_FREE(this->tracks[i].trackData);
+    }
+    ZUN_FREE(this->tracks);
+    this->tracks = NULL;
+    this->numTracks = 0;
+}
+
+#pragma var_order(i, currentCursor, trackChunk, fileData, hdrLength, hdrRaw, \
+                  trackLength, header)
+// FUNCTION: TH07 0x00436790
+ZunResult MidiOutput::ParseFile(i32 fileIdx)
+{
+    u8 hdrRaw[8];
+    i32 i;
+    u8 *currentCursor;
+    u8 *trackChunk;
+    u8 *fileData;
+    u32 hdrLength;
+    u32 trackLength;
+    u16 *header;
+
+    ClearTracks();
+    currentCursor = this->midiFileData[fileIdx];
+    fileData = currentCursor;
+    if (!currentCursor)
+    {
+        utils::DebugPrint(TH_ERR_MIDI_NOT_LOADED);
+        return ZUN_ERROR;
+    }
+
+    memcpy(&hdrRaw, currentCursor, 8);
+    currentCursor += sizeof(hdrRaw);
+    hdrLength = Ntohl(*(u32 *)&hdrRaw[4]);
+    header = (u16 *)currentCursor;
+    currentCursor += hdrLength;
+
+    this->format = Ntohs(header[0]);
+    this->divisions = Ntohs(header[2]);
+    this->numTracks = Ntohs(header[1]);
+    this->tracks =
+        (MidiTrack *)ZUN_ALLOC(this->numTracks * sizeof(MidiTrack));
+    memset(this->tracks, 0, this->numTracks * sizeof(MidiTrack));
+    for (i = 0; i < this->numTracks; i++)
+    {
+        trackChunk = currentCursor;
+        currentCursor += 8;
+        trackLength = Ntohl(((u32 *)trackChunk)[1]);
+        this->tracks[i].trackLength = trackLength;
+        this->tracks[i].trackData = (u8 *)malloc(trackLength);
+        this->tracks[i].trackPlaying = 1;
+        memcpy(this->tracks[i].trackData, currentCursor, trackLength);
+        currentCursor += trackLength;
+    }
+    this->tempo = 1000000;
+    this->fileIdx = fileIdx;
+    // STRING: TH07 0x00497280
+    utils::DebugPrint(" midi open %d\n", fileIdx);
+    return ZUN_SUCCESS;
+}
+
+// FUNCTION: TH07 0x004369c0
+ZunResult MidiOutput::LoadFile(const char *path)
+{
+    if (ReadFileData(31, path) != ZUN_SUCCESS)
+    {
+        return ZUN_ERROR;
+    }
+
+    ParseFile(31);
+    ReleaseFileData(31);
+    return ZUN_SUCCESS;
+}
+
+// FUNCTION: TH07 0x00436a00
+void MidiOutput::LoadTracks()
+{
+    MidiTrack *track;
+    i32 i;
+
+    track = this->tracks;
+    this->fadeOutVolumeMultiplier = 1.0f;
+    this->fadeOutState = 0;
+    this->fadeOutFlag = FALSE;
+    this->volume = 0;
+    this->field_0x130 = 0;
+    for (i = 0; i < this->numTracks; i++, track++)
+    {
+        track->curTrackDataCursor = track->trackData;
+        track->savedTrackDataCursor = track->curTrackDataCursor;
+        track->trackPlaying = 1;
+        track->trackLengthOther = SkipVariableLength(&track->curTrackDataCursor);
+    }
+}
+
+// FUNCTION: TH07 0x00436ad0
+ZunResult MidiOutput::Play()
+{
+    if (!this->tracks)
+    {
+        return ZUN_ERROR;
+    }
+
+    LoadTracks();
+    this->midiOutDev.OpenDevice(-1);
+    StartTimerImpl(1, NULL, 0);
+    // STRING: TH07 0x00497274
+    utils::DebugPrint(" midi play\n");
+    return ZUN_SUCCESS;
+}
+
+// FUNCTION: TH07 0x00436b30
+ZunResult MidiOutput::StopPlayback()
+{
+    if (!this->tracks)
+    {
+        return ZUN_ERROR;
+    }
+
+    for (i32 i = 0; i < ARRAY_SIZE_SIGNED(this->midiHeaders); i++)
+    {
+        if (this->midiHeaders[this->midiHeadersCursor])
+        {
+            UnprepareHeader(this->midiHeaders[this->midiHeadersCursor]);
+        }
+    }
+    StopTimerImpl();
+    this->midiOutDev.Close();
+    this->fileIdx = -1;
+    return ZUN_SUCCESS;
+}
+
+// FUNCTION: TH07 0x00436bc0
+ZunResult MidiOutput::UnprepareHeader(LPMIDIHDR pmh)
+{
+    i32 i;
+
+    if (!pmh)
+    {
+        // STRING: TH07 0x00497268
+        utils::DebugPrint("error :\r\n");
+    }
+
+    if (!this->midiOutDev.handle)
+    {
+        utils::DebugPrint("error :\r\n");
+    }
+
+    for (i = 0; i < ARRAY_SIZE_SIGNED(this->midiHeaders); i++)
+    {
+        if (this->midiHeaders[i] == pmh)
+        {
+            this->midiHeaders[i] = NULL;
+            goto success;
+        }
+    }
+    return ZUN_ERROR;
+
+success:
+    MMRESULT res = midiOutUnprepareHeader(this->midiOutDev.handle, pmh, 0x40);
+    if (res)
+    {
+        utils::DebugPrint("error :\r\n");
+    }
+
+    ZUN_FREE(pmh->lpData);
+    ZUN_FREE(pmh);
+    return ZUN_SUCCESS;
+}
+
+// FUNCTION: TH07 0x00436c90
+ZunResult MidiOutput::SetFadeOut(i32 interval)
+{
+    this->fadeOutVolumeMultiplier = 0.0f;
+    this->fadeOutInterval = interval;
+    this->fadeOutElapsedMs = 0;
+    this->fadeOutState = 0;
+    this->fadeOutFlag = TRUE;
+    return ZUN_SUCCESS;
+}
+
+#pragma var_order(i, local_14, trackLoaded)
+// FUNCTION: TH07 0x00436ce0
+void MidiOutput::OnTimerElapsed()
+{
+    u64 local_14;
+    i32 i;
+    ZunBool trackLoaded;
+
+    trackLoaded = FALSE;
+
+    local_14 =
+        this->field_0x130 + this->volume * this->divisions * 1000 / this->tempo;
+    if (this->fadeOutFlag)
+    {
+        if (this->fadeOutElapsedMs < this->fadeOutInterval)
+        {
+            this->fadeOutVolumeMultiplier =
+                1.0f - (f32)this->fadeOutElapsedMs / (f32)this->fadeOutInterval;
+            if ((i32)(this->fadeOutVolumeMultiplier * 128.0f) != this->fadeOutLastSetVolume)
+            {
+                FadeOutSetVolume(0);
+            }
+            this->fadeOutLastSetVolume = (i32)(this->fadeOutVolumeMultiplier * 128.0f);
+            this->fadeOutElapsedMs++;
+        }
+        else
+        {
+            this->fadeOutVolumeMultiplier = 0.0f;
+            return;
+        }
+    }
+    for (i = 0; i < this->numTracks; i++)
+    {
+        if (this->tracks[i].trackPlaying != 0)
+        {
+            trackLoaded = TRUE;
+            while (this->tracks[i].trackPlaying != 0)
+            {
+                if (this->tracks[i].trackLengthOther <= local_14)
+                {
+                    ProcessMsg(&this->tracks[i]);
+                    local_14 = this->field_0x130 +
+                               this->volume * this->divisions * 1000 / this->tempo;
+                    continue;
+                }
+                break;
+            }
+        }
+    }
+
+    this->volume++;
+    if (!trackLoaded)
+    {
+        LoadTracks();
+    }
+}
+
+#pragma var_order(nextTrackLength, i, arg2, volumeClamped, opcodeLow,      \
+                  opcodeHigh, opcode, arg1, curTrackLength, pmh, metaType, \
+                  bpm, curTrack1, curTrack2)
+// FUNCTION: TH07 0x00436f50
+void MidiOutput::ProcessMsg(MidiTrack *track)
+{
+    MidiTrack *curTrack2;
+    MidiTrack *curTrack1;
+    i32 bpm;
+    u8 metaType;
+    LPMIDIHDR pmh;
+    i32 curTrackLength;
+    u8 arg1;
+    u8 opcode;
+    u8 opcodeHigh;
+    u8 opcodeLow;
+    i32 volumeClamped;
+    u8 arg2;
+    i32 i;
+    i32 nextTrackLength;
+
+    opcode = *track->curTrackDataCursor;
+    if (opcode < OPCODE_NOTE_OFF)
+    {
+        opcode = track->opcode;
+    }
+    else
+    {
+        track->curTrackDataCursor++;
+    }
+    opcodeHigh = opcode & 0xf0;
+    opcodeLow = opcode & 0x0f;
+    switch (opcodeHigh)
+    {
+    case OPCODE_SYSTEM_EXCLUSIVE:
+        if (opcode == OPCODE_SYSTEM_EXCLUSIVE)
+        {
+            if (this->midiHeaders[this->midiHeadersCursor])
+            {
+                UnprepareHeader(this->midiHeaders[this->midiHeadersCursor]);
+            }
+            pmh = this->midiHeaders[this->midiHeadersCursor] =
+                (MIDIHDR *)ZUN_ALLOC(sizeof(MIDIHDR));
+            curTrackLength = SkipVariableLength(&track->curTrackDataCursor);
+            memset(pmh, 0, sizeof(MIDIHDR));
+            pmh->lpData = (LPSTR)malloc(curTrackLength + 1);
+            pmh->lpData[0] = -0x10;
+            pmh->dwFlags = 0;
+            pmh->dwBufferLength = curTrackLength + 1;
+            for (i = 0; i < curTrackLength; i++)
+            {
+                pmh->lpData[i + 1] = *track->curTrackDataCursor;
+                track->curTrackDataCursor++;
+            }
+            if (this->midiOutDev.SendLongMsg(pmh))
+            {
+                ZUN_FREE(pmh->lpData);
+                ZUN_FREE(pmh);
+                this->midiHeaders[this->midiHeadersCursor] = NULL;
+            }
+            this->midiHeadersCursor++;
+            this->midiHeadersCursor = this->midiHeadersCursor %
+                                      ARRAY_SIZE_SIGNED(this->midiHeaders);
+        }
+        else if (opcode == OPCODE_SYSTEM_RESET)
+        {
+            metaType = *track->curTrackDataCursor;
+            track->curTrackDataCursor++;
+            curTrackLength = SkipVariableLength(&track->curTrackDataCursor);
+            if (metaType == 0x2f)
+            {
+                track->trackPlaying = 0;
+                return;
+            }
+            if (metaType == 0x51)
+            {
+                this->field_0x130 +=
+                    this->volume * this->divisions * 1000 / this->tempo;
+                this->volume = 0;
+                this->tempo = 0;
+                for (i = 0; i < curTrackLength; i++)
+                {
+                    this->tempo += this->tempo * 256 + *track->curTrackDataCursor;
+                    track->curTrackDataCursor++;
+                }
+                bpm = 60000000 / this->tempo;
+                break;
+            }
+            track->curTrackDataCursor = track->curTrackDataCursor + curTrackLength;
+        }
+        break;
+    case OPCODE_NOTE_OFF:
+    case OPCODE_NOTE_ON:
+    case OPCODE_POLYPHONIC_AFTERTOUCH:
+    case OPCODE_MODE_CHANGE:
+    case OPCODE_PITCH_BEND_CHANGE:
+        arg1 = *track->curTrackDataCursor;
+        track->curTrackDataCursor++;
+        arg2 = *track->curTrackDataCursor;
+        track->curTrackDataCursor++;
+        break;
+    case OPCODE_PROGRAM_CHANGE:
+    case OPCODE_CHANNEL_AFTERTOUCH:
+        arg1 = *track->curTrackDataCursor;
+        track->curTrackDataCursor++;
+        arg2 = 0;
+        break;
+    }
+    switch (opcodeHigh)
+    {
+    case OPCODE_NOTE_ON:
+        if (arg2 != 0)
+        {
+            arg1 += this->pitchTranspose;
+            this->channels[opcodeLow].keyPressedFlags[(i32)(u32)arg1 >> 3] |=
+                (u8)(1 << (arg1 & 7));
+            break;
+        }
+    case OPCODE_NOTE_OFF:
+        arg1 += this->pitchTranspose;
+        this->channels[opcodeLow].keyPressedFlags[(i32)(u32)arg1 >> 3] &=
+            (u8) ~(1 << (arg1 & 7));
+        break;
+    case OPCODE_PROGRAM_CHANGE:
+        this->channels[opcodeLow].instrument = arg1;
+        break;
+    case OPCODE_MODE_CHANGE:
+        switch (arg1)
+        {
+        case 0:
+            this->channels[opcodeLow].instrumentBank = arg2;
+            break;
+        case 7:
+            this->channels[opcodeLow].channelVolume = arg2;
+            volumeClamped = (i32)((f32)arg2 * this->fadeOutVolumeMultiplier);
+            if (volumeClamped < 0)
+            {
+                volumeClamped = 0;
+            }
+            else if (volumeClamped > 127)
+            {
+                volumeClamped = 127;
+            }
+            this->channels[opcodeLow].modifiedVolume = (u8)volumeClamped;
+            arg2 = (u8)volumeClamped;
+            break;
+        case 91:
+            this->channels[opcodeLow].effectOneDepth = arg2;
+            break;
+        case 93:
+            this->channels[opcodeLow].effectThreeDepth = arg2;
+            break;
+        case 10:
+            this->channels[opcodeLow].pan = arg2;
+            break;
+        case 2:
+            for (curTrack1 = this->tracks, i = 0; i < this->numTracks; i++, curTrack1++)
+            {
+                curTrack1->savedTrackDataCursor = curTrack1->curTrackDataCursor;
+                curTrack1->savedTrackLengthOther = curTrack1->trackLengthOther;
+            }
+            this->savedTempo = this->tempo;
+            this->savedVolume = this->volume;
+            this->savedfield_0x130 = this->field_0x130;
+            break;
+        case 4:
+            for (curTrack2 = this->tracks, i = 0; i < this->numTracks; i++, curTrack2++)
+            {
+                curTrack2->curTrackDataCursor = curTrack2->savedTrackDataCursor;
+                curTrack2->trackLengthOther = curTrack2->savedTrackLengthOther;
+            }
+            this->tempo = this->savedTempo;
+            this->volume = this->savedVolume;
+            this->field_0x130 = this->savedfield_0x130;
+            break;
+        }
+        break;
+    }
+    if (opcode < OPCODE_SYSTEM_EXCLUSIVE)
+    {
+        this->midiOutDev.SendShortMsg(opcode, arg1, arg2);
+    }
+    track->opcode = opcode;
+    nextTrackLength = SkipVariableLength(&track->curTrackDataCursor);
+    track->trackLengthOther += nextTrackLength;
+}
+
+#pragma var_order(arg1, i, volumeByte, midiStatus, volumeClamped)
+// FUNCTION: TH07 0x004377f0
+void MidiOutput::FadeOutSetVolume(i32 vol)
+{
+    i32 volumeClamped;
+    u32 midiStatus;
+    u32 volumeByte;
+    i32 i;
+    i32 arg1;
+
+    if (this->disableFadeOut)
+    {
+        return;
+    }
+
+    arg1 = 7;
+    for (i = 0; i < ARRAY_SIZE_SIGNED(this->channels); i++)
+    {
+        midiStatus = (u8)(i + 0xb0);
+        volumeClamped = (i32)(this->channels[i].channelVolume *
+                              this->fadeOutVolumeMultiplier) +
+                        vol;
+        if (volumeClamped < 0)
+        {
+            volumeClamped = 0;
+        }
+        else if (volumeClamped > 127)
+        {
+            volumeClamped = 127;
+        }
+        volumeByte = (u8)volumeClamped;
+        this->midiOutDev.SendShortMsg(midiStatus, arg1, volumeByte);
+    }
+}
+
+// FUNCTION: TH07 0x004378b0
+void DummyMidiTimer::OnTimerElapsed()
+{
+    QueryPerformanceCounter(&g_PerfCounter);
+}
+
+// FUNCTION: TH07 0x004378d0
+void MidiTimer::StartTimer()
+{
+    StartTimerImpl(6, NULL, 0);
+}
+
+// FUNCTION: TH07 0x004378f0
+void MidiTimer::StopTimer()
+{
+    StopTimerImpl();
+}

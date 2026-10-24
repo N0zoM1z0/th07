@@ -1,0 +1,195 @@
+address|text|name
+00497b9c|東方妖々夢　～ Perfect Cherry Blossom. ver 1.00b|TH_WINDOW_TITLE
+00495cb8|error : イメージがαを持っていません\r\n|TH_ERR_NO_ALPHA_CHANNEL
+00495c7c|アニメが読み込めません。データが失われてるか壊れています\r\n|TH_ERR_ANM_LOAD_FAIL
+00495c5c|テクスチャ格納先が足りません\r\n|TH_ERR_LOW_TEXTURE_STORAGE
+00495c3c|アニメのバージョンが違います\r\n|TH_ERR_DIFF_ANM_VER
+00495bf8|テクスチャ %s が読み込めません。データが失われてるか壊れています\r\n|TH_ERR_TEX_LOAD_FAIL
+00495bb8|テクスチャが読み込めません。データが失われてるか壊れています\r\n|TH_ERR_EMBED_TEX_LOAD_FAIL
+00495b80|スプライトが格納できません。テーブルが不足しています\r\n|TH_ERR_LOW_SPRITE_TABLE
+00495b4c|アニメが格納できません。テーブルが不足しています\r\n|TH_ERR_LOW_SCRIPT_TABLE
+00495b30|%sが読み込めないです。\r\n|TH_ERR_SURFACE_LOAD_FAIL
+00498874|霊符「夢想封印　散」|TH_BOMB_REIMU_A
+0049885c|霊符「夢想封印　集」|TH_BOMB_REIMU_A_FOCUS
+0049884c|夢符「封魔陣」|TH_BOMB_REIMU_B
+00498838|夢符「二重結界」|TH_BOMB_REIMU_B_FOCUS
+00498818|魔符「スターダストレヴァリエ」|TH_BOMB_MARISA_A
+00498800|魔符「ミルキーウェイ」|TH_BOMB_MARISA_A_FOCUS
+004987d8|恋符「ノンディレクショナルレーザー」|TH_BOMB_MARISA_B
+004987bc|恋符「マスタースパーク」|TH_BOMB_MARISA_B_FOCUS
+0049879c|幻符「インディスクリミネイト」|TH_BOMB_SAKUYA_A
+00498788|幻符「殺人ドール」|TH_BOMB_SAKUYA_A_FOCUS
+00498768|時符「パーフェクトスクウェア」|TH_BOMB_SAKUYA_B
+00498748|時符「プライベートスクウェア」|TH_BOMB_SAKUYA_B_FOCUS
+00497cbc|ＭＳ ゴシック|TH_FONT_MS_GOTHIC
+00497dc8|東方動作記録 --------------------------------------------- \r\n|TH_LOG_START
+00497d9c|使えるパッドが存在しないようです、残念\r\n|TH_CONTROL_NO_USABLE_PADS
+00498700|敵データの読み込みに失敗しました、データが壊れてるか失われています\r\n|TH_ERR_ECL_LOAD_FAIL
+004985d8|error : エンディングファイルが読み込めない、ファイルが破壊されています\r\n|TH_ERR_END_LOAD_FAIL
+00498090|error : スコアファイルの読み取りに失敗しました\r\n|TH_ERR_SCORE_LOAD_FAIL
+00498064|error : プレイヤーの初期化に失敗しました\r\n|TH_ERR_PLAYER_INIT_FAIL
+00498038|error : 背景データの初期化に失敗しました\r\n|TH_ERR_STAGE_INIT_FAIL
+00498010|error : 敵弾の初期化に失敗しました\r\n|TH_ERR_BULLET_INIT_FAIL
+00497f4c|error : 敵の初期化に失敗しました\r\n|TH_ERR_ENEMY_INIT_FAIL
+00497e84|error : 敵頭脳の初期化に失敗しました\r\n|TH_ERR_ECL_INIT_FAIL
+00497e58|error : エフェクトの初期化に失敗しました\r\n|TH_ERR_EFFECT_INIT_FAIL
+00497e30|error : 2D表示の初期化に失敗しました\r\n|TH_ERR_GUI_INIT_FAIL
+00497bd8|Direct3D オブジェクトは何故か作成出来なかった\r\n|TH_ERR_D3D_CREATE_FAIL
+00497b70|初回起動、画面を 32Bits で初期化しました\r\n|TH_LOG_DISPLAY_INIT_32BITS
+00497b44|リフレッシュレートを60Hzに変更を試みます\r\n|TH_LOG_DISPLAY_CHANGE_60_HZ
+00497b20|VSync非同期可能かどうかを試みます\r\n|TH_LOG_TRY_ASYNC_VSYNC
+00497afc|T&L HAL は使用できないようです\r\n|TH_LOG_TL_HAL_UNUSABLE
+00497adc|HAL も使用できないようです\r\n|TH_LOG_HAL_UNUSABLE
+00497ab4|リフレッシュレートが変更できません\r\n|TH_LOG_REFRESH_RATE_UNCHANGED
+00497a7c|非同期更新も行えません。一番汚いモードに変更します\r\n|TH_LOG_ASYNC_VSYNC_UNAVAILABLE
+00497a3c|*** リフレッシュレートを60Hzに変更することを推奨します ***\r\n|TH_ERR_CHANGE_YO_REFRESH_RATE
+00497a04|Direct3D の初期化に失敗、これではゲームは出来ません\r\n|TH_ERR_D3D_INIT_FAIL
+004979c8|REF で動作しますが、重すぎて恐らくゲームになりません...\r\n|TH_LOG_USING_REF_RENDER
+004979b4|HAL で動作します\r\n|TH_LOG_USING_HAL
+00497998|T&L HAL で動作しま～す\r\n|TH_LOG_USING_TL_HAL
+00497948|D3DTEXOPCAPS_ADD をサポートしていません、色加算エミュレートモードで動作します\r\n|TH_LOG_USING_COLOR_ADD_EMU
+004978f8|512 以上のテクスチャをサポートしていません。殆どの絵がボケて表示されます。\r\n|TH_LOG_LARGE_TEX_UNSUPPORTED
+004978b0|D3DFMT_A8R8G8B8 をサポートしていません、減色モードで動作します\r\n|TH_LOG_USING_REDUCED_COLOR
+004978a4|不可\r\n|TH_CAP_UNSUPPORTED
+0049789c|可\r\n|TH_CAP_SUPPORTED
+0049786c|現在のビデオカード、及びドライバの能力詳細\r\n|TH_CAP_VIDEO_SUMMARY
+00497858|　走査線取得能力 : |TH_CAP_VIDEO_SCANLINE
+00497834|　ウィンドウモードのレンダリング : |TH_CAP_VIDEO_WINDOWED
+00497810|　プレゼンテーション間隔（直接）: |TH_CAP_VIDEO_PRESENT_INTERVAL_IMMEDIATE
+004977e8|　プレゼンテーション間隔（垂直同期）: |TH_CAP_VIDEO_PRESENT_INTERVAL_VSYNC
+004977b4|　-- デバイス能力 ------------------------------\r\n|TH_CAP_DEV_SUMMARY
+0049778c|　System -> 非ローカルVRAMブリット : |TH_CAP_DEV_NON_LOCAL_VRAM_BLIT
+00497774|　ハードウェア T&L : |TH_CAP_DEV_HARDWARE_TL
+0049774c|　非ローカルVRAMからテクスチャ取得 : |TH_CAP_DEV_NON_LOCAL_VRAM_TEX
+00497724|　システムメモリからテクスチャ取得 : |TH_CAP_DEV_SYS_MEM_TEX
+00497704|　VRAM からテクスチャ取得 : |TH_CAP_DEV_VRAM_TEX
+004976dc|　頂点バッファにシステムメモリを使用 : |TH_CAP_DEV_SYS_MEM_VERTEX_BUF
+004976b4|　頂点バッファにビデオメモリを使用 : |TH_CAP_DEV_VMEM_VERTEX_BUF
+00497680|　-- プリミティブ能力 ---------------------------\r\n|TH_CAP_PRIMITIVE_SUMMARY
+00497670|　半透明処理 : |TH_CAP_PRIMITIVE_TRANSPARENCY
+00497650|　ポイントのクリッピング処理 : |TH_CAP_PRIMITIVE_POINT_CLIPPING
+0049762c|　プリミティブのクリッピング処理 : |TH_CAP_PRIMITIVE_TL_CLIPPING
+0049760c|　法線クリップ（反時計周り） : |TH_CAP_PRIMITIVE_CLIP_CCW
+004975ec|　法線クリップ（時計周り） : |TH_CAP_PRIMITIVE_CLIP_CW
+004975d4|　法線クリップ無し : |TH_CAP_PRIMITIVE_CLIP_NONE
+004975b4|　デプステストON/OFF切り替え : |TH_CAP_PRIMITIVE_DEPTH_TEST
+00497580|　-- ラスタ能力 --------------------------------\r\n|TH_CAP_RASTER_SUMMARY
+00497564|　異方性フィルタリング : |TH_CAP_RASTER_ANISOTROPIC_FILTER
+00497548|　アンチエイリアシング : |TH_CAP_RASTER_ANTIALIASING
+00497538|　ディザ処理 : |TH_CAP_RASTER_DITHER
+00497520|　範囲ベースのフォグ : |TH_CAP_RASTER_RANGE_FOG
+00497508|　Zベースのフォグ : |TH_CAP_RASTER_Z_FOG
+004974f4|　テーブルフォグ : |TH_CAP_RASTER_TABLE_FOG
+004974e4|　頂点フォグ : |TH_CAP_RASTER_VERTEX_FOG
+004974d0|　デプステスト : |TH_CAP_RASTER_DEPTH_TEST
+0049749c|　-- シェーディング能力 -----------------------\r\n|TH_CAP_SHADE_SUMMARY
+00497480|　グーローシェーディング : |TH_CAP_SHADE_GOURAUD
+0049745c|　α成分のグーローシェーディング : |TH_CAP_SHADE_ALPHA_GOURAUD
+00497438|　グーローシェーディングでフォグ : |TH_CAP_SHADE_FOG_GOURAUD
+00497404|　-- テクスチャ能力 ---------------------------\r\n|TH_CAP_TEX_SUMMARY
+004973e0|　最大テクスチャサイズ : (%d, %d)\r\n|TH_CAP_TEX_MAX_SIZE
+004973c8|　α付きテクスチャ : |TH_CAP_TEX_ALPHA
+004973a8|　テクスチャトランスフォーム : |TH_CAP_TEX_TRANSFORM
+0049738c|　バイリニア補間（拡大） : |TH_CAP_BILINEAR_UPSCALE
+00497370|　バイリニア補間（縮小） : |TH_CAP_BILINEAR_DOWNSCALE
+00497314|二つは起動できません\r\n|TH_ERR_ALREADY_OPEN
+00498108|error : メッセージファイル %s が読み込めませんでした\r\n|TH_ERR_MSG_LOAD_FAIL
+004957e8|ショット、決定ボタンを設定します|TH_KEY_CONFIG_SHOOT
+004957c4|ボム、キャンセルボタンを設定します|TH_KEY_CONFIG_BOMB
+004957a8|低速移動ボタンを設定します|TH_KEY_CONFIG_FOCUS
+00495780|メッセージスキップボタンを設定します|TH_KEY_CONFIG_SKIP
+00495764|ポーズボタンを設定します|TH_KEY_CONFIG_PAUSE
+00495748|上移動ボタンを設定します|TH_KEY_CONFIG_UP
+0049572c|下移動ボタンを設定します|TH_KEY_CONFIG_DOWN
+00495710|左移動ボタンを設定します|TH_KEY_CONFIG_LEFT
+004956f4|右移動ボタンを設定します|TH_KEY_CONFIG_RIGHT
+004956c0|ショット押しっぱなしで低速移動になるようにします|TH_KEY_CONFIG_SHOT_SLOW
+004956ac|初期設定に戻します|TH_KEY_CONFIG_RESET
+00495698|おおよそ終了します|TH_KEY_CONFIG_EXIT
+0049596c|プレイヤーの初期数を変更します。（初期設定　３）|TH_OPTIONS_INITIAL_LIVES
+0049592c|画面の色数を変更します。３２ＢＩＴだと最も綺麗に表示されます。|TH_OPTIONS_COLOR_MODE
+004958f8|ＢＧＭの再生方法を変更します。（初期設定　ＷＡＶ）|TH_OPTIONS_BGM_MODE
+004958d8|効果音を再生するか選択します|TH_OPTIONS_SOUND_MODE
+004958b0|ウィンドウかフルスクリーンか選択します|TH_OPTIONS_WINDOW_MODE
+00495870|弾が多い場面でわざと処理落ちさせます(スコア、リプレイ記録不可)|TH_OPTIONS_SLOW_MODE
+00495858|全て初期設定にします|TH_OPTIONS_RESET
+00495834|パッド操作のボタン配置を変更します|TH_OPTIONS_KEY_CONFIG
+0049581c|おいそれと終了します|TH_OPTIONS_EXIT
+00495aa4|ゲームを開始します|TH_MAIN_MENU_START
+00495a84|エキストラステージを開始します|TH_MAIN_MENU_START_EXTRA
+00495a60|ステージを選択し、練習を開始します|TH_MAIN_MENU_PRACTICE
+00495a48|リプレイを鑑賞できます|TH_MAIN_MENU_REPLAY
+00495a18|過去のスコアやスペルカードの取得歴を見られます|TH_MAIN_MENU_RESULT
+00495a08|音楽を聴けます|TH_MAIN_MENU_MUSIC_ROOM
+004959f4|各種設定できます|TH_MAIN_MENU_OPTIONS
+004959dc|いろいろと終了します|TH_MAIN_MENU_EXIT
+00495634|リプレイデータが異常\r\n|TH_ERR_INVALID_REPLAY_DATA
+004972d0|error : MIDI File が読み込めない %s \rv\r\n|TH_ERR_MIDI_LOAD_FAIL
+00497290|error : まだMIDIが読み込まれていないのに再生しようとしている\r\n|TH_ERR_MIDI_NOT_LOADED
+00497244|alq チェック %f / %f = %f\r\n|TH_LOG_ALQ_CHECK
+004969b0|博麗 霊夢 (霊)　|TH_RESULT_REIMU_A
+0049699c|博麗 霊夢 (夢)　|TH_RESULT_REIMU_B
+00496988|霧雨 魔理沙 (魔)|TH_RESULT_MARISA_A
+00496974|霧雨 魔理沙 (恋)|TH_RESULT_MARISA_B
+00496960|十六夜 咲夜 (幻)|TH_RESULT_SAKUYA_A
+0049694c|十六夜 咲夜 (時)|TH_RESULT_SAKUYA_B
+00496938|全主人公合計  　|TH_RESULT_TOTAL
+00496818|？？？？？|TH_RESULT_SPELL_UNKNOWN
+004967ec|%s %3d枚中%3d枚取得（キャラ切り替え↓↑）|TH_RESULT_SPELL_OBTAINED_COUNT
+004967a0|総起動時間   %.2d:%.2d:%.2d|TH_RESULT_TOTAL_STARTUP_TIME
+00496784|総プレイ時間 %.2d:%.2d:%.2d|TH_RESULT_TOTAL_PLAY_TIME
+00496740|プレイ回数　　　 　Easy 　Norm 　Hard 　Luna  Extra Phants  Total|TH_RESULT_PLAY_COUNT_INCL_PHANTASM
+00496700|プレイ回数　　　 　Easy 　Norm 　Hard 　Luna  Extra  Total|TH_RESULT_PLAY_COUNT
+00496694|クリア回数  　　 %6d %6d %6d %6d %6d %6d %6d|TH_RESULT_CLEAR_COUNT_INCL_PHANTASM
+00496668|クリア回数  　　 %6d %6d %6d %6d %6d %6d|TH_RESULT_CLEAR_COUNT
+00496638|コンティニュー   %6d %6d %6d %6d %6d %6d %6d|TH_RESULT_CONTINUE_COUNT_INCL_PHANTASM
+0049660c|コンティニュー   %6d %6d %6d %6d %6d %6d|TH_RESULT_CONTINUE_COUNT
+004965dc|プラクティス　   %6d %6d %6d %6d %6d %6d %6d|TH_RESULT_PRACTICE_COUNT_INCL_PHANTASM
+004965b0|プラクティス　   %6d %6d %6d %6d %6d %6d|TH_RESULT_PRACTICE_COUNT
+00496580|リトライ回数  　 %6d %6d %6d %6d %6d %6d %6d|TH_RESULT_RETRY_COUNT_INCL_PHANTASM
+00496554|リトライ回数  　 %6d %6d %6d %6d %6d %6d|TH_RESULT_RETRY_COUNT
+0049604c|DirectSound オブジェクトの初期化が失敗したよ\r\n|TH_ERR_DSOUND_INIT_FAIL
+00496024|DirectSound は正常に初期化されました\r\n|TH_LOG_DSOUND_INIT_SUCCESS
+00496000|Wav ファイルじゃない %s\r\n|TH_ERR_NOT_A_WAV
+00495fdc|Wav ファイルじゃない? %s\r\n|TH_ERR_PROBABLY_NOT_A_WAV
+00495f70|error : ストリーミング用サウンドバッファを作成出来ませんでした\r\n|TH_ERR_STREAMING_SOUND_BUFFER_CREATE_FAIL
+00495e78|error : Sound ファイルが読み込めない データを確認 %s\r\n|TH_ERR_SOUND_READ_FAIL
+00495cf4|atention : ストリーミング用スレッドは終了しました。\r\n|TH_LOG_BGM_THREAD_EXIT
+0049888c|ステージデータが見つかりません。データが壊れています\r\n|TH_ERR_STD_LOAD_FAIL
+00497208|DirectInput が使用できません\r\n|TH_ERR_DINPUT_INIT_FAIL
+004971d8|DirectInput SetDataFormat が使用できません\r\n|TH_ERR_DINPUT_SETDATAFORMAT_FAIL
+004971a4|DirectInput SetCooperativeLevel が使用できません\r\n|TH_ERR_DINPUT_SETCOOPERATIVELEVEL_FAIL
+0049717c|DirectInput は正常に初期化されました\r\n|TH_LOG_DINPUT_INIT_SUCCESS
+0049715c|有効なパッドを発見しました\r\n|TH_LOG_FOUND_PAD
+00497118|error : データのバージョンが違います\r\n|TH_ERR_DATA_VER_MISMATCH
+004970f0|error : データファイルが存在しません\r\n|TH_ERR_DAT_NOT_FOUND
+004970b4|垂直同期が取れてないか、リフレッシュレートが高すぎます\r\n|TH_LOG_VSYNC_FAIL
+0049708c|強制６０フレームモードで動作します\r\n|TH_LOG_FORCE_60FPS
+00497050|垂直同期が取れてないか、リフレッシュレートが高すぎます。\r\n|TH_LOG_VSYNC_FAIL_2
+00496ff0|error : 文字の初期化に失敗しました\r\n|TH_BGM_ASCII_INIT_FAIL
+00496fb8|error : BGM の初期化に失敗しました\r\n|TH_ERR_BGM_INIT_FAIL
+00496f80|16bit は取り込めない\r\n|TH_LOG_16BIT_NOT_SUPPORTED
+00496f60|snapShotScreen : 確保しくり\r\n|TH_LOG_BITMAP_ALLOC_FAIL
+00496f14|コンフィグデータが見つからないので初期化しました\r\n|TH_LOG_CONFIG_INIT
+00496ee4|BGM データのバージョンが違います\r\n|TH_ERR_BGM_VER_MISMATCH
+00496ebc|wave データが無いので、midi にします\r\n|TH_LOG_WAV_UNAVAILABLE
+00496e88|コンフィグデータが異常でしたので再初期化しました\r\n|TH_LOG_CONFIG_REINIT
+00496e64|頂点バッファの使用を抑制します\r\n|TH_CONFIG_NO_VERTEX_BUFFERS
+00496e48|フォグの使用を抑制します\r\n|TH_CONFIG_NO_FOG
+00496e20|16Bit のテクスチャの使用を強制します\r\n|TH_CONFIG_FORCE_16BIT
+00496dfc|バックバッファの消去を強制します\r\n|TH_CONFIG_FORCE_BACKBUFFER_CLEAR
+00496dd0|ゲーム周りのアイテムの描画を抑制します\r\n|TH_CONFIG_DISABLE_ITEM_DRAW_AROUND_PLAYFIELD
+00496da8|グーローシェーディングを抑制します\r\n|TH_CONFIG_DISABLE_GOURAUD
+00496d8c|デプステストを抑制します\r\n|TH_CONFIG_DISABLE_DEPTH_TEST
+# Yes, this does indeed end with an n instead of a \r\n.
+00496d6c|テクスチャの色合成を抑制しますn|TH_CONFIG_DISABLE_TEXTURE_BLEND
+00496d4c|ウィンドウモードで起動します\r\n|TH_CONFIG_WINDOWED
+00496d24|リファレンスラスタライザを強制します\r\n|TH_CONFIG_FORCE_REFERENCE_RENDER
+00496cec|パッド、キーボードの入力に DirectInput を使用しません\r\n|TH_CONFIG_DISABLE_DINPUT
+00496cd0|画面周りを毎回描画します\r\n|TH_CONFIG_REDRAW_EVERY_FRAME
+00496cb0|ＢＧＭをメモリに読み込みます\r\n|TH_CONFIG_PRELOAD_BGM
+00496c98|垂直同期を取りません\r\n|TH_CONFIG_DISABLE_VSYNC
+00496c78|ファイルが書き出せません %s\r\n|TH_ERR_WRITE_CONFIG_FAIL
+00496c20|フォルダが書込み禁止属性になっているか、ディスクがいっぱいいっぱいになってませんか？\r\n|TH_ERR_WRITE_CONFIG_FAIL_HELP
+00497c28|再起動を要するオプションが変更されたので再起動します\r\n|TH_LOG_RESTARTING
+00495084|ファイル %s のオープン中にエラーが発生しました\r\n|TH_ERR_PBG4_ARC_OPEN_FAIL

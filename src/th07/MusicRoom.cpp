@@ -1,0 +1,422 @@
+#include "MusicRoom.hpp"
+
+#include "AnmManager.hpp"
+#include "AsciiManager.hpp"
+#include "Global.hpp"
+#include "SoundPlayer.hpp"
+#include "Supervisor.hpp"
+#include "utils.hpp"
+
+// FUNCTION: TH07 0x0043a760
+ZunResult MusicRoom::CheckInputEnable()
+{
+    i32 i;
+
+    if (this->waitFramesCounter == 0)
+    {
+        for (i = 0; i < ARRAY_SIZE_SIGNED(this->titleSprites); i++)
+        {
+            if (this->cursor == i)
+            {
+                this->titleSprites[i].pendingInterrupt = 1;
+            }
+            else
+            {
+                this->titleSprites[i].pendingInterrupt = 2;
+            }
+        }
+        for (i = 0; i < ARRAY_SIZE_SIGNED(this->descriptionSprites); i++)
+        {
+            this->descriptionSprites[i].pendingInterrupt = 1;
+        }
+    }
+    if (this->waitFramesCounter >= 8)
+    {
+        this->enableInput = TRUE;
+    }
+    return ZUN_SUCCESS;
+}
+
+#pragma var_order(unusedListingOffset, i, descBuf)
+// FUNCTION: TH07 0x0043a801
+i32 MusicRoom::ProcessInput()
+{
+    char descBuf[66];
+    i32 i;
+    i32 unusedListingOffset;
+
+    unusedListingOffset = this->listingOffset;
+    if (WAS_PRESSED_RAW(TH_BUTTON_UP))
+    {
+        this->cursor--;
+        if (this->cursor < 0)
+        {
+            this->cursor = this->numDescriptors - 1;
+            this->listingOffset = this->numDescriptors - 10;
+            if (this->listingOffset < 0)
+            {
+                this->listingOffset = 0;
+            }
+        }
+        else if (this->listingOffset > this->cursor)
+        {
+            this->listingOffset = this->cursor;
+        }
+        for (i = 0; i < ARRAY_SIZE_SIGNED(this->titleSprites); i++)
+        {
+            if (this->cursor == i)
+            {
+                this->titleSprites[i].pendingInterrupt = 1;
+            }
+            else
+            {
+                this->titleSprites[i].pendingInterrupt = 2;
+            }
+        }
+    }
+    if (WAS_PRESSED_RAW(TH_BUTTON_DOWN))
+    {
+        this->cursor = this->cursor + 1;
+        if (this->cursor >= this->numDescriptors)
+        {
+            this->cursor = 0;
+            this->listingOffset = 0;
+        }
+        else
+        {
+            if (this->listingOffset <= this->cursor - 10)
+            {
+                this->listingOffset = this->cursor - 9;
+            }
+        }
+        for (i = 0; i < ARRAY_SIZE_SIGNED(this->titleSprites); i++)
+        {
+            if (this->cursor == i)
+            {
+                this->titleSprites[i].pendingInterrupt = 1;
+            }
+            else
+            {
+                this->titleSprites[i].pendingInterrupt = 2;
+            }
+        }
+    }
+    if (WAS_PRESSED_RAW(TH_BUTTON_SELECTMENU))
+    {
+        this->selectedIdx = this->cursor;
+        if (g_Supervisor.cfg.preloadBgm)
+        {
+            g_SoundPlayer.StartBGM("thbgm.dat");
+        }
+        g_Supervisor.PlayAudio(this->trackDescriptors[this->selectedIdx].path);
+        for (i = 0; i < ARRAY_SIZE_SIGNED(this->descriptionSprites); i++)
+        {
+            memset(descBuf, 0, sizeof(descBuf));
+            memcpy(descBuf,
+                   this->trackDescriptors[this->selectedIdx].description[i],
+                   64);
+            if (descBuf[0] != '\0')
+            {
+                this->descriptionSprites[i].active = 1;
+                AnmManager::DrawVmTextFmt(g_AnmManager,
+                                          this->descriptionSprites + i, 0xffe0c0,
+                                          0x300000, descBuf);
+            }
+            else
+            {
+                this->descriptionSprites[i].active = 0;
+            }
+            this->descriptionSprites[i].pendingInterrupt = 1;
+        }
+    }
+    if (WAS_PRESSED_RAW(TH_BUTTON_RETURNMENU))
+    {
+        g_Supervisor.curState = SUPERVISOR_STATE_MAINMENU;
+        return 1;
+    }
+
+    return 0;
+}
+
+// FUNCTION: TH07 0x0043ab60
+u32 MusicRoom::OnUpdate(MusicRoom *arg)
+{
+    i32 prevInputEnable;
+    i32 i;
+
+    prevInputEnable = arg->enableInput;
+recheck:
+    switch (arg->enableInput)
+    {
+    case 0:
+        if (!arg->CheckInputEnable())
+        {
+            break;
+        }
+        goto recheck;
+    case 1:
+        if (arg->ProcessInput())
+        {
+            return CHAIN_CALLBACK_RESULT_CONTINUE_AND_REMOVE_JOB;
+        }
+    default:
+        break;
+    }
+    if (prevInputEnable != arg->enableInput)
+    {
+        arg->waitFramesCounter = 0;
+    }
+    else
+    {
+        arg->waitFramesCounter++;
+    }
+    g_AnmManager->ExecuteScript(&arg->vm[0]);
+    for (i = 0; i < ARRAY_SIZE_SIGNED(arg->titleSprites); i++)
+    {
+        g_AnmManager->ExecuteScript(&arg->titleSprites[i]);
+    }
+    for (i = 0; i < ARRAY_SIZE_SIGNED(arg->descriptionSprites); i++)
+    {
+        g_AnmManager->ExecuteScript(&arg->descriptionSprites[i]);
+    }
+    return CHAIN_CALLBACK_RESULT_CONTINUE;
+}
+
+#pragma var_order(i, arrowText, stringPos)
+// FUNCTION: TH07 0x0043ac4c
+u32 MusicRoom::OnDraw(MusicRoom *arg)
+{
+    Float3 stringPos;
+    char arrowText[4];
+    i32 i;
+
+    arrowText[0] = 127;
+    arrowText[1] = '\0';
+    g_AnmManager->SetTexture(NULL);
+    g_AnmManager->CopySurfaceToBackBuffer(0, 0, 0, 0, 0);
+    g_AnmManager->DrawNoRotation(&arg->vm[0]);
+    for (i = arg->listingOffset; i < arg->listingOffset + 10; i++)
+    {
+        if (i >= arg->numDescriptors)
+        {
+            break;
+        }
+        g_AsciiManager.SetColor(arg->titleSprites[i].color.color);
+        arg->titleSprites[i].pos.x = 93.0f;
+        arg->titleSprites[i].pos.y =
+            (f32)((i + 1 - arg->listingOffset) * 18) + 104.0f - 20.0f;
+        arg->titleSprites[i].pos.z = 0.0f;
+        g_AnmManager->DrawNoRotation(arg->titleSprites + i);
+        stringPos = arg->titleSprites[i].pos;
+        stringPos.x -= 60.0f;
+        if (arg->cursor == i)
+        {
+            g_AsciiManager.AddString(&stringPos, arrowText);
+        }
+        stringPos.x += 15.0f;
+        // STRING: TH07 0x00496c04
+        AsciiManager::AddFormatText(&g_AsciiManager, &stringPos, "%2d.", i + 1);
+    }
+    i++;
+    for (i = 0; i < ARRAY_SIZE_SIGNED(arg->descriptionSprites); i++)
+    {
+        g_AnmManager->DrawNoRotation(&arg->descriptionSprites[i]);
+    }
+    g_AsciiManager.color = 0xffffffff;
+    return CHAIN_CALLBACK_RESULT_CONTINUE;
+}
+
+#pragma var_order(offset, lineIdx, curChar, charIdx, firstChar, lineCharBuffer)
+// FUNCTION: TH07 0x0043ae20
+ZunResult MusicRoom::AddedCallback(MusicRoom *arg)
+{
+    char lineCharBuffer[66];
+    char *firstChar;
+    i32 charIdx;
+    char *curChar;
+    i32 lineIdx;
+    i32 offset;
+
+    // STRING: TH07 0x00496bec
+    if (g_AnmManager->LoadSurface(0, "data/result/music.jpg") != ZUN_SUCCESS)
+    {
+        return ZUN_ERROR;
+    }
+    // STRING: TH07 0x00496bd8
+    if (g_AnmManager->LoadAnms(ANM_FILE_MUSIC, "data/music00.anm", ANM_OFFSET_MUSIC) !=
+        ZUN_SUCCESS)
+    {
+        return ZUN_ERROR;
+    }
+
+    g_AnmManager->SetAnmIdxAndExecuteScript(&arg->vm[0], ANM_SCRIPT_MUSIC);
+    arg->waitFramesCounter = 0;
+    // STRING: TH07 0x00496bc4
+    curChar = (char *)FileSystem::OpenFile("data/musiccmt.txt", 0);
+    firstChar = curChar;
+    if ((u8 *)curChar == NULL)
+    {
+        return ZUN_ERROR;
+    }
+
+    arg->trackDescriptors = ZUN_NEW_ARRAY(TrackDescriptor, MAX_TRACK_DESCRIPTORS, "MusicCmtInf");
+    offset = -1;
+    while ((u32)((i32)curChar - (i32)firstChar) < g_LastFileSize)
+    {
+        if (*curChar == '@')
+        {
+            curChar++;
+            offset++;
+            charIdx = 0;
+            while (*curChar != '\n' && *curChar != '\r')
+            {
+                arg->trackDescriptors[offset].path[charIdx] = *curChar;
+                curChar++;
+                charIdx++;
+                if ((u32)((i32)curChar - (i32)firstChar) >= g_LastFileSize)
+                {
+                    goto LAB_0043b195;
+                }
+            }
+            while (*curChar == '\n' || *curChar == '\r')
+            {
+                curChar++;
+                if ((u32)((i32)curChar - (i32)firstChar) >= g_LastFileSize)
+                {
+                    goto LAB_0043b195;
+                }
+            }
+            charIdx = 0;
+            while (*curChar != '\n' && *curChar != '\r')
+            {
+                arg->trackDescriptors[offset].title[charIdx] = *curChar;
+                curChar++;
+                charIdx++;
+                if ((u32)((i32)curChar - (i32)firstChar) >= g_LastFileSize)
+                {
+                    goto LAB_0043b195;
+                }
+            }
+            while (*curChar == '\n' && *curChar == '\r')
+            {
+                curChar++;
+                if ((u32)((i32)curChar - (i32)firstChar) >= g_LastFileSize)
+                {
+                    goto LAB_0043b195;
+                }
+            }
+            for (lineIdx = 0; lineIdx < ARRAY_SIZE_SIGNED(arg->descriptionSprites); lineIdx++)
+            {
+                if (*curChar == '@')
+                {
+                    break;
+                }
+
+                memset(arg->trackDescriptors[offset].description[lineIdx], 0,
+                       sizeof(arg->trackDescriptors[offset].description[lineIdx]));
+                charIdx = 0;
+                while (*curChar != '\n' && *curChar != '\r')
+                {
+                    arg->trackDescriptors[offset].description[lineIdx][charIdx] =
+                        *curChar;
+                    curChar++;
+                    charIdx++;
+                    if ((u32)((i32)curChar - (i32)firstChar) >= g_LastFileSize)
+                    {
+                        goto LAB_0043b195;
+                    }
+                }
+                while (*curChar == '\n' || *curChar == '\r')
+                {
+                    curChar++;
+                    if ((u32)((i32)curChar - (i32)firstChar) >= g_LastFileSize)
+                    {
+                        goto LAB_0043b195;
+                    }
+                }
+            }
+        }
+        else
+        {
+            curChar++;
+        }
+    }
+LAB_0043b195:
+    arg->numDescriptors = offset + 1;
+    for (offset = 0; offset < arg->numDescriptors; offset++)
+    {
+        g_AnmManager->SetAnmIdxAndExecuteScript(&arg->titleSprites[offset],
+                                                offset + ANM_SCRIPT_MUSIC_TITLE);
+        AnmManager::DrawVmTextFmt(g_AnmManager, arg->titleSprites + offset,
+                                  0xc0e0ff, 0x302080,
+                                  arg->trackDescriptors[offset].title);
+        arg->titleSprites[offset].pos.x = 93.0f;
+        arg->titleSprites[offset].pos.y =
+            (f32)((offset + 1) * 18) + 104.0f - 20.0f;
+        arg->titleSprites[offset].pos.z = 0.0f;
+        arg->titleSprites[offset].anchor = 3;
+    }
+    for (offset = 0; offset < ARRAY_SIZE_SIGNED(arg->descriptionSprites); offset++)
+    {
+        g_AnmManager->SetAnmIdxAndExecuteScript(
+            &arg->descriptionSprites[offset],
+            offset + ANM_SCRIPT_TEXT_MUSIC_DESC);
+        memset(lineCharBuffer, 0, sizeof(lineCharBuffer));
+        memcpy(lineCharBuffer,
+               arg->trackDescriptors[arg->selectedIdx].description[offset],
+               64);
+        if (*lineCharBuffer != '\0')
+        {
+            arg->descriptionSprites[offset].active = 1;
+            AnmManager::DrawVmTextFmt(
+                g_AnmManager, arg->descriptionSprites + offset, 0xffe0c0,
+                0x300000, (char *)&lineCharBuffer);
+        }
+        else
+        {
+            arg->descriptionSprites[offset].active = 0;
+        }
+    }
+    ZUN_FREE(firstChar);
+    return ZUN_SUCCESS;
+}
+
+// FUNCTION: TH07 0x0043b478
+ZunResult MusicRoom::DeletedCallback(MusicRoom *arg)
+{
+    ZUN_DELETE(arg->trackDescriptors);
+    g_AnmManager->ReleaseSurface(0);
+    g_AnmManager->ReleaseAnm(ANM_FILE_MUSIC_0);
+    g_AnmManager->ReleaseAnm(ANM_FILE_MUSIC_1);
+    g_Chain.Cut(arg->drawChain);
+    arg->drawChain = NULL;
+    return ZUN_SUCCESS;
+}
+
+// FUNCTION: TH07 0x0043b4db
+ZunResult MusicRoom::RegisterChain()
+{
+    static MusicRoom s_MusicRoom;
+    MusicRoom *musicRoom = &s_MusicRoom;
+
+    // ZUN bloat:
+    // Once would have sufficed
+    // And yet ZUN must memset twice
+    // But just to be nice
+    memset(musicRoom, 0, sizeof(MusicRoom));
+    musicRoom->calcChain = g_Chain.CreateElem((ChainCallback)OnUpdate);
+    musicRoom->calcChain->arg = musicRoom;
+    musicRoom->calcChain->addedCallback = (ChainLifecycleCallback)AddedCallback;
+    musicRoom->calcChain->deletedCallback =
+        (ChainLifecycleCallback)DeletedCallback;
+    if (g_Chain.AddToCalcChain(musicRoom->calcChain, CHAIN_PRIO_CALC_MUSICROOM))
+    {
+        return ZUN_ERROR;
+    }
+
+    musicRoom->drawChain = g_Chain.CreateElem((ChainCallback)OnDraw);
+    musicRoom->drawChain->arg = musicRoom;
+    g_Chain.AddToDrawChain(musicRoom->drawChain, CHAIN_PRIO_DRAW_MUSICROOM);
+
+    return ZUN_SUCCESS;
+}

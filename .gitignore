@@ -22,3 +22,8 @@
 *.pyc
 __pycache__/
 
+
+# Headless strict-oracle reference and private working state.
+/_reference/
+/.private/
+/ghidra-project/

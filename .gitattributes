@@ -14,3 +14,7 @@
 # Preserve vendored upstream release bytes exactly. Project-owned adapters live
 # outside this tree and continue to use the normal VC7 CRLF source policy.
 third_party/** -text
+
+# Retain imported matching-source bytes and reproducible source receipts.
+src/th07/** text eol=lf
+resources/csv/** text eol=lf

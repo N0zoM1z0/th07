@@ -1,5 +1,8 @@
 # Build and exact-matching plan
 
+> Historical focused-probe evidence. Current source ownership, acceptance and
+> counts are defined in [ORACLE.md](ORACLE.md) and the canonical ledgers.
+
 ## Toolchain
 
 The target's PE linker and Rich header identify Visual C++ .NET 2002 (VC7,
