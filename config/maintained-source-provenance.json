@@ -161,7 +161,7 @@
     },
     {
       "path": "src/th07/MainMenuPreInput.cpp",
-      "sha256": "4cf117efba90c4cc123675318a906ea3b5f346ae50b968c015d265032faa4ec0"
+      "sha256": "c197108635de90316f43c6ebbfe40f90b4cc4a472374325733401bc8f85f5b64"
     },
     {
       "path": "src/th07/MidiOutput.cpp",

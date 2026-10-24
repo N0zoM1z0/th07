@@ -314,4 +314,3 @@ u32 MainMenu::OnUpdatePreInput()
     this->stateTimer++;
     return CHAIN_CALLBACK_RESULT_CONTINUE;
 }
-
