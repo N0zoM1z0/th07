@@ -52,7 +52,7 @@ def recover(oracle):
     if len(candidates)!=1 or len(targets)!=1:return audit
     for desc in native:desc['handler']=handler(oracle.generated,desc['address'],next(iter(candidates)))
     for desc in original:desc['handler']=handler(oracle.target,desc['address'],next(iter(targets)))
-    if len(native)!=len(original) or any(d['handler'] is None for d in native+original):return audit
+    if any(d['handler'] is None for d in native+original):return audit
     # Match complete graph capsules by shape and cleanup semantics. Readonly
     # contribution order can differ under LTCG/ICF, so it is never an address
     # oracle. Ambiguous graph identities remain blocked.
@@ -82,11 +82,29 @@ def recover(oracle):
             if okay:
                 options[a['address']].add(b['address'])
                 evidence[a['address'],b['address']]={'mapping':mapping,'row':{'generated_info':a['address'],'target_info':b['address'],'generated_handler':a['handler'],'target_handler':b['handler'],'cleanup_checks':checks}}
+    # Native COFF and LTCG can retain separate copies of one readonly graph.
+    # This is an alias only when EACH complete capsule independently replays
+    # against exactly one original capsule. Shape alone never proves an alias.
+    unique={}
+    for address,choices in options.items():
+        if len(choices)==1:unique.setdefault(next(iter(choices)),[]).append(address)
+    aliases={target:addresses for target,addresses in unique.items() if len(addresses)>1}
+    extra=sum(len(addresses)-1 for addresses in aliases.values())
+    alias_members=set()
+    if len(native)!=len(original):
+        if len(native)-extra!=len(original):
+            oracle.eh_map={};oracle.resolution_cache.clear()
+            audit['blocked'].append({'reason':'descriptor count differs without complete unique capsule aliases'})
+            return audit
+        alias_members={address for addresses in aliases.values() for address in addresses}
+        audit['descriptor_aliases']=[{'target_info':target,'generated_infos':addresses,
+            'evidence':'independent complete FuncInfo, unwind map, handler and cleanup replay'}
+            for target,addresses in sorted(aliases.items())]
     accepted={};used=set()
     while True:
         additions={a:next(iter(candidates-used)) for a,candidates in options.items() if a not in accepted and len(candidates-used)==1}
         target_counts={b:sum(v==b for v in additions.values()) for b in additions.values()}
-        additions={a:b for a,b in additions.items() if target_counts[b]==1}
+        additions={a:b for a,b in additions.items() if target_counts[b]==1 or a in alias_members}
         if not additions:break
         accepted.update(additions);used.update(additions.values())
     final={}

@@ -15,6 +15,7 @@ from capstone.x86 import X86_OP_IMM,X86_OP_MEM
 from pe_image import PE
 from msvc_demangle import demangle_msvc
 ROOT=Path(__file__).resolve().parents[1]
+ORACLE_VERSION=3
 
 def digest(p):return hashlib.sha256(Path(p).read_bytes()).hexdigest()
 def canonical(n):
@@ -301,7 +302,7 @@ class Oracle:
             rows.append(row)
         total=union_size((r['address'],r['address']+r['size']) for r in rows)
         exact=union_size((r['address'],r['address']+r['size']) for r in rows if r['status']=='exact')
-        return {'build_kind':'unmodified-reference' if Path(self.receipt['source_root']).resolve()==(ROOT/'_reference/some100-th07').resolve() else 'maintained-source','reference_commit':self.receipt['upstream_commit'],'target_sha256':digest(self.target.path),'profile':self.receipt['profile'],'scope':'upstream function annotations; provisional origin/boundary review separate','functions':rows,'function_count':len(rows),'function_bytes':total,'exact_bytes':exact,'exact_percent':100*exact/total,'statuses':dict(collections.Counter(r['status'] for r in rows)),'compiler_eh':self.eh_audit,'compiler_statics':self.static_audit,'compiler_thunks':self.thunk_audit}
+        return {'build_kind':'unmodified-reference' if Path(self.receipt['source_root']).resolve()==(ROOT/'_reference/some100-th07').resolve() else 'maintained-source','oracle_version':ORACLE_VERSION,'reference_commit':self.receipt['upstream_commit'],'target_sha256':digest(self.target.path),'profile':self.receipt['profile'],'scope':'upstream function annotations; provisional origin/boundary review separate','functions':rows,'function_count':len(rows),'function_bytes':total,'exact_bytes':exact,'exact_percent':100*exact/total,'statuses':dict(collections.Counter(r['status'] for r in rows)),'compiler_eh':self.eh_audit,'compiler_statics':self.static_audit,'compiler_thunks':self.thunk_audit}
 
 def main():
     p=argparse.ArgumentParser();p.add_argument('--build-dir',type=Path,default=ROOT/'build/reference');p.add_argument('--output',type=Path,default=ROOT/'build/reference-baseline.json');a=p.parse_args();result=Oracle(a.build_dir).measure();a.output.parent.mkdir(parents=True,exist_ok=True);a.output.write_text(json.dumps(result,indent=2)+'\n');print(json.dumps({k:v for k,v in result.items() if k!='functions'},indent=2))

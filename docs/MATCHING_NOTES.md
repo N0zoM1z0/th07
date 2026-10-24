@@ -42,27 +42,39 @@
 All four former COFF supplements now pass from the maintained product. The
 canonical manifest contains no separate probe supplements.
 
-## Remaining source issues
+## Recovered result registration
 
-- `ResultScreen::RegisterChain`, 339 bytes: frame 0x38 versus target 0x2C;
-  the affected parameter/temporary homes differ by 12 bytes. Remaining code
-  and independently resolved relocations agree.
+`ResultScreen::RegisterChain` (`0x0044A302`, 339 bytes) now has the observed
+`0x2C` frame. ScoreListNode remains a 12-byte resource-free node; its result grid
+is initialized explicitly with the shared C++ stride/count helper before the
+existing whole-object clear and cursor initialization. There are no other
+score-node default construction sites in the maintained sources.
 
-Other rejected experiments: moving ResultScreen's constructor out of line made
-its caller frame 0x14, while explicit inline outside the class preserved the
-0x38 mismatch. `noinline`, delayed inline definitions in a separate input TU,
-`inline_depth(1)`, separating ResultScreen's pointer declaration from its initialization, and
-compiling ResultScreen/MainMenu without `/GL` did not fix
-the two frames. A surrounding `pack(4)` did not alter the SDK union's local
-placement. Those global experiments were reverted. The accepted native COFF
-profile now contains only the isolated menu unit.
+The native registration TU keeps this helper out of speculative inlining. A
+separate native constructor emitter uses the normal inline profile, preserving
+all 251 constructor bytes and all 265 deletion bytes. This is one shared class
+and initializer implementation, with optimization/emission attributes varying
+by TU. No artificial storage or conditional behavioral bodies are involved.
+The required constructor COMDAT uses dllexport to force VC7 emission; this adds
+one PE export and does not claim whole-image identity.
+
+Splitting the units retains two copies of an EH capsule that LTCG previously
+shared. Both complete FuncInfo/unwind graphs, both handlers and both cleanup
+bodies independently replay against one unique original graph. Oracle v3
+records that alias only after complete comparisons. Extra unmatched descriptors,
+changed cleanup homes, unknown callees and ambiguous target graphs are rejected
+by synthetic negative controls.
+
+Earlier out-of-line, implicit-inline, packing, destructor, initialization-wrapper
+and frame-profile probes are historical diagnostics. The shared initialization
+profile above preserves every accepted routine in the final product.
 
 ## Build evidence and cache correction
 
-A cold 30-TU rebuild and both links succeeded after the source fixes. The
-maintained native measurement is 693/694 named exact functions, with only the
-ResultScreen registration frame mismatch above. With the explicitly approved 32-byte x87 primitive,
-authored acceptance is 685/686 and 99.9109%.
+A cold 32-TU rebuild and both links succeeded after the source fixes. The
+maintained native measurement is 694/694 named exact functions. With the
+explicitly approved 32-byte x87 primitive, authored acceptance is 686/686 and
+100%. The original scope remains 380,493 coverage bytes.
 
 VC7 `/GL` objects still need their compiler PDBs during a later link. Deleting
 those PDBs before reusing cached objects lost 641 source procedure records in
@@ -73,7 +85,7 @@ for incremental linking remain; obsolete diagnostic artifacts can be removed.
 
 `verify-linked-product.py` checks the actual entry binding, imports, full source
 native measurements, unsuppressed link status, faithful/metadata source data,
-and independently relocated named globals. Its completion gate remains false.
+and independently relocated named globals. Its `--require-all-exact` completion gate passes.
 
 ## Approved mathematical primitive
 
@@ -90,8 +102,8 @@ all other whole-function assembly substitutions remain prohibited.
 
 ## Additional frame diagnostics
 
-Compiler `/FAcs` listings identify the mismatches as reserved, unused inline
-constructor storage. `ResultScreen::RegisterChain` has 36 unused bytes between
+Compiler `/FAcs` listings identified the former mismatches as reserved, unused inline
+constructor storage. The earlier `ResultScreen::RegisterChain` had 36 unused bytes between
 its pointer homes and parameter copy; the target has 24. In
 `MainMenu::OnUpdatePreInput`, eight unused bytes precede the `new AnmVm[]`
 iterator homes. Constructor visibility changes this reservation, but the
@@ -113,5 +125,5 @@ vector-construction helper or registry calls instead of preserving the body.
 
 Further controlled probes and the separate VC7 linear-flow classifier are
 recorded in [frame diagnostics](FRAME_DIAGNOSTICS.md). The tested cost switches
-do not fix either frame. Backend identity is now checked in both load paths and
+did not resolve these frames; the accepted source/TU profiles do. Backend identity is now checked in both load paths and
 bound to every native receipt; old receipts require a rebuild.

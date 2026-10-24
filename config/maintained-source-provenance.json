@@ -40,6 +40,15 @@
         "src/th07/AnmManager.hpp"
       ],
       "change": "Move OnUpdatePreInput into a native COFF TU with the observed constructor call preserved by a TU-local noinline declaration hint. Constructor body/layout/ABI remain shared. Use size-profile diagnostic stubs, /Od /Oi headers and the menu size/ordinary-strcpy profile. Complete 3184-byte routine, including 32 table bytes, replays in the maintained linked product."
+    },
+    {
+      "paths": [
+        "src/th07/ResultScreen.hpp",
+        "src/th07/ResultScreen.cpp",
+        "src/th07/ResultRegister.cpp",
+        "src/th07/ResultScreenCtor.cpp"
+      ],
+      "change": "Initialize the POD score-node grid explicitly through one shared stride/count loop. A TU-local noinline hint removes its speculative argument homes in native registration; a native dllexport constructor emitter preserves the exact shared 251-byte constructor. Class/initializer bodies and layout do not vary by TU. This emits one additional constructor export; full PE identity is not claimed. Complete 339/251/265-byte registration/constructor/deletion and all 694 named routines replay exactly with independently proven complete EH capsule aliases."
     }
   ],
   "files": [
@@ -196,12 +205,20 @@
       "sha256": "2965b936b53de4615ff688d0b09f183a8d16f8be48e4adc39acf933f16645a2b"
     },
     {
+      "path": "src/th07/ResultRegister.cpp",
+      "sha256": "972244dde00a92ee988857aa40780956d0dedfd9ae57a44abe74b57a65dd4815"
+    },
+    {
       "path": "src/th07/ResultScreen.cpp",
-      "sha256": "ccaa96bcafa8030ac727c629b56c14f728a78cbe2b444bc5afbb9f09f8e40cfc"
+      "sha256": "f7909a499d47fbc61727b8df67666c6ba093751b8ca7cb74f0d2d4f4a1f176a2"
     },
     {
       "path": "src/th07/ResultScreen.hpp",
-      "sha256": "72a4f27df01b8cecc08407601878afb1ddbe1926734d639f1b0d21f13686c99f"
+      "sha256": "c3fe7657d142a5d6cca3fbdb42cf8476a95df7e2b7a30f7013363146d4b0a2a8"
+    },
+    {
+      "path": "src/th07/ResultScreenCtor.cpp",
+      "sha256": "95acbd625d64b4fa4cf8bc802a0b927dbacbb5afb0c4901fa39ec864c8ac0b7c"
     },
     {
       "path": "src/th07/ScreenEffect.cpp",

@@ -1,7 +1,7 @@
-# Active reconstruction objective
+# Reconstruction objective and completion evidence
 
 Reach **100% admitted authored exact functions and bytes**, and verify that the
-same maintained product builds and links correctly. The objective remains active.
+same maintained product builds and links correctly.
 
 Completion requires all of the following:
 
@@ -14,13 +14,21 @@ Completion requires all of the following:
    native procedure evidence remain intact.
 4. `replay-exact-units.py`, `verify-linked-product.py --require-all-exact`, target
    attestation, tracking/progress checks and public CI all pass on current state.
-5. The remaining source issue is resolved without masking bytes, padding,
-   fake locals, or reclassifying them out of authored scope. Whole-function
+5. Source issues are resolved without masking bytes, padding,
+   fake locals, or reclassifying functions out of authored scope. Whole-function
    assembly remains prohibited except for the explicitly user-approved 32-byte
    x87 primitive bound by `config/source-policy.toml`.
 
-Current state is 685/686 authored functions and 380,154/380,493 bytes (99.9109%),
-all in one product. `verify-linked-product.py` separately reports successful
-build/link verification and incomplete exact-source reconstruction. Its
-`--require-all-exact` gate deliberately fails while authored work remains.
-Runtime playability and whole-file identity have not been established.
+Current state is **686/686 authored functions and 380,493/380,493 bytes (100%)**,
+all in one product. A cold 32-TU build, both links, full 694-unit replay and
+`verify-linked-product.py --require-all-exact` pass. All 132 reviewed application
+globals/vtables also pass. Public CI revalidates the tracking, progress and
+synthetic positive/negative controls on each push.
+
+The original denominator and all comparison bytes remain intact. Oracle v3
+permits duplicate native EH descriptors only after independent complete graph,
+handler and cleanup replay proves one unique original identity; unexplained
+count differences and ambiguous identities still fail closed.
+
+Runtime playability and whole-file identity have not been established. The
+constructor emission profile adds one PE export and omits original icon resources.

@@ -1,10 +1,10 @@
-# Remaining VC7 frame differences
+# Recovered VC7 frame differences
 
-One routine remains unaccepted: `ResultScreen::RegisterChain`. The menu loop
-now passes from the maintained linked product. The table records the original
-frame problem before that recovery; diagnostic similarity never grants credit.
+Both routines now replay completely from the maintained linked product. The
+table records their former frame differences; diagnostic similarity alone
+never grants credit.
 
-| Routine | Complete compared extent | Target allocation | Current allocation |
+| Routine | Complete compared extent | Target allocation | Former allocation |
 | --- | ---: | ---: | ---: |
 | `0x0044A302 ResultScreen::RegisterChain` | 339 | `0x2C` | `0x38` |
 | `0x004555DD MainMenu::OnUpdatePreInput` | 3,184 including 32 table bytes | `0x64` | `0x6C` |
@@ -31,11 +31,10 @@ ordinary strcpy calls to the loop. Otherwise a native size-profile constructor
 or a newly folded diagnostic identity changes unrelated measurements. This is
 a pinned VC7 build profile. The other 29 units retain the upstream LTCG profile.
 
-A cold 30-TU build, faithful/metadata links and full replay prove all 3,184 menu
-bytes, including the 32-byte table. The maintained product now has 693/694 named
-exact routines and 685/686 authored exact routines. All accepted implementations
-are in that product, with no external COFF supplement. ResultScreen registration
-still fails its complete comparison and remains in the denominator.
+A cold 30-TU build, faithful/metadata links and full replay proved all 3,184 menu
+bytes, including the 32-byte table. At that point the product had 693/694 named
+and 685/686 authored exact routines. The result registration recovery below
+closes the last routine without changing the denominator or using a supplement.
 
 ## Controlled probes
 
@@ -87,7 +86,7 @@ a changed backend while leaving the compiler driver, frontend and linker intact.
 
 ## Runtime compiler tracing
 
-A headless WineDbg GDB proxy and batch GDB traced compilation of the maintained
+A headless WineDbg GDB proxy and batch GDB traced compilation of the earlier
 ResultScreen source without changing either compiler or game instructions.
 The trace confirms three imports of the ordinary vector-construction helper
 while considering ResultScreen's constructor inside RegisterChain. The first
@@ -120,6 +119,29 @@ initialization helpers and alias settings did not produce a complete fix.
 None of these probe source changes entered the maintained product. In
 particular, no differing class definitions across translation units were used.
 
-Next investigate the import/cleanup of generated locals and distinguish it
-from the later decision to retain the constructor call. The sole remaining
-339-byte routine is still rejected by the strict oracle.
+## Recovered result registration
+
+The trace also exposes three groups of unnamed argument temporaries in the
+registration scope after the speculative array-helper calls. Making score-node
+initialization an explicit shared C++ stride/count walk permits a native TU-local
+noinline hint on that helper. The registration frame becomes `0x2C`. The node
+layout remains 12 bytes and all three links/data fields are initialized before
+the existing whole-object clear. No other maintained site default-constructs
+score nodes. Both the class and helper bodies are identical across TUs.
+
+`ResultScreenCtor.cpp` emits the real shared constructor with the normal inline
+profile; all 251 bytes match. Its VC7 dllexport emission attribute ensures that
+the constructor COMDAT exists for registration's call, adding one PE export.
+The out-of-line initialization helper is discarded; it adds no callable code
+to the final product. Deletion still matches all 265 bytes.
+
+Native registration retains its own complete EH capsule while LTCG retains
+the equivalent capsule shared by other registrations. Oracle v3 independently
+compares every descriptor/unwind word and every handler/cleanup byte before
+recording this unique alias. It does not solve an address from the operand
+under comparison. Unexplained descriptor-count changes remain rejected.
+
+A cold 32-TU build, both links, full 694-unit replay and the all-exact product
+gate pass: 686/686 authored functions and 380,493/380,493 coverage bytes. All
+132 reviewed application globals/vtables also pass. Whole-file identity and
+runtime playability remain outside this result.

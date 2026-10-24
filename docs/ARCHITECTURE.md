@@ -12,9 +12,11 @@ and PBG4 archive handling. `resources/csv/i18n.csv` generates the Japanese heade
 inside ignored build directories. Headers retain target layout assertions and
 source function/global annotations.
 
-The maintained product has 29 upstream LTCG units plus the linked native
-`MainMenuPreInput.cpp` unit. Its TU-local compiler hint preserves the observed
-AnmVm constructor call without changing constructor logic or object layout.
+The maintained product has 29 upstream LTCG units plus three native COFF units:
+`MainMenuPreInput.cpp`, `ResultScreenCtor.cpp` and `ResultRegister.cpp`. TU-local
+optimization hints preserve observed call boundaries and argument-home storage.
+The shared C++ bodies and object layouts do not vary across units. The result
+constructor emitter adds one PE export to retain its required implementation.
 See [frame diagnostics](FRAME_DIAGNOSTICS.md).
 
 The existing `src/*.cpp` and associated headers preserve focused reconstruction
@@ -24,7 +26,7 @@ product. Existing probes remain historical evidence and are not linked twice.
 `config/functions.csv` holds 1,546 reviewed entries. Explicit origins distinguish
 authored source, libraries and compiler code. Application closure is reviewed in
 [BOUNDARY_REVIEW.md](BOUNDARY_REVIEW.md); complete-extent acceptance and the
-remaining authored routine are documented in [ORACLE.md](ORACLE.md).
+complete authored acceptance are documented in [ORACLE.md](ORACLE.md).
 
 The 686 authored functions cover 380,493 non-overlapping function bytes. This
 source scope includes the game's PBG archive code while retaining its original

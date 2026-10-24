@@ -9,9 +9,10 @@ measurement. The reference is some100/th07 commit
 
 `scripts/build-reference.py` reproduces the upstream 29-TU VC7 13.00.9466 profile
 with pinned `var_order`, Japanese localization generation and `/GL /LTCG`.
-The maintained product adds the recorded `MainMenuPreInput.cpp` native COFF
-unit to that graph, preserving a constructor call with a TU-local compiler
-attribute. All accepted code is in the same linked product.
+The maintained product adds the recorded `MainMenuPreInput.cpp`,
+`ResultScreenCtor.cpp` and `ResultRegister.cpp` native COFF units. Shared C++
+bodies and TU-local optimization/emission attributes preserve the observed
+calls and frames. All accepted code is in the same linked product.
 The faithful profile omits the original icon. `/GL` objects contain intermediate
 representation; native sizes must come from the completed link, not apparent
 COFF prefixes.
@@ -40,6 +41,17 @@ Oracle v2 additionally handles:
 - compiler EH graphs matched by state shape and complete cleanup/handler replay,
   with unique one-to-one assignments, rather than contribution order.
 
+V3 additionally recognizes duplicate native EH capsules that COFF and LTCG
+retain separately. Each complete FuncInfo, unwind map, handler and cleanup body
+must independently match exactly one original capsule. Only those proven aliases
+can account for a descriptor-count difference; an unexplained extra descriptor
+still rejects recovery. The current product has 19 native descriptors versus
+18 original descriptors: two complete native capsules uniquely match the one
+original graph shared by result/menu/GUI registration. The comparison does not
+use the user-function instruction operand to select that graph. Negative controls
+reject a changed cleanup home, unknown callee, missing handler, ambiguous original
+identity and an extra descriptor without complete alias proof.
+
 Synthetic negative controls reject ambiguous literals/thunks, wrong independent
 addresses, missing type/size evidence, nonadjacent guards, truncated procedures,
 trailing table corruption, wrong PDB GUID/age and stale build artifacts.
@@ -55,16 +67,18 @@ SHA-256 of complete target ranges.
 
 ## Reference and maintained measurements
 
-| Current oracle v2 scope | Exact functions | Exact coverage bytes |
+| Current oracle v3 scope | Exact functions | Exact coverage bytes |
 | --- | ---: | ---: |
 | Unmodified reference, named scope | 686 / 694 | 345,019 / 381,170 (90.5158%) |
-| Maintained linked product, named scope | 693 / 694 | 380,831 / 381,170 (99.9111%) |
-| Reviewed authored functions in that product | 685 / 686 | 380,154 / 380,493 (99.9109%) |
+| Maintained linked product, named scope | 694 / 694 | 381,170 / 381,170 (100.0000%) |
+| Reviewed authored functions in that product | 686 / 686 | 380,493 / 380,493 (100.0000%) |
 
 The initial v1 reference measurement was 682/694 and 89.6149%. It is preserved
 in `config/legacy/reference-baseline-v1.csv`. V2 removes four independently
 resolved metadata/literal false negatives without changing reference source or
-its target denominator. No relaxation of byte comparison is involved.
+its target denominator. V3 remeasures the unchanged reference at the same
+686/694 and 90.5158%; only proven complete capsule aliases are added. No
+instruction, relocation or metadata comparison byte is masked.
 
 The maintained signed score correction recovers ECL's complete 30,156-byte
 procedure, including 692 table bytes beyond the 29,464 coverage bytes.
@@ -101,21 +115,22 @@ changed scope or body; removing/revoking approval withholds acceptance. All othe
 whole-function assembly substitutes remain prohibited. The denominator is
 unchanged.
 
-## Remaining authored work
+## Complete authored acceptance
 
-| Address | Function | Coverage bytes | Blocker |
-| --- | --- | ---: | --- |
-| `0x0044A302` | `ResultScreen::RegisterChain` | 339 | Stack frame 0x38 versus 0x2C |
+All 686 reviewed authored functions pass. The last routine,
+`ResultScreen::RegisterChain` at `0x0044A302`, now replays its full 339 bytes,
+with the observed `0x2C` frame. Its constructor and deletion callback retain
+their complete 251- and 265-byte matches. See [matching notes](MATCHING_NOTES.md).
 
 `config/functions.csv`, `function-origins.csv`, `matches.csv` and
 `exact-units.json` jointly define current acceptance. `config/remaining.csv`
-records unfinished source work. The historical ledger/claims remain verbatim
+is empty apart from its header. The historical ledger/claims remain verbatim
 under `config/legacy/`; the admission importer repairs five unquoted historical
 CSV fields while loading that archive.
 
 ## Build and link verification limits
 
-A fresh 30-TU cold build and both links pass. The product verifier checks startup
+A fresh 32-TU cold build and both links pass. The product verifier checks startup
 binding, imports, unsuppressed linker status and complete native measurements.
 It also replays **132 named application globals/vtables** through independently
 resolved relocations, and checks their faithful/metadata byte agreement.
@@ -123,10 +138,11 @@ Twelve historical CRT placeholder globals and the two SDK object-format
 descriptors are separately reported outside that application-data check.
 
 The active completion gate is `verify-linked-product.py --require-all-exact`;
-it deliberately fails while any authored work remains. Current build/link
-verification passes, and exact-source completion is false.
+it passes on the current maintained product. Build/link verification and
+exact-source completion are both true.
 
 The percentage measures non-overlapping function coverage, not `.text` or file
-identity. Table tails are checked without counting them twice. No game was run;
+identity. The constructor emitter adds one PE export and the build omits original
+icon resources. Table tails are checked without counting them twice. No game was run;
 playability remains unverified. Upstream reports an integrity-check crash after
 3,999 update cycles in its matching build; no check was suppressed here.

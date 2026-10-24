@@ -322,9 +322,10 @@ struct Vrsm : Th7k
 };
 C_ASSERT(sizeof(Vrsm) == 0x1c);
 
+// Score nodes own no resources. ResultScreen explicitly initializes its grid.
 struct ScoreListNode
 {
-    ScoreListNode()
+    void Initialize()
     {
         prev = NULL;
         next = NULL;
@@ -336,6 +337,20 @@ struct ScoreListNode
     Hscr *data;
 };
 C_ASSERT(sizeof(ScoreListNode) == 0xc);
+
+// Walk the contiguous score grid with its element size and count. Only the
+// optimization hint varies by TU; this body and every object layout are shared.
+#if defined(TH07_SCORE_NODE_INIT_NOINLINE)
+__declspec(noinline)
+#endif
+inline void __stdcall InitializeScoreListNodes(void *storage, u32 stride, i32 count)
+{
+    while (--count >= 0)
+    {
+        static_cast<ScoreListNode *>(storage)->Initialize();
+        storage = static_cast<char *>(storage) + stride;
+    }
+}
 
 struct ScoreDat
 {
@@ -356,8 +371,13 @@ C_ASSERT(sizeof(ScoreDat) == 0x1c);
 
 struct ResultScreen
 {
+#if defined(TH07_RESULT_CTOR_EXPORT)
+    __declspec(dllexport)
+#endif
     ResultScreen()
     {
+        InitializeScoreListNodes(&this->scoreLists, sizeof(ScoreListNode),
+                                 sizeof(this->scoreLists) / sizeof(ScoreListNode));
         memset(this, 0, sizeof(ResultScreen));
         this->cursor = 1;
     }

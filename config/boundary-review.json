@@ -6,8 +6,8 @@
   "reference_named_exact_bytes": 345019,
   "authored_functions": 686,
   "authored_bytes": 380493,
-  "authored_exact_functions": 685,
-  "authored_exact_bytes": 380154,
+  "authored_exact_functions": 686,
+  "authored_exact_bytes": 380493,
   "application_start": 4198400,
   "application_end_exclusive": 4587595,
   "runtime_start": 4594320,
@@ -2547,11 +2547,11 @@
     }
   ],
   "compiler_eh": {
-    "native_descriptors": 18,
+    "native_descriptors": 19,
     "original_descriptors": 18,
     "accepted": [
       {
-        "generated_info": 4827188,
+        "generated_info": 4827172,
         "target_info": 4827556,
         "generated_handler": 4768682,
         "target_handler": 4769186,
@@ -2565,261 +2565,13 @@
         ]
       },
       {
-        "generated_info": 4827308,
-        "target_info": 4827084,
-        "generated_handler": 4768782,
-        "target_handler": 4768762,
-        "cleanup_checks": [
-          {
-            "generated": 4768722,
-            "target": 4768702,
-            "size": 10,
-            "result": "exact"
-          },
-          {
-            "generated": 4768762,
-            "target": 4768742,
-            "size": 10,
-            "result": "exact"
-          },
-          {
-            "generated": 4768712,
-            "target": 4768692,
-            "size": 10,
-            "result": "exact"
-          },
-          {
-            "generated": 4768772,
-            "target": 4768752,
-            "size": 10,
-            "result": "exact"
-          },
-          {
-            "generated": 4768752,
-            "target": 4768732,
-            "size": 10,
-            "result": "exact"
-          },
-          {
-            "generated": 4768742,
-            "target": 4768722,
-            "size": 10,
-            "result": "exact"
-          },
-          {
-            "generated": 4768732,
-            "target": 4768712,
-            "size": 10,
-            "result": "exact"
-          }
-        ]
-      },
-      {
-        "generated_info": 4827344,
-        "target_info": 4827120,
-        "generated_handler": 4768936,
-        "target_handler": 4768792,
-        "cleanup_checks": [
-          {
-            "generated": 4768928,
-            "target": 4768784,
-            "size": 8,
-            "result": "exact"
-          }
-        ]
-      },
-      {
-        "generated_info": 4827380,
-        "target_info": 4827156,
-        "generated_handler": 4768808,
-        "target_handler": 4768824,
-        "cleanup_checks": [
-          {
-            "generated": 4768800,
-            "target": 4768816,
-            "size": 8,
-            "result": "exact"
-          }
-        ]
-      },
-      {
-        "generated_info": 4827416,
-        "target_info": 4827192,
-        "generated_handler": 4768843,
-        "target_handler": 4768859,
-        "cleanup_checks": [
-          {
-            "generated": 4768832,
-            "target": 4768848,
-            "size": 11,
-            "result": "exact"
-          }
-        ]
-      },
-      {
-        "generated_info": 4827460,
-        "target_info": 4827236,
-        "generated_handler": 4768886,
-        "target_handler": 4768902,
-        "cleanup_checks": [
-          {
-            "generated": 4768864,
-            "target": 4768880,
-            "size": 8,
-            "result": "exact"
-          },
-          {
-            "generated": 4768872,
-            "target": 4768888,
-            "size": 14,
-            "result": "exact"
-          }
-        ]
-      },
-      {
-        "generated_info": 4827496,
-        "target_info": 4827272,
-        "generated_handler": 4768904,
-        "target_handler": 4768920,
-        "cleanup_checks": [
-          {
-            "generated": 4768896,
-            "target": 4768912,
-            "size": 8,
-            "result": "exact"
-          }
-        ]
-      },
-      {
-        "generated_info": 4827532,
-        "target_info": 4827592,
-        "generated_handler": 4769179,
-        "target_handler": 4768955,
-        "cleanup_checks": [
-          {
-            "generated": 4769168,
-            "target": 4768944,
-            "size": 11,
-            "result": "exact"
-          }
-        ]
-      },
-      {
-        "generated_info": 4827568,
-        "target_info": 4827308,
-        "generated_handler": 4768971,
-        "target_handler": 4768987,
-        "cleanup_checks": [
-          {
-            "generated": 4768960,
-            "target": 4768976,
-            "size": 11,
-            "result": "exact"
-          }
-        ]
-      },
-      {
-        "generated_info": 4827604,
-        "target_info": 4827344,
-        "generated_handler": 4769003,
-        "target_handler": 4769019,
-        "cleanup_checks": [
-          {
-            "generated": 4768992,
-            "target": 4769008,
-            "size": 11,
-            "result": "exact"
-          }
-        ]
-      },
-      {
-        "generated_info": 4827648,
-        "target_info": 4827388,
-        "generated_handler": 4769046,
-        "target_handler": 4769062,
-        "cleanup_checks": [
-          {
-            "generated": 4769024,
-            "target": 4769040,
-            "size": 11,
-            "result": "exact"
-          },
-          {
-            "generated": 4769035,
-            "target": 4769051,
-            "size": 11,
-            "result": "exact"
-          }
-        ]
-      },
-      {
-        "generated_info": 4827692,
-        "target_info": 4827432,
-        "generated_handler": 4769078,
-        "target_handler": 4769094,
-        "cleanup_checks": [
-          {
-            "generated": 4769056,
-            "target": 4769072,
-            "size": 11,
-            "result": "exact"
-          },
-          {
-            "generated": 4769067,
-            "target": 4769083,
-            "size": 11,
-            "result": "exact"
-          }
-        ]
-      },
-      {
-        "generated_info": 4827728,
-        "target_info": 4827468,
-        "generated_handler": 4769096,
-        "target_handler": 4769112,
-        "cleanup_checks": [
-          {
-            "generated": 4769088,
-            "target": 4769104,
-            "size": 8,
-            "result": "exact"
-          }
-        ]
-      },
-      {
-        "generated_info": 4827780,
-        "target_info": 4827520,
-        "generated_handler": 4769150,
-        "target_handler": 4769166,
-        "cleanup_checks": [
-          {
-            "generated": 4769120,
-            "target": 4769136,
-            "size": 8,
-            "result": "exact"
-          },
-          {
-            "generated": 4769128,
-            "target": 4769144,
-            "size": 11,
-            "result": "exact"
-          },
-          {
-            "generated": 4769139,
-            "target": 4769155,
-            "size": 11,
-            "result": "exact"
-          }
-        ]
-      },
-      {
-        "generated_info": 4827816,
+        "generated_info": 4827208,
         "target_info": 4827628,
-        "generated_handler": 4769199,
+        "generated_handler": 4768702,
         "target_handler": 4769206,
         "cleanup_checks": [
           {
-            "generated": 4769189,
+            "generated": 4768692,
             "target": 4769196,
             "size": 10,
             "result": "exact"
@@ -2827,19 +2579,281 @@
         ]
       },
       {
-        "generated_info": 4827860,
+        "generated_info": 4827328,
+        "target_info": 4827084,
+        "generated_handler": 4768802,
+        "target_handler": 4768762,
+        "cleanup_checks": [
+          {
+            "generated": 4768742,
+            "target": 4768702,
+            "size": 10,
+            "result": "exact"
+          },
+          {
+            "generated": 4768782,
+            "target": 4768742,
+            "size": 10,
+            "result": "exact"
+          },
+          {
+            "generated": 4768732,
+            "target": 4768692,
+            "size": 10,
+            "result": "exact"
+          },
+          {
+            "generated": 4768792,
+            "target": 4768752,
+            "size": 10,
+            "result": "exact"
+          },
+          {
+            "generated": 4768772,
+            "target": 4768732,
+            "size": 10,
+            "result": "exact"
+          },
+          {
+            "generated": 4768762,
+            "target": 4768722,
+            "size": 10,
+            "result": "exact"
+          },
+          {
+            "generated": 4768752,
+            "target": 4768712,
+            "size": 10,
+            "result": "exact"
+          }
+        ]
+      },
+      {
+        "generated_info": 4827364,
+        "target_info": 4827120,
+        "generated_handler": 4768952,
+        "target_handler": 4768792,
+        "cleanup_checks": [
+          {
+            "generated": 4768944,
+            "target": 4768784,
+            "size": 8,
+            "result": "exact"
+          }
+        ]
+      },
+      {
+        "generated_info": 4827400,
+        "target_info": 4827156,
+        "generated_handler": 4768824,
+        "target_handler": 4768824,
+        "cleanup_checks": [
+          {
+            "generated": 4768816,
+            "target": 4768816,
+            "size": 8,
+            "result": "exact"
+          }
+        ]
+      },
+      {
+        "generated_info": 4827436,
+        "target_info": 4827192,
+        "generated_handler": 4768859,
+        "target_handler": 4768859,
+        "cleanup_checks": [
+          {
+            "generated": 4768848,
+            "target": 4768848,
+            "size": 11,
+            "result": "exact"
+          }
+        ]
+      },
+      {
+        "generated_info": 4827480,
+        "target_info": 4827236,
+        "generated_handler": 4768902,
+        "target_handler": 4768902,
+        "cleanup_checks": [
+          {
+            "generated": 4768880,
+            "target": 4768880,
+            "size": 8,
+            "result": "exact"
+          },
+          {
+            "generated": 4768888,
+            "target": 4768888,
+            "size": 14,
+            "result": "exact"
+          }
+        ]
+      },
+      {
+        "generated_info": 4827516,
+        "target_info": 4827272,
+        "generated_handler": 4768920,
+        "target_handler": 4768920,
+        "cleanup_checks": [
+          {
+            "generated": 4768912,
+            "target": 4768912,
+            "size": 8,
+            "result": "exact"
+          }
+        ]
+      },
+      {
+        "generated_info": 4827552,
+        "target_info": 4827592,
+        "generated_handler": 4769195,
+        "target_handler": 4768955,
+        "cleanup_checks": [
+          {
+            "generated": 4769184,
+            "target": 4768944,
+            "size": 11,
+            "result": "exact"
+          }
+        ]
+      },
+      {
+        "generated_info": 4827588,
+        "target_info": 4827308,
+        "generated_handler": 4768987,
+        "target_handler": 4768987,
+        "cleanup_checks": [
+          {
+            "generated": 4768976,
+            "target": 4768976,
+            "size": 11,
+            "result": "exact"
+          }
+        ]
+      },
+      {
+        "generated_info": 4827624,
+        "target_info": 4827344,
+        "generated_handler": 4769019,
+        "target_handler": 4769019,
+        "cleanup_checks": [
+          {
+            "generated": 4769008,
+            "target": 4769008,
+            "size": 11,
+            "result": "exact"
+          }
+        ]
+      },
+      {
+        "generated_info": 4827668,
+        "target_info": 4827388,
+        "generated_handler": 4769062,
+        "target_handler": 4769062,
+        "cleanup_checks": [
+          {
+            "generated": 4769040,
+            "target": 4769040,
+            "size": 11,
+            "result": "exact"
+          },
+          {
+            "generated": 4769051,
+            "target": 4769051,
+            "size": 11,
+            "result": "exact"
+          }
+        ]
+      },
+      {
+        "generated_info": 4827712,
+        "target_info": 4827432,
+        "generated_handler": 4769094,
+        "target_handler": 4769094,
+        "cleanup_checks": [
+          {
+            "generated": 4769072,
+            "target": 4769072,
+            "size": 11,
+            "result": "exact"
+          },
+          {
+            "generated": 4769083,
+            "target": 4769083,
+            "size": 11,
+            "result": "exact"
+          }
+        ]
+      },
+      {
+        "generated_info": 4827748,
+        "target_info": 4827468,
+        "generated_handler": 4769112,
+        "target_handler": 4769112,
+        "cleanup_checks": [
+          {
+            "generated": 4769104,
+            "target": 4769104,
+            "size": 8,
+            "result": "exact"
+          }
+        ]
+      },
+      {
+        "generated_info": 4827800,
+        "target_info": 4827520,
+        "generated_handler": 4769166,
+        "target_handler": 4769166,
+        "cleanup_checks": [
+          {
+            "generated": 4769136,
+            "target": 4769136,
+            "size": 8,
+            "result": "exact"
+          },
+          {
+            "generated": 4769144,
+            "target": 4769144,
+            "size": 11,
+            "result": "exact"
+          },
+          {
+            "generated": 4769155,
+            "target": 4769155,
+            "size": 11,
+            "result": "exact"
+          }
+        ]
+      },
+      {
+        "generated_info": 4827836,
+        "target_info": 4827628,
+        "generated_handler": 4769215,
+        "target_handler": 4769206,
+        "cleanup_checks": [
+          {
+            "generated": 4769205,
+            "target": 4769196,
+            "size": 10,
+            "result": "exact"
+          }
+        ]
+      },
+      {
+        "generated_info": 4827880,
         "target_info": 4827672,
-        "generated_handler": 4769229,
+        "generated_handler": 4769245,
         "target_handler": 4769236,
         "cleanup_checks": [
           {
-            "generated": 4769209,
+            "generated": 4769225,
             "target": 4769216,
             "size": 10,
             "result": "exact"
           },
           {
-            "generated": 4769219,
+            "generated": 4769235,
             "target": 4769226,
             "size": 10,
             "result": "exact"
@@ -2847,13 +2861,13 @@
         ]
       },
       {
-        "generated_info": 4827896,
+        "generated_info": 4827916,
         "target_info": 4827708,
-        "generated_handler": 4769253,
+        "generated_handler": 4769269,
         "target_handler": 4769260,
         "cleanup_checks": [
           {
-            "generated": 4769239,
+            "generated": 4769255,
             "target": 4769246,
             "size": 14,
             "result": "exact"
@@ -2863,9 +2877,19 @@
     ],
     "blocked": [
       {
-        "generated_info": 4827224,
+        "generated_info": 4827244,
         "candidate_infos": [],
         "reason": "graph does not match uniquely"
+      }
+    ],
+    "descriptor_aliases": [
+      {
+        "target_info": 4827628,
+        "generated_infos": [
+          4827208,
+          4827836
+        ],
+        "evidence": "independent complete FuncInfo, unwind map, handler and cleanup replay"
       }
     ]
   },
@@ -2896,17 +2920,17 @@
   "compiler_thunks": [
     {
       "name": "atoi",
-      "generated": 4707385,
+      "generated": 4707383,
       "target": 4707383,
       "size": 5,
-      "generated_callee": 4707249,
+      "generated_callee": 4707247,
       "target_callee": 4707247,
-      "callee_evidence": "named-function-complete-extent",
+      "callee_evidence": "generated-linker-selects-mapped-symbol",
       "evidence": "complete-unique-CRT-tail-thunk-replay"
     }
   ],
-  "native_named_exact_functions": 693,
-  "native_named_exact_bytes": 380831,
-  "oracle_version": 2,
+  "native_named_exact_functions": 694,
+  "native_named_exact_bytes": 381170,
+  "oracle_version": 3,
   "source_policy_exclusions": {}
 }

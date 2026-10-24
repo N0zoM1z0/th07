@@ -491,7 +491,7 @@ f_00443aa0,0x00443AA0,655,655,ReplayManager::RegisterChain,authored,native-linke
 f_00443d30,0x00443D30,108,108,ReplayManager::StopRecording,authored,native-linked,src/th07/ReplayManager.cpp
 f_00443da0,0x00443DA0,1829,1829,ReplayManager::SaveReplay,authored,native-linked,src/th07/ReplayManager.cpp
 f_004444d0,0x004444D0,1419,1419,ReplayManager::SaveReplay2,authored,native-linked,src/th07/ReplayManager.cpp
-f_00444a5b,0x00444A5B,251,251,ResultScreen::ResultScreen,authored,native-linked,src/th07/ResultScreen.cpp
+f_00444a5b,0x00444A5B,251,251,ResultScreen::ResultScreen,authored,native-linked,src/th07/ResultScreenCtor.cpp
 f_00444b56,0x00444B56,151,151,ResultScreen::LinkScore,authored,native-linked,src/th07/ResultScreen.cpp
 f_00444bed,0x00444BED,51,51,ResultScreen::FreeAllScores,authored,native-linked,src/th07/ResultScreen.cpp
 f_00444c20,0x00444C20,749,749,ResultScreen::OpenScore,authored,native-linked,src/th07/ResultScreen.cpp
@@ -518,6 +518,7 @@ f_004488a9,0x004488A9,1175,1175,ResultScreen::DrawFinalStats,authored,native-lin
 f_00448d40,0x00448D40,3525,3525,ResultScreen::OnDraw,authored,native-linked,src/th07/ResultScreen.cpp
 f_00449b05,0x00449B05,1780,1780,ResultScreen::AddedCallback,authored,native-linked,src/th07/ResultScreen.cpp
 f_0044a1f9,0x0044A1F9,265,265,ResultScreen::DeletedCallback,authored,native-linked,src/th07/ResultScreen.cpp
+f_0044a302,0x0044A302,339,339,ResultScreen::RegisterChain,authored,native-linked,src/th07/ResultRegister.cpp
 f_0044a460,0x0044A460,190,190,ScreenEffect::Clear,authored,native-linked,src/th07/ScreenEffect.cpp
 f_0044a520,0x0044A520,124,124,ScreenEffect::SetViewport,authored,native-linked,src/th07/ScreenEffect.cpp
 f_0044a5a0,0x0044A5A0,165,165,ScreenEffect::OnUpdateFadeOut,authored,native-linked,src/th07/ScreenEffect.cpp

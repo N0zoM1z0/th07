@@ -5915,7 +5915,7 @@
       "name": "ResultScreen::ResultScreen",
       "origin": "authored",
       "kind": "native-linked",
-      "source_file": "src/th07/ResultScreen.cpp",
+      "source_file": "src/th07/ResultScreenCtor.cpp",
       "target_compared_sha256": "cf22db58e1a8c38ec9f9e422aaa169fe15a4a1cab4f89dc2f4800ae64d3e9679",
       "native_name": "ResultScreen::ResultScreen"
     },
@@ -6230,6 +6230,18 @@
       "source_file": "src/th07/ResultScreen.cpp",
       "target_compared_sha256": "8d3d505498d26dfe19e87c2f4762684b070a8fdd91e37fecdbeddf016b615c03",
       "native_name": "ResultScreen::DeletedCallback"
+    },
+    "f_0044a302": {
+      "unit": "f_0044a302",
+      "address": "0x0044A302",
+      "size": 339,
+      "compare_size": 339,
+      "name": "ResultScreen::RegisterChain",
+      "origin": "authored",
+      "kind": "native-linked",
+      "source_file": "src/th07/ResultRegister.cpp",
+      "target_compared_sha256": "0893029e65ebbde01806201ce656c18740b7b66ac6f15b589f6300dc23dd2bc4",
+      "native_name": "ResultScreen::RegisterChain"
     },
     "f_0044a460": {
       "unit": "f_0044a460",
