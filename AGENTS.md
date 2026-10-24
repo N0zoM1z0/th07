@@ -30,6 +30,11 @@ Do not analyze or substitute a localized, patched, or earlier executable.
   assembly is allowed only for a narrowly evidenced ABI boundary within an
   otherwise real implementation; it must not encode the function's control
   flow, field accesses, or behavior merely to force a byte match.
+- User-approved narrow exception (2026-10-24): the 32-byte native procedure at
+  `0x004325C0`, shared by `Float2`/`Float3::FromAngleMagnitude`, may retain its
+  verified FSINCOS/scaled-output implementation. `config/source-policy.toml`
+  binds the exception to the target and both reviewed source bodies. It does
+  not authorize any other whole-function assembly or game-logic substitution.
 - `config/functions.csv` is the source of truth. Use the lifecycle
   `unclassified`, `identified`, `decompiled`, `implemented`, `compiles`,
   `matching`, `library`, or `blocked`.

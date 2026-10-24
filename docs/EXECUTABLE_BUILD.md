@@ -7,8 +7,8 @@ reference separately. Both use `/GL /LTCG` and omit original icon resources.
 
 Every currently accepted function comes from the maintained product; separate
 focused probes are retained as historical work. Full native measurement is
-692/694 named functions. Authored acceptance is 683/686 because the assembler-only
-helper is withheld. [Completion requirements](GOAL.md) remain unmet.
+692/694 named functions. Authored acceptance is 684/686, including the explicitly user-approved
+32-byte x87 primitive; two frame mismatches remain. [Completion requirements](GOAL.md) remain unmet.
 
 Each native build directory retains faithful and metadata executables, master
 `th07.pdb`, `th07.map`, bounded `pdb-symbols.json`, all intermediate objects and
@@ -22,7 +22,7 @@ force recompilation. `--incremental` still performs both complete links.
 python3 scripts/build-whole.py
 python3 scripts/replay-exact-units.py
 python3 scripts/verify-linked-product.py
-# Completion gate: currently fails because three authored routines remain.
+# Completion gate: currently fails because two authored routines remain.
 python3 scripts/verify-linked-product.py --require-all-exact
 ```
 

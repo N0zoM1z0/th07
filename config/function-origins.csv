@@ -325,7 +325,7 @@ address,origin,evidence,notes
 0x0043225B,authored,source annotation + target boundary + generated full procedure extent,Application/PBG source-owned function
 0x0043227E,authored,source annotation + target boundary + generated full procedure extent,Application/PBG source-owned function
 0x004322A3,authored,source annotation + target boundary + generated full procedure extent,Application/PBG source-owned function
-0x004325C0,authored,source annotation + target boundary + generated full procedure extent,Assembler-only Float2/Float3 field-writing helper; retained as an unaccepted reference-build dependency pending C++ recovery.
+0x004325C0,authored,source annotation + target boundary + generated full procedure extent,User-approved 32-byte x87 primitive exception; target and both source bodies bound by config/source-policy.toml (2026-10-24).
 0x004325E0,authored,source annotation + target boundary + generated full procedure extent,Application/PBG source-owned function
 0x00432630,authored,source annotation + target boundary + generated full procedure extent,Application/PBG source-owned function
 0x00432690,authored,source annotation + target boundary + generated full procedure extent,Application/PBG source-owned function

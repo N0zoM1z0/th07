@@ -1,4 +1,3 @@
 address,name,size,reason,source_file
-0x004325C0,Float2::FromAngleMagnitude,32,Assembler-only Float2/Float3 field-writing helper; retained as an unaccepted reference-build dependency pending C++ recovery.,src/th07/Player.cpp
 0x0044A302,ResultScreen::RegisterChain,339,mismatch,src/th07/ResultScreen.cpp
 0x004555DD,MainMenu::OnUpdatePreInput,3152,mismatch,src/th07/MainMenu.cpp

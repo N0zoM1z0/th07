@@ -4,6 +4,8 @@ from pathlib import Path
 ROOT=Path(__file__).resolve().parents[1]
 def rows(name):return list(csv.DictReader((ROOT/'config'/name).open()))
 def state():
+    from source_policy import exclusions
+    denied=exclusions(ROOT)
     ledger={r['address']:r for r in rows('functions.csv')}
     origins={r['address']:r['origin'] for r in rows('function-origins.csv')}
     manifest=json.loads((ROOT/'config/exact-units.json').read_text())
@@ -17,6 +19,7 @@ def state():
         a=unit['address'];row=ledger[a]
         if key!=unit['unit'] or key!=f'f_{int(a,0):08x}' or a in addresses:raise ValueError('invalid canonical unit')
         addresses.add(a)
+        if int(a,0) in denied:raise ValueError('source-policy exclusion was granted exact credit')
         if origins[a]!=unit['origin'] or int(row['size'])!=unit['size']:raise ValueError('unit/ledger scope differs')
         if row['match_percent']!='100.00' or row['status']!=('matching' if unit['origin']=='authored' else 'library'):raise ValueError('unproven accepted unit')
         if unit['compare_size']<unit['size'] or len(unit['target_compared_sha256'])!=64:raise ValueError('truncated exact extent')

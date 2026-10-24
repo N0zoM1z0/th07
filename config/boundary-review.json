@@ -6,8 +6,8 @@
   "reference_named_exact_bytes": 345019,
   "authored_functions": 686,
   "authored_bytes": 380493,
-  "authored_exact_functions": 683,
-  "authored_exact_bytes": 376970,
+  "authored_exact_functions": 684,
+  "authored_exact_bytes": 377002,
   "application_start": 4198400,
   "application_end_exclusive": 4587595,
   "runtime_start": 4594320,
@@ -2908,7 +2908,5 @@
   "native_named_exact_functions": 692,
   "native_named_exact_bytes": 377679,
   "oracle_version": 2,
-  "source_policy_exclusions": {
-    "0x4325c0": "Assembler-only Float2/Float3 field-writing helper; retained as an unaccepted reference-build dependency pending C++ recovery."
-  }
+  "source_policy_exclusions": {}
 }

@@ -55,7 +55,7 @@ SHA-256 of complete target ranges.
 | --- | ---: | ---: |
 | Unmodified reference, named scope | 686 / 694 | 345,019 / 381,170 (90.5158%) |
 | Maintained linked product, named scope | 692 / 694 | 377,679 / 381,170 (99.0841%) |
-| Reviewed authored functions in that product | 683 / 686 | 376,970 / 380,493 (99.0741%) |
+| Reviewed authored functions in that product | 684 / 686 | 377,002 / 380,493 (99.0825%) |
 
 The initial v1 reference measurement was 682/694 and 89.6149%. It is preserved
 in `config/legacy/reference-baseline-v1.csv`. V2 removes four independently
@@ -86,16 +86,19 @@ functions. Prebuilt CRT/SDK code, compiler EH/startup code, alignment and embedd
 DInput data are outside authored scope. [Boundary review](BOUNDARY_REVIEW.md)
 records closure without unreviewed application gaps.
 
-`Float2`/`Float3::FromAngleMagnitude` at `0x004325C0` is byte-identical but its
-whole behavior is assembly field writes. It remains an unaccepted build dependency
-until admissible source is recovered. Do not reclassify it or change the
-denominator to bypass this source requirement.
+`Float2`/`Float3::FromAngleMagnitude` at `0x004325C0` is a complete 32-byte
+match. On 2026-10-24 the user explicitly approved its FSINCOS/scaled-output
+implementation as one narrow x87 mathematical-primitive exception.
+`config/source-policy.toml` binds that approval to the target SHA-256, address,
+complete extent and both reviewed source bodies. Admission and replay reject a
+changed scope or body; removing/revoking approval withholds acceptance. All other
+whole-function assembly substitutes remain prohibited. The denominator is
+unchanged.
 
 ## Remaining authored work
 
 | Address | Function | Coverage bytes | Blocker |
 | --- | --- | ---: | --- |
-| `0x004325C0` | `Float2::FromAngleMagnitude` | 32 | Whole-function assembly source policy |
 | `0x0044A302` | `ResultScreen::RegisterChain` | 339 | Stack frame 0x38 versus 0x2C |
 | `0x004555DD` | `MainMenu::OnUpdatePreInput` | 3,152 | Stack frame 0x6C versus 0x64 |
 

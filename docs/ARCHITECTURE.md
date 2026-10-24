@@ -18,7 +18,7 @@ product. Existing probes remain historical evidence and are not linked twice.
 
 `config/functions.csv` holds 1,546 reviewed entries. Explicit origins distinguish
 authored source, libraries and compiler code. Application closure is reviewed in
-[BOUNDARY_REVIEW.md](BOUNDARY_REVIEW.md); complete-extent acceptance and the three
+[BOUNDARY_REVIEW.md](BOUNDARY_REVIEW.md); complete-extent acceptance and the two
 remaining authored routines are documented in [ORACLE.md](ORACLE.md).
 
 The 686 authored functions cover 380,493 non-overlapping function bytes. This

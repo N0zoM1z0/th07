@@ -37,6 +37,9 @@ def main():
     if args.unit:
         if args.unit not in units:raise ValueError('unknown canonical unit')
         units={args.unit:units[args.unit]}
+    from source_policy import exclusions
+    denied=exclusions(ROOT)
+    if any(int(record['address'],0) in denied for record in units.values()):raise ValueError('unit is excluded by current source policy')
     if args.rebuild:
         if any(r['kind']=='native-linked' for r in units.values()):subprocess.run([sys.executable,str(ROOT/'scripts/build-reference.py'),'--source-root',str(ROOT)],check=True)
         names=sorted({r['legacy_unit'] for r in units.values() if r['kind']=='legacy-coff'})

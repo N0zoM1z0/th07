@@ -325,6 +325,7 @@ f_00432164,0x00432164,247,247,TextHelper::CopyTextToSurface,authored,native-link
 f_0043225b,0x0043225B,35,35,TextHelper::CreateTextBuffer,authored,native-linked,src/th07/TextHelper.cpp
 f_0043227e,0x0043227E,37,37,TextHelper::ReleaseTextBuffer,authored,native-linked,src/th07/TextHelper.cpp
 f_004322a3,0x004322A3,796,796,TextHelper::RenderTextToTextureBold,authored,native-linked,src/th07/TextHelper.cpp
+f_004325c0,0x004325C0,32,32,Float2::FromAngleMagnitude,authored,native-linked,src/th07/Player.cpp
 f_004325e0,0x004325E0,71,71,GameManager::AddCurrentPower,authored,native-linked,src/th07/ItemManager.cpp
 f_00432630,0x00432630,84,84,ItemManager::ItemManager,authored,native-linked,src/th07/ItemManager.cpp
 f_00432690,0x00432690,91,91,Item::Item,authored,native-linked,src/th07/ItemManager.cpp

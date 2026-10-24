@@ -3915,6 +3915,18 @@
       "target_compared_sha256": "62000c2bb71c8641f894dac2468541f0775269d725e95704d3720c75c920d662",
       "native_name": "TextHelper::RenderTextToTextureBold"
     },
+    "f_004325c0": {
+      "unit": "f_004325c0",
+      "address": "0x004325C0",
+      "size": 32,
+      "compare_size": 32,
+      "name": "Float2::FromAngleMagnitude",
+      "origin": "authored",
+      "kind": "native-linked",
+      "source_file": "src/th07/Player.cpp",
+      "target_compared_sha256": "a50437b23b41970d8419b08c34293566d683282156f7ff73b7e73198b15bd19a",
+      "native_name": "Float2::FromAngleMagnitude"
+    },
     "f_004325e0": {
       "unit": "f_004325e0",
       "address": "0x004325E0",

@@ -43,9 +43,6 @@ canonical manifest contains no separate probe supplements.
   versus target 0x64. Most later homes shift by eight bytes. Full equality was
   observed when AnmVm's constructor definition was hidden, but applying that
   globally regressed 24 other constructors/callers. That experiment was rejected.
-- `Float2`/`Float3::FromAngleMagnitude`, 32 bytes: binary exact but implemented
-  entirely in assembly. Keep it unaccepted until admissible source is recovered;
-  do not change origin or denominator to remove it.
 
 Other rejected experiments: moving ResultScreen's constructor out of line made
 its caller frame 0x14, while explicit inline outside the class preserved the
@@ -59,8 +56,8 @@ placement. These changes were reverted; the native COFF profile list is empty.
 
 A cold 29-TU rebuild and both links succeeded after the source fixes. The
 maintained native measurement is 692/694 named exact functions, with the two
-frame mismatches above. Authored source additionally withholds the 32-byte
-assembly helper, giving 683/686 and 99.0741%.
+frame mismatches above. With the explicitly approved 32-byte x87 primitive,
+authored acceptance is 684/686 and 99.0825%.
 
 VC7 `/GL` objects still need their compiler PDBs during a later link. Deleting
 those PDBs before reusing cached objects lost 641 source procedure records in
@@ -73,11 +70,38 @@ for incremental linking remain; obsolete diagnostic artifacts can be removed.
 native measurements, unsuppressed link status, faithful/metadata source data,
 and independently relocated named globals. Its completion gate remains false.
 
-## Mathematical helper probe
+## Approved mathematical primitive
 
 A private VC7 COFF probe compiled four ordinary C++ expressions (direct float,
 double, cached sine/cosine and a local receiver) under `/Od /Oi`, `/Os /Oi`,
 `/O2 /Oi` and `/Od /Og /Oi`. Optimized variants can be 32 bytes but emit separate
 FCOS/FSIN operations; the target uses FSINCOS with a shared x87 stack result.
 Unoptimized variants call CRT math helpers. None of these probes establishes
-exact acceptance. Keep the 32-byte routine in the remaining ledger.
+a C++ exact match. On 2026-10-24 the user explicitly approved the already
+verified 32-byte FSINCOS/scaled-output primitive. `config/source-policy.toml`
+binds the exception to its target, extent and both source bodies. The routine
+now replays from the maintained linked product and earns authored exact credit;
+all other whole-function assembly substitutions remain prohibited.
+
+## Additional frame diagnostics
+
+Compiler `/FAcs` listings identify the mismatches as reserved, unused inline
+constructor storage. `ResultScreen::RegisterChain` has 36 unused bytes between
+its pointer homes and parameter copy; the target has 24. In
+`MainMenu::OnUpdatePreInput`, eight unused bytes precede the `new AnmVm[]`
+iterator homes. Constructor visibility changes this reservation, but the
+previous global visibility experiment regressed other exact functions.
+
+Normal COFF and native LTCG compilation reproduce the same frame differences.
+Stock and patched frontends also agree. Ordinary calling-convention, debug
+format, floating-point and inlining switches did not preserve the target body
+while correcting both frames. Disabling implicit inlining changes actual calls
+and code lengths, so it cannot establish a match. No fabricated storage or
+conditional class definition was admitted.
+
+A direct `noinline` annotation on AnmVm reproduced MainMenu's desired frame,
+but changed the already exact MainMenu constructor and registration frames.
+Marking the base constructor `noinline` additionally changed AnmVm's own body.
+These probes confirm the source of the reservation and were rejected as
+global fixes. Statement-scoped inline-depth controls also changed the generated
+vector-construction helper or registry calls instead of preserving the body.

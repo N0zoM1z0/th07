@@ -27,7 +27,8 @@ def main():
     old_by={int(r['address'],0):r for r in old};fields=list(old[0]);rows={a:r.copy() for a,r in old_by.items()}
     sdk={f['address'] for f in current['functions'] if f['name'].startswith('D3DX')}
     generated={f['address'] for f in current['functions'] if 'deleting destructor' in f['name']}
-    policy={0x4325c0:'Assembler-only Float2/Float3 field-writing helper; retained as an unaccepted reference-build dependency pending C++ recovery.'}
+    from source_policy import ADDRESS,APPROVAL_NOTE,exclusions
+    policy=exclusions(ROOT)
     application=[f for f in current['functions'] if f['address'] not in sdk|generated]
     source_for_object={Path(r['object']).name:r['source'] for r in oracle.receipt['commands']}
     accepted=[];remaining=[];source_rows=[]
@@ -53,7 +54,8 @@ def main():
         else:
             reason=policy.get(a,f['status']);remaining.append({'address':f'0x{a:08X}','name':native_name,'size':f['size'],'reason':reason,'source_file':emission})
             row.update(status='compiles',match_percent='0.00',source_file=emission,evidence='build/authored-comparison.json; not accepted as exact',notes=reason)
-        source_rows.append({'address':f'0x{a:08X}','origin':origin,'evidence':'source annotation + target boundary + generated full procedure extent','notes':policy.get(a,'Prebuilt SDK inline' if origin=='library' else 'Compiler-generated deleting wrapper' if origin=='compiler' else 'Application/PBG source-owned function')})
+        if a==ADDRESS and exact:row['notes']=APPROVAL_NOTE
+        source_rows.append({'address':f'0x{a:08X}','origin':origin,'evidence':'source annotation + target boundary + generated full procedure extent','notes':APPROVAL_NOTE if a==ADDRESS and exact else policy.get(a,'Prebuilt SDK inline' if origin=='library' else 'Compiler-generated deleting wrapper' if origin=='compiler' else 'Application/PBG source-owned function')})
     # Preserve the historical runtime inventory. These regions are outside the
     # complete application source region; classification grants no new exactness.
     app_addresses={f['address'] for f in current['functions']}
